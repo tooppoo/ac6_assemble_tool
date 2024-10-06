@@ -1,5 +1,8 @@
 # https://docs.codecov.com/docs/ignoring-paths
 ignore:
   - node_modules
-  - data
+  - packages/eslint
+  - packages/parts
+  - packages/spec
+  - packages/tsconfig
   - "**/scripts/"
