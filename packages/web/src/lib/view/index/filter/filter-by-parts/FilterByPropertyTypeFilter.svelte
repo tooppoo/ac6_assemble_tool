@@ -1,16 +1,17 @@
 <script lang="ts">
   import TextButton from '$lib/components/button/TextButton.svelte'
-  import i18n from '$lib/i18n/define'
   import { logger } from '$lib/utils/logger'
   import type { ChangeFilter } from '$lib/view/index/filter/filter-by-parts/event'
   import type { CurrentFilter } from '$lib/view/index/interaction/filter'
 
   import type { ReadonlyPartsFilterState } from '@ac6_assemble_tool/core/assembly/filter/filter-set'
-  import { createEventDispatcher } from 'svelte'
+  import { getContext, createEventDispatcher } from 'svelte'
   import type { ChangeEventHandler } from 'svelte/elements'
 
   export let current: CurrentFilter
   export let state: ReadonlyPartsFilterState
+
+  const i18n = getContext('i18n')
 
   const formId = `${current.id}-${state.filter.name}-multi-select`
   let selectBox: HTMLSelectElement

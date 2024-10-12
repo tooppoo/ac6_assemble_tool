@@ -6,7 +6,6 @@
   import IconButton from '$lib/components/button/IconButton.svelte'
   import TextButton from '$lib/components/button/TextButton.svelte'
   import OffCanvas from '$lib/components/off-canvas/OffCanvas.svelte'
-  import i18n from '$lib/i18n/define'
   import ShareAssembly from '$lib/view/index/share/ShareAssembly.svelte'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
@@ -18,7 +17,9 @@
     type StoredAssemblyRepository,
   } from '@ac6_assemble_tool/core/assembly/store/stored-assembly'
   import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
-  import { createEventDispatcher, onMount } from 'svelte'
+  import { createEventDispatcher, onMount, getContext } from 'svelte'
+
+  const i18n = getContext('i18n')
 
   export let open: boolean
   export let candidates: Candidates

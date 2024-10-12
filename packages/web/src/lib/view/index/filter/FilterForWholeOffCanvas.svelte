@@ -18,7 +18,6 @@
 <script lang="ts">
   import TextButton from '$lib/components/button/TextButton.svelte'
   import OffCanvas from '$lib/components/off-canvas/OffCanvas.svelte'
-  import i18n from '$lib/i18n/define'
   import { logger } from '$lib/utils/logger'
   import {
     assemblyWithHeadParts,
@@ -30,12 +29,14 @@
     excludeNotEquipped,
     notUseHanger,
   } from '@ac6_assemble_tool/core/assembly/filter/filters'
-  import { createEventDispatcher } from 'svelte'
+  import { createEventDispatcher, getContext } from 'svelte'
 
   export let open: boolean
   export let filter: FilterState
   export let initialCandidates: Candidates
   export let candidates: Candidates
+
+  const i18n = getContext('i18n')
 
   // handler
   const onApply = (param: Partial<ApplyWhole>) => {

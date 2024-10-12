@@ -1,13 +1,14 @@
 <script lang="ts">
-  import i18n from '$lib/i18n/define'
   import { logger } from '$lib/utils/logger'
   import type { ChangeFilter } from '$lib/view/index/filter/filter-by-parts/event'
 
   import type { ReadonlyPartsFilterState } from '@ac6_assemble_tool/core/assembly/filter/filter-set'
-  import { createEventDispatcher } from 'svelte'
+  import { getContext, createEventDispatcher } from 'svelte'
   import type { ChangeEventHandler } from 'svelte/elements'
 
   export let state: ReadonlyPartsFilterState
+
+  const i18n = getContext('i18n')
 
   const onChecked =
     (target: ReadonlyPartsFilterState): ChangeEventHandler<HTMLInputElement> =>

@@ -1,14 +1,16 @@
 <script lang="ts">
   import Switch from '$lib/components/form/Switch.svelte'
-  import i18n from '$lib/i18n/define'
   import {
     stringifyAssembly,
     stringifyStatus,
   } from '$lib/view/index/interaction/share'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
+  import { getContext } from 'svelte'
 
   import ClickToggleTooltip from '$/src/lib/components/tooltip/ClickToggleTooltip.svelte'
+
+  const i18n = getContext('i18n')
 
   export let id: string
   export let assembly: () => Assembly
