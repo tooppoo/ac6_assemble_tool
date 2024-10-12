@@ -1,6 +1,9 @@
 <script lang="ts">
   import ClickToggleTooltip from '$lib/components/tooltip/ClickToggleTooltip.svelte'
-  import i18n from '$lib/i18n/define'
+
+  import { getContext } from 'svelte'
+
+  const i18n = getContext('i18n')
 
   export let id: string
 

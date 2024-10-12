@@ -1,12 +1,13 @@
 <script lang="ts">
   import IconButton from '$lib/components/button/IconButton.svelte'
-  import i18n from '$lib/i18n/define'
   import type { ReadonlyReportAggregation } from '$lib/view/index/report/model/report'
   import ReportItem from '$lib/view/index/report/ReportItem.svelte'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
   import type { EmptyObject } from '@ac6_assemble_tool/core/utils/type'
-  import { createEventDispatcher } from 'svelte'
+  import { getContext, createEventDispatcher } from 'svelte'
+
+  const i18n = getContext('i18n')
 
   export let assembly: Assembly
   export let reportAggregation: ReadonlyReportAggregation

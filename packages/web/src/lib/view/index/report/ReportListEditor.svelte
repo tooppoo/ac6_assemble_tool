@@ -8,12 +8,14 @@
 
 <script lang="ts">
   import IconButton from '$lib/components/button/IconButton.svelte'
-  import i18n, { type I18Next } from '$lib/i18n/define'
+  import { type I18Next } from '$lib/i18n/define'
   import ReportItem from '$lib/view/index/report/ReportItem.svelte'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
   import type { EmptyObject } from '@ac6_assemble_tool/core/utils/type'
-  import { createEventDispatcher } from 'svelte'
+  import { createEventDispatcher, getContext } from 'svelte'
+
+  const i18n = getContext('i18n')
 
   // state
   export let assembly: Assembly

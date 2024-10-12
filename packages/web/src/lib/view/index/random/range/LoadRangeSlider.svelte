@@ -5,7 +5,6 @@
 </script>
 
 <script lang="ts">
-  import i18n from '$lib/i18n/define'
   import LockBadge from '$lib/view/index/form/status/badge/LockBadge.svelte'
   import StatusBadgeList from '$lib/view/index/form/status/StatusBadgeList.svelte'
 
@@ -20,9 +19,11 @@
     DropdownMenu,
     DropdownToggle,
   } from '@sveltestrap/sveltestrap'
-  import { createEventDispatcher } from 'svelte'
+  import { createEventDispatcher, getContext } from 'svelte'
 
   import RangeSlider from './base/RangeSlider.svelte'
+
+  const i18n = getContext('i18n')
 
   // state
   export let candidates: Candidates

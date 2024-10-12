@@ -16,7 +16,6 @@
   import Switch from '$lib/components/form/Switch.svelte'
   import OffCanvas from '$lib/components/off-canvas/OffCanvas.svelte'
   import Margin from '$lib/components/spacing/Margin.svelte'
-  import i18n from '$lib/i18n/define'
   import { logger } from '$lib/utils/logger'
   import RandomAssembleButton from '$lib/view/index/random/button/RandomAssembleButton.svelte'
 
@@ -30,12 +29,14 @@
     totalLoadNotOverMax,
   } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
   import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
-  import { createEventDispatcher } from 'svelte'
+  import { createEventDispatcher, getContext } from 'svelte'
 
   import CoamRangeSlider from './range/CoamRangeSlider.svelte'
   import LoadRangeSlider, {
     type ToggleLock,
   } from './range/LoadRangeSlider.svelte'
+
+  const i18n = getContext('i18n')
 
   export let open: boolean
   export let lockedParts: LockedParts

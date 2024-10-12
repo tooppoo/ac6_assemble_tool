@@ -3,7 +3,7 @@
   import LanguageForm from '$lib/components/language/LanguageForm.svelte'
   import ErrorModal from '$lib/components/modal/ErrorModal.svelte'
   import Margin from '$lib/components/spacing/Margin.svelte'
-  import i18n from '$lib/i18n/define'
+  import type { I18NextStore } from '$lib/i18n/define'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
   import { logger } from '$lib/utils/logger'
 
@@ -27,7 +27,7 @@
     defineOrder,
   } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
-  import { onMount } from 'svelte'
+  import { onMount, getContext } from 'svelte'
 
   import FilterByPartsOffCanvas from './filter/FilterByPartsOffCanvas.svelte'
   import FilterForWholeOffCanvas from './filter/FilterForWholeOffCanvas.svelte'
@@ -74,6 +74,7 @@
 
   const orders: Order = regulation.orders
   const version: string = regulation.version
+  const i18n: I18NextStore = getContext('i18n')
 
   let candidates: Candidates = regulation.candidates
   let initialCandidates: Candidates = regulation.candidates

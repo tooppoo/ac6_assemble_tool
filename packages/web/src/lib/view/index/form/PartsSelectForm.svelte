@@ -12,7 +12,6 @@
 </script>
 
 <script lang="ts">
-  import i18n from '$lib/i18n/define'
   import FilterBadge from '$lib/view/index/form/status/badge/FilterBadge.svelte'
   import LockBadge from '$lib/view/index/form/status/badge/LockBadge.svelte'
   import StatusBadgeList from '$lib/view/index/form/status/StatusBadgeList.svelte'
@@ -22,7 +21,9 @@
     type FilterState,
   } from '$lib/view/index/interaction/filter'
 
-  import { createEventDispatcher } from 'svelte'
+  import { createEventDispatcher, getContext } from 'svelte'
+
+  const i18n = getContext('i18n')
 
   export let id: AssemblyKey
   export let caption: string
