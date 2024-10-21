@@ -47,7 +47,7 @@
     "bootstrap": "5.3.3",
     "bootstrap-icons": "1.11.3",
     "i18next": "23.16.2",
-    "svelte": "4.2.19",
+    "svelte": "5.0.4",
     "svelte-i18next": "2.2.2"
   },
   "type": "module"
