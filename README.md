@@ -5,6 +5,19 @@
 
 This application can be used [here](https://tooppoo.github.io/ac6_assemble_tool/)
 
+## Local Development
+
+```shell
+npm i
+npm run dev
+```
+
+## Build
+
+```shell
+npm run build
+```
+
 ## Release
 
 ```shell

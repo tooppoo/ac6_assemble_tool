@@ -46,7 +46,7 @@
     "@ac6_assemble_tool/parts": "1.7.2",
     "bootstrap": "5.3.3",
     "bootstrap-icons": "1.11.3",
-    "i18next": "23.16.8",
+    "i18next": "24.2.2",
     "svelte": "4.2.19",
     "svelte-i18next": "2.2.2"
   },
