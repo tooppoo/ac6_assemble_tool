@@ -349,7 +349,7 @@
     >
   </div>
   <div>
-    Source code is managed by <a
+    Source code is managed at <a
       id="link-to-src"
       href="https://github.com/tooppoo/ac6_assemble_tool/">Github</a
     >
