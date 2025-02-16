@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "build:ci": "cp .env.test .env && vite build",
     "postbuild": "npm run sitemap && npm run purgecss",
     "preview": "vite preview",
     "test": "vitest run",

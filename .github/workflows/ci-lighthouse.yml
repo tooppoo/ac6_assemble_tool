@@ -1,0 +1,31 @@
+name: Lighthouse
+on:
+  pull_request:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      # setup
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+      - name: setup
+        run: npm ci
+
+      # build
+      - run: npm run build:ci
+
+      # lighthouse
+      - name: Run Lighthouse
+        run: |
+          npm install -g @lhci/cli@0.13.x
+          lhci autorun
+        working-directory: packages/web
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
