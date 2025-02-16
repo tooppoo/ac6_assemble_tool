@@ -5,9 +5,9 @@
   "type": "module",
   "engines": {
     "node": "22.14.0",
-    "npm": "11.0.0"
+    "npm": "11.1.0"
   },
-  "packageManager": "npm@11.0.0",
+  "packageManager": "npm@11.1.0",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -18,6 +18,8 @@
     "lint": "turbo run lint",
     "format": "turbo run format",
     "check-types": "turbo run check-types",
+    "web": "npm -w packages/web",
+    "parts": "npm -w packages/parts",
     "prepare": "husky"
   },
   "devDependencies": {
