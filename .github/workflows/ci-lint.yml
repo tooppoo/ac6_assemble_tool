@@ -28,7 +28,7 @@ jobs:
           key: ${{ runner.os }}-turbo-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-turbo-
-      - run: npm run build
+      - run: npm run build:test
 
       # lint & fix
       - name: lint
