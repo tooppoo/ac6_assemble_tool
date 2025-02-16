@@ -21,7 +21,7 @@ jobs:
         run: npm ci
 
       # build
-      - run: npm run build:test
+      - run: npm run build:ci
 
       # lint & fix
       - name: lint
