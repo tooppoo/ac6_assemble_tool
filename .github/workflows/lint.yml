@@ -1,0 +1,30 @@
+name: Lint
+on:
+  pull_request:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  lint-fix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to commit changes
+    steps:
+      # setup
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+      - name: setup
+        run: npm ci
+
+      - name: lint
+        run: npm run lint
+
+      - name: auto commit
+        uses: stefanzweifel/git-auto-commit-action@e348103e9026cc0eee72ae06630dbe30c8bf7a79 # v5
+        with:
+          commit_message: Auto commit with fmt
+          branch: ${{ github.head_ref }}

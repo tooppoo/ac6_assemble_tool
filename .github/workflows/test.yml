@@ -1,0 +1,43 @@
+name: Test
+on:
+  pull_request:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      # setup
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'npm'
+      - name: setup
+        run: npm ci
+
+      - name: Cache turbo build setup
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: type check
+        run: npm run check-types
+
+      - name: test with coverage
+        run: npm run coverage
+
+      # coverage tools
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@1e68e06f1dbfde0e4cefc87efeba9e4643565303 # v5.1.2
+        with:
+          files: ./packages/core/coverage/coverage-final.json,./packages/web/coverage/coverage-final.json
+          fail_ci_if_error: true
+          slug: tooppoo/ac6_assemble_tool
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

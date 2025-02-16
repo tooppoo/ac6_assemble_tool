@@ -1,27 +1,12 @@
-name: CI
+name: Build
 on:
   pull_request:
-    branches:
-      - '*'
   push:
     branches:
       - '*'
-  workflow_call:
-    inputs:
-      build_only:
-        type: boolean
-        default: false
-        required: false
-      with_lighthouse:
-        type: boolean
-        default: false
-        required: false
-    secrets:
-      CODECOV_TOKEN:
-        required: false
 
 jobs:
-  ci:
+  build:
     runs-on: ubuntu-latest
     steps:
       # setup
@@ -41,7 +26,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
 
-      # CI
       - name: build
         run: |
           env_target=packages/web/.env.local
@@ -54,47 +38,13 @@ jobs:
           ANALYZE_MODE: static
           NODE_ENV: production
 
-      - name: type check
-        run: npm run check-types
-
-      - name: test with coverage
-        if: ${{ !inputs.build_only }}
-        run: npm run coverage
-
-      - name: lint
-        if: ${{ !inputs.build_only }}
-        run: npm run lint
-
-      - name: Run Lighthouse
-        if: ${{ !inputs.build_only }}
-        run: |
-          npm install -g @lhci/cli@0.13.x
-          lhci autorun
-        working-directory: packages/web
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-
-      # coverage tools
-      - name: Upload coverage reports to Codecov
-        if: ${{ !inputs.build_only }}
-        uses: codecov/codecov-action@1e68e06f1dbfde0e4cefc87efeba9e4643565303 # v5.1.2
-        with:
-          files: ./packages/core/coverage/coverage-final.json,./packages/web/coverage/coverage-final.json
-          fail_ci_if_error: true
-          slug: tooppoo/ac6_assemble_tool
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-      # artifact
       - name: archive build
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4
         with:
           name: web-${{ github.sha }}
           path: packages/web/dist
       - name: archive analyze
-        if: ${{ !inputs.build_only }}
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4
         with:
           name: analyze-${{ github.sha }}
           path: ./packages/web/analyze.html
-
