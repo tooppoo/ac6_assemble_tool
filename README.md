@@ -1,9 +1,13 @@
 # AC6 ASSEMBLE TOOL
 
-[![CI](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci.yml/badge.svg)](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci.yml)
+[![Lighthouse](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci-lighthouse.yml/badge.svg)](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci-lighthouse.yml)
+[![Lint](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci-lint.yml/badge.svg)](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci-lint.yml)
+[![Test](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci-test.yml/badge.svg)](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci-test.yml)
 [![codecov](https://codecov.io/gh/tooppoo/ac6_assemble_tool/graph/badge.svg?token=ehRpqiJfjJ)](https://codecov.io/gh/tooppoo/ac6_assemble_tool)
 
-This application can be used [here](https://tooppoo.github.io/ac6_assemble_tool/)
+## URL
+
+Application is running on <https://tooppoo.github.io/ac6_assemble_tool>
 
 ## Local Development
 
