@@ -1,6 +1,6 @@
 {
   "name": "@ac6_assemble_tool/parts",
-  "version": "1.7.2",
+  "version": "1.8.1",
   "type": "module",
   "exports": {
     "./*": "./src/*.ts"

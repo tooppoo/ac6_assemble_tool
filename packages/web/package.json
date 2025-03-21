@@ -1,6 +1,6 @@
 {
   "name": "@ac6_assemble_tool/web",
-  "version": "1.20.0",
+  "version": "1.21.0",
   "private": true,
   "scripts": {
     "dev": "vite dev",
@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@ac6_assemble_tool/core": "1.0.0",
-    "@ac6_assemble_tool/parts": "1.7.2",
+    "@ac6_assemble_tool/parts": "1.8.1",
     "bootstrap": "5.3.3",
     "bootstrap-icons": "1.11.3",
     "i18next": "24.2.2",
