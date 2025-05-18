@@ -5,9 +5,9 @@
   "type": "module",
   "engines": {
     "node": "22.14.0",
-    "npm": "11.1.0"
+    "npm": "11.4.0"
   },
-  "packageManager": "npm@11.1.0",
+  "packageManager": "npm@11.4.0",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
