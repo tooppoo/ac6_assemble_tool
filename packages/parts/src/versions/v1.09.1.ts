@@ -118,12 +118,33 @@ const legsUpdatePatches = [
     weight: 23650,
   })),
 ]
+const boosterUpdatePatches = [
+  patches.booster.update('FLUEGEL/21Z', () => ({
+    thrust: 6434,
+    ab_thrust: 8801,
+  })),
+  patches.booster.update('IA-C01B: GILLS', () => ({
+    thrust: 6601,
+  })),
+]
+const generatorUpdatePatches = [
+  patches.generator.update('AG-E-013 YABA', () => ({
+    en_recharge: 1282,
+    en_output: 3160,
+  })),
+  patches.generator.update('VP-20D', () => ({
+    en_capacity: 3840,
+    en_recharge: 826,
+  })),
+]
 
 export const definition = apply(v1_08_01, [
   ...armUnitsPatches,
   ...backUnitsPatches,
   ...headUpdatePatches,
   ...legsUpdatePatches,
+  ...boosterUpdatePatches,
+  ...generatorUpdatePatches,
 ])
 
 export const candidates: Candidates = defineCandidates(definition)
