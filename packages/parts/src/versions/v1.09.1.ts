@@ -40,8 +40,40 @@ const armUnitsPatches = [
     reload_time: 6.0,
   })),
 ]
+const backUnitsPatches = [
+  patches.onlyLeftBackUnits.update('VP-61PS', () => ({
+    ig_damage_mitigation: 72,
+  })),
+  patches.onlyLeftBackUnits.update('SI-27: SU-R8', () => ({
+    ig_duration: 0.3,
+    en_load: 258,
+  })),
+  patches.backUnits.update('VE-60SNA', () => ({
+    attack_power: 1398,
+    // 弾速(mask)
+  })),
+  patches.backUnits.update('VE-60LCB', () => ({
+    rapid_fire: 0.4,
+  })),
+  patches.backUnits.update('BML-G1/P20MLT-04', () => ({
+    reload_time: 3.8,
+    weight: 1770,
+  })),
+  patches.backUnits.update('BML-G2/P03MLT-06', () => ({
+    reload_time: 4.0,
+  })),
+  patches.backUnits.update('BML-G1/P31DUO-02', () => ({
+    reload_time: 3.1,
+  })),
+  patches.backUnits.update('Vvc-703PM', () => ({
+    reload_time: 4.2,
+  })),
+]
 
-export const definition = apply(v1_08_01, [...armUnitsPatches])
+export const definition = apply(v1_08_01, [
+  ...armUnitsPatches,
+  ...backUnitsPatches,
+])
 
 export const candidates: Candidates = defineCandidates(definition)
 export const orders: Order = order_v1_08_01
