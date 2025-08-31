@@ -5,6 +5,7 @@
   import Margin from '$lib/components/spacing/Margin.svelte'
   import i18n from '$lib/i18n/define'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
+  import { appVersion } from '$lib/utils/app-version'
   import { logger } from '$lib/utils/logger'
 
   import {
@@ -61,7 +62,6 @@
   import ShareAssembly from './share/ShareAssembly.svelte'
   import StoreAssembly from './store/StoreAssembly.svelte'
 
-  import { version as appVersion } from '$app/environment'
   import {
     PUBLIC_REPORT_BUG_URL,
     PUBLIC_REPORT_REQUEST_URL,
