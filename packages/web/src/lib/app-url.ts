@@ -1,9 +1,8 @@
-const protocol = 'https://'
-const domain = 'tooppoo.github.io'
 const basePath = 'ac6_assemble_tool'
 
 export function appUrl(...paths: string[]): string {
-  return protocol + resolve(domain, basePath, '/', ...paths)
+  // Use relative path to avoid hardcoding domains
+  return resolve('/', basePath, '/', ...paths)
 }
 
 export function publicPath(...paths: string[]): string {

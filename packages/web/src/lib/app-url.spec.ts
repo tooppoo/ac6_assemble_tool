@@ -8,17 +8,13 @@ describe('app-url', () => {
     fcit.prop([fc.array(fc.webPath())])(
       'not contain repeated slash except for protocol',
       (paths) => {
-        const urlWithoutProtocol = appUrl(...paths).replace(/^https:\/\//, '')
-
-        expect(urlWithoutProtocol).not.toMatch(/\/\/+/)
+        expect(appUrl(...paths)).not.toMatch(/\/\/+/)
       },
     )
     fcit.prop([fc.array(fc.webPath())])(
       'start with application base path',
       (paths) => {
-        expect(appUrl(...paths)).toMatch(
-          /^https:\/\/tooppoo\.github\.io\/ac6_assemble_tool\//,
-        )
+        expect(appUrl(...paths)).toMatch(/^\/ac6_assemble_tool\//)
       },
     )
   })
