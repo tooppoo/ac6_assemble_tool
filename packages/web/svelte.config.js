@@ -1,5 +1,4 @@
-import { execSync } from 'child_process'
-import fs from 'fs'
+// no-op
 
 import adapter from '@sveltejs/adapter-static'
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
@@ -18,25 +17,9 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
  *
  * 根本的にはESLint側のサポートを待つしか無さそう
  */
-// import pkg from './package.json' with { type: 'json' }
-const pkg = (() => {
-  const raw = fs.readFileSync('package.json', { encoding: 'utf-8' })
+// NOTE: no SvelteKit versioning; package.json read not required here
 
-  return JSON.parse(raw)
-})()
-
-const shortHash = (() => {
-  try {
-    if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA.slice(0, 7)
-    const out = execSync('git rev-parse --short HEAD', {
-      encoding: 'utf-8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    })
-    return out.trim()
-  } catch {
-    return 'dev'
-  }
-})()
+// NOTE: SvelteKit versioning is not used; handled via Vite define
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -45,10 +28,6 @@ const config = {
   preprocess: vitePreprocess(),
 
   kit: {
-    version: {
-      // Expose version like "1.22.0-<short-hash>" to $app/environment.version
-      name: `${pkg.version}-${shortHash}`,
-    },
     adapter: adapter({
       pages: 'dist',
       assets: 'dist',
