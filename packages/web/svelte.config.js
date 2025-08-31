@@ -1,3 +1,4 @@
+import { execSync } from 'child_process'
 import fs from 'fs'
 
 import adapter from '@sveltejs/adapter-static'
@@ -24,6 +25,19 @@ const pkg = (() => {
   return JSON.parse(raw)
 })()
 
+const shortHash = (() => {
+  try {
+    if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA.slice(0, 7)
+    const out = execSync('git rev-parse --short HEAD', {
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+    return out.trim()
+  } catch {
+    return 'dev'
+  }
+})()
+
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   // Consult https://kit.svelte.dev/docs/integrations#preprocessors
@@ -32,7 +46,8 @@ const config = {
 
   kit: {
     version: {
-      name: pkg.version,
+      // Expose version like "1.22.0-<short-hash>" to $app/environment.version
+      name: `${pkg.version}-${shortHash}`,
     },
     adapter: adapter({
       pages: 'dist',
