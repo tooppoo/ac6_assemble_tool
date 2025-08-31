@@ -8,13 +8,17 @@ describe('app-url', () => {
     fcit.prop([fc.array(fc.webPath())])(
       'not contain repeated slash except for protocol',
       (paths) => {
-        expect(appUrl(...paths)).not.toMatch(/\/\/+/)
+        const urlWithoutProtocol = appUrl(...paths).replace(/^https:\/\//, '')
+
+        expect(urlWithoutProtocol).not.toMatch(/\/\/+/)
       },
     )
     fcit.prop([fc.array(fc.webPath())])(
       'start with application base path',
       (paths) => {
-        expect(appUrl(...paths)).toMatch(/^\/ac6_assemble_tool\//)
+        expect(appUrl(...paths)).toMatch(
+          /^https:\/\/ac6-assemble-tool\.philomagi\.dev\//,
+        )
       },
     )
   })
@@ -26,8 +30,8 @@ describe('app-url', () => {
         expect(publicPath(...paths)).not.toMatch(/\/\/+/)
       },
     )
-    fcit.prop([fc.array(fc.webPath())])('start from base path', (paths) => {
-      expect(publicPath(...paths)).toMatch(/^\/ac6_assemble_tool\//)
+    fcit.prop([fc.array(fc.webPath())])('start from root', (paths) => {
+      expect(publicPath(...paths)).toMatch(/^\//)
     })
   })
 })

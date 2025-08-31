@@ -1,12 +1,12 @@
-const basePath = 'ac6_assemble_tool'
+const protocol = 'https://'
+const domain = 'ac6-assemble-tool.philomagi.dev'
 
 export function appUrl(...paths: string[]): string {
-  // Use relative path to avoid hardcoding domains
-  return resolve('/', basePath, '/', ...paths)
+  return protocol + resolve(domain, '/', ...paths)
 }
 
 export function publicPath(...paths: string[]): string {
-  return resolve('/', basePath, '/', ...paths)
+  return resolve('/', ...paths)
 }
 
 function resolve(...paths: string[]): string {

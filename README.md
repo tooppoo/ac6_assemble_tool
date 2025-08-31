@@ -7,7 +7,7 @@
 
 ## URL
 
-Application is running on <https://tooppoo.github.io/ac6_assemble_tool>
+Application is running on <https://ac6-assemble-tool.philomagi.dev/>
 
 ## Local Development
 
