@@ -17,7 +17,7 @@ describe('app-url', () => {
       'start with application base path',
       (paths) => {
         expect(appUrl(...paths)).toMatch(
-          /^https:\/\/tooppoo\.github\.io\/ac6_assemble_tool\//,
+          /^https:\/\/ac6-assemble-tool\.philomagi\.dev\//,
         )
       },
     )
@@ -30,8 +30,8 @@ describe('app-url', () => {
         expect(publicPath(...paths)).not.toMatch(/\/\/+/)
       },
     )
-    fcit.prop([fc.array(fc.webPath())])('start from base path', (paths) => {
-      expect(publicPath(...paths)).toMatch(/^\/ac6_assemble_tool\//)
+    fcit.prop([fc.array(fc.webPath())])('start from root', (paths) => {
+      expect(publicPath(...paths)).toMatch(/^\//)
     })
   })
 })
