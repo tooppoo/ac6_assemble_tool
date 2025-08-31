@@ -1,9 +1,33 @@
+import { execSync } from 'child_process'
+import fs from 'fs'
+
 import { sveltekit } from '@sveltejs/kit/vite'
 import { svelteTesting } from '@testing-library/svelte/vite'
 import { analyzer } from 'vite-bundle-analyzer'
 import { defineConfig } from 'vitest/config'
 
+const pkg = (() => {
+  const raw = fs.readFileSync('package.json', { encoding: 'utf-8' })
+  return JSON.parse(raw)
+})()
+
+const shortHash = (() => {
+  try {
+    if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA.slice(0, 7)
+    const out = execSync('git rev-parse --short HEAD', {
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+    return out.trim()
+  } catch {
+    return 'dev'
+  }
+})()
+
 export default defineConfig({
+  define: {
+    __APP_VERSION__: JSON.stringify(`${pkg.version}-${shortHash}`),
+  },
   plugins: [
     sveltekit(),
     svelteTesting(),

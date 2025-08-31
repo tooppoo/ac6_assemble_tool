@@ -1,4 +1,4 @@
-import fs from 'fs'
+// no-op
 
 import adapter from '@sveltejs/adapter-static'
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
@@ -17,12 +17,9 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
  *
  * 根本的にはESLint側のサポートを待つしか無さそう
  */
-// import pkg from './package.json' with { type: 'json' }
-const pkg = (() => {
-  const raw = fs.readFileSync('package.json', { encoding: 'utf-8' })
+// NOTE: no SvelteKit versioning; package.json read not required here
 
-  return JSON.parse(raw)
-})()
+// NOTE: SvelteKit versioning is not used; handled via Vite define
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -31,9 +28,6 @@ const config = {
   preprocess: vitePreprocess(),
 
   kit: {
-    version: {
-      name: pkg.version,
-    },
     adapter: adapter({
       pages: 'dist',
       assets: 'dist',
