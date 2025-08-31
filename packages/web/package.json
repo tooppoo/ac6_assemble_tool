@@ -45,7 +45,7 @@
   "dependencies": {
     "@ac6_assemble_tool/core": "1.0.0",
     "@ac6_assemble_tool/parts": "1.8.1",
-    "bootstrap": "5.3.5",
+    "bootstrap": "5.3.8",
     "bootstrap-icons": "1.11.3",
     "i18next": "24.2.3",
     "svelte": "4.2.19",
