@@ -5,9 +5,19 @@
 [![Test](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci-test.yml/badge.svg)](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci-test.yml)
 [![codecov](https://codecov.io/gh/tooppoo/ac6_assemble_tool/graph/badge.svg?token=ehRpqiJfjJ)](https://codecov.io/gh/tooppoo/ac6_assemble_tool)
 
-## URL
+## URL / Deployment
 
-Application is running on <https://tooppoo.github.io/ac6_assemble_tool>
+This app is deployed via Cloudflare Pages.
+
+- Production URL: managed in Cloudflare Pages (pages.dev or custom domain)
+- Deployment: executed by Cloudflare Pages on pushes to the default branch
+
+Environment variables are configured in Cloudflare Pages Project settings:
+
+- `PUBLIC_REPORT_BUG_URL`
+- `PUBLIC_REPORT_REQUEST_URL`
+- `PUBLIC_LOG_LEVEL`
+- `PUBLIC_SITE_URL`
 
 ## Local Development
 
