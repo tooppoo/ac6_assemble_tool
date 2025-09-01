@@ -134,7 +134,7 @@ ${target.description}
       clickable={true}
       withTooltip={true}
       class="bi bi-info-circle"
-      style="font-size: 18px;"
+      style="font-size: 1.125rem;"
     />
   </svelte:fragment>
   <svelte:fragment slot="body">

@@ -38,7 +38,7 @@
     cursor: pointer;
   }
   .icon-button {
-    font-size: 30px;
+    font-size: 1.875rem;
     height: 48px;
     text-align: center;
     width: 48px;
