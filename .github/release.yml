@@ -1,4 +1,13 @@
 changelog:
+  exclude:
+    labels:
+      - dependencies
+      - 'major dependencies'
+    authors:
+      - dependabot
+      - dependabot[bot]
+      - renovate
+      - renovate[bot]
   categories:
     - title: Breaking Changes 🛠
       labels:
@@ -12,10 +21,6 @@ changelog:
     - title: Bug Fix 🤕
       labels:
         - bug
-    - title: Dependencies Update
-      labels:
-        - dependencies
-        - 'major dependencies'
     - title: Documentation
       labels:
         - documentation
