@@ -18,10 +18,9 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.node-version'
-      - name: Use npm@11.4.0 via corepack
+      - name: Install npm@11.4.0 (global)
         run: |
-          corepack enable
-          corepack prepare npm@11.4.0 --activate
+          npm i -g npm@11.4.0
           npm --version
       - run: npm ci
         working-directory: scripts/google-app-scripts
