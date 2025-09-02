@@ -17,6 +17,11 @@ jobs:
         with:
           node-version-file: '.node-version'
           cache: 'npm'
+      - name: Use npm@11.4.0 via corepack
+        run: |
+          corepack enable
+          corepack prepare npm@11.4.0 --activate
+          npm --version
       - name: setup
         run: npm ci
 
