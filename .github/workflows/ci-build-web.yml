@@ -20,6 +20,10 @@ jobs:
         with:
           node-version-file: '.node-version'
           cache: 'npm'
+      - name: Install npm@11.4.0 (global)
+        run: |
+          npm i -g npm@11.4.0
+          npm --version
 
       - name: Install
         run: npm ci
