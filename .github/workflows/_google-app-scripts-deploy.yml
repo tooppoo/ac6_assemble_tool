@@ -18,9 +18,9 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: '.node-version'
-      - name: Install npm@11.4.0 (global)
+      - name: Install npm@11.5.2 (global)
         run: |
-          npm i -g npm@11.4.0
+          npm i -g npm@11.5.2
           npm --version
       - run: npm ci
         working-directory: scripts/google-app-scripts
