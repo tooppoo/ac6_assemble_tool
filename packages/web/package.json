@@ -37,7 +37,7 @@
     "globals": "16.3.0",
     "jsdom": "26.1.0",
     "prettier-plugin-svelte": "3.4.0",
-    "sass-embedded": "1.86.3",
+    "sass-embedded": "1.91.0",
     "svelte-check": "4.3.1",
     "svelte-sitemap": "2.7.1",
     "vite-bundle-analyzer": "0.23.0"
