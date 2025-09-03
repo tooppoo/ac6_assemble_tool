@@ -33,7 +33,7 @@
   "dependencies": {
     "@ac6_assemble_tool/parts": "1.8.1",
     "dexie": "4.0.11",
-    "ulid": "2.3.0",
+    "ulid": "2.4.0",
     "zod": "3.25.76"
   }
 }
