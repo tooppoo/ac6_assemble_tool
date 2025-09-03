@@ -40,7 +40,7 @@
     "sass-embedded": "1.86.3",
     "svelte-check": "4.3.1",
     "svelte-sitemap": "2.7.1",
-    "vite-bundle-analyzer": "0.23.0"
+    "vite-bundle-analyzer": "1.2.3"
   },
   "dependencies": {
     "@ac6_assemble_tool/core": "1.0.0",
