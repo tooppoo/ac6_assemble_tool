@@ -51,5 +51,10 @@
     "svelte": "4.2.20",
     "svelte-i18next": "2.2.2"
   },
+  "optionalDependencies": {
+    "sass-embedded-linux-x64": "1.86.3",
+    "sass-embedded-darwin-arm64": "1.86.3",
+    "sass-embedded-darwin-x64": "1.86.3"
+  },
   "type": "module"
 }

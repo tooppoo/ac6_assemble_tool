@@ -28,9 +28,6 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: rebuild sass-embedded
-        run: npm rebuild sass-embedded
-
       - name: Build (Turborepo)
         run: npm run build:ci
         env:

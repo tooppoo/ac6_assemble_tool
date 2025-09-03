@@ -24,9 +24,6 @@ jobs:
       - name: setup
         run: npm ci
 
-      - name: rebuild sass-embedded
-        run: npm rebuild sass-embedded
-
       # build
       - run: npm run build:ci
 
