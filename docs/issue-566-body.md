@@ -28,8 +28,23 @@
 6. 品質検証
    - 主要フローの回帰（フォーム/IME/キーボード）とアクセシビリティ/パフォーマンス（Lighthouse/Web Vitals）を確認
 
+## 影響箇所スキャン（概観）
+
+- `.svelte` ファイル数: 36
+- `createEventDispatcher` の出現: 46（コールバック props に置換が必要）
+- `on:` DOMイベントの出現: 78（`onclick` などプロパティ化）
+- `bind:` の出現: 8（子側 `$bindable()` 対応。`bind:this` は対象外）
+- `svelte:window/body` の出現: 1（`popstate`）
+- `$store` マジックの出現: 0
+
+主な影響箇所（抜粋）:
+- OffCanvas / Modal / Buttons / Switch など基盤UI
+- 各ビュー（Index/Store/Filter/Random/Report）と Range/Slider 系
+
+優先度提案:
+- 1) 基盤UI → 2) 主要画面 → 3) 入力コンポーネント → 4) 残余の on:/bind: 置換
+
 ## 備考
 
 - 変更は小さなPRに分割し、すべてこのIssue（#566）にリンクします。
 - 詳細方針/検討は ADR を参照（`docs/adr/20250904-svelte5-migration.md`）。
-

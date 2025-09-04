@@ -12,13 +12,7 @@
 
 ## Decision
 
-- 段階移行戦略を採用する。
-  1) 依存更新（SvelteKit 2.x、vite-plugin、svelte-check、prettier-plugin-svelte、eslint-plugin-svelte、Cloudflare adapter など）
-  2) 最小修正でのビルド緑化（`on:` → `onclick`、`createEventDispatcher` → コールバック props、子 props の `$bindable` 化 など）
-  3) 推奨API（Runes: `$state/$derived/$effect/$bindable`）の段階導入
-  4) Cloudflare Pages + D1（adapter-cloudflare）で SSR/CSR/HMR 動作確認
-  5) svelte-check v4 と ESLint(Flat) の全通過・テスト更新
-
+- 段階移行戦略を採用する（詳細な手順・影響スキャンは Issue #566 を参照）。
 - 変更は小さな PR に分割し、全て Issue #566 にリンクする。
 
 ## Consequences
@@ -36,25 +30,6 @@
    - Pros: リスク分散・レビュー容易・トレーサブル
    - Cons: PR 数が増える
 
-## Migration Steps (Summary)
+## Links
 
-- 依存
-  - `svelte@^5.38`
-  - `@sveltejs/kit@^2`
-  - `@sveltejs/vite-plugin-svelte@^6`
-  - `svelte-check@^4`（TS>=5）
-  - `prettier-plugin-svelte@^3.4`
-  - `eslint-plugin-svelte@^3`（Flat Config）
-  - `@testing-library/svelte@^5`
-  - `@sveltejs/adapter-cloudflare` 最新
-
-- コード変更
-  - DOM: `on:click` → `onclick`（修飾子は v5 流に）
-  - コンポーネント: `createEventDispatcher` → コールバック props（`event.detail` → 関数引数）
-  - 子 props 双方向: `$bindable()` に変更、親の `bind:` は継続可
-  - リアクティビティ: `$:` は当面可、段階的に `$state/$derived/$effect` へ
-
-- 品質
-  - `svelte-check`/ESLint 通過、テスト更新（property-based 優先）
-  - Lighthouse/Web Vitals で劣化確認、Cloudflare Pages + Wrangler で動作検証
-
+- 実装計画・影響スキャン・優先度: Issue #566 に集約
