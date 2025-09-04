@@ -1,4 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>tooppoo/renovate-config"]
+  "extends": ["local>tooppoo/renovate-config"],
+  "packageRules": [
+    {
+      "description": "Block Vite major upgrades until Svelte 5 migration",
+      "matchPackageNames": ["vite"],
+      "allowedVersions": "<6.0.0",
+      "internalNotes": "@sveltejs/vite-plugin-svelte v3 supports only Vite ^5 with Svelte 4. Upgrading Vite >=6 requires Svelte 5 + plugin v5+; track feature/#566/upgrade-svelte-to-5."
+    }
+  ]
 }
