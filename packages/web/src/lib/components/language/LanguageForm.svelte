@@ -67,7 +67,7 @@
     </label>
     :
     <select id="change-language" on:change={onChange} bind:value={language}>
-      {#each languages as lng}
+      {#each languages as lng (lng.value)}
         <option value={lng.value} selected={lng.isSelected()}>
           {lng.label}
         </option>

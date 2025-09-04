@@ -86,13 +86,13 @@
   />
 </div>
 <hr />
-{#each editingReportAggregation.allBlocks as block, i}
+{#each editingReportAggregation.allBlocks as block, i (block.id)}
   {#if i !== 0}
     <hr />
   {/if}
   <div>
     <div class="row mb-3">
-      {#each block.allReports as report}
+      {#each block.allReports as report (report.key)}
         <div
           class="editable-report-item mb-3 col-6 col-sm-4 col-md-3"
           draggable="true"

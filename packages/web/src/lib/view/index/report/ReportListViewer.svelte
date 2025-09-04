@@ -29,13 +29,13 @@
   />
 </div>
 <hr />
-{#each reportAggregation.blocks as block, i}
+{#each reportAggregation.blocks as block, i (block.id)}
   {#if i !== 0}
     <hr />
   {/if}
   <div>
     <div class="row mb-3">
-      {#each block.reports as report}
+      {#each block.reports as report (report.key)}
         <ReportItem
           caption={$i18n.t(report.key, { ns: 'assembly' })}
           class="mb-3 col-6 col-sm-4 col-md-3"

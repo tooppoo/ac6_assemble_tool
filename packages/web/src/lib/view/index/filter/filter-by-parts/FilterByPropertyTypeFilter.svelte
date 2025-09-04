@@ -90,7 +90,7 @@
       on:change={onSelected(state)}
       bind:this={selectBox}
     >
-      {#each state.filter.type.whole as v}
+      {#each state.filter.type.whole as v (v)}
         <option
           value={v}
           selected={state.enabled && state.filter.type.value.includes(v)}

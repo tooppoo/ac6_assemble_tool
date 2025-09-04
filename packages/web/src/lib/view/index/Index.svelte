@@ -290,7 +290,7 @@
       </TextButton>
     </div>
     <hr class="w-100 d-flex d-md-none" />
-    {#each assemblyKeys() as key}
+    {#each assemblyKeys() as key (key)}
       <PartsSelectForm
         id={key}
         class="mb-3 mb-sm-4"
@@ -434,7 +434,7 @@
   <svelte:fragment slot="title">ERROR</svelte:fragment>
   <svelte:fragment slot="button">OK</svelte:fragment>
 
-  {#each errorMessage as row}
+  {#each errorMessage as row, i (i)}
     {row}<br />
   {/each}
 </ErrorModal>

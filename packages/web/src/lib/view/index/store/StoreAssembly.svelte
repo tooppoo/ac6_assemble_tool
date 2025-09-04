@@ -190,7 +190,7 @@ ${target.description}
             </tr>
           </thead>
           <tbody>
-            {#each showDataList as d}
+            {#each showDataList as d (d.id)}
               {#if d.deleted}
                 <tr>
                   <th scope="row" class="deleted">
