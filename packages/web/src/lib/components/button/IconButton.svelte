@@ -24,8 +24,8 @@
   data-clickable={clickable}
   aria-label={title}
   role={clickable ? 'button' : 'img'}
-  on:click={onClick}
-/>
+  onclick={onClick}
+></span>
 {#if withTooltip}
   <Tooltip target={id} placement="bottom">
     <!-- eslint-disable-next-line svelte/no-at-html-tags -->

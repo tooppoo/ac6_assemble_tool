@@ -25,7 +25,7 @@
     type="checkbox"
     role="switch"
     {id}
-    on:change={onChange}
+    onchange={onChange}
   />
   <label class="form-check-label" for={id}>
     <slot></slot>

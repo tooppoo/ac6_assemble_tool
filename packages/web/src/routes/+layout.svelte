@@ -73,7 +73,7 @@
     href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap"
     rel="stylesheet"
     media="print"
-    on:load={onFontLoad}
+    onload={onFontLoad}
   />
   <link
     href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap&text={jaText}"
@@ -84,7 +84,7 @@
     href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap&text={jaText}"
     rel="stylesheet"
     media="print"
-    on:load={onFontLoad}
+    onload={onFontLoad}
   />
   <!-- End Font -->
 </svelte:head>

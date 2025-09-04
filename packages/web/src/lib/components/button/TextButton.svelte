@@ -14,7 +14,7 @@
   {id}
   {...$$restProps}
   class={`${$$props.class || ''} btn btn-secondary bg-dark-subtle`}
-  on:click={() => dispatch('click')}
+  onclick={() => dispatch('click')}
   use:action
 >
   <slot></slot>
