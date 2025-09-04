@@ -67,7 +67,7 @@
     list={`${id}-range-mark`}
   />
   <datalist id={`${id}-range-mark`} class="d-sm-block d-md-none w-100">
-    {#each dataList as v}
+    {#each dataList as v (v)}
       <option value={v} label={`${v}`}>{v}</option>
     {/each}
   </datalist>

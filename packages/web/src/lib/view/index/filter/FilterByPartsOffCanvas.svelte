@@ -45,7 +45,7 @@
     </span>
   </svelte:fragment>
   <svelte:fragment slot="body">
-    {#each current.filter.list as f}
+    {#each current.filter.list as f (f.filter.name)}
       {#if f.filter.type.id === 'enable'}
         <EnableTypeFilter state={f} on:change-filter={onChangeFilter} />
       {/if}

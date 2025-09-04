@@ -94,7 +94,7 @@
       bind:value={selected}
       on:change={onChange}
     >
-      {#each parts as p}
+      {#each parts as p (p.name)}
         <option value={p} selected={selected.name === p.name}>{p.name}</option>
       {/each}
     </select>
