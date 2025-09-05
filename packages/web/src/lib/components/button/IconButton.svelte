@@ -20,7 +20,7 @@
 <span
   {...$$restProps}
   {id}
-  class={$$props.class + ` icon-button`}
+  class={`${($$props.class ?? '').trim()} icon-button`}
   data-clickable={clickable}
   aria-label={title}
   role={clickable ? 'button' : 'img'}
