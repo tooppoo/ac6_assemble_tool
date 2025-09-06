@@ -50,7 +50,8 @@
     <meta id="redirect-meta" http-equiv="refresh" />
 
     <script>
-      const redirectUrl = `https://ac6-assemble-tool.philomagi.dev${window.location.pathname}${window.location.search}${window.location.hash}`
+      const path = window.location.pathname.replace(/^\/ac6_assemble_tool/, '')
+      const redirectUrl = `https://ac6-assemble-tool.philomagi.dev${path}${window.location.search}${window.location.hash}`
       document
         .getElementById('canonical-link')
         .setAttribute('href', redirectUrl)
