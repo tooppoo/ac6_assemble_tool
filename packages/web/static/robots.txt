@@ -1,4 +1,3 @@
-
 User-agent: *
 Allow: /
 Sitemap: https://ac6-assemble-tool.philomagi.dev/sitemap.xml
