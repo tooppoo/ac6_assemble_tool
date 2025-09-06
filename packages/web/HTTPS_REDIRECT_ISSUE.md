@@ -40,16 +40,44 @@ ac6-assemble-tool.philomagi.dev
 3. Setting: Always Use HTTPS
 4. Save and Deploy
 
-## 確認手順
+## 📋 Custom Domain削除後の状況
 
-修正後、以下をテスト:
+### 現在の問題
+Custom domainを削除したが、まだリダイレクトが発生している：
+```bash
+curl -I https://tooppoo.github.io/ac6_assemble_tool/
+# 結果: location: http://ac6-assemble-tool.philomagi.dev/
+# age: 3004, x-cache: HIT (キャッシュされたレスポンス)
+```
+
+### 🔧 追加の解決手順
+
+#### 1. GitHub Actions 強制再デプロイ
+1. GitHub リポジトリ → Actions タブ
+2. 最新の "pages build and deployment" を選択
+3. **"Re-run all jobs"** をクリックして強制再デプロイ
+
+#### 2. 設定の再確認
+GitHub Settings → Pages で：
+- Source設定が正しいか確認
+- Custom domain欄が**完全に空**になっているか再確認
+
+#### 3. キャッシュクリア待機
+- GitHub/FastlyCDNキャッシュの更新まで**最大24時間**
+- `age`ヘッダーで経過時間を確認可能
+
+### 確認手順
+
+**目標**: リダイレクトが完全に停止すること
 ```bash
 curl -I https://tooppoo.github.io/ac6_assemble_tool/
 ```
 
-期待する結果:
+**期待結果**:
 ```
-location: https://ac6-assemble-tool.philomagi.dev/
+HTTP/2 200 
+# または 404 (GitHub Pagesサイトが存在しない場合)
+# リダイレクト(301/302)は発生しない
 ```
 
 ## 影響
