@@ -31,7 +31,7 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(`${pkg.version}-${shortHash}`),
   },
   plugins: [
-    ...(process.env.VITEST ? [] : [sveltekit()]),
+    ...(isVitest ? [] : [sveltekit()]),
     svelteTesting(),
     (() => {
       console.log(`ANALYZE_MODE=${process.env.ANALYZE_MODE}`)

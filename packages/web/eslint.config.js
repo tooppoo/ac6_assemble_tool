@@ -39,6 +39,12 @@ export default [
         position: 'before',
       },
     ],
-    ignoreUnresolved: ['^\\$app', '\\$env'],
+    ignoreUnresolved: [
+      '^\\$app',
+      '\\$env',
+      '@testing-library/jest-dom/vitest',
+      '@testing-library/svelte/vitest',
+      'fake-indexeddb/auto',
+    ],
   }),
 ]
