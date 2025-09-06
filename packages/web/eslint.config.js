@@ -47,4 +47,9 @@ export default [
       'fake-indexeddb/auto',
     ],
   }),
+  {
+    rules: {
+      'svelte/prefer-svelte-reactivity': 'off',
+    },
+  },
 ]

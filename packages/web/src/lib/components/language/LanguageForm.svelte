@@ -2,7 +2,7 @@
   import type { I18NextStore } from '$lib/i18n/define'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
 
-  import { getContext, onMount, SvelteURL } from 'svelte'
+  import { getContext, onMount } from 'svelte'
 
   const i18n = getContext<I18NextStore>('i18n')
 
@@ -45,12 +45,12 @@
 
   // setup
   function initialize() {
-    const url = new SvelteURL(location.href)
+    const url = new URL(location.href)
 
     language = url.searchParams.get(languageQuery) || defaultLanguage
   }
   function setLanguageQuery() {
-    const url = new SvelteURL(location.href)
+    const url = new URL(location.href)
     const query = url.searchParams
 
     query.set(languageQuery, language)

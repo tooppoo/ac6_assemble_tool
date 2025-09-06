@@ -28,7 +28,7 @@
     defineOrder,
   } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
-  import { onMount, SvelteURL } from 'svelte'
+  import { onMount } from 'svelte'
 
   import FilterByPartsOffCanvas from './filter/FilterByPartsOffCanvas.svelte'
   import FilterForWholeOffCanvas from './filter/FilterForWholeOffCanvas.svelte'
@@ -162,12 +162,12 @@
 
   function buildAssemblyFromQuery() {
     assembly = searchToAssembly(
-      new SvelteURL(location.href).searchParams,
+      new URL(location.href).searchParams,
       initialCandidates,
     )
   }
   function serializeAssemblyAsQuery() {
-    const url = new SvelteURL(location.href)
+    const url = new URL(location.href)
     const query = url.searchParams
     const assemblyQuery = assemblyToSearch(assembly, initialCandidates)
 
