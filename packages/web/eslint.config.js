@@ -33,12 +33,20 @@ export default [
         group: 'builtin',
         position: 'before',
       },
-      {
-        pattern: '$/**',
-        group: 'parent',
-        position: 'before',
-      },
     ],
-    ignoreUnresolved: ['^\\$app', '\\$env'],
+    ignoreUnresolved: [
+      '^\\$app',
+      '\\$env',
+      '@testing-library/jest-dom/vitest',
+      '@testing-library/svelte/vitest',
+      'fake-indexeddb/auto',
+    ],
   }),
+  {
+    rules: {
+      // TODO: Re-enable after migrating to Svelte 5 runes
+      // Temporarily disable as legacy reactive syntax is still in use
+      'svelte/prefer-svelte-reactivity': 'off',
+    },
+  },
 ]

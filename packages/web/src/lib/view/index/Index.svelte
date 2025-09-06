@@ -317,14 +317,14 @@
   >
     <a class="d-block ms-1" href={PUBLIC_REPORT_REQUEST_URL} target="_blank">
       {$i18n.t('report.request', { ns: 'page/index' })}
-      <i class="bi bi-send" />
+      <i class="bi bi-send"></i>
     </a>
 
     <Margin space={2} />
 
     <a class="d-block ms-1" href={PUBLIC_REPORT_BUG_URL} target="_blank">
       {$i18n.t('report.bug', { ns: 'page/index' })}
-      <i class="bi bi-send" />
+      <i class="bi bi-send"></i>
     </a>
 
     <hr class="w-100" />
@@ -335,7 +335,7 @@
       target="_blank"
     >
       Release Notes
-      <i class="bi bi-journal-text" />
+      <i class="bi bi-journal-text"></i>
     </a>
   </ToolSection>
 </article>

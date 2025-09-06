@@ -20,12 +20,12 @@
 <span
   {...$$restProps}
   {id}
-  class={$$props.class + ` icon-button`}
+  class={`${($$props.class ?? '').trim()} icon-button`}
   data-clickable={clickable}
   aria-label={title}
   role={clickable ? 'button' : 'img'}
   on:click={onClick}
-/>
+></span>
 {#if withTooltip}
   <Tooltip target={id} placement="bottom">
     <!-- eslint-disable-next-line svelte/no-at-html-tags -->

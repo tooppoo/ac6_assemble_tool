@@ -156,7 +156,7 @@ ${target.description}
           id="new-assembly-description"
           placeholder={$i18n.t('assembly_store:addNewData.description.caption')}
           bind:value={newDescription}
-        />
+        ></textarea>
         <TextButton id="store-new-assembly" type="submit">
           {$i18n.t('assembly_store:addNewData.add.caption')}
         </TextButton>

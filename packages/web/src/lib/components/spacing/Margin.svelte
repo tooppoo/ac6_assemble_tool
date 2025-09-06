@@ -4,7 +4,7 @@
   const klass = [$$props.class || '', `mt-${space}`, 'margin'].join(' ')
 </script>
 
-<div class={klass} />
+<div class={klass}></div>
 
 <style>
   .margin {
