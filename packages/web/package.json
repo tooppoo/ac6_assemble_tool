@@ -12,7 +12,7 @@
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "sync": "dotenv -e .env.test -- svelte-kit sync",
-    "sync:watch": "nodemon --watch src/routes --ext svelte,ts --exec \"npm run sync\"",
+    "sync:watch": "nodemon --watch src/routes --watch src/params --ext svelte,ts --exec \"npm run sync\"",
     "check-types": "npm run sync && tsc -p ./tsconfig.json --noEmit",
     "check-types:watch": "concurrently \"npm run sync:watch\" \"tsc -p ./tsconfig.json --noEmit --watch\"",
     "lint": "concurrently \"npm run sync && eslint .\" \"prettier . --check\"",
