@@ -13,7 +13,7 @@
     "coverage": "vitest run --coverage",
     "check-types": "dotenv -e .env.test -- concurrently --sequential \"svelte-kit sync\" \"tsc -p ./tsconfig.json --noEmit\"",
     "check-types:watch": "dotenv -e .env.test -- concurrently --sequential \"svelte-kit sync\" \"tsc -p ./tsconfig.json --noEmit --watch\"",
-    "lint": "eslint . && prettier . --check",
+    "lint": "dotenv -e .env.test -- concurrently --sequential \"svelte-kit sync\" \"eslint . && prettier . --check\"",
     "format": "eslint . --fix && prettier . --write",
     "purgecss": "purgecss --config purgecss.config.cjs",
     "sitemap": "tsx scripts/sitemap-generate.ts",

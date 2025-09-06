@@ -56,7 +56,6 @@ export default defineConfig({
   resolve: {
     alias: {
       $lib: '/src/lib',
-      '$/*': '/',
       ...(isVitest
         ? {
             '$env/static/public': '/src/test/$env-static-public.ts',
