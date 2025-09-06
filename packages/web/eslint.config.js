@@ -49,6 +49,8 @@ export default [
   }),
   {
     rules: {
+      // TODO: Re-enable after migrating to Svelte 5 runes
+      // Temporarily disable as legacy reactive syntax is still in use
       'svelte/prefer-svelte-reactivity': 'off',
     },
   },
