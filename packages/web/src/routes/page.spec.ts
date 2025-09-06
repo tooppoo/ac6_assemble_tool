@@ -6,7 +6,7 @@ import { cleanup, render, screen } from '@testing-library/svelte'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 let Index: any
-
+// Skip: requires SvelteKit plugin which is disabled during Vitest runs
 describe.skip(`top page`, () => {
   beforeEach(async () => {
     const mod = await import('./+page.svelte')
