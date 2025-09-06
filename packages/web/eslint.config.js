@@ -33,11 +33,6 @@ export default [
         group: 'builtin',
         position: 'before',
       },
-      {
-        pattern: '$/**',
-        group: 'parent',
-        position: 'before',
-      },
     ],
     ignoreUnresolved: [
       '^\\$app',
