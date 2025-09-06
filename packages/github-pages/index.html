@@ -7,10 +7,18 @@
     <meta name="description" content="ARMORED CORE Ⅵ FIRES OF RUBICON 用 非公式アセンブル支援ツール。部位ごとのパーツ固定や条件設定によるアセンブルを生成、およびアセンブルのステータスを確認可能。">
     
     <!-- SEO評価継承の鍵: canonical URL -->
-    <link rel="canonical" href="https://ac6-assemble-tool.philomagi.dev/">
-    
+    <link id="canonical-link" rel="canonical" href="https://ac6-assemble-tool.philomagi.dev/">
+
     <!-- 即座のリダイレクト -->
-    <meta http-equiv="refresh" content="0;url=https://ac6-assemble-tool.philomagi.dev/">
+    <meta id="redirect-meta" http-equiv="refresh">
+
+    <script>
+        const path = window.location.pathname.replace(/^\/ac6_assemble_tool/, '');
+        const redirectUrl = `https://ac6-assemble-tool.philomagi.dev${path}${window.location.search}${window.location.hash}`;
+        document.getElementById('canonical-link').setAttribute('href', redirectUrl);
+        document.getElementById('redirect-meta').setAttribute('content', `0;url=${redirectUrl}`);
+        window.location.replace(redirectUrl);
+    </script>
     
     <!-- Open Graph -->
     <meta property="og:title" content="AC6 ASSEMBLE TOOL | ARMORED CORE Ⅵ FIRES OF RUBICON">
@@ -102,9 +110,5 @@
         </div>
     </div>
 
-    <script>
-        // 即座のリダイレクト（評価継承を最大化）
-        window.location.replace('https://ac6-assemble-tool.philomagi.dev/');
-    </script>
 </body>
 </html>
