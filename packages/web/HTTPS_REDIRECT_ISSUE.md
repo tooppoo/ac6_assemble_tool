@@ -28,11 +28,24 @@ GitHub Pagesからのリダイレクトが **HTTP** にリダイレクトして�
 3. Save をクリック
 4. これによりGitHub Pagesからのリダイレクトが完全に停止され、Cloudflare Pagesのみが動作
 
-### 🟡 代替案1: CNAMEファイルでの制御
-リポジトリルートに`CNAME`ファイルを作成:
-```
-ac6-assemble-tool.philomagi.dev
-```
+### 🟢 推奨解決策: CNAMEファイル + GitHub Pages Custom Domain再設定
+
+**目標**: ユーザー体験を保持しつつHTTPS リダイレクトを実現
+
+#### 手順:
+1. **CNAMEファイル作成** (完了)
+   - リポジトリルートに`CNAME`ファイルを作成
+   - 内容: `ac6-assemble-tool.philomagi.dev`
+
+2. **GitHub Pages設定復元**
+   - Settings → Pages → Custom domain に `ac6-assemble-tool.philomagi.dev` を再入力
+   - **「Enforce HTTPS」が自動で有効化されることを確認**
+
+3. **期待結果**
+   ```bash
+   curl -I https://tooppoo.github.io/ac6_assemble_tool/
+   # location: https://ac6-assemble-tool.philomagi.dev/ (HTTPS!)
+   ```
 
 ### 🟡 代替案2: Cloudflare Page Rules設定
 1. Cloudflare Dashboard → Page Rules → Create Page Rule
