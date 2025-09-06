@@ -12,7 +12,7 @@
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "sync": "dotenv -e .env.test -- svelte-kit sync",
-    "sync:watch": "tsx watch scripts/sync-watch.ts src/routes",
+    "sync:watch": "nodemon --watch src/routes --ext svelte,ts --exec \"npm run sync\"",
     "check-types": "npm run sync && tsc -p ./tsconfig.json --noEmit",
     "check-types:watch": "concurrently \"npm run sync:watch\" \"tsc -p ./tsconfig.json --noEmit --watch\"",
     "lint": "concurrently \"npm run sync && eslint .\" \"prettier . --check\"",
@@ -40,6 +40,7 @@
     "fake-indexeddb": "6.2.2",
     "globals": "16.3.0",
     "jsdom": "26.1.0",
+    "nodemon": "3.1.7",
     "prettier-plugin-svelte": "3.4.0",
     "sass-embedded": "1.91.0",
     "svelte-check": "4.3.1",
@@ -56,9 +57,9 @@
     "svelte-i18next": "2.2.2"
   },
   "optionalDependencies": {
-    "sass-embedded-linux-x64": "1.91.0",
     "sass-embedded-darwin-arm64": "1.91.0",
-    "sass-embedded-darwin-x64": "1.91.0"
+    "sass-embedded-darwin-x64": "1.91.0",
+    "sass-embedded-linux-x64": "1.91.0"
   },
   "type": "module"
 }
