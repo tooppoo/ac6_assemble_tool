@@ -33,9 +33,6 @@ const config = {
       assets: 'dist',
     }),
     // No base path for custom domain root deploy
-    alias: {
-      '$/*': './*',
-    },
   },
 }
 
