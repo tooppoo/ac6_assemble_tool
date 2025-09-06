@@ -47,7 +47,8 @@
       "mainEntity": {
         "@type": "WebPage",
         "url": "https://ac6-assemble-tool.philomagi.dev/",
-        "name": "AC6 ASSEMBLE TOOL"
+        "name": "AC6 ASSEMBLE TOOL",
+        "description": "ARMORED CORE Ⅵ FIRES OF RUBICON 用 非公式アセンブル支援ツール"
       }
     }
     </script>
