@@ -13,17 +13,32 @@ GitHub Pagesからのリダイレクトが **HTTP** にリダイレクトして�
 2. **セキュリティ警告**: ブラウザでセキュリティ警告が表示される可能性
 3. **インデックス遅延**: HTTPからHTTPSへの再リダイレクトでクローラーが混乱
 
-## 解決策
+## 調査結果
 
-### GitHub Pages設定の修正が必要
+**GitHub Pages の「Enforce HTTPS」が非活性の理由**：
+- デフォルトドメイン（tooppoo.github.io）使用時は手動設定不可
+- UIに「Required for your site because you are using the default domain」と表示
+- この状態でHTTPリダイレクトのlocationヘッダーがHTTPになる問題が発生
+
+## 解決策（優先順位順）
+
+### 🔴 最優先: GitHub Pages Custom Domain設定を削除
 1. GitHub リポジトリの Settings → Pages
-2. Custom domainの設定を確認
-3. **「Enforce HTTPS」にチェックが入っているか確認**
+2. **Custom domain欄を空にする**
+3. Save をクリック
+4. これによりGitHub Pagesからのリダイレクトが完全に停止され、Cloudflare Pagesのみが動作
 
-### Cloudflare Pages設定の確認
-1. Cloudflare Dashboard → Pages → プロジェクト設定
-2. 「Always Use HTTPS」が有効になっているか確認
-3. Edge Certificate（SSL/TLS）が有効になっているか確認
+### 🟡 代替案1: CNAMEファイルでの制御
+リポジトリルートに`CNAME`ファイルを作成:
+```
+ac6-assemble-tool.philomagi.dev
+```
+
+### 🟡 代替案2: Cloudflare Page Rules設定
+1. Cloudflare Dashboard → Page Rules → Create Page Rule
+2. URL: `http://ac6-assemble-tool.philomagi.dev/*`
+3. Setting: Always Use HTTPS
+4. Save and Deploy
 
 ## 確認手順
 
