@@ -24,6 +24,6 @@
     "@google/clasp": "2.5.0",
     "@types/google-apps-script": "2.0.1",
     "typescript": "5.9.2",
-    "vite": "5.4.19"
+    "vite": "7.1.4"
   }
 }
