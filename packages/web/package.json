@@ -7,7 +7,7 @@
     "build": "vite build",
     "build:ci": "dotenv -e .env.test -- vite build",
     "postbuild:old": "npm run sitemap && npm run purgecss",
-    "preview": "wrangler dev",
+    "preview": "wrangler dev --port 8787",
     "preview:local": "wrangler dev --local",
     "deploy": "npm run build && wrangler deploy",
     "deploy:prod": "npm run build && wrangler deploy --env production",
