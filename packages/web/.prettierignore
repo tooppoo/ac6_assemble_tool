@@ -2,3 +2,5 @@ dist/
 .svelte-kit/
 analyze.html
 coverage/
+static/
+.wrangler/

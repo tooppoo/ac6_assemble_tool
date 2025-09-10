@@ -6,7 +6,7 @@ import { parser as tsParser } from 'typescript-eslint'
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   {
-    ignores: ['.svelte-kit/', 'dist/', 'coverage/', 'static/'],
+    ignores: ['.svelte-kit/', 'dist/', 'coverage/', 'static/', '.wrangler/'],
   },
   ...baseRules,
   ...svelte.configs['flat/recommended'],
