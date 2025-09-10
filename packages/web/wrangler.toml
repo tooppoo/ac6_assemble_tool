@@ -8,6 +8,7 @@ main = "./.svelte-kit/cloudflare/_worker.js"
 # Static assets configuration - required by SvelteKit adapter
 [assets]
 directory = "./static"
+binding = "ASSETS"
 
 # Development configuration
 [env.development]
