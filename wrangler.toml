@@ -1,0 +1,19 @@
+name = "ac6-assemble-tool"
+compatibility_date = "2024-09-10"
+main = "./packages/web/.svelte-kit/cloudflare/_worker.js"
+
+[vars]
+# Environment variables can be defined here
+
+# Static assets configuration - required by SvelteKit adapter
+[assets]
+directory = "./packages/web/.svelte-kit/output/client"
+binding = "ASSETS"
+
+# Development configuration
+[env.development]
+vars = { ENVIRONMENT = "development" }
+
+# Production configuration  
+[env.production]
+vars = { ENVIRONMENT = "production" }
