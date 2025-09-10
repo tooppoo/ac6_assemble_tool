@@ -6,7 +6,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "build:ci": "dotenv -e .env.test -- vite build",
-    "postbuild": "npm run sitemap && npm run purgecss",
+    "postbuild:old": "npm run sitemap && npm run purgecss",
     "preview": "wrangler dev",
     "preview:local": "wrangler dev --local",
     "deploy": "npm run build && wrangler deploy",
