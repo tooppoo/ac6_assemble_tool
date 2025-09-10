@@ -1,6 +1,6 @@
 // no-op
 
-import adapter from '@sveltejs/adapter-static'
+import adapter from '@sveltejs/adapter-cloudflare'
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 /**
  * 本当はimportで済ませたいが、以下の理由からfs.readFileSyncによる回避で対応
@@ -29,8 +29,7 @@ const config = {
 
   kit: {
     adapter: adapter({
-      pages: 'dist',
-      assets: 'dist',
+      // Cloudflare Workers configuration
     }),
     // No base path for custom domain root deploy
   },
