@@ -1,0 +1,1 @@
+export const env={"PUBLIC_REPORT_BUG_URL":"https://docs.google.com/forms/d/e/1FAIpQLScq4JGNICjR0QlYw6lv75vXhz32zTlZkSkzSephpypPPcF_QQ/viewform","PUBLIC_REPORT_REQUEST_URL":"https://docs.google.com/forms/d/e/1FAIpQLSewIYe4aC1MinTIf2VSin0VNfwUMC0KbBr71s1-042QH4WaUQ/viewform","PUBLIC_LOG_LEVEL":""}
