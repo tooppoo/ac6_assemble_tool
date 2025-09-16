@@ -1,0 +1,8 @@
+{
+  "spreadsheet_id": "DUMMY_SPREADSHEET_ID_1234567890abcdef",
+  "sheet_name": "Issues",
+  "title_template": "[AUTO] {{ row.A }}",
+  "body_template": "## 概要\n{{ row.B }}\n\n## 詳細\n{{ row.C }}\n\n## 優先度\n{{ row.D }}\n\n---\n*このイシューはスプレッドシート（行 {{ row_number }}）から自動生成されました*\n\n**スプレッドシートの全データ:**\n```json\n{{ row | json }}\n```",
+  "labels": ["auto-generated", "from-spreadsheet", "needs-review"],
+  "repository": "dummy-org/dummy-repository"
+}

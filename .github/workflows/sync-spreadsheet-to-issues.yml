@@ -1,0 +1,48 @@
+name: Sync Spreadsheet to Issues
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  sync-issues:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+
+      - name: Sync spreadsheet to issues
+        uses: tooppoo/spreadsheet-to-issue-action@0.0.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          spreadsheet_id: ${{ secrets.SPREADSHEET_ID }}
+          sheet_name: 'Issues'
+          title_template: '[AUTO] {{ title }}'
+          body_template: |
+            ## 概要
+            {{ description }}
+
+            ## ラベル
+            {{ labels }}
+
+            ## 優先度
+            {{ priority }}
+
+            ---
+            *このイシューはスプレッドシートから自動生成されました*
+          labels: 'auto-generated,from-spreadsheet'
+          repository: ${{ github.repository }}
+          max_issues_per_run: 10
+          rate_limit_delay: 1000
