@@ -5,9 +5,9 @@
   "type": "module",
   "engines": {
     "node": "22.19.0",
-    "npm": "11.6.0"
+    "pnpm": "10.17.1"
   },
-  "packageManager": "npm@11.6.0",
+  "packageManager": "pnpm@10.17.1",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -19,8 +19,8 @@
     "lint": "turbo run lint",
     "format": "turbo run format",
     "check-types": "turbo run check-types",
-    "web": "npm -w packages/web",
-    "parts": "npm -w packages/parts",
+    "web": "pnpm --filter @ac6_assemble_tool/web",
+    "parts": "pnpm --filter @ac6_assemble_tool/parts",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -39,6 +39,7 @@
     "eslint-import-resolver-typescript": "4.4.4",
     "eslint-plugin-import": "2.32.0",
     "fast-check": "4.3.0",
+    "globals": "16.3.0",
     "husky": "9.1.7",
     "lint-staged": "16.1.6",
     "prettier": "3.6.2",

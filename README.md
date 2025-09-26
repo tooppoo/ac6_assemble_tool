@@ -24,21 +24,21 @@ Environment variables are configured in Cloudflare Pages Project settings:
 ## Local Development
 
 ```shell
-npm i
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 ## Build
 
 ```shell
-npm run build
+pnpm run build
 ```
 
 ## Release
 
 ```shell
 # i.e. minor
-npm version minor
+pnpm version minor
 
 # i.e. release as v1.2.3
 git push origin v1.2.3

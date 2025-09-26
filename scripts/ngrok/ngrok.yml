@@ -1,6 +1,0 @@
-version: 2
-tunnels:
-  app:
-    proto: http
-    addr: app:9000
-    host_header: rewrite

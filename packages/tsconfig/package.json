@@ -11,6 +11,6 @@
   "license": "MIT",
   "description": "",
   "devDependencies": {
-    "@ac6_assemble_tool/eslint": "1.0.0"
+    "@ac6_assemble_tool/eslint": "workspace:1.0.0"
   }
 }
