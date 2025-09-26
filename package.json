@@ -20,8 +20,7 @@
     "format": "turbo run format",
     "check-types": "turbo run check-types",
     "web": "pnpm --filter @ac6_assemble_tool/web",
-    "parts": "pnpm --filter @ac6_assemble_tool/parts",
-    "prepare": "husky"
+    "parts": "pnpm --filter @ac6_assemble_tool/parts"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.1",
