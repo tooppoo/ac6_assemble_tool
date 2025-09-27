@@ -60,7 +60,7 @@ if ! ( [ -w "${STATE_DIR}" ] && touch "${STATE_DIR}/.rwtest" 2>/dev/null ); then
   STATE_DIR="/tmp/pnpm-state"
   mkdir -p "${STATE_DIR}"
 fi
-rm -f "${HOME}/.pnpm-state/.rwtest" 2>/dev/null || true
+rm -f "${STATE_DIR}/.rwtest" 2>/dev/null || true
 
 pnpm config set store-dir "${STORE_DIR}"
 pnpm config set state-dir "${STATE_DIR}"
