@@ -8,7 +8,7 @@
 
 ## 背景 / 文脈
 
-`scripts/google-app-scripts` ディレクトリが存在していたが、現状ちゃんと動作しておらず、またspreadsheetからpushする方式ではなく、pullする方式に変更する予定のため、このディレクトリが不要となった。
+`scripts/google-app-scripts` ディレクトリが存在していたが、現状、正常に動作しておらず、またspreadsheetからpushする方式ではなく、pullする方式に変更する予定のため、このディレクトリが不要となった。
 
 ## 決定ドライバ
 
