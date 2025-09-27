@@ -6,6 +6,7 @@ on:
       - packages/core/**
       - packages/parts/**
       - packages/web/**
+      - .github/workflows/ci-lighthouse.yml
       - pnpm-lock.yaml
 
 jobs:

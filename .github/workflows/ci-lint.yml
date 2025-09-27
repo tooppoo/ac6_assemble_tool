@@ -8,6 +8,7 @@ on:
       - packages/eslint/**
       - packages/spec/**
       - packages/web/**
+      - .github/workflows/ci-lint.yml
       - pnpm-lock.yaml
 
 jobs:

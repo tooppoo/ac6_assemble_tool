@@ -8,6 +8,7 @@ on:
       - packages/spec/**
       - packages/tsconfig/**
       - packages/web/**
+      - .github/workflows/ci-test.yml
       - pnpm-lock.yaml
 
 jobs:
