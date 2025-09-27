@@ -1,9 +1,14 @@
 name: Test
 on:
   pull_request:
-  push:
-    branches:
-      - "*"
+    branches: ["*"]
+    paths:
+      - packages/core
+      - packages/parts
+      - packages/spec
+      - packages/tsconfig
+      - packages/web
+      - pnpm-lock.yaml
 
 jobs:
   unit-test:
