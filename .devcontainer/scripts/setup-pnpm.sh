@@ -23,7 +23,7 @@ fi
 
 export PATH="${NPM_PREFIX}/bin:${PATH}"
 
-for shell_rc in ~/.bashrc ~/.profile; do
+for shell_rc in ~/.bashrc ~/.zshrc ~/.profile; do
   touch "${shell_rc}"
   if ! grep -Fq "${NPM_PREFIX}/bin" "${shell_rc}"; then
     echo "export PATH=\"${NPM_PREFIX}/bin:\$PATH\"" >> "${shell_rc}"
