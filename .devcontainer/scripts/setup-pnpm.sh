@@ -53,7 +53,7 @@ if ! ( [ -w "${STORE_DIR}" ] && touch "${STORE_DIR}/.rwtest" 2>/dev/null ); then
   STORE_DIR="/tmp/pnpm-store"
   mkdir -p "${STORE_DIR}"
 fi
-rm -f "${HOME}/.pnpm-store/.rwtest" 2>/dev/null || true
+rm -f "${STORE_DIR}/.rwtest" 2>/dev/null || true
 
 if ! ( [ -w "${STATE_DIR}" ] && touch "${STATE_DIR}/.rwtest" 2>/dev/null ); then
   echo "Warning: ${STATE_DIR} is not writable. Falling back to /tmp/pnpm-state"
