@@ -15,19 +15,18 @@ jobs:
     environment: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@master
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
-          node-version-file: '.node-version'
-      - name: Install npm@11.5.2 (global)
-        run: |
-          npm i -g npm@11.5.2
-          npm --version
-      - run: npm ci
+          node-version-file: ".node-version"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
         working-directory: scripts/google-app-scripts
 
       - name: build
         working-directory: scripts/google-app-scripts
-        run: npm run build
+        run: pnpm run build
         env:
           ISSUE_POST_TOKEN: ${{ secrets.ISSUE_POST_TOKEN }}
           REPO_NAME: ${{ github.repository }}
@@ -35,7 +34,7 @@ jobs:
 
       - name: setup
         working-directory: scripts/google-app-scripts
-        run: npm run ${{ inputs.target }}:setup
+        run: pnpm run ${{ inputs.target }}:setup
         env:
           HOME: ${{ github.workspace }}
           GAS_ACCESS_TOKEN: ${{ secrets.GAS_ACCESS_TOKEN }}
@@ -49,6 +48,6 @@ jobs:
 
       - name: push
         working-directory: scripts/google-app-scripts
-        run: npm run push -- -f
+        run: pnpm run push -f
         env:
           clasp_config_auth: ${{ github.workspace }}/scripts/google-app-scripts/.clasprc.json

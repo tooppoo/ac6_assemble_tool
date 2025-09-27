@@ -3,7 +3,7 @@
 # build
 
 ```shell
-ISSUE_POST_TOKEN=1234 REPO_NAME=test/1234 TARGET=bug-report npm run build
+ISSUE_POST_TOKEN=1234 REPO_NAME=test/1234 TARGET=bug-report pnpm run build
 ```
 
 # release

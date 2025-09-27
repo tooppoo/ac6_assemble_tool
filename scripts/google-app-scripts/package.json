@@ -4,6 +4,7 @@
   "main": "index.js",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.17.1",
   "scripts": {
     "build": "tsc && node build/generate-env.js && vite build",
     "login": "clasp login",
@@ -11,9 +12,9 @@
     "push": "clasp push",
     "setup": "node build/generate-rc.js && node build/setup.js",
     "bug-report:release": "./release/release-gas.sh bug-report",
-    "bug-report:setup": "npm run setup -- bug-report",
+    "bug-report:setup": "pnpm run setup -- bug-report",
     "request:release": "./release/release-gas.sh request",
-    "request:setup": "npm run setup -- request",
+    "request:setup": "pnpm run setup -- request",
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc"
   },
