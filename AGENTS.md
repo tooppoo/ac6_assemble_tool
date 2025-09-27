@@ -17,6 +17,7 @@
 - 意思決定があった場合は、ADR（Architecture Decision Record）として必ず記録する。
 - ADRは `docs/adr` に配置する。
 - フォーマットは `docs/adr/template.md` に従う。
+- `docs/adr/README.md` の指示に従う。
 - **ファイル命名規則**：
   - 1つの意思決定につき1ファイルを作成する。
   - ファイル名は `docs/adr/YYYYMMDD-タイトル.md` の形式とする。

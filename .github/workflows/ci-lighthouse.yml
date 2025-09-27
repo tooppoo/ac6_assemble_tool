@@ -1,9 +1,13 @@
 name: Lighthouse
 on:
   pull_request:
-  push:
-    branches:
-      - "*"
+    branches: ["*"]
+    paths:
+      - packages/core/**
+      - packages/parts/**
+      - packages/web/**
+      - .github/workflows/ci-lighthouse.yml
+      - pnpm-lock.yaml
 
 jobs:
   lighthouse:

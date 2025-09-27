@@ -1,9 +1,15 @@
 name: Test
 on:
   pull_request:
-  push:
-    branches:
-      - "*"
+    branches: ["*"]
+    paths:
+      - packages/core/**
+      - packages/parts/**
+      - packages/spec/**
+      - packages/tsconfig/**
+      - packages/web/**
+      - .github/workflows/ci-test.yml
+      - pnpm-lock.yaml
 
 jobs:
   unit-test:

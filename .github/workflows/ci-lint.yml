@@ -1,9 +1,15 @@
 name: Lint
 on:
   pull_request:
-  push:
-    branches:
-      - "*"
+    branches: ["*"]
+    paths:
+      - packages/core/**
+      - packages/parts/**
+      - packages/eslint/**
+      - packages/spec/**
+      - packages/web/**
+      - .github/workflows/ci-lint.yml
+      - pnpm-lock.yaml
 
 jobs:
   lint-fix:
