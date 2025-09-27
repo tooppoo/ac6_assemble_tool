@@ -3,11 +3,11 @@ on:
   pull_request:
     branches: ["*"]
     paths:
-      - packages/core
-      - packages/parts
-      - packages/eslint
-      - packages/spec
-      - packages/web
+      - packages/core/**
+      - packages/parts/**
+      - packages/eslint/**
+      - packages/spec/**
+      - packages/web/**
       - pnpm-lock.yaml
 
 jobs:

@@ -3,11 +3,11 @@ on:
   pull_request:
     branches: ["*"]
     paths:
-      - packages/core
-      - packages/parts
-      - packages/spec
-      - packages/tsconfig
-      - packages/web
+      - packages/core/**
+      - packages/parts/**
+      - packages/spec/**
+      - packages/tsconfig/**
+      - packages/web/**
       - pnpm-lock.yaml
 
 jobs:
