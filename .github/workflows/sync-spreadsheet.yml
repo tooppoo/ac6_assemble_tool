@@ -9,6 +9,7 @@ on:
 jobs:
   sync-bug-reports:
     runs-on: ubuntu-latest
+    environment: sync
     permissions:
       contents: read
       issues: write # issueの作成権限
@@ -16,7 +17,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - name: Authenticate to Google Cloud
         id: auth
         uses: google-github-actions/auth@v2
@@ -35,7 +35,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
           # スプレッドシートの設定
-          spreadsheet_id: ${{ secrets.BUG_REPORTS_SPREADSHEET_ID }}
+          spreadsheet_id: ${{ secrets.SPREADSHEET_ID }}
           sheet_name: "不具合報告"
 
           # issueのテンプレート設定
@@ -64,6 +64,7 @@ jobs:
 
   sync-feature-requests:
     runs-on: ubuntu-latest
+    environment: sync
     permissions:
       contents: read
       issues: write # issueの作成権限
@@ -90,7 +91,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
           # スプレッドシートの設定
-          spreadsheet_id: ${{ secrets.FEATURE_REQUESTS_SPREADSHEET_ID }}
+          spreadsheet_id: ${{ secrets.SPREADSHEET_ID }}
           sheet_name: "改修要望"
 
           # issueのテンプレート設定
