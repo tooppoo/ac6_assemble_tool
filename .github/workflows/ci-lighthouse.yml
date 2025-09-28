@@ -12,6 +12,8 @@ on:
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # チェックアウトとビルドのため
     steps:
       # setup
       - uses: actions/checkout@master
