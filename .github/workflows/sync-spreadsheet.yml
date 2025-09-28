@@ -1,0 +1,118 @@
+name: Sync Spreadsheet to Issues
+
+on:
+  schedule:
+    # 毎時0分に実行
+    - cron: "0 * * * *"
+  workflow_dispatch: # 手動実行可能
+
+jobs:
+  sync-bug-reports:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write # issueの作成権限
+      id-token: write # OIDC認証のため
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          token_format: "access_token"
+          access_token_scopes: "https://www.googleapis.com/auth/spreadsheets"
+
+      - name: Sync bug reports from spreadsheet to issues
+        uses: tooppoo/spreadsheet-to-issue-action@v0.0.1
+        env:
+          GOOGLE_OAUTH_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+        with:
+          # GitHub設定
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+          # スプレッドシートの設定
+          spreadsheet_id: ${{ secrets.BUG_REPORTS_SPREADSHEET_ID }}
+          sheet_name: "不具合報告"
+
+          # issueのテンプレート設定
+          # A列: タイムスタンプ、B列: 不具合のあった機能、C列: 不具合の概要、D列: 再現手順、E列: 不具合発生時の様子、F列: 同期状態
+          title_template: "[Bug: {{ rowIndex }}] {{ row.C }}"
+          body_template: |
+            ## 対象機能
+            {{ row.B }}
+
+            ## 再現手順
+            {{ row.D }}
+
+            ## 不具合発生時の様子
+            {{ row.E }}
+
+            ## 報告日時
+            {{ row.A }}
+
+            ---
+            このissueはスプレッドシートから自動生成されました。
+
+          # 同期設定
+          sync_column: "F"
+          labels: "bug,from-spreadsheet"
+          data_start_row: 2
+
+  sync-feature-requests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write # issueの作成権限
+      id-token: write # OIDC認証のため
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          token_format: "access_token"
+          access_token_scopes: "https://www.googleapis.com/auth/spreadsheets"
+
+      - name: Sync feature requests from spreadsheet to issues
+        uses: tooppoo/spreadsheet-to-issue-action@v0.0.1
+        env:
+          GOOGLE_OAUTH_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+        with:
+          # GitHub設定
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+          # スプレッドシートの設定
+          spreadsheet_id: ${{ secrets.FEATURE_REQUESTS_SPREADSHEET_ID }}
+          sheet_name: "改修要望"
+
+          # issueのテンプレート設定
+          # A列: タイムスタンプ、B列: 要望の種類、C列: 要望の概要、D列: 要望の詳細、E列: 要望のイメージ、F列: 同期状態
+          title_template: "[Request: {{ rowIndex }}] {{ row.C }}"
+          body_template: |
+            ## 要望の種類
+            {{ row.B }}
+
+            ## 要望の詳細
+            {{ row.D }}
+
+            ## 要望のイメージ
+            {{ row.E }}
+
+            ## 要望日時
+            {{ row.A }}
+
+            ---
+            このissueはスプレッドシートから自動生成されました。
+
+          # 同期設定
+          sync_column: "F"
+          labels: "enhancement,from-spreadsheet"
+          data_start_row: 2
