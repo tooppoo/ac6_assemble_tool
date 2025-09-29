@@ -1,0 +1,14 @@
+
+{
+  "fix": true,
+  "globs": [
+    "../../*.md",
+    "../../.github/**/*.md",
+    "../../docs/**/*.md",
+    "../../packages/**/*.md",
+    "!../../packages/*/node_modules"
+  ],
+  "outputFormatters": [
+    ["markdownlint-cli2-formatter-pretty", { "appendLink": true }]
+  ]
+}

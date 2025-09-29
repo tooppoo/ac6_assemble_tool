@@ -11,7 +11,7 @@ Application is running on <https://ac6-assemble-tool.philomagi.dev/>
 
 This app is deployed via Cloudflare Pages.
 
-- Production URL: https://ac6-assemble-tool.philomagi.dev/
+- Production URL: <https://ac6-assemble-tool.philomagi.dev/>
 - Deployment: executed by Cloudflare Pages on pushes to the default branch
 
 Environment variables are configured in Cloudflare Pages Project settings:

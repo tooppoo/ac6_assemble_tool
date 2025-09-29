@@ -18,6 +18,7 @@ ac6_assemble_tool/
 ```
 
 ### Key Root Files
+
 - **AGENTS.md**: 必須読み込みファイル - 全AI操作での優先指針
 - **CLAUDE.md**: Claude Code 統合とKiro仕様駆動開発設定
 - **turbo.json**: monorepo タスク実行とキャッシュ戦略
@@ -27,7 +28,9 @@ ac6_assemble_tool/
 ### Core Packages
 
 #### `/packages/core/`
+
 **ビジネスロジック・計算エンジン**
+
 ```
 core/
 ├── src/
@@ -44,7 +47,9 @@ core/
 ```
 
 #### `/packages/web/`
+
 **Webフロントエンド**
+
 ```
 web/
 ├── src/
@@ -66,7 +71,9 @@ web/
 ```
 
 #### `/packages/parts/`
+
 **パーツデータ管理**
+
 ```
 parts/
 ├── src/
@@ -83,17 +90,21 @@ parts/
 ### Support Packages
 
 #### `/packages/spec/`
+
 **テスト仕様・共通テストライブラリ**
 
 #### `/packages/tsconfig/`
+
 **共通TypeScript設定**
 
 #### `/packages/eslint/`
+
 **共通ESLint設定**
 
 ## Code Organization Patterns
 
 ### Layer Architecture
+
 ```
 entrypoint/     # エンドポイント・UI コンポーネント
 ├── routes/            # SvelteKit ルーティング
@@ -114,6 +125,7 @@ infrastructure/ # インフラストラクチャ
 ```
 
 ### レイヤー間依存ルール
+
 - **上位→下位**: 一方向依存のみ許可
 - **抽象依存**: 具象への直接依存禁止
 - **分離原則**: 異レイヤーは物理的に別ディレクトリ
@@ -121,31 +133,37 @@ infrastructure/ # インフラストラクチャ
 ## File Naming Conventions
 
 ### TypeScript Files
+
 - **PascalCase**: クラス・インターフェース定義ファイル (`Assembly.ts`)
 - **camelCase**: 関数・ユーティリティファイル (`createAssembly.ts`)
 - **kebab-case**: コンポーネント・ページファイル (`filter-by-parts.svelte`)
 
 ### Test Files
+
 - **同一ディレクトリ**: テストは実装と同じディレクトリに配置
 - **拡張子**: `.spec.ts` または `.test.ts`
 - **例**: `assembly.ts` → `assembly.spec.ts`
 
 ### Documentation Files
+
 - **UPPERCASE**: プロジェクト重要ファイル (`README.md`, `AGENTS.md`)
 - **kebab-case**: 通常ドキュメント (`add-dependency.md`)
 
 ## Import Organization
 
 ### Import順序
+
 1. **外部ライブラリ**: npm パッケージ
 2. **内部パッケージ**: `@ac6_assemble_tool/*`
 3. **相対パス**: `./`, `../`
 
 ### Path Aliases
+
 - **`#core/`**: `packages/core/src/` へのエイリアス
 - **`$lib/`**: `src/lib/` へのエイリアス (webパッケージ内)
 
 ### Example
+
 ```typescript
 // 1. 外部ライブラリ
 import { sum } from 'lodash-es'
@@ -163,21 +181,25 @@ import './component.css'
 ## Key Architectural Principles
 
 ### Domain-Driven Design
+
 - **ドメインモデル中心**: Assembly, Parts等の中核概念
 - **ユビキタス言語**: AC6ゲーム用語の統一
 - **境界コンテキスト**: パッケージ単位での責務分離
 
 ### Type-Level Programming
+
 - **Parse Don't Validate**: 型変換によるデータ検証
 - **Brand Types**: 意味的型安全性 (`ReportKey`, `AssemblyKey`)
 - **Immutable Design**: 読み取り専用型の積極利用
 
 ### Performance Optimization
+
 - **計算の遅延評価**: `get` プロパティによる必要時計算
 - **メモ化**: 重い計算結果のキャッシュ
 - **Tree Shaking**: 未使用機能の自動除去
 
 ### Error Handling Strategy
+
 - **Result型**: ユーザー解決可能エラー
 - **Exception**: システムレベルエラーのみ
 - **構造化ログ**: 機微情報除外の徹底
@@ -185,6 +207,7 @@ import './component.css'
 ## Documentation Structure
 
 ### `/docs/`
+
 ```
 docs/
 ├── adr/                  # Architecture Decision Records
@@ -197,6 +220,7 @@ docs/
 ```
 
 ### Spec-Driven Development
+
 - **Kiro形式**: `.kiro/specs/` での仕様管理
 - **3段階承認**: 要件→設計→タスク→実装
 - **トレーサビリティ**: 要求から実装までの追跡可能性
@@ -204,11 +228,13 @@ docs/
 ## Configuration Management
 
 ### Package.json Strategy
+
 - **Workspace管理**: pnpm workspaces での統一
 - **依存固定**: セキュリティ重視でバージョン固定
 - **Scripts統一**: 共通操作の標準化
 
 ### Environment Configuration
+
 - **Local**: `.env.local` (Git除外)
 - **Development**: デフォルト設定
 - **Production**: Cloudflare Pages環境変数
@@ -216,6 +242,7 @@ docs/
 ## Build & Distribution
 
 ### Output Structure
+
 ```
 dist/           # 本番ビルド出力
 ├── _app/       # アプリケーションファイル
@@ -224,6 +251,7 @@ dist/           # 本番ビルド出力
 ```
 
 ### Package Distribution
+
 - **Internal**: monorepo内での相互参照
 - **External**: npm publish不要 (内部利用のみ)
 - **TypeScript**: 型定義の自動生成と配布
