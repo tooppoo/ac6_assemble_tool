@@ -67,6 +67,18 @@
     PUBLIC_REPORT_REQUEST_URL,
   } from '$env/static/public'
 
+  const reportRequestLinkAttributes = {
+    href: PUBLIC_REPORT_REQUEST_URL,
+    target: '_blank',
+    rel: 'external noopener noreferrer',
+  } as const
+
+  const reportBugLinkAttributes = {
+    href: PUBLIC_REPORT_BUG_URL,
+    target: '_blank',
+    rel: 'external noopener noreferrer',
+  } as const
+
   const tryLimit = 3000
 
   // state
@@ -315,14 +327,14 @@
     id="development-report"
     class="container mw-100 mx-0 my-4 w-100 text-center d-flex flex-column align-items-center"
   >
-    <a class="d-block ms-1" href={PUBLIC_REPORT_REQUEST_URL} target="_blank">
+    <a class="d-block ms-1" {...reportRequestLinkAttributes}>
       {$i18n.t('report.request', { ns: 'page/index' })}
       <i class="bi bi-send"></i>
     </a>
 
     <Margin space={2} />
 
-    <a class="d-block ms-1" href={PUBLIC_REPORT_BUG_URL} target="_blank">
+    <a class="d-block ms-1" {...reportBugLinkAttributes}>
       {$i18n.t('report.bug', { ns: 'page/index' })}
       <i class="bi bi-send"></i>
     </a>
@@ -333,6 +345,7 @@
       class="d-block ms-1"
       href="https://github.com/tooppoo/ac6_assemble_tool/releases"
       target="_blank"
+      rel="external noopener noreferrer"
     >
       Release Notes
       <i class="bi bi-journal-text"></i>
@@ -344,14 +357,21 @@
 
 <footer class="text-center mb-3">
   <div>
-    Created by <a id="link-to-linktr" href="https://linktr.ee/Philomagi"
+    Created by
+    <a
+      id="link-to-linktr"
+      href="https://linktr.ee/Philomagi"
+      rel="external noopener noreferrer"
+    >
       >Philomagi</a
     >
   </div>
   <div>
-    Source code is managed at <a
+    Source code is managed at
+    <a
       id="link-to-src"
-      href="https://github.com/tooppoo/ac6_assemble_tool/">Github</a
+      href="https://github.com/tooppoo/ac6_assemble_tool/"
+      rel="external noopener noreferrer">Github</a
     >
   </div>
   <div>
