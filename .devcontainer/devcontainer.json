@@ -18,15 +18,14 @@
   "mounts": [
     "type=volume,source=pnpm-store,target=/home/node/.pnpm-store",
     "source=${localEnv:HOME}/.codex,target=/home/node/.codex,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.vimrc,target=/home/node/.vimrc,type=bind,consistency=cached"
+    "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind,consistency=cached"
   ],
   "forwardPorts": [
     5173,
     4004
   ],
-  "postCreateCommand": "bash -l .devcontainer/scripts/setup-pnpm.sh",
-  "postStartCommand": "bash -l .devcontainer/scripts/setup-alias.sh",
+  "postCreateCommand": "bash -l .devcontainer/scripts/post-create.sh",
+  "postStartCommand": "bash -l .devcontainer/scripts/post-start.sh",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -50,7 +49,8 @@
         "vscodevim.vim",
         "redhat.vscode-yaml",
         "Vue.volar",
-        "Anthropic.claude-code"
+        "Anthropic.claude-code",
+        "jebbs.plantuml"
       ],
       "settings": {
         "typescript.tsdk": "node_modules/typescript/lib",

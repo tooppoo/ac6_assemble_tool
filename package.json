@@ -20,7 +20,8 @@
     "format": "turbo run format",
     "check-types": "turbo run check-types",
     "web": "pnpm --filter @ac6_assemble_tool/web",
-    "parts": "pnpm --filter @ac6_assemble_tool/parts"
+    "parts": "pnpm --filter @ac6_assemble_tool/parts",
+    "docs": "pnpm --filter @ac6_assemble_tool/docs"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.1",
@@ -60,6 +61,7 @@
     "packages/core",
     "packages/web",
     "packages/spec",
-    "packages/eslint"
+    "packages/eslint",
+    "packages/docs"
   ]
 }
