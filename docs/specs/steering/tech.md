@@ -94,7 +94,7 @@ pnpm run test:watch     # テスト監視モード
 pnpm run coverage       # カバレッジ測定
 ```
 
-### Code Quality
+### Check Code Quality
 
 ```bash
 pnpm run lint           # ESLintチェック

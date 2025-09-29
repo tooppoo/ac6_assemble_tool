@@ -2,7 +2,7 @@
 
 ## Root Directory Organization
 
-```
+```txt
 ac6_assemble_tool/
 ├── packages/           # monorepo パッケージ群
 ├── docs/              # プロジェクトドキュメント
@@ -29,9 +29,9 @@ ac6_assemble_tool/
 
 #### `/packages/core/`
 
-**ビジネスロジック・計算エンジン**
+##### **ビジネスロジック・計算エンジン**
 
-```
+```txt
 core/
 ├── src/
 │   ├── assembly/          # 機体組み立てロジック
@@ -48,9 +48,9 @@ core/
 
 #### `/packages/web/`
 
-**Webフロントエンド**
+##### **Webフロントエンド**
 
-```
+```txt
 web/
 ├── src/
 │   ├── lib/                      # 共通ライブラリ
@@ -72,9 +72,9 @@ web/
 
 #### `/packages/parts/`
 
-**パーツデータ管理**
+##### **パーツデータ管理**
 
-```
+```txt
 parts/
 ├── src/
 │   ├── types/                    # パーツ型定義
@@ -91,21 +91,21 @@ parts/
 
 #### `/packages/spec/`
 
-**テスト仕様・共通テストライブラリ**
+##### **テスト仕様・共通テストライブラリ**
 
 #### `/packages/tsconfig/`
 
-**共通TypeScript設定**
+##### **共通TypeScript設定**
 
 #### `/packages/eslint/`
 
-**共通ESLint設定**
+##### **共通ESLint設定**
 
 ## Code Organization Patterns
 
 ### Layer Architecture
 
-```
+```txt
 entrypoint/     # エンドポイント・UI コンポーネント
 ├── routes/            # SvelteKit ルーティング
 └── lib/view/          # ビューロジック
@@ -208,7 +208,7 @@ import './component.css'
 
 ### `/docs/`
 
-```
+```txt
 docs/
 ├── adr/                  # Architecture Decision Records
 ├── spec/                 # 仕様書 (要求・設計・テスト)
@@ -243,7 +243,7 @@ docs/
 
 ### Output Structure
 
-```
+```txt
 dist/           # 本番ビルド出力
 ├── _app/       # アプリケーションファイル
 ├── assets/     # 静的アセット

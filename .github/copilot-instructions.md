@@ -81,7 +81,7 @@ function connectToDatabase(): Database {
 
 ### テスト配置
 
-```
+```txt
 src/
   components/
     UserProfile.tsx

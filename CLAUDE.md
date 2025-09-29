@@ -2,7 +2,7 @@
 
 Kiro-style Spec Driven Development implementation using claude code slash commands, hooks and agents.
 
-# Prerequisite
+## Prerequisite
 
 - セッション開始時は最初のアクションとして `read_file path="AGENTS.md"` を実行し、内容を読み込んでから作業を進めること
 - 依存を追加・更新する検討に入る前に `read_file path="docs/checklist/add-dependency.md"` でチェックリストを読み、承認手順に従うこと
