@@ -1,8 +1,11 @@
 name: Web Create Release
 on:
-  push:
-    tags:
-      - 'web/v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.2.3)'
+        required: true
+        type: string
 
 jobs:
   create-release:
@@ -12,9 +15,37 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a3252b78c470c02df07e9d59298aecedc3ccdd6d # v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4
+        with:
+          node-version-file: '.node-version'
+
+      - name: Update package version
+        run: |
+          pnpm version ${{ inputs.version }} --no-git-tag-version
+
+      - name: Commit version update
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add package.json
+          git commit -m "chore: update package version to ${{ inputs.version }}"
+          git push
+
+      - name: Create tag
+        run: |
+          git tag "web/v${{ inputs.version }}"
+          git push origin "web/v${{ inputs.version }}"
+
       - name: Release
         uses: softprops/action-gh-release@6cbd405e2c4e67a21c47fa9e383d020e4e28b836 # v2
         with:
-          # https://github.com/softprops/action-gh-release?tab=readme-ov-file#-customizing
-          prerelease: true
+          tag_name: "web/v${{ inputs.version }}"
           generate_release_notes: true
