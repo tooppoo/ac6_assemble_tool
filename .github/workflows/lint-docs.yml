@@ -2,6 +2,9 @@ name: Lint & Fix Markdown Files
 
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
     paths:
       - "**.md"
       - ".github/workflows/lint-docs.yml"
