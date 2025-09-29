@@ -1,10 +1,6 @@
 name: Lint & Fix Markdown Files
 
 on:
-  push:
-    paths:
-      - "**.md"
-      - ".github/workflows/lint-docs.yml"
   pull_request:
     paths:
       - "**.md"
@@ -23,7 +19,11 @@ jobs:
       - uses: DavidAnson/markdownlint-cli2-action@v20
         with:
           fix: true
-          globs: '**/*.md'
+          globs:
+            '.github/**/*.md'
+            'docs/**/*.md'
+            'packages/**/*.md'
+            '*.md'
 
       - name: 変更の検出とコミット
         run: |
