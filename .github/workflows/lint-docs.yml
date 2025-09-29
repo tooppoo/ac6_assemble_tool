@@ -5,6 +5,10 @@ on:
     branches: ["*"]
     paths:
       - "**.md"
+      - '.github/*.md'
+      - 'docs/*.md'
+      - 'packages/*.md'
+      - '*.md'
       - ".github/workflows/lint-docs.yml"
   workflow_dispatch:
 
@@ -21,9 +25,9 @@ jobs:
         with:
           fix: true
           globs: |
-            '.github/**/*.md'
-            'docs/**/*.md'
-            'packages/**/*.md'
+            '.github/*.md'
+            'docs/*.md'
+            'packages/*.md'
             '*.md'
 
       - name: 変更の検出とコミット
