@@ -160,14 +160,14 @@ importers:
         specifier: 1.13.1
         version: 1.13.1
       i18next:
-        specifier: 25.5.0
-        version: 25.5.0(typescript@5.9.2)
+        specifier: 25.5.2
+        version: 25.5.2(typescript@5.9.2)
       svelte:
         specifier: 5.38.6
         version: 5.38.6
       svelte-i18next:
         specifier: 2.2.2
-        version: 2.2.2(i18next@25.5.0(typescript@5.9.2))(svelte@5.38.6)
+        version: 2.2.2(i18next@25.5.2(typescript@5.9.2))(svelte@5.38.6)
     devDependencies:
       '@ac6_assemble_tool/eslint':
         specifier: workspace:1.0.0
@@ -1897,8 +1897,8 @@ packages:
     resolution: {integrity: sha512-vK9P5/iUfdl95AI+JVyUuIcVtd4ofvtrOr3HNtM2yxC9bnMbEdp3x01OhQNnjb8IJYi38VlTE3mBXwcfvywuSw==}
     engines: {node: '>= 14'}
 
-  i18next@25.5.0:
-    resolution: {integrity: sha512-Mm2CgIq0revRFbBvfzqW9kDw1r44M4VDWC+YNRx9vTo5bU/iogSdEAC2HEonDA4czEce/iSbAkK90Tw7UrRZKA==}
+  i18next@25.5.2:
+    resolution: {integrity: sha512-lW8Zeh37i/o0zVr+NoCHfNnfvVw+M6FQbRp36ZZ/NyHDJ3NJVpp2HhAUyU9WafL5AssymNoOjMRB48mmx2P6Hw==}
     peerDependencies:
       typescript: ^5
     peerDependenciesMeta:
@@ -4872,7 +4872,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  i18next@25.5.0(typescript@5.9.2):
+  i18next@25.5.2(typescript@5.9.2):
     dependencies:
       '@babel/runtime': 7.28.4
     optionalDependencies:
@@ -5788,9 +5788,9 @@ snapshots:
     optionalDependencies:
       svelte: 5.38.6
 
-  svelte-i18next@2.2.2(i18next@25.5.0(typescript@5.9.2))(svelte@5.38.6):
+  svelte-i18next@2.2.2(i18next@25.5.2(typescript@5.9.2))(svelte@5.38.6):
     dependencies:
-      i18next: 25.5.0(typescript@5.9.2)
+      i18next: 25.5.2(typescript@5.9.2)
       svelte: 5.38.6
 
   svelte-sitemap@2.7.1:
