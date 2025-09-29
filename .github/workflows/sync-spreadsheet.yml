@@ -27,7 +27,7 @@ jobs:
           access_token_scopes: "https://www.googleapis.com/auth/spreadsheets"
 
       - name: Sync bug reports from spreadsheet to issues
-        uses: tooppoo/spreadsheet-to-issue-action@v0.0.1
+        uses: tooppoo/spreadsheet-to-issue-action@a12f1ca37b6b8e3849c3cbfe181cc853e3d106a8 # v0.0.2
         env:
           GOOGLE_OAUTH_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
         with:
@@ -83,7 +83,7 @@ jobs:
           access_token_scopes: "https://www.googleapis.com/auth/spreadsheets"
 
       - name: Sync feature requests from spreadsheet to issues
-        uses: tooppoo/spreadsheet-to-issue-action@v0.0.1
+        uses: tooppoo/spreadsheet-to-issue-action@a12f1ca37b6b8e3849c3cbfe181cc853e3d106a8 # v0.0.2
         env:
           GOOGLE_OAUTH_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
         with:
