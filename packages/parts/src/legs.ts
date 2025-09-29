@@ -425,7 +425,7 @@ export const reverseJoints = [
     jump_height: 60,
 
     weight: 19750,
-    en_load: 402,
+    en_load: 426,
   }),
 ] as const
 export type ReverseJoint = (typeof reverseJoints)[number]
