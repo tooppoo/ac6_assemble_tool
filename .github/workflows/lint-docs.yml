@@ -23,9 +23,7 @@ jobs:
       - uses: DavidAnson/markdownlint-cli2-action@v20
         with:
           fix: true
-          globs: |
-            '**/*.md'
-            '!**/node_modules/**'
+          globs: '**/*.md'
 
       - name: 変更の検出とコミット
         run: |
