@@ -11,19 +11,19 @@ Show current status and progress for feature: **$1**
 ## Spec Context
 
 ### Spec Files
-- Spec directory: !`bash -c 'ls -la .kiro/specs/$1/ 2>/dev/null || echo "No spec directory found"'`
-- Spec metadata: `.kiro/specs/$1/spec.json`
-- Requirements: `.kiro/specs/$1/requirements.md`
-- Design: `.kiro/specs/$1/design.md`
-- Tasks: `.kiro/specs/$1/tasks.md`
+- Spec directory: !`bash -c 'ls -la docs/specs/specs/$1/ 2>/dev/null || echo "No spec directory found"'`
+- Spec metadata: `docs/specs/specs/$1/spec.json`
+- Requirements: `docs/specs/specs/$1/requirements.md`
+- Design: `docs/specs/specs/$1/design.md`
+- Tasks: `docs/specs/specs/$1/tasks.md`
 
 ### All Specs Overview
-- Available specs: !`bash -c 'ls -la .kiro/specs/ 2>/dev/null || echo "No specs directory found"'`
-- Active specs: !`bash -c 'find .kiro/specs/ -name "spec.json" -exec grep -l "implementation_ready.*true" {} \; 2>/dev/null || echo "No active specs"'`
+- Available specs: !`bash -c 'ls -la docs/specs/specs/ 2>/dev/null || echo "No specs directory found"'`
+- Active specs: !`bash -c 'find docs/specs/specs/ -name "spec.json" -exec grep -l "implementation_ready.*true" {} \; 2>/dev/null || echo "No active specs"'`
 
 ## Task: Generate Status Report
 
-Create comprehensive status report for the specification in the language specified in spec.json (check `.kiro/specs/$1/spec.json` for "language" field):
+Create comprehensive status report for the specification in the language specified in spec.json (check `docs/specs/specs/$1/spec.json` for "language" field):
 
 ### 1. Specification Overview
 Display:

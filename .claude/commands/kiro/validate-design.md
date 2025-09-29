@@ -11,18 +11,18 @@ Interactive design quality review for feature: **$1**
 ## Context Loading
 
 ### Prerequisites Validation
-- Design document must exist: `.kiro/specs/$1/design.md`
+- Design document must exist: `docs/specs/specs/$1/design.md`
 - If not exist, stop with message: "Run `/kiro:spec-design $1` first to generate design document"
 
 ### Review Context
-- Spec metadata: @.kiro/specs/$1/spec.json
-- Requirements document: @.kiro/specs/$1/requirements.md
-- Design document: @.kiro/specs/$1/design.md
+- Spec metadata: @docs/specs/specs/$1/spec.json
+- Requirements document: @docs/specs/specs/$1/requirements.md
+- Design document: @docs/specs/specs/$1/design.md
 - Core steering documents:
-  - Architecture: @.kiro/steering/structure.md
-  - Technology: @.kiro/steering/tech.md
-  - Product context: @.kiro/steering/product.md
-- Custom steering: All additional `.md` files in `.kiro/steering/` directory
+  - Architecture: @docs/specs/steering/structure.md
+  - Technology: @docs/specs/steering/tech.md
+  - Product context: @docs/specs/steering/product.md
+- Custom steering: All additional `.md` files in `docs/specs/steering/` directory
 
 ## Task: Interactive Design Quality Review
 
@@ -121,7 +121,7 @@ Acknowledge 1-2 strong aspects of the design to maintain balanced feedback.
 
 ### Output Format
 
-Generate review in the language specified in spec.json (check `.kiro/specs/$1/spec.json` for "language" field):
+Generate review in the language specified in spec.json (check `docs/specs/specs/$1/spec.json` for "language" field):
 
 #### Design Review Summary
 Brief overview of the design's overall quality and readiness.

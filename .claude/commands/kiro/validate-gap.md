@@ -11,20 +11,20 @@ Analyze implementation requirements and existing codebase for feature: **$1**
 ## Context Validation
 
 ### Steering Context
-- Architecture context: @.kiro/steering/structure.md
-- Technical constraints: @.kiro/steering/tech.md
-- Product context: @.kiro/steering/product.md
-- Custom steering: Load all "Always" mode custom steering files from .kiro/steering/
+- Architecture context: @docs/specs/steering/structure.md
+- Technical constraints: @docs/specs/steering/tech.md
+- Product context: @docs/specs/steering/product.md
+- Custom steering: Load all "Always" mode custom steering files from docs/specs/steering/
 
 ### Existing Spec Context
-- Current spec directory: !`bash -c 'ls -la .kiro/specs/$1/ 2>/dev/null || echo "No spec directory found"'`
-- Requirements document: @.kiro/specs/$1/requirements.md
-- Spec metadata: @.kiro/specs/$1/spec.json
+- Current spec directory: !`bash -c 'ls -la docs/specs/specs/$1/ 2>/dev/null || echo "No spec directory found"'`
+- Requirements document: @docs/specs/specs/$1/requirements.md
+- Spec metadata: @docs/specs/specs/$1/spec.json
 
 ## Task: Implementation Gap Analysis
 
 ### Prerequisites
-- Requirements document must exist: `.kiro/specs/$1/requirements.md`
+- Requirements document must exist: `docs/specs/specs/$1/requirements.md`
 - If not exist, stop with message: "Run `/kiro:spec-requirements $1` first to generate requirements"
 
 ### Analysis Process
@@ -100,7 +100,7 @@ Analyze implementation requirements and existing codebase for feature: **$1**
 
 ### Output Format
 
-Generate analysis in the language specified in spec.json (check `.kiro/specs/$1/spec.json` for "language" field):
+Generate analysis in the language specified in spec.json (check `docs/specs/specs/$1/spec.json` for "language" field):
 
 #### Analysis Summary
 - Feature scope and complexity overview

@@ -12,26 +12,26 @@ Execute implementation tasks for **$1** using Kent Beck's Test-Driven Developmen
 
 ### Pre-Execution Validation
 Validate required files exist for feature **$1**:
-- Requirements: `.kiro/specs/$1/requirements.md`
-- Design: `.kiro/specs/$1/design.md`  
-- Tasks: `.kiro/specs/$1/tasks.md`
-- Metadata: `.kiro/specs/$1/spec.json`
+- Requirements: `docs/specs/specs/$1/requirements.md`
+- Design: `docs/specs/specs/$1/design.md`  
+- Tasks: `docs/specs/specs/$1/tasks.md`
+- Metadata: `docs/specs/specs/$1/spec.json`
 
 ### Context Loading
 
 **Core Steering:**
-- Structure: @.kiro/steering/structure.md
-- Tech Stack: @.kiro/steering/tech.md  
-- Product: @.kiro/steering/product.md
+- Structure: @docs/specs/steering/structure.md
+- Tech Stack: @docs/specs/steering/tech.md  
+- Product: @docs/specs/steering/product.md
 
 **Custom Steering:**
-- Additional `*.md` files in `.kiro/steering/` (excluding structure.md, tech.md, product.md)
+- Additional `*.md` files in `docs/specs/steering/` (excluding structure.md, tech.md, product.md)
 
 **Spec Documents for $1:**
-- Metadata: @.kiro/specs/$1/spec.json
-- Requirements: @.kiro/specs/$1/requirements.md
-- Design: @.kiro/specs/$1/design.md
-- Tasks: @.kiro/specs/$1/tasks.md
+- Metadata: @docs/specs/specs/$1/spec.json
+- Requirements: @docs/specs/specs/$1/requirements.md
+- Design: @docs/specs/specs/$1/design.md
+- Tasks: @docs/specs/specs/$1/tasks.md
 
 ### Task Execution
 1. **Feature**: $1  

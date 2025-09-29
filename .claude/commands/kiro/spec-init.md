@@ -16,10 +16,10 @@ Initialize a new specification based on the provided project description:
 
 ### 1. Generate Feature Name
 Create a concise, descriptive feature name from the project description ($ARGUMENTS).
-**Check existing `.kiro/specs/` directory to ensure the generated feature name is unique. If a conflict exists, append a number suffix (e.g., feature-name-2).**
+**Check existing `docs/specs/specs/` directory to ensure the generated feature name is unique. If a conflict exists, append a number suffix (e.g., feature-name-2).**
 
 ### 2. Create Spec Directory
-Create `.kiro/specs/[generated-feature-name]/` directory with:
+Create `docs/specs/specs/[generated-feature-name]/` directory with:
 - `spec.json` - Metadata and approval tracking
 - `requirements.md` - Lightweight template with project description
 
