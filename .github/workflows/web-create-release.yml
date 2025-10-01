@@ -27,16 +27,17 @@ jobs:
         with:
           node-version-file: '.node-version'
 
-      - name: Update package version
+      - name: Update web package version
         run: |
+          cd packages/web
           pnpm version ${{ inputs.version }} --no-git-tag-version
 
       - name: Commit version update
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add package.json
-          git commit -m "chore: update package version to ${{ inputs.version }}"
+          git add packages/web/package.json
+          git commit -m "chore(web): update package version to ${{ inputs.version }}"
           git push
 
       - name: Create tag
