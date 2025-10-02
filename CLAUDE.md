@@ -27,7 +27,8 @@ Kiro-style Spec Driven Development implementation using claude code slash comman
 **Specs** (`docs/specs/`) - Formalize development process for individual features
 
 ### Active Specifications
-- Check `docs/specs/` for active specifications
+
+- **parts-unique-id**: パーツにユニークIDを付与し、IDから特定のパーツを引当可能にする機能（互換性維持 or v2.0.0への移行検討）
 - Use `/kiro:spec-status [feature-name]` to check progress
 
 ## Development Guidelines
