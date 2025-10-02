@@ -17,18 +17,18 @@ Generate detailed implementation tasks for feature: **$1**
 - If tasks.md exists: Prompt [o]verwrite/[m]erge/[c]ancel
 
 **Context Loading (Full Paths)**:
-1. `docs/specs/specs/$1/requirements.md` - Feature requirements (EARS format)
-2. `docs/specs/specs/$1/design.md` - Technical design document
-3. `docs/specs/steering/` - Project-wide guidelines and constraints:
+1. `docs/specs/$1/requirements.md` - Feature requirements (EARS format)
+2. `docs/specs/$1/design.md` - Technical design document
+3. `docs/steering/` - Project-wide guidelines and constraints:
    - **Core files (always load)**:
-     - @docs/specs/steering/product.md - Business context, product vision, user needs
-     - @docs/specs/steering/tech.md - Technology stack, frameworks, libraries
-     - @docs/specs/steering/structure.md - File organization, naming conventions, code patterns
+     - @docs/steering/product.md - Business context, product vision, user needs
+     - @docs/steering/tech.md - Technology stack, frameworks, libraries
+     - @docs/steering/structure.md - File organization, naming conventions, code patterns
    - **Custom steering files** (load all EXCEPT "Manual" mode in `AGENTS.md`):
-     - Any additional `*.md` files in `docs/specs/steering/` directory
+     - Any additional `*.md` files in `docs/steering/` directory
      - Examples: `api.md`, `testing.md`, `security.md`, etc.
    - (Task planning benefits from comprehensive context)
-4. `docs/specs/specs/$1/tasks.md` - Existing tasks (only if merge mode)
+4. `docs/specs/$1/tasks.md` - Existing tasks (only if merge mode)
 
 ### CRITICAL Task Numbering Rules (MUST FOLLOW)
 
@@ -111,10 +111,10 @@ Generate detailed implementation tasks for feature: **$1**
 - No requirement should be left without corresponding tasks
 
 ### Document Generation
-- Generate `docs/specs/specs/$1/tasks.md` using the exact numbering format above
+- Generate `docs/specs/$1/tasks.md` using the exact numbering format above
 - **Language**: Use language from `spec.json.language` field, default to English
 - **Task descriptions**: Use natural language for "what to do" (implementation details in design.md)
- - Update `docs/specs/specs/$1/spec.json`:
+ - Update `docs/specs/$1/spec.json`:
   - Set `phase: "tasks-generated"`
   - Set approvals map exactly as:
     - `approvals.tasks = { "generated": true, "approved": false }`
@@ -144,7 +144,7 @@ Tasks represent the final planning phase - implementation can begin once tasks a
 **Final approval process for implementation**:
 ```
 📋 Tasks review completed. Ready for implementation.
-📄 Generated: docs/specs/specs/$1/tasks.md
+📄 Generated: docs/specs/$1/tasks.md
 ✅ All phases approved. Implementation can now begin.
 ```
 
@@ -158,7 +158,7 @@ Once tasks are approved, start implementation:
 
 **Implementation Tips**:
 - Use `/clear` if conversation becomes too long, then continue with spec commands
-- All spec files (docs/specs/specs/) are preserved and will be reloaded as needed
+- All spec files (docs/specs/) are preserved and will be reloaded as needed
 
 ### Review Checklist (for user reference):
 - [ ] Tasks are properly sized (1-3 hours each)

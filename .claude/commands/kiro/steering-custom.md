@@ -5,13 +5,13 @@ allowed-tools: Bash, Read, Write, Edit, MultiEdit, Glob, Grep, LS
 
 # Kiro Custom Steering Creation
 
-Create custom steering documents in `docs/specs/steering/` for specialized contexts beyond the three foundational files (product.md, tech.md, structure.md).
+Create custom steering documents in `docs/steering/` for specialized contexts beyond the three foundational files (product.md, tech.md, structure.md).
 
 ## Current Steering Status
 
 ### Existing Steering Documents
-- Core steering files: !`bash -c 'ls -la docs/specs/steering/*.md 2>/dev/null || echo "No steering directory found"'`
-- Custom steering count: !`bash -c 'if [ -d "docs/specs/steering" ]; then count=0; for f in docs/specs/steering/*.md; do if [ -f "$f" ] && [ "$f" != "docs/specs/steering/product.md" ] && [ "$f" != "docs/specs/steering/tech.md" ] && [ "$f" != "docs/specs/steering/structure.md" ]; then count=$((count + 1)); fi; done; echo "$count"; else echo "0"; fi'`
+- Core steering files: !`bash -c 'ls -la docs/steering/*.md 2>/dev/null || echo "No steering directory found"'`
+- Custom steering count: !`bash -c 'if [ -d "docs/steering" ]; then count=0; for f in docs/steering/*.md; do if [ -f "$f" ] && [ "$f" != "docs/steering/product.md" ] && [ "$f" != "docs/steering/tech.md" ] && [ "$f" != "docs/steering/structure.md" ]; then count=$((count + 1)); fi; done; echo "$count"; else echo "0"; fi'`
 
 ### Project Analysis
 - Specialized areas: !`bash -c 'find . -path ./node_modules -prune -o -path ./.git -prune -o -type d \( -name "test*" -o -name "spec*" -o -name "api" -o -name "auth" -o -name "security" \) -print 2>/dev/null || echo "No specialized directories found"'`
@@ -134,7 +134,7 @@ Create the custom steering document with:
    - Inclusion mode preference
    - Specific patterns for conditional inclusion (if applicable)
 
-2. **Create the document** in `docs/specs/steering/` with:
+2. **Create the document** in `docs/steering/` with:
    - Clear, focused content (2-3 minute read)
    - Practical examples
    - Consistent formatting with other steering files

@@ -11,15 +11,15 @@ Generate comprehensive requirements for feature: **$1**
 ## Context Validation
 
 ### Steering Context
-- Architecture context: @docs/specs/steering/structure.md
-- Technical constraints: @docs/specs/steering/tech.md
-- Product context: @docs/specs/steering/product.md
-- Custom steering: Load all "Always" mode custom steering files from docs/specs/steering/
+- Architecture context: @docs/steering/structure.md
+- Technical constraints: @docs/steering/tech.md
+- Product context: @docs/steering/product.md
+- Custom steering: Load all "Always" mode custom steering files from docs/steering/
 
 ### Existing Spec Context
-- Current spec directory: !`bash -c 'ls -la docs/specs/specs/$1/'`
-- Current requirements: `docs/specs/specs/$1/requirements.md`
-- Spec metadata: `docs/specs/specs/$1/spec.json`
+- Current spec directory: !`bash -c 'ls -la docs/specs/$1/'`
+- Current requirements: `docs/specs/$1/requirements.md`
+- Spec metadata: `docs/specs/$1/spec.json`
 
 ## Task: Generate Initial Requirements
 
@@ -53,7 +53,7 @@ Don't focus on implementation details in this phase. Instead, just focus on writ
 - IF [condition] AND [additional condition] THEN [system/subject] SHALL [response]
 
 ### 4. Requirements Document Structure
-Update requirements.md with complete content in the language specified in spec.json (check `docs/specs/specs/$1/spec.json` for "language" field):
+Update requirements.md with complete content in the language specified in spec.json (check `docs/specs/$1/spec.json` for "language" field):
 
 ```markdown
 # Requirements Document

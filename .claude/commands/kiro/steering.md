@@ -5,26 +5,26 @@ allowed-tools: Bash, Read, Write, Edit, MultiEdit, Glob, Grep, LS
 
 # Kiro Steering Management
 
-Intelligently create or update steering documents in `docs/specs/steering/` to maintain accurate project knowledge for spec-driven development. This command detects existing documents and handles them appropriately.
+Intelligently create or update steering documents in `docs/steering/` to maintain accurate project knowledge for spec-driven development. This command detects existing documents and handles them appropriately.
 
 ## Existing Files Check
 
 ### Current steering documents status
-- Product overview: !`bash -c '[ -f "docs/specs/steering/product.md" ] && echo "✅ EXISTS - Will be updated preserving custom content" || echo "📝 Not found - Will be created"'`
-- Technology stack: !`bash -c '[ -f "docs/specs/steering/tech.md" ] && echo "✅ EXISTS - Will be updated preserving custom content" || echo "📝 Not found - Will be created"'`
-- Project structure: !`bash -c '[ -f "docs/specs/steering/structure.md" ] && echo "✅ EXISTS - Will be updated preserving custom content" || echo "📝 Not found - Will be created"'`
-- Custom steering files: !`bash -c 'ls docs/specs/steering/*.md 2>/dev/null | grep -v -E "(product|tech|structure).md" | wc -l'`
+- Product overview: !`bash -c '[ -f "docs/steering/product.md" ] && echo "✅ EXISTS - Will be updated preserving custom content" || echo "📝 Not found - Will be created"'`
+- Technology stack: !`bash -c '[ -f "docs/steering/tech.md" ] && echo "✅ EXISTS - Will be updated preserving custom content" || echo "📝 Not found - Will be created"'`
+- Project structure: !`bash -c '[ -f "docs/steering/structure.md" ] && echo "✅ EXISTS - Will be updated preserving custom content" || echo "📝 Not found - Will be created"'`
+- Custom steering files: !`bash -c 'ls docs/steering/*.md 2>/dev/null | grep -v -E "(product|tech|structure).md" | wc -l'`
 
 ## Project Analysis
 
 ### Current Project State
 - Project files: !`bash -c 'find . -path ./node_modules -prune -o -path ./.git -prune -o -path ./dist -prune -o -type f \( -name "*.py" -o -name "*.js" -o -name "*.ts" -o -name "*.jsx" -o -name "*.tsx" -o -name "*.java" -o -name "*.go" -o -name "*.rs" \) -print 2>/dev/null || echo "No source files found"'`
 - Configuration files: !`bash -c 'find . -maxdepth 3 \( -name "package.json" -o -name "requirements.txt" -o -name "pom.xml" -o -name "Cargo.toml" -o -name "go.mod" -o -name "pyproject.toml" -o -name "tsconfig.json" \) 2>/dev/null || echo "No config files found"'`
-- Documentation: !`bash -c 'find . -maxdepth 3 -path ./node_modules -prune -o -path ./.git -prune -o -path ./docs/specs -prune -o \( -name "README*" -o -name "CHANGELOG*" -o -name "LICENSE*" -o -name "*.md" \) -print 2>/dev/null || echo "No documentation files found"'`
+- Documentation: !`bash -c 'find . -maxdepth 3 -path ./node_modules -prune -o -path ./.git -prune -o -path ./docs -prune -o \( -name "README*" -o -name "CHANGELOG*" -o -name "LICENSE*" -o -name "*.md" \) -print 2>/dev/null || echo "No documentation files found"'`
 
 ### Recent Changes (if updating)
-- Last steering update: !`bash -c 'git log -1 --oneline -- docs/specs/steering/ 2>/dev/null || echo "No previous steering commits"'`
-- Commits since last steering update: !`bash -c 'LAST_COMMIT=$(git log -1 --format=%H -- docs/specs/steering/ 2>/dev/null); if [ -n "$LAST_COMMIT" ]; then git log --oneline ${LAST_COMMIT}..HEAD --max-count=20 2>/dev/null || echo "Not a git repository"; else echo "No previous steering update found"; fi'`
+- Last steering update: !`bash -c 'git log -1 --oneline -- docs/steering/ 2>/dev/null || echo "No previous steering commits"'`
+- Commits since last steering update: !`bash -c 'LAST_COMMIT=$(git log -1 --format=%H -- docs/steering/ 2>/dev/null); if [ -n "$LAST_COMMIT" ]; then git log --oneline ${LAST_COMMIT}..HEAD --max-count=20 2>/dev/null || echo "Not a git repository"; else echo "No previous steering update found"; fi'`
 - Working tree status: !`bash -c 'git status --porcelain 2>/dev/null || echo "Not a git repository"'`
 
 ### Existing Documentation
@@ -129,7 +129,7 @@ If custom steering files exist:
 
 ## Instructions
 
-1. **Create `docs/specs/steering/` directory** if it doesn't exist
+1. **Create `docs/steering/` directory** if it doesn't exist
 2. **Check existing files** to determine create vs update mode
 3. **Analyze the codebase** using native tools (Glob, Grep, LS)
 4. **For NEW files**: Generate comprehensive initial documentation
