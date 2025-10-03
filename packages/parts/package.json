@@ -13,7 +13,9 @@
     "tsc:watch": "tsc -w",
     "lint": "eslint . && prettier . --check",
     "format": "eslint . --fix && prettier . --write",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "validate-ids": "tsx scripts/validate-part-ids.ts",
+    "prebuild": "pnpm validate-ids"
   },
   "author": "philomagi <tooppoo56@gmail.com> (https://github.com/tooppoo)",
   "license": "MIT",

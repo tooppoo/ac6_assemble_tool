@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(timeout 20 npx vitest run:*)",
+      "Bash(pnpm --filter parts build)"
     ],
     "deny": [],
     "ask": []
