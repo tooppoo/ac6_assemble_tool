@@ -10,6 +10,7 @@ import {
 
 export const expansions = [
   defineExpansion<AsAssaultArmor>({
+    id: 'EXP001',
     name: 'ASSAULT ARMOR',
     classification: expansionClass,
     category: expansionCategory,
@@ -29,6 +30,7 @@ export const expansions = [
     en_load: 0,
   }),
   defineExpansion<AsProtect>({
+    id: 'EXP002',
     name: 'PULSE ARMOR',
     classification: expansionClass,
     category: expansionCategory,
@@ -42,6 +44,7 @@ export const expansions = [
     en_load: 0,
   }),
   defineExpansion<AsProtect>({
+    id: 'EXP003',
     name: 'PULSE PROTECTION',
     classification: expansionClass,
     category: expansionCategory,
@@ -55,6 +58,7 @@ export const expansions = [
     en_load: 0,
   }),
   defineExpansion<AsProtect>({
+    id: 'EXP004',
     name: 'TERMINAL ARMOR',
     classification: expansionClass,
     category: expansionCategory,

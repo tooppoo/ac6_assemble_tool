@@ -25,6 +25,8 @@ import { type AsJumper, type AsTank, defineLegs } from './types/frame/types'
 
 export const twoLegs = [
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG001',
+
     name: 'AL-J-121 BASHO',
     classification: legsClass,
     category: two_legs,
@@ -46,6 +48,8 @@ export const twoLegs = [
     en_load: 300,
   }),
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG002',
+
     name: 'AL-J-121/RC JAILBREAK',
     classification: legsClass,
     category: two_legs,
@@ -67,6 +71,8 @@ export const twoLegs = [
     en_load: 300,
   }),
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG003',
+
     name: 'LG-011 MELANDER',
     classification: legsClass,
     category: two_legs,
@@ -88,6 +94,8 @@ export const twoLegs = [
     en_load: 365,
   }),
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG004',
+
     name: 'LG-012 MELANDER C3',
     classification: legsClass,
     category: two_legs,
@@ -109,6 +117,8 @@ export const twoLegs = [
     en_load: 355,
   }),
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG005',
+
     name: 'DF-LG-08 TIAN-QIANG',
     classification: legsClass,
     category: two_legs,
@@ -130,6 +140,8 @@ export const twoLegs = [
     en_load: 400,
   }),
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG006',
+
     name: 'VP-422',
     classification: legsClass,
     category: two_legs,
@@ -151,6 +163,8 @@ export const twoLegs = [
     en_load: 387,
   }),
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG007',
+
     name: 'NACHTREIHER/42E',
     classification: legsClass,
     category: two_legs,
@@ -172,6 +186,8 @@ export const twoLegs = [
     en_load: 462,
   }),
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG008',
+
     name: 'VE-42A',
     classification: legsClass,
     category: two_legs,
@@ -193,6 +209,8 @@ export const twoLegs = [
     en_load: 465,
   }),
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG009',
+
     name: '2C-2000 CRAWLER',
     classification: legsClass,
     category: two_legs,
@@ -214,6 +232,8 @@ export const twoLegs = [
     en_load: 280,
   }),
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG010',
+
     name: '2C-3000 WRECKER',
     classification: legsClass,
     category: two_legs,
@@ -235,6 +255,8 @@ export const twoLegs = [
     en_load: 680,
   }),
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG011',
+
     name: '2S-5000 DESSERT',
     classification: legsClass,
     category: two_legs,
@@ -256,6 +278,8 @@ export const twoLegs = [
     en_load: 420,
   }),
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG012',
+
     name: 'EL-TL-10 FIRMEZA',
     classification: legsClass,
     category: two_legs,
@@ -277,6 +301,8 @@ export const twoLegs = [
     en_load: 378,
   }),
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG013',
+
     name: 'EL-PL-00 ALBA',
     classification: legsClass,
     category: two_legs,
@@ -298,6 +324,8 @@ export const twoLegs = [
     en_load: 360,
   }),
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG014',
+
     name: '06-041 MIND ALPHA',
     classification: legsClass,
     category: two_legs,
@@ -319,6 +347,8 @@ export const twoLegs = [
     en_load: 412,
   }),
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG015',
+
     name: 'IA-C01L: EPHEMERA',
     classification: legsClass,
     category: two_legs,
@@ -340,6 +370,8 @@ export const twoLegs = [
     en_load: 398,
   }),
   defineLegs<TwoLegsCategory, AsJumper>()({
+    id: 'LG016',
+
     name: 'IB-C03L: HAL 826',
     classification: legsClass,
     category: two_legs,
@@ -365,6 +397,8 @@ export type TwoLegs = (typeof twoLegs)[number]
 
 export const reverseJoints = [
   defineLegs<ReverseJointCategory, AsJumper>()({
+    id: 'LG017',
+
     name: 'KASUAR/42Z',
     classification: legsClass,
     category: reverse_joint,
@@ -386,6 +420,8 @@ export const reverseJoints = [
     en_load: 388,
   }),
   defineLegs<ReverseJointCategory, AsJumper>()({
+    id: 'LG018',
+
     name: 'RC-2000 SPRING CHICKEN',
     classification: legsClass,
     category: reverse_joint,
@@ -407,6 +443,8 @@ export const reverseJoints = [
     en_load: 402,
   }),
   defineLegs<ReverseJointCategory, AsJumper>()({
+    id: 'LG019',
+
     name: '06-042 MIND BETA',
     classification: legsClass,
     category: reverse_joint,
@@ -432,6 +470,8 @@ export type ReverseJoint = (typeof reverseJoints)[number]
 
 export const fourLegs = [
   defineLegs<FourLegsCategory, AsJumper>()({
+    id: 'LG020',
+
     name: 'LG-033M VERRILL',
     classification: legsClass,
     category: four_legs,
@@ -453,6 +493,8 @@ export const fourLegs = [
     en_load: 675,
   }),
   defineLegs<FourLegsCategory, AsJumper>()({
+    id: 'LG021',
+
     name: 'VP-424',
     classification: legsClass,
     category: four_legs,
@@ -474,6 +516,8 @@ export const fourLegs = [
     en_load: 760,
   }),
   defineLegs<FourLegsCategory, AsJumper>()({
+    id: 'LG022',
+
     name: 'LAMMERGEIER/42F',
     classification: legsClass,
     category: four_legs,
@@ -499,6 +543,8 @@ export type FourLegs = (typeof fourLegs)[number]
 
 export const tanks = [
   defineLegs<TankCategory, AsTank>()({
+    id: 'LG023',
+
     name: 'LG-022T BORNEMISSZA',
     classification: legsClass,
     category: tank,
@@ -534,6 +580,8 @@ export const tanks = [
     en_load: 455,
   }),
   defineLegs<TankCategory, AsTank>()({
+    id: 'LG024',
+
     name: 'VE-42B',
     classification: legsClass,
     category: tank,
@@ -569,6 +617,8 @@ export const tanks = [
     en_load: 824,
   }),
   defineLegs<TankCategory, AsTank>()({
+    id: 'LG025',
+
     name: 'EL-TL-11 FORTALEZA',
     classification: legsClass,
     category: tank,

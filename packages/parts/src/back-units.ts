@@ -92,6 +92,8 @@ import {
 
 export const leftBackUnits = [
   defineShieldUnit<AsShield>()({
+    id: 'BU001',
+
     name: 'VP-61PS',
     classification: leftBackUnit,
     category: pulse_shield,
@@ -113,6 +115,8 @@ export const leftBackUnits = [
     en_load: 310,
   }),
   defineShieldUnit<AsShield>()({
+    id: 'BU002',
+
     name: 'SI-24: SU-Q5',
     classification: leftBackUnit,
     category: pulse_shield,
@@ -134,6 +138,8 @@ export const leftBackUnits = [
     en_load: 220,
   }),
   defineShieldUnit<AsShield>()({
+    id: 'BU003',
+
     name: 'SI-27: SU-R8',
     classification: leftBackUnit,
     category: pulse_shield,
@@ -155,6 +161,8 @@ export const leftBackUnits = [
     en_load: 323,
   }),
   defineShieldUnit<AsBuckler>()({
+    id: 'BU004',
+
     name: 'VP-61PB',
     classification: leftBackUnit,
     category: pulse_buckler,
@@ -176,6 +184,8 @@ export const leftBackUnits = [
     en_load: 285,
   }),
   defineShieldUnit<AsBuckler>()({
+    id: 'BU005',
+
     name: 'SI-29: SU-TT/C',
     classification: leftBackUnit,
     category: pulse_buckler,
@@ -197,6 +207,8 @@ export const leftBackUnits = [
     en_load: 385,
   }),
   defineShieldUnit<AsScutum>()({
+    id: 'BU006',
+
     name: 'VE-61PSA',
     classification: leftBackUnit,
     category: pulse_scutum,
@@ -218,6 +230,8 @@ export const leftBackUnits = [
     en_load: 480,
   }),
   defineShieldUnit<AsShield>()({
+    id: 'BU007',
+
     name: 'IB-C03W4: NGI 028',
     classification: leftBackUnit,
     category: coral_shield,
@@ -242,6 +256,8 @@ export const leftBackUnits = [
 export type LeftBackUnit = (typeof leftBackUnits)[number]
 export const backUnits = [
   defineBackUnit<AsGatling>()({
+    id: 'BU008',
+
     name: 'DF-GA-09 SHAO-WEI',
     classification: backUnit,
     category: gatling_cannon,
@@ -268,6 +284,8 @@ export const backUnits = [
     en_load: 404,
   }),
   defineBackUnit<AsBlastShooting>()({
+    id: 'BU009',
+
     name: 'SB-033M MORLEY',
     classification: backUnit,
     category: spread_bazooka,
@@ -292,6 +310,8 @@ export const backUnits = [
     en_load: 465,
   }),
   defineBackUnit<AsBlastShooting>()({
+    id: 'BU010',
+
     name: 'EARSHOT',
     classification: backUnit,
     category: grenade_cannon,
@@ -316,6 +336,8 @@ export const backUnits = [
     en_load: 386,
   }),
   defineBackUnit<AsBlastShooting>()({
+    id: 'BU011',
+
     name: 'SONGBIRDS',
     classification: backUnit,
     category: grenade_cannon,
@@ -340,6 +362,8 @@ export const backUnits = [
     en_load: 285,
   }),
   defineBackUnit<AsKineticShooting & WithBlast & WithReload>()({
+    id: 'BU012',
+
     name: 'VE-60SNA',
     classification: backUnit,
     category: stun_needle_launcher,
@@ -365,6 +389,8 @@ export const backUnits = [
     en_load: 825,
   }),
   defineBackUnit<AsLaserCannon>()({
+    id: 'BU013',
+
     name: 'VP-60LCS',
     classification: backUnit,
     category: laser_canon,
@@ -399,6 +425,8 @@ export const backUnits = [
     en_load: 683,
   }),
   defineBackUnit<AsLaserCannon>()({
+    id: 'BU014',
+
     name: 'VE-60LCA',
     classification: backUnit,
     category: laser_canon,
@@ -433,6 +461,8 @@ export const backUnits = [
     en_load: 1200,
   }),
   defineBackUnit<AsLaserCannon>()({
+    id: 'BU015',
+
     name: 'VE-60LCB',
     classification: backUnit,
     category: laser_canon,
@@ -467,6 +497,8 @@ export const backUnits = [
     en_load: 803,
   }),
   defineBackUnit<AsLaserCannon & WithChargeBlast>()({
+    id: 'BU016',
+
     name: 'VP-60LCD',
     classification: backUnit,
     category: diffuse_laser_canon,
@@ -503,6 +535,8 @@ export const backUnits = [
   }),
 
   defineBackUnit<AsPlasmaCanon>()({
+    id: 'BU017',
+
     name: 'FASAN/60E',
     classification: backUnit,
     category: plasma_canon,
@@ -538,6 +572,8 @@ export const backUnits = [
     en_load: 882,
   }),
   defineBackUnit<AsPulseCanon>()({
+    id: 'BU018',
+
     name: 'KRANICH/60Z',
     classification: backUnit,
     category: pulse_canon,
@@ -571,6 +607,8 @@ export const backUnits = [
       WithRapidFire &
       WithMagazine
   >()({
+    id: 'BU019',
+
     name: 'EULE/60D',
     classification: backUnit,
     category: pulse_shield_launcher,
@@ -598,6 +636,8 @@ export const backUnits = [
     en_load: 382,
   }),
   defineBackUnit<AsMissile & WithPAInterference>()({
+    id: 'BU020',
+
     name: 'IA-C01W3: AURORA',
     classification: backUnit,
     category: light_wave_cannon,
@@ -625,6 +665,8 @@ export const backUnits = [
   }),
 
   defineBackUnit<AsMissile>()({
+    id: 'BU021',
+
     name: 'BML-G1/P20MLT-04',
     classification: backUnit,
     category: missile,
@@ -650,6 +692,8 @@ export const backUnits = [
     en_load: 154,
   }),
   defineBackUnit<AsMissile>()({
+    id: 'BU022',
+
     name: 'BML-G2/P03MLT-06',
     classification: backUnit,
     category: missile,
@@ -675,6 +719,8 @@ export const backUnits = [
     en_load: 241,
   }),
   defineBackUnit<AsMissile>()({
+    id: 'BU023',
+
     name: 'BML-G2/P05MLT-10',
     classification: backUnit,
     category: missile,
@@ -701,6 +747,8 @@ export const backUnits = [
   }),
 
   defineBackUnit<AsMissile>()({
+    id: 'BU024',
+
     name: 'BML-G2/P19SPL-12',
     classification: backUnit,
     category: split_missile,
@@ -726,6 +774,8 @@ export const backUnits = [
     en_load: 325,
   }),
   defineBackUnit<AsMissile>()({
+    id: 'BU025',
+
     name: 'BML-G2/P16SPL-08',
     classification: backUnit,
     category: split_missile,
@@ -751,6 +801,8 @@ export const backUnits = [
     en_load: 228,
   }),
   defineBackUnit<AsMissile>()({
+    id: 'BU026',
+
     name: 'BML-G2/P17SPL-16',
     classification: backUnit,
     category: split_missile,
@@ -777,6 +829,8 @@ export const backUnits = [
   }),
 
   defineBackUnit<AsMissile>()({
+    id: 'BU027',
+
     name: 'BML-G1/P31DUO-02',
     classification: backUnit,
     category: dual_missile,
@@ -802,6 +856,8 @@ export const backUnits = [
     en_load: 182,
   }),
   defineBackUnit<AsMissile>()({
+    id: 'BU028',
+
     name: 'BML-G1/P32DUO-03',
     classification: backUnit,
     category: dual_missile,
@@ -827,6 +883,8 @@ export const backUnits = [
     en_load: 262,
   }),
   defineBackUnit<AsMissile>()({
+    id: 'BU029',
+
     name: 'BML-G2/P08DUO-03',
     classification: backUnit,
     category: dual_missile,
@@ -853,6 +911,8 @@ export const backUnits = [
   }),
 
   defineBackUnit<AsMissile>()({
+    id: 'BU030',
+
     name: 'BML-G1/P01VTC-04',
     classification: backUnit,
     category: vertical_missile,
@@ -878,6 +938,8 @@ export const backUnits = [
     en_load: 258,
   }),
   defineBackUnit<AsMissile>()({
+    id: 'BU031',
+
     name: 'BML-G1/P03VTC-08',
     classification: backUnit,
     category: vertical_missile,
@@ -903,6 +965,8 @@ export const backUnits = [
     en_load: 380,
   }),
   defineBackUnit<AsMissile>()({
+    id: 'BU032',
+
     name: 'BML-G1/P07VTC-12',
     classification: backUnit,
     category: vertical_missile,
@@ -929,6 +993,8 @@ export const backUnits = [
   }),
 
   defineBackUnit<AsActiveHomingMissile>()({
+    id: 'BU033',
+
     name: 'BML-G3/P04ACT-01',
     classification: backUnit,
     category: active_homing_missile,
@@ -955,6 +1021,8 @@ export const backUnits = [
     en_load: 213,
   }),
   defineBackUnit<AsActiveHomingMissile>()({
+    id: 'BU034',
+
     name: 'BML-G3/P05ACT-02',
     classification: backUnit,
     category: active_homing_missile,
@@ -982,6 +1050,8 @@ export const backUnits = [
   }),
 
   defineBackUnit<AsContainerMissile>()({
+    id: 'BU035',
+
     name: 'BML-G1/P29CNT',
     classification: backUnit,
     category: container_missile,
@@ -1006,6 +1076,8 @@ export const backUnits = [
   }),
 
   defineBackUnit<AsMissile & WithBlast>()({
+    id: 'BU036',
+
     name: 'WR-0999 DELIVERY BOY',
     classification: backUnit,
     category: cluster_missile,
@@ -1033,6 +1105,8 @@ export const backUnits = [
   }),
 
   defineBackUnit<AsMissile>()({
+    id: 'BU037',
+
     name: 'WS-5001 SOUP',
     classification: backUnit,
     category: scatter_missile,
@@ -1059,6 +1133,8 @@ export const backUnits = [
   }),
 
   defineBackUnit<AsMissile & WithBlast>()({
+    id: 'BU038',
+
     name: '45-091 JVLN BETA',
     classification: backUnit,
     category: detonating_missile,
@@ -1086,6 +1162,8 @@ export const backUnits = [
   }),
 
   defineBackUnit<AsMissile & WithIdealRange>()({
+    id: 'BU039',
+
     name: 'EL-PW-01 TRUENO',
     classification: backUnit,
     category: needle_missile,
@@ -1113,6 +1191,8 @@ export const backUnits = [
   }),
 
   defineBackUnit<AsPlasmaMissile>()({
+    id: 'BU040',
+
     name: 'Vvc-703PM',
     classification: backUnit,
     category: plasma_missile,
@@ -1139,6 +1219,8 @@ export const backUnits = [
     en_load: 210,
   }),
   defineBackUnit<AsPlasmaMissile>()({
+    id: 'BU041',
+
     name: 'Vvc-706PM',
     classification: backUnit,
     category: plasma_missile,
@@ -1165,6 +1247,8 @@ export const backUnits = [
     en_load: 276,
   }),
   defineBackUnit<AsPlasmaMissile>()({
+    id: 'BU042',
+
     name: 'Vvc-70VPM',
     classification: backUnit,
     category: plasma_missile,
@@ -1192,6 +1276,8 @@ export const backUnits = [
   }),
 
   defineBackUnit<AsCoralMissile>()({
+    id: 'BU043',
+
     name: 'IB-C03W3: NGI 006',
     classification: backUnit,
     category: coral_missile,
@@ -1229,6 +1315,8 @@ export const backUnits = [
   }),
 
   defineBackUnit<AsOrbit>()({
+    id: 'BU044',
+
     name: 'BO-044 HUXLEY',
     classification: backUnit,
     category: bullet_orbit,
@@ -1253,6 +1341,8 @@ export const backUnits = [
     en_load: 435,
   }),
   defineBackUnit<AsOrbit>()({
+    id: 'BU045',
+
     name: '45-091 ORBT',
     classification: backUnit,
     category: laser_orbit,
@@ -1277,6 +1367,8 @@ export const backUnits = [
     en_load: 446,
   }),
   defineBackUnit<AsTurret>()({
+    id: 'BU046',
+
     name: 'VP-60LT',
     classification: backUnit,
     category: laser_turret,
@@ -1302,6 +1394,8 @@ export const backUnits = [
     en_load: 560,
   }),
   defineBackUnit<AsLaserDrone>()({
+    id: 'BU047',
+
     name: 'Vvc-700LD',
     classification: backUnit,
     category: laser_turret,

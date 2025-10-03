@@ -6,13 +6,14 @@ import type { NoneManufacture } from '#parts/types/base/manufacture'
 import { noneManufacture } from '#parts/types/base/manufacture'
 import type { ACParts, WithEnLoad } from '#parts/types/base/types'
 
-const defineNotEquipped = (): ACParts<
+const defineNotEquipped = (id: string): ACParts<
   NotEquippedClass,
   NoneManufacture,
   NotEquipped
 > &
   WithEnLoad =>
   ({
+    id,
     name: '(Not Equipped)',
     classification: notEquippedClass,
     manufacture: noneManufacture,
@@ -22,14 +23,14 @@ const defineNotEquipped = (): ACParts<
     en_load: 0,
   }) as const
 
-export const boosterNotEquipped = defineNotEquipped()
+export const boosterNotEquipped = defineNotEquipped('NE001')
 export type BoosterNotEquipped = typeof boosterNotEquipped
 
-export const expansionNotEquipped = defineNotEquipped()
+export const expansionNotEquipped = defineNotEquipped('NE002')
 export type ExpansionNotEquipped = typeof expansionNotEquipped
 
-export const armNotEquipped = defineNotEquipped()
+export const armNotEquipped = defineNotEquipped('NE003')
 export type ArmNotEquipped = typeof armNotEquipped
 
-export const backNotEquipped = defineNotEquipped()
+export const backNotEquipped = defineNotEquipped('NE004')
 export type BackNotEquipped = typeof backNotEquipped
