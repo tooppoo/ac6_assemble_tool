@@ -46,7 +46,7 @@
   - 全部位（head, core, arms, legs, 武器・肩武器、booster, fcs, generator, expansion）で動作することを確認
   - _Requirements: 2.1, 2.2_
 
-- [ ] 3.2 v2形式URLシリアライザーの実装
+- [x] 3.2 v2形式URLシリアライザーの実装
   - 機体構成からv2形式URLクエリパラメータを生成する機能を実装
   - `v=2`パラメータを必ず含める
   - 各部位のパーツIDをクエリパラメータに変換（例: `h=HD001&c=CR002`）
