@@ -40,7 +40,7 @@
   - _Requirements: 5.3, 5.4_
 
 - [ ] 3. IDベース引当機能の実装
-- [ ] 3.1 パーツID検索機能の実装
+- [x] 3.1 パーツID検索機能の実装
   - 候補配列からパーツIDで検索し、該当するパーツオブジェクトを返却する関数を実装
   - パーツIDが存在しない場合はフォールバック処理（デフォルトパーツまたはNotEquipped）を実行
   - 全部位（head, core, arms, legs, 武器・肩武器、booster, fcs, generator, expansion）で動作することを確認
