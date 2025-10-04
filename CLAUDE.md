@@ -13,6 +13,14 @@ Kiro-style Spec Driven Development implementation using claude code slash comman
 - テストカバレッジは80%以上を維持し、AGENTS.md のテスト方針に従うこと
 - パフォーマンス要件は AGENTS.md のパフォーマンス方針（基準値監視、測定主義）に従うこと
 - 本番運用では AGENTS.md の監視・メトリクス方針（観測可能性、軽量監視）を適用すること
+- バージョン管理では AGENTS.mdのバージョン管理方針および以下のルールに従うこと
+  - **コミット後の署名**：以下のフッターを含める。
+
+    ```txt
+    🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+    Co-Authored-By: Claude <noreply@anthropic.com>
+    ```
 
 ## Project Context
 
