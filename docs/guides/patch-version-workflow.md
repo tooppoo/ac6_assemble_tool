@@ -33,12 +33,14 @@ Armored Core 6のアップデートでパーツの追加・削除・変更が行
    - 必要な全パラメータ（攻撃力、重量、EN負荷など）をメモ
 
 2. **新しいIDを生成**
+
    ```bash
    cd packages/parts
    pnpm run gen-id <category>
    ```
 
    例：
+
    ```bash
    # 新しい頭部パーツのID生成
    pnpm run gen-id head
@@ -46,6 +48,7 @@ Armored Core 6のアップデートでパーツの追加・削除・変更が行
    ```
 
 3. **パーツ定義を作成**
+
    ```typescript
    // packages/parts/src/heads.ts
 
@@ -72,6 +75,7 @@ Armored Core 6のアップデートでパーツの追加・削除・変更が行
    ```
 
 4. **ID重複検証を実行**
+
    ```bash
    pnpm run validate-ids
    ```
@@ -79,11 +83,13 @@ Armored Core 6のアップデートでパーツの追加・削除・変更が行
    エラーが出た場合は、IDが重複しています。手順2に戻って新しいIDを生成してください。
 
 5. **テストを実行**
+
    ```bash
    pnpm test
    ```
 
 6. **変更をコミット**
+
    ```bash
    git add packages/parts/src/heads.ts
    git commit -m "feat: v1.07パッチで追加された頭部パーツを追加"
@@ -93,12 +99,13 @@ Armored Core 6のアップデートでパーツの追加・削除・変更が行
 
 ゲームアップデートでパーツが削除された場合：
 
-#### 手順
+#### 削除手順
 
 1. **該当パーツを特定**
    - 削除されたパーツのIDと名前を確認
 
 2. **パーツ定義をコメントアウトではなく削除**
+
    ```typescript
    // packages/parts/src/heads.ts
 
@@ -123,11 +130,13 @@ Armored Core 6のアップデートでパーツの追加・削除・変更が行
    - 削除されたパーツIDを参照している保存データやURLは、自動的に配列の最初の要素（この場合`head001`）にフォールバックします
 
 4. **テストを実行**
+
    ```bash
    pnpm test
    ```
 
 5. **変更をコミット**
+
    ```bash
    git add packages/parts/src/heads.ts
    git commit -m "feat: v1.07パッチで削除された頭部パーツを削除"
@@ -137,12 +146,13 @@ Armored Core 6のアップデートでパーツの追加・削除・変更が行
 
 ゲームアップデートでパーツの性能が変更された場合：
 
-#### 手順
+#### 変更手順
 
 1. **該当パーツを特定**
    - 変更されたパーツの名前とIDを確認
 
 2. **パラメータのみを更新（IDは変更しない）**
+
    ```typescript
    // packages/parts/src/heads.ts
 
@@ -169,11 +179,13 @@ Armored Core 6のアップデートでパーツの追加・削除・変更が行
    - 必要に応じてCHANGELOG.mdを更新
 
 4. **テストを実行**
+
    ```bash
    pnpm test
    ```
 
 5. **変更をコミット**
+
    ```bash
    git add packages/parts/src/heads.ts
    git commit -m "feat: v1.07パッチでKASAUR/42ZのAP/防御力が上方修正"
@@ -183,15 +195,17 @@ Armored Core 6のアップデートでパーツの追加・削除・変更が行
 
 パッチ適用後、バージョン番号を更新します：
 
-#### 手順
+#### バージョン更新手順
 
 1. **新しいバージョンディレクトリを作成**
+
    ```bash
    cd packages/parts/src/versions
    cp -r v1.06.1 v1.07
    ```
 
 2. **candidates.tsを更新**
+
    ```typescript
    // packages/parts/src/versions/v1.07/candidates.ts
    import { heads } from '../../heads'
@@ -199,6 +213,7 @@ Armored Core 6のアップデートでパーツの追加・削除・変更が行
    ```
 
 3. **エクスポートを追加**
+
    ```typescript
    // packages/parts/src/versions/index.ts
    export * from './v1.06.1'
@@ -206,6 +221,7 @@ Armored Core 6のアップデートでパーツの追加・削除・変更が行
    ```
 
 4. **変更をコミット**
+
    ```bash
    git add packages/parts/src/versions/
    git commit -m "feat: v1.07パッチ対応を追加"
@@ -230,6 +246,7 @@ Armored Core 6のアップデートでパーツの追加・削除・変更が行
 **原因**：パーツIDを変更した可能性があります
 
 **対処法**：
+
 1. 変更したIDを元に戻す
 2. 新しいパーツとして別IDで追加する
 
@@ -238,6 +255,7 @@ Armored Core 6のアップデートでパーツの追加・削除・変更が行
 **原因**：パーツIDが存在しない、または重複している可能性があります
 
 **対処法**：
+
 1. `pnpm run validate-ids`で重複を確認
 2. ブラウザの開発者ツールでコンソールエラーを確認
 3. URLパラメータに含まれるIDが実際に存在するか確認
@@ -247,6 +265,7 @@ Armored Core 6のアップデートでパーツの追加・削除・変更が行
 **原因**：候補配列のインデックスが変更された可能性があります
 
 **対処法**：
+
 1. パーツ追加時は必ず配列の最後に追加する
 2. パーツ削除時は順序を変更しない（該当パーツだけを削除）
 

@@ -3,7 +3,10 @@
     "allow": [
       "Bash(npx tsx:*)",
       "Bash(timeout 20 npx vitest run:*)",
-      "Bash(pnpm --filter parts build)"
+      "Bash(pnpm --filter parts build)",
+      "Bash(npx tsc:*)",
+      "Bash(git add:*)",
+      "Bash(npx vitest run:*)"
     ],
     "deny": [],
     "ask": []

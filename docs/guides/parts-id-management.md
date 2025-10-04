@@ -10,7 +10,7 @@
 
 パーツIDは以下の形式で構成されます：
 
-```
+```text
 {カテゴリコード}{連番}
 ```
 
@@ -48,6 +48,7 @@ pnpm run gen-id <category>
 ```
 
 例：
+
 ```bash
 # 頭部パーツの次のIDを生成
 pnpm run gen-id head
@@ -100,6 +101,7 @@ pnpm run validate-ids
 3. **ビルド時検証を実行**して重複がないことを確認
 
 例：
+
 ```typescript
 // packages/parts/src/heads.ts
 export const newHead: Head = {

@@ -4,6 +4,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { fileURLToPath } from 'url'
+
 import { categoryToCode } from './generate-part-id'
 
 const __filename = fileURLToPath(import.meta.url)

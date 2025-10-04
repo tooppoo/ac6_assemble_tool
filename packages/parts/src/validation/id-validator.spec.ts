@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { validatePartIdUniqueness, type PartIdValidationResult } from './id-validator'
+
+import { validatePartIdUniqueness } from './id-validator'
 
 describe('ID重複検証', () => {
   describe('validatePartIdUniqueness', () => {

@@ -5,6 +5,7 @@ import type {
   StoredAssemblyRepository,
 } from '#core/assembly/store/stored-assembly'
 
+import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import { it } from '@fast-check/vitest'
 import { ulid } from 'ulid'
@@ -71,16 +72,22 @@ describe('repository', () => {
           const records1 = await repository.all(candidates)
           expect(records1).toHaveLength(3)
 
+          // マージしたアセンブリを作成
+          // タンク脚部の場合はboosterを強制的にNotEquippedにする
+          const mergedParts = {
+            ...a2,
+            arms: a1.arms,
+            rightArmUnit: a3.rightArmUnit,
+          }
+
+          const updatedAssembly = createAssembly(mergedParts)
+
           await repository.update(
             {
               id: id2,
               name: 'test-2-new-name',
               description: 'test-2-new-desc',
-              assembly: createAssembly({
-                ...a2,
-                arms: a1.arms,
-                rightArmUnit: a3.rightArmUnit,
-              }),
+              assembly: updatedAssembly,
               createdAt: records1[1].createdAt,
             },
             candidates,
@@ -95,11 +102,7 @@ describe('repository', () => {
             id: id2,
             name: 'test-2-new-name',
             description: 'test-2-new-desc',
-            assembly: createAssembly({
-              ...a2,
-              arms: a1.arms,
-              rightArmUnit: a3.rightArmUnit,
-            }),
+            assembly: updatedAssembly,
             createdAt: records1[1].createdAt,
           })
           expect(records2[2]).toStrictEqual(records1[2])

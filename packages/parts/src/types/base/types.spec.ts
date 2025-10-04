@@ -1,8 +1,9 @@
 import { describe, it, expect, expectTypeOf } from 'vitest'
-import type { ACParts } from './types'
-import { head, core, arms, two_legs } from './classification'
-import { allmind, arquebus } from './manufacture'
+
 import { head as headCategory, core as coreCategory, arms as armsCategory, two_legs as twoLegsCategory, assault_rifle } from './category'
+import { head, core, arms, legs } from './classification'
+import { allmind, arquebus } from './manufacture'
+import type { ACParts } from './types'
 
 describe('ACParts型', () => {
   describe('IDフィールド', () => {
@@ -69,7 +70,7 @@ describe('ACParts型', () => {
         { id: 'HD001', classification: head, category: headCategory },
         { id: 'CR042', classification: core, category: coreCategory },
         { id: 'AR123', classification: arms, category: armsCategory },
-        { id: 'LG001', classification: two_legs, category: twoLegsCategory },
+        { id: 'LG001', classification: legs, category: twoLegsCategory },
         { id: 'WP001', classification: 'arm-unit', category: assault_rifle },
       ]
 
@@ -100,7 +101,7 @@ describe('ACParts型', () => {
       expectTypeOf<ACPartsId>().toEqualTypeOf<string>()
 
       // ACParts型全体がReadonlyであることを確認
-      type IsReadonly = ACParts extends Readonly<any> ? true : false
+      type IsReadonly = ACParts extends Readonly<Record<string, unknown>> ? true : false
       expectTypeOf<IsReadonly>().toEqualTypeOf<true>()
     })
   })

@@ -6,6 +6,8 @@
  */
 import type { Assembly, AssemblyKey, RawAssembly } from '#core/assembly/assembly'
 import { findPartByIdOrFirst } from '#core/assembly/parts-lookup'
+import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
+import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 
 /**
@@ -65,6 +67,14 @@ export function searchToAssemblyV2(
   params: URLSearchParams,
   candidates: Candidates,
 ): RawAssembly {
+  const legs = findPartByIdOrFirst(candidates.legs, params.get('l') ?? undefined)!
+
+  // タンク脚部の場合、ブースターは常にNotEquippedでなければならない
+  const booster =
+    legs.category === tank
+      ? boosterNotEquipped
+      : findPartByIdOrFirst(candidates.booster, params.get('b') ?? undefined)!
+
   return {
     rightArmUnit:
       findPartByIdOrFirst(candidates.rightArmUnit, params.get('rau') ?? undefined)!,
@@ -78,9 +88,9 @@ export function searchToAssemblyV2(
     head: findPartByIdOrFirst(candidates.head, params.get('h') ?? undefined)!,
     core: findPartByIdOrFirst(candidates.core, params.get('c') ?? undefined)!,
     arms: findPartByIdOrFirst(candidates.arms, params.get('a') ?? undefined)!,
-    legs: findPartByIdOrFirst(candidates.legs, params.get('l') ?? undefined)!,
+    legs,
 
-    booster: findPartByIdOrFirst(candidates.booster, params.get('b') ?? undefined)!,
+    booster,
     fcs: findPartByIdOrFirst(candidates.fcs, params.get('f') ?? undefined)!,
     generator:
       findPartByIdOrFirst(candidates.generator, params.get('g') ?? undefined)!,

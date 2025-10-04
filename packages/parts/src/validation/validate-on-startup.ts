@@ -1,22 +1,23 @@
 /**
  * 起動時パーツID検証
  */
-import { heads } from '../heads'
-import { cores } from '../cores'
+import { armUnits } from '../arm-units'
 import { arms } from '../arms'
-import { legs } from '../legs'
+import { backUnits } from '../back-units'
 import { boosters } from '../booster'
+import { cores } from '../cores'
+import { expansions } from '../expansions'
 import { fcses } from '../fces'
 import { generators } from '../generators'
-import { expansions } from '../expansions'
-import { armUnits } from '../arm-units'
-import { backUnits } from '../back-units'
+import { heads } from '../heads'
+import { legs } from '../legs'
 import {
   boosterNotEquipped,
   expansionNotEquipped,
   armNotEquipped,
   backNotEquipped
 } from '../not-equipped'
+
 import { validatePartIdUniqueness, createDuplicateIdLogEntry } from './id-validator'
 
 /**
