@@ -4,10 +4,12 @@
  * v1/v2形式を自動判定し、適切にデシリアライズします。
  */
 import type { RawAssembly } from '#core/assembly/assembly'
+
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
+
+import { searchToAssemblyV2 } from './as-query-v2'
 import { convertV1ToV2 } from './convert-v1-to-v2'
 import { detectUrlVersion } from './detect-version'
-import { searchToAssemblyV2 } from './as-query-v2'
 
 /**
  * URLクエリパラメータから機体構成を復元（v1/v2自動判定）

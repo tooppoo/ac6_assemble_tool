@@ -29,7 +29,7 @@ export interface PartIdValidator {
    * @returns 重複IDが存在する場合はエラー情報、存在しない場合はnull
    */
   validateUniqueness(
-    allParts: ReadonlyArray<{ id: string; name: string }>
+    allParts: ReadonlyArray<{ id: string; name: string }>,
   ): PartIdValidationResult
 }
 
@@ -52,7 +52,7 @@ export interface PartIdValidator {
  * ```
  */
 export function validatePartIdUniqueness(
-  parts: ReadonlyArray<{ id: string; name: string }>
+  parts: ReadonlyArray<{ id: string; name: string }>,
 ): PartIdValidationResult {
   // IDをキーとして、パーツ名のリストを値とするマップを作成
   const idMap = new Map<string, string[]>()

@@ -6,8 +6,8 @@
   "license": "MIT",
   "description": "",
   "scripts": {
-    "lint": "eslint . && prettier . --check",
-    "format": "eslint . --fix && prettier . --write"
+    "lint": "eslint . --cache && prettier . --check --cache",
+    "format": "eslint . --cache --fix && prettier . --write --cache"
   },
   "devDependencies": {
     "@ac6_assemble_tool/eslint": "workspace:1.0.0"

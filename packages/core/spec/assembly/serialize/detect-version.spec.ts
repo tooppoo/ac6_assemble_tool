@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
 import { detectUrlVersion } from '#core/assembly/serialize/detect-version'
+
+import { describe, it, expect } from 'vitest'
 
 describe('URL形式バージョン検出', () => {
   describe('detectUrlVersion', () => {

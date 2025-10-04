@@ -15,10 +15,13 @@ import {
   boosterNotEquipped,
   expansionNotEquipped,
   armNotEquipped,
-  backNotEquipped
+  backNotEquipped,
 } from '../not-equipped'
 
-import { validatePartIdUniqueness, createDuplicateIdLogEntry } from './id-validator'
+import {
+  validatePartIdUniqueness,
+  createDuplicateIdLogEntry,
+} from './id-validator'
 
 /**
  * 全パーツを収集
@@ -59,15 +62,17 @@ export function validatePartsOnStartup(): void {
     // アプリケーション起動を中断
     throw new Error(
       `Duplicate part ID detected: ${result.duplicateId} ` +
-      `(conflicting parts: ${result.conflictingParts.join(', ')})`
+        `(conflicting parts: ${result.conflictingParts.join(', ')})`,
     )
   }
 
   // 検証成功時はinfoログを出力
-  console.log(JSON.stringify({
-    level: 'info',
-    message: 'Part ID validation passed',
-    totalParts: allParts.length,
-    timestamp: new Date().toISOString(),
-  }))
+  console.log(
+    JSON.stringify({
+      level: 'info',
+      message: 'Part ID validation passed',
+      totalParts: allParts.length,
+      timestamp: new Date().toISOString(),
+    }),
+  )
 }

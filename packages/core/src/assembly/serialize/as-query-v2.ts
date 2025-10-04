@@ -6,6 +6,7 @@
  */
 import type { Assembly, AssemblyKey, RawAssembly } from '#core/assembly/assembly'
 import { findPartByIdOrFirst } from '#core/assembly/parts-lookup'
+
 import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'

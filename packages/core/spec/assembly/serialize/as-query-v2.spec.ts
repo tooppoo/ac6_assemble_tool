@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest'
-import { assemblyToSearchV2 } from '#core/assembly/serialize/as-query-v2'
 import { createAssembly } from '#core/assembly/assembly'
+import { assemblyToSearchV2 } from '#core/assembly/serialize/as-query-v2'
+
+import { describe, it, expect } from 'vitest'
 
 describe('v2形式URLシリアライザー', () => {
   describe('assemblyToSearchV2', () => {

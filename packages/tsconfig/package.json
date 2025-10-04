@@ -4,8 +4,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint . && prettier . --check",
-    "format": "eslint . --fix && prettier . --write"
+    "lint": "eslint . --cache && prettier . --check --cache",
+    "format": "eslint . --cache --fix && prettier . --write --cache"
   },
   "author": "philomagi <tooppoo56@gmail.com> (https://github.com/tooppoo)",
   "license": "MIT",

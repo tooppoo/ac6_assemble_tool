@@ -19,6 +19,7 @@
     "lint": "turbo run lint",
     "format": "turbo run format",
     "check-types": "turbo run check-types",
+    "core": "pnpm --filter @ac6_assemble_tool/core",
     "web": "pnpm --filter @ac6_assemble_tool/web",
     "parts": "pnpm --filter @ac6_assemble_tool/parts",
     "docs": "pnpm --filter @ac6_assemble_tool/docs"

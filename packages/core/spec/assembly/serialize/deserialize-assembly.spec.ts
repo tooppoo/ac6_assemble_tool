@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest'
 import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
+
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
+import { describe, it, expect } from 'vitest'
 
 describe('機体構成デシリアライザー統合', () => {
   const mockCandidates: Candidates = {

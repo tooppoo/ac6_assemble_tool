@@ -11,8 +11,8 @@
   "scripts": {
     "tsc": "tsc",
     "tsc:watch": "tsc -w",
-    "lint": "eslint . && prettier . --check",
-    "format": "eslint . --fix && prettier . --write",
+    "lint": "eslint . --cache && prettier . --check --cache",
+    "format": "eslint . --cache --fix && prettier . --write --cache",
     "check-types": "tsc --noEmit",
     "validate-ids": "tsx scripts/validate-part-ids.ts",
     "prebuild": "pnpm validate-ids"

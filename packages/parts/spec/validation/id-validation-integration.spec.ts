@@ -1,4 +1,7 @@
-import { validatePartIdUniqueness, createDuplicateIdLogEntry } from '#parts/validation/id-validator'
+import {
+  validatePartIdUniqueness,
+  createDuplicateIdLogEntry,
+} from '#parts/validation/id-validator'
 import { validatePartsOnStartup } from '#parts/validation/validate-on-startup'
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'

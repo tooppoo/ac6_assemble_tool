@@ -10,40 +10,78 @@
       "cache": false
     },
     "build": {
-      "outputs": ["dist/**", "analyze.html", ".svelte-kit/"],
-      "dependsOn": ["^build"],
-      "env": ["ANALYZE_MODE", "NODE_ENV"]
+      "outputs": [
+        "dist/**",
+        "analyze.html",
+        ".svelte-kit/"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "ANALYZE_MODE",
+        "NODE_ENV"
+      ]
     },
     "build:ci": {
-      "outputs": ["dist/**", "analyze.html", ".svelte-kit/"],
-      "dependsOn": ["^build:ci"],
-      "env": ["ANALYZE_MODE", "NODE_ENV"]
+      "outputs": [
+        "dist/**",
+        "analyze.html",
+        ".svelte-kit/"
+      ],
+      "dependsOn": [
+        "^build:ci"
+      ],
+      "env": [
+        "ANALYZE_MODE",
+        "NODE_ENV"
+      ]
     },
     "test": {
-      "dependsOn": ["^test"]
+      "dependsOn": [
+        "^test"
+      ]
     },
     "test:watch": {
       "persistent": true,
       "cache": false
     },
     "coverage": {
-      "outputs": ["coverage/**"],
-      "dependsOn": ["^coverage"]
+      "outputs": [
+        "coverage/**"
+      ],
+      "dependsOn": [
+        "^coverage"
+      ]
     },
     "check-types": {
-      "dependsOn": ["transit"]
+      "dependsOn": [
+        "transit"
+      ]
     },
     "lint": {
-      "dependsOn": ["transit"]
+      "outputs": [
+        ".eslintcache",
+        "node_modules/.cache/prettier/.prettier-cache"
+      ],
+      "dependsOn": [
+        "^lint"
+      ]
     },
     "format": {
-      "dependsOn": ["transit"]
+      "dependsOn": [
+        "transit"
+      ]
     },
     "clean": {
-      "dependsOn": ["^clean"]
+      "dependsOn": [
+        "^clean"
+      ]
     },
     "transit": {
-      "dependsOn": ["^transit"]
+      "dependsOn": [
+        "^transit"
+      ]
     }
   }
 }

@@ -6,12 +6,9 @@ import type { NoneManufacture } from '#parts/types/base/manufacture'
 import { noneManufacture } from '#parts/types/base/manufacture'
 import type { ACParts, WithEnLoad } from '#parts/types/base/types'
 
-const defineNotEquipped = (id: string): ACParts<
-  NotEquippedClass,
-  NoneManufacture,
-  NotEquipped
-> &
-  WithEnLoad =>
+const defineNotEquipped = (
+  id: string,
+): ACParts<NotEquippedClass, NoneManufacture, NotEquipped> & WithEnLoad =>
   ({
     id,
     name: '(Not Equipped)',

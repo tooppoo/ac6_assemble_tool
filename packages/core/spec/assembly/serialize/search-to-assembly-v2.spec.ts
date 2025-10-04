@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest'
 import { searchToAssemblyV2 } from '#core/assembly/serialize/as-query-v2'
+
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
+import { describe, it, expect } from 'vitest'
 
 describe('v2形式URLデシリアライザー', () => {
   const mockCandidates: Candidates = {

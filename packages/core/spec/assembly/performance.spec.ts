@@ -1,26 +1,27 @@
-import { describe, it, expect } from 'vitest'
+import { createAssembly } from '#core/assembly/assembly'
 import { assemblyToSearchV2 } from '#core/assembly/serialize/as-query-v2'
 import { convertV1ToV2 } from '#core/assembly/serialize/convert-v1-to-v2'
 import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
-import { createAssembly } from '#core/assembly/assembly'
-import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
-import { validatePartIdUniqueness } from '@ac6_assemble_tool/parts/validation/id-validator'
-import { heads } from '@ac6_assemble_tool/parts/heads'
-import { cores } from '@ac6_assemble_tool/parts/cores'
+
+import { armUnits } from '@ac6_assemble_tool/parts/arm-units'
 import { arms } from '@ac6_assemble_tool/parts/arms'
-import { legs } from '@ac6_assemble_tool/parts/legs'
+import { backUnits } from '@ac6_assemble_tool/parts/back-units'
 import { boosters } from '@ac6_assemble_tool/parts/booster'
+import { cores } from '@ac6_assemble_tool/parts/cores'
+import { expansions } from '@ac6_assemble_tool/parts/expansions'
 import { fcses } from '@ac6_assemble_tool/parts/fces'
 import { generators } from '@ac6_assemble_tool/parts/generators'
-import { expansions } from '@ac6_assemble_tool/parts/expansions'
-import { armUnits } from '@ac6_assemble_tool/parts/arm-units'
-import { backUnits } from '@ac6_assemble_tool/parts/back-units'
+import { heads } from '@ac6_assemble_tool/parts/heads'
+import { legs } from '@ac6_assemble_tool/parts/legs'
 import {
   boosterNotEquipped,
   expansionNotEquipped,
   armNotEquipped,
   backNotEquipped,
 } from '@ac6_assemble_tool/parts/not-equipped'
+import { validatePartIdUniqueness } from '@ac6_assemble_tool/parts/validation/id-validator'
+import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
+import { describe, it, expect } from 'vitest'
 
 describe('パフォーマンス検証', () => {
   describe('全パーツID検証', () => {

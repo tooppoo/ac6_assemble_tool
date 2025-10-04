@@ -17,14 +17,26 @@ interface FileConfig {
 }
 
 const FILES: FileConfig[] = [
-  { filename: 'booster.ts', category: 'booster', definePattern: /defineBooster\(\{/g },
-  { filename: 'generators.ts', category: 'generator', definePattern: /defineGenerator\(\{/g },
+  {
+    filename: 'booster.ts',
+    category: 'booster',
+    definePattern: /defineBooster\(\{/g,
+  },
+  {
+    filename: 'generators.ts',
+    category: 'generator',
+    definePattern: /defineGenerator\(\{/g,
+  },
   { filename: 'cores.ts', category: 'core', definePattern: /defineCore\(\{/g },
   { filename: 'arms.ts', category: 'arms', definePattern: /defineArms\(\{/g },
   { filename: 'heads.ts', category: 'head', definePattern: /defineHead\(\{/g },
   { filename: 'legs.ts', category: 'legs', definePattern: /defineLegs/g },
   { filename: 'arm-units.ts', category: 'arm-unit', definePattern: /name: '/g },
-  { filename: 'back-units.ts', category: 'back-unit', definePattern: /name: '/g },
+  {
+    filename: 'back-units.ts',
+    category: 'back-unit',
+    definePattern: /name: '/g,
+  },
 ]
 
 function addIdsToFile(filepath: string, category: string): void {
@@ -38,11 +50,14 @@ function addIdsToFile(filepath: string, category: string): void {
   }
 
   let counter = 1
-  const updatedContent = content.replace(/(\s+)(name: ')/g, (match, spaces, namePrefix) => {
-    const id = `${code}${String(counter).padStart(3, '0')}`
-    counter++
-    return `${spaces}id: '${id}',\n${spaces}${namePrefix}`
-  })
+  const updatedContent = content.replace(
+    /(\s+)(name: ')/g,
+    (match, spaces, namePrefix) => {
+      const id = `${code}${String(counter).padStart(3, '0')}`
+      counter++
+      return `${spaces}id: '${id}',\n${spaces}${namePrefix}`
+    },
+  )
 
   fs.writeFileSync(filepath, updatedContent, 'utf-8')
   console.log(`✓ Added ${counter - 1} IDs to ${path.basename(filepath)}`)

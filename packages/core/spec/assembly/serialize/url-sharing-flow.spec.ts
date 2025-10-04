@@ -1,9 +1,10 @@
-import { describe, it, expect } from 'vitest'
 import { createAssembly } from '#core/assembly/assembly'
 import { assemblyToSearchV2 } from '#core/assembly/serialize/as-query-v2'
-import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
 import { convertV1ToV2 } from '#core/assembly/serialize/convert-v1-to-v2'
+import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
+
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
+import { describe, it, expect } from 'vitest'
 
 describe('URL共有フロー統合テスト', () => {
   describe('v2形式URL生成→共有→読み込みフロー', () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
-import {  generateNextId, categoryToCode } from './generate-part-id'
+import { generateNextId, categoryToCode } from './generate-part-id'
 
 describe('ID生成スクリプト', () => {
   describe('categoryToCode', () => {
@@ -45,7 +45,9 @@ describe('ID生成スクリプト', () => {
     })
 
     it('未知のカテゴリはエラーをスローする', () => {
-      expect(() => categoryToCode('unknown')).toThrow('Unknown category: unknown')
+      expect(() => categoryToCode('unknown')).toThrow(
+        'Unknown category: unknown',
+      )
     })
   })
 
@@ -68,7 +70,10 @@ describe('ID生成スクリプト', () => {
     })
 
     it('連番が100を超える場合も正しく生成される', () => {
-      const existingIds = Array.from({ length: 150 }, (_, i) => `CR${String(i + 1).padStart(3, '0')}`)
+      const existingIds = Array.from(
+        { length: 150 },
+        (_, i) => `CR${String(i + 1).padStart(3, '0')}`,
+      )
       const nextId = generateNextId('core', existingIds)
       expect(nextId).toBe('CR151')
     })

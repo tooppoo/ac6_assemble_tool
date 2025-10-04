@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+
 import { findPartById } from './parts-lookup'
 
 describe('パーツID検索', () => {

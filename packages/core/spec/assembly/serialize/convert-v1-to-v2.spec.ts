@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest'
 import { convertV1ToV2 } from '#core/assembly/serialize/convert-v1-to-v2'
+
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
+import { describe, it, expect } from 'vitest'
 
 describe('v1→v2変換', () => {
   const mockCandidates: Candidates = {

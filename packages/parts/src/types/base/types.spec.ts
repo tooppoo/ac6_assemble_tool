@@ -1,6 +1,12 @@
 import { describe, it, expect, expectTypeOf } from 'vitest'
 
-import { head as headCategory, core as coreCategory, arms as armsCategory, two_legs as twoLegsCategory, assault_rifle } from './category'
+import {
+  head as headCategory,
+  core as coreCategory,
+  arms as armsCategory,
+  two_legs as twoLegsCategory,
+  assault_rifle,
+} from './category'
 import { head, core, arms, legs } from './classification'
 import { allmind, arquebus } from './manufacture'
 import type { ACParts } from './types'
@@ -66,7 +72,11 @@ describe('ACParts型', () => {
     })
 
     it('カテゴリコードと連番の形式を持つ', () => {
-      const testCases: Array<{ id: string; classification: string; category: string }> = [
+      const testCases: Array<{
+        id: string
+        classification: string
+        category: string
+      }> = [
         { id: 'HD001', classification: head, category: headCategory },
         { id: 'CR042', classification: core, category: coreCategory },
         { id: 'AR123', classification: arms, category: armsCategory },
@@ -101,7 +111,8 @@ describe('ACParts型', () => {
       expectTypeOf<ACPartsId>().toEqualTypeOf<string>()
 
       // ACParts型全体がReadonlyであることを確認
-      type IsReadonly = ACParts extends Readonly<Record<string, unknown>> ? true : false
+      type IsReadonly =
+        ACParts extends Readonly<Record<string, unknown>> ? true : false
       expectTypeOf<IsReadonly>().toEqualTypeOf<true>()
     })
   })

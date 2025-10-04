@@ -9,14 +9,14 @@
  * カテゴリ名から2-3文字のカテゴリコードへのマッピング
  */
 const CATEGORY_CODE_MAP: Record<string, string> = {
-  'head': 'HD',
-  'core': 'CR',
-  'arms': 'AR',
-  'legs': 'LG',
-  'booster': 'BS',
-  'fcs': 'FCS',
-  'generator': 'GN',
-  'expansion': 'EXP',
+  head: 'HD',
+  core: 'CR',
+  arms: 'AR',
+  legs: 'LG',
+  booster: 'BS',
+  fcs: 'FCS',
+  generator: 'GN',
+  expansion: 'EXP',
   'arm-unit': 'AU',
   'back-unit': 'BU',
 }
@@ -43,13 +43,16 @@ export function categoryToCode(category: string): string {
  * @param existingIds - 既存のパーツIDリスト
  * @returns 次のユニークID（例: 'HD001', 'CR042'）
  */
-export function generateNextId(category: string, existingIds: string[]): string {
+export function generateNextId(
+  category: string,
+  existingIds: string[],
+): string {
   const code = categoryToCode(category)
 
   // 該当カテゴリのIDのみを抽出し、連番部分を取得
   const categoryIds = existingIds
-    .filter(id => id.startsWith(code))
-    .map(id => {
+    .filter((id) => id.startsWith(code))
+    .map((id) => {
       const match = id.match(/^[A-Z]{2,3}(\d{3,4})$/)
       return match ? parseInt(match[1], 10) : null
     })
@@ -62,9 +65,8 @@ export function generateNextId(category: string, existingIds: string[]): string 
   const nextNumber = maxNumber + 1
 
   // 3桁でゼロパディング（1000以上の場合は4桁）
-  const paddedNumber = nextNumber < 1000
-    ? String(nextNumber).padStart(3, '0')
-    : String(nextNumber)
+  const paddedNumber =
+    nextNumber < 1000 ? String(nextNumber).padStart(3, '0') : String(nextNumber)
 
   return `${code}${paddedNumber}`
 }
@@ -94,7 +96,9 @@ export function main() {
 
   if (!category) {
     console.error('Error: --category is required')
-    console.error('Usage: pnpm generate-part-id -- --category=<category> [--existing=<id1,id2,...>]')
+    console.error(
+      'Usage: pnpm generate-part-id -- --category=<category> [--existing=<id1,id2,...>]',
+    )
     process.exit(1)
   }
 
