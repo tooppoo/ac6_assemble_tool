@@ -23,7 +23,7 @@
  */
 export function findPartById<T extends { id: string }>(
   parts: ReadonlyArray<T>,
-  id: string
+  id: string,
 ): T | undefined {
   return parts.find((part) => part.id === id)
 }
@@ -50,7 +50,7 @@ export function findPartById<T extends { id: string }>(
 export function findPartByIdOrFallback<T extends { id: string }>(
   parts: ReadonlyArray<T>,
   id: string,
-  fallback: T
+  fallback: T,
 ): T {
   return findPartById(parts, id) ?? fallback
 }
@@ -74,7 +74,7 @@ export function findPartByIdOrFallback<T extends { id: string }>(
  */
 export function findPartByIdOrFirst<T extends { id: string }>(
   parts: ReadonlyArray<T>,
-  id: string | undefined
+  id: string | undefined,
 ): T | undefined {
   if (!id) {
     return parts[0]

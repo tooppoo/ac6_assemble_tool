@@ -34,10 +34,18 @@ describe('URL共有フロー統合テスト', () => {
       )
 
       // 全部位が正しく復元されていることを確認
-      expect(restoredAssembly.rightArmUnit.id).toBe(originalAssembly.rightArmUnit.id)
-      expect(restoredAssembly.leftArmUnit.id).toBe(originalAssembly.leftArmUnit.id)
-      expect(restoredAssembly.rightBackUnit.id).toBe(originalAssembly.rightBackUnit.id)
-      expect(restoredAssembly.leftBackUnit.id).toBe(originalAssembly.leftBackUnit.id)
+      expect(restoredAssembly.rightArmUnit.id).toBe(
+        originalAssembly.rightArmUnit.id,
+      )
+      expect(restoredAssembly.leftArmUnit.id).toBe(
+        originalAssembly.leftArmUnit.id,
+      )
+      expect(restoredAssembly.rightBackUnit.id).toBe(
+        originalAssembly.rightBackUnit.id,
+      )
+      expect(restoredAssembly.leftBackUnit.id).toBe(
+        originalAssembly.leftBackUnit.id,
+      )
       expect(restoredAssembly.head.id).toBe(originalAssembly.head.id)
       expect(restoredAssembly.core.id).toBe(originalAssembly.core.id)
       expect(restoredAssembly.arms.id).toBe(originalAssembly.arms.id)

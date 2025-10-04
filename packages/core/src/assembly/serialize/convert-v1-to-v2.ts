@@ -3,7 +3,10 @@
  *
  * v1形式（インデックスベース）のURLをv2形式（IDベース）に変換します。
  */
-import type { Candidates, CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
+import type {
+  Candidates,
+  CandidatesKey,
+} from '@ac6_assemble_tool/parts/types/candidates'
 
 /**
  * v1形式URLをv2形式に変換

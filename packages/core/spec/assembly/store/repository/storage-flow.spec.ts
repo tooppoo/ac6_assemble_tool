@@ -98,15 +98,30 @@ describe('IndexedDBストレージフロー統合テスト', () => {
       })
 
       await repository.storeNew(
-        { id: id1, name: 'Assembly 1', description: 'First', assembly: assembly1 },
+        {
+          id: id1,
+          name: 'Assembly 1',
+          description: 'First',
+          assembly: assembly1,
+        },
         candidates,
       )
       await repository.storeNew(
-        { id: id2, name: 'Assembly 2', description: 'Second', assembly: assembly2 },
+        {
+          id: id2,
+          name: 'Assembly 2',
+          description: 'Second',
+          assembly: assembly2,
+        },
         candidates,
       )
       await repository.storeNew(
-        { id: id3, name: 'Assembly 3', description: 'Third', assembly: assembly1 },
+        {
+          id: id3,
+          name: 'Assembly 3',
+          description: 'Third',
+          assembly: assembly1,
+        },
         candidates,
       )
 
@@ -147,7 +162,9 @@ describe('IndexedDBストレージフロー統合テスト', () => {
       expect(loaded?.assembly.core.id).toBe(candidates.core[3].id)
       expect(loaded?.assembly.arms.id).toBe(candidates.arms[7].id)
       expect(loaded?.assembly.legs.id).toBe(candidates.legs[4].id)
-      expect(loaded?.assembly.rightArmUnit.id).toBe(candidates.rightArmUnit[3].id)
+      expect(loaded?.assembly.rightArmUnit.id).toBe(
+        candidates.rightArmUnit[3].id,
+      )
     }, 15000)
 
     it('v1形式データを読み込み後、更新するとv2形式で保存される', async () => {

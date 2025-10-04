@@ -4,7 +4,7 @@
  * 機体構成をIDベースのURLクエリパラメータに変換します。
  * v2形式は`v=2`パラメータを含み、各パーツをIDで指定します。
  */
-import type { Assembly, AssemblyKey, RawAssembly } from '#core/assembly/assembly'
+import type { Assembly, RawAssembly } from '#core/assembly/assembly'
 import { findPartByIdOrFirst } from '#core/assembly/parts-lookup'
 
 import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
@@ -68,7 +68,10 @@ export function searchToAssemblyV2(
   params: URLSearchParams,
   candidates: Candidates,
 ): RawAssembly {
-  const legs = findPartByIdOrFirst(candidates.legs, params.get('l') ?? undefined)!
+  const legs = findPartByIdOrFirst(
+    candidates.legs,
+    params.get('l') ?? undefined,
+  )!
 
   // タンク脚部の場合、ブースターは常にNotEquippedでなければならない
   const booster =
@@ -77,14 +80,22 @@ export function searchToAssemblyV2(
       : findPartByIdOrFirst(candidates.booster, params.get('b') ?? undefined)!
 
   return {
-    rightArmUnit:
-      findPartByIdOrFirst(candidates.rightArmUnit, params.get('rau') ?? undefined)!,
-    leftArmUnit:
-      findPartByIdOrFirst(candidates.leftArmUnit, params.get('lau') ?? undefined)!,
-    rightBackUnit:
-      findPartByIdOrFirst(candidates.rightBackUnit, params.get('rbu') ?? undefined)!,
-    leftBackUnit:
-      findPartByIdOrFirst(candidates.leftBackUnit, params.get('lbu') ?? undefined)!,
+    rightArmUnit: findPartByIdOrFirst(
+      candidates.rightArmUnit,
+      params.get('rau') ?? undefined,
+    )!,
+    leftArmUnit: findPartByIdOrFirst(
+      candidates.leftArmUnit,
+      params.get('lau') ?? undefined,
+    )!,
+    rightBackUnit: findPartByIdOrFirst(
+      candidates.rightBackUnit,
+      params.get('rbu') ?? undefined,
+    )!,
+    leftBackUnit: findPartByIdOrFirst(
+      candidates.leftBackUnit,
+      params.get('lbu') ?? undefined,
+    )!,
 
     head: findPartByIdOrFirst(candidates.head, params.get('h') ?? undefined)!,
     core: findPartByIdOrFirst(candidates.core, params.get('c') ?? undefined)!,
@@ -93,12 +104,16 @@ export function searchToAssemblyV2(
 
     booster,
     fcs: findPartByIdOrFirst(candidates.fcs, params.get('f') ?? undefined)!,
-    generator:
-      findPartByIdOrFirst(candidates.generator, params.get('g') ?? undefined)!,
+    generator: findPartByIdOrFirst(
+      candidates.generator,
+      params.get('g') ?? undefined,
+    )!,
 
-    expansion:
-      findPartByIdOrFirst(candidates.expansion, params.get('e') ?? undefined)!,
-  }
+    expansion: findPartByIdOrFirst(
+      candidates.expansion,
+      params.get('e') ?? undefined,
+    )!,
+  } as RawAssembly
 }
 
 /**

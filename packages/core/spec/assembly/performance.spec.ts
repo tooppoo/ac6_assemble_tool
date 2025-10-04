@@ -172,7 +172,9 @@ describe('パフォーマンス検証', () => {
       console.log('URL length:', urlString.length)
       console.log('URL:', urlString)
       for (const [key, value] of urlParams.entries()) {
-        console.log(`  ${key}=${value} (${key.length + 1 + value.length} chars)`)
+        console.log(
+          `  ${key}=${value} (${key.length + 1 + value.length} chars)`,
+        )
       }
     })
   })
