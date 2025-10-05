@@ -85,7 +85,7 @@ export function validatePartIdUniqueness(
  * @param error - 重複IDエラー情報
  * @returns JSON形式のログオブジェクト
  */
-export function createDuplicateIdLogEntry(error: DuplicateIdError): object {
+export function createDuplicateIdLogEntry(error: DuplicateIdError) {
   return {
     level: 'error',
     message: 'Duplicate part ID detected',
