@@ -37,5 +37,8 @@ analyze.html
 # turbo
 .turbo
 
+# claude code
+.claude/settings.local.json
+
 # other
 tmp
