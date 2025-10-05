@@ -4,6 +4,8 @@
  * IDベースでパーツを検索し、引当を行う機能を提供します。
  */
 
+import { logger } from '#core/utils/logger'
+
 /**
  * パーツIDでパーツを検索
  *
@@ -47,12 +49,22 @@ export function findPartById<T extends { id: string }>(
  * // => { id: 'HD000', name: 'Default Head' }
  * ```
  */
-export function findPartByIdOrFallback<T extends { id: string }>(
+export function findPartByIdOrFallback<T extends { id: string; name: string }>(
   parts: ReadonlyArray<T>,
   id: string,
   fallback: T,
 ): T {
-  return findPartById(parts, id) ?? fallback
+  const found = findPartById(parts, id)
+
+  if (!found) {
+    logger.warn('Part ID not found, using fallback', {
+      requestedId: id,
+      fallbackId: fallback.id,
+      fallbackName: fallback.name,
+    })
+  }
+
+  return found ?? fallback
 }
 
 /**
@@ -72,12 +84,23 @@ export function findPartByIdOrFallback<T extends { id: string }>(
  * // => { id: 'HD001', name: 'Head A' }
  * ```
  */
-export function findPartByIdOrFirst<T extends { id: string }>(
+export function findPartByIdOrFirst<T extends { id: string; name: string }>(
   parts: ReadonlyArray<T>,
   id: string | undefined,
 ): T | undefined {
   if (!id) {
     return parts[0]
   }
-  return findPartById(parts, id) ?? parts[0]
+
+  const found = findPartById(parts, id)
+
+  if (!found && parts[0]) {
+    logger.warn('Part ID not found, using first part', {
+      requestedId: id,
+      fallbackId: parts[0].id,
+      fallbackName: parts[0].name,
+    })
+  }
+
+  return found ?? parts[0]
 }
