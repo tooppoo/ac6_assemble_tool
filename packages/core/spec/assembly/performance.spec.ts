@@ -1,4 +1,4 @@
-import { createAssembly } from '#core/assembly/assembly'
+import { createAssembly, type RawAssembly } from '#core/assembly/assembly'
 import { assemblyToSearchV2 } from '#core/assembly/serialize/as-query-v2'
 import { convertV1ToV2 } from '#core/assembly/serialize/convert-v1-to-v2'
 import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
@@ -132,7 +132,7 @@ describe('パフォーマンス検証', () => {
         fcs: candidates.fcs[7],
         generator: candidates.generator[10],
         expansion: candidates.expansion[2],
-      })
+      } as RawAssembly)
 
       const urlParams = assemblyToSearchV2(assembly)
       const urlString = urlParams.toString()
@@ -159,7 +159,7 @@ describe('パフォーマンス検証', () => {
         fcs: candidates.fcs[0],
         generator: candidates.generator[0],
         expansion: candidates.expansion[0],
-      })
+      } as RawAssembly)
 
       const urlParams = assemblyToSearchV2(assembly)
       const urlString = urlParams.toString()

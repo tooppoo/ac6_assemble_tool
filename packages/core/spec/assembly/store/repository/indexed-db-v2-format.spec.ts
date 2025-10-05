@@ -1,4 +1,4 @@
-import { createAssembly } from '#core/assembly/assembly'
+import { createAssembly, type RawAssembly } from '#core/assembly/assembly'
 import { IndexedDbRepository } from '#core/assembly/store/repository/indexed-db/indexed-db-repository'
 
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
@@ -27,7 +27,7 @@ describe('IndexedDB v2形式対応', () => {
       fcs: candidates.fcs[0],
       generator: candidates.generator[0],
       expansion: candidates.expansion[0],
-    })
+    } as RawAssembly)
 
     await repository.storeNew(
       {

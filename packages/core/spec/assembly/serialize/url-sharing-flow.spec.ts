@@ -1,4 +1,4 @@
-import { createAssembly } from '#core/assembly/assembly'
+import { createAssembly, type RawAssembly } from '#core/assembly/assembly'
 import { assemblyToSearchV2 } from '#core/assembly/serialize/as-query-v2'
 import { convertV1ToV2 } from '#core/assembly/serialize/convert-v1-to-v2'
 import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
@@ -23,7 +23,7 @@ describe('URL共有フロー統合テスト', () => {
         fcs: candidates.fcs[1],
         generator: candidates.generator[2],
         expansion: candidates.expansion[1],
-      })
+      } as RawAssembly)
 
       // v2形式URLに変換
       const urlParams = assemblyToSearchV2(originalAssembly)
@@ -71,7 +71,7 @@ describe('URL共有フロー統合テスト', () => {
         fcs: candidates.fcs[5],
         generator: candidates.generator[7],
         expansion: candidates.expansion[2],
-      })
+      } as RawAssembly)
 
       const urlParams = assemblyToSearchV2(assembly)
       const urlString = urlParams.toString()

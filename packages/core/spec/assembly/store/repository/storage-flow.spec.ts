@@ -1,4 +1,4 @@
-import { createAssembly } from '#core/assembly/assembly'
+import { createAssembly, type RawAssembly } from '#core/assembly/assembly'
 import { setupDataBase } from '#core/assembly/store/repository/indexed-db/indexed-db'
 import { IndexedDbRepository } from '#core/assembly/store/repository/indexed-db/indexed-db-repository'
 
@@ -29,7 +29,7 @@ describe('IndexedDBストレージフロー統合テスト', () => {
         fcs: candidates.fcs[2],
         generator: candidates.generator[5],
         expansion: candidates.expansion[1],
-      })
+      } as RawAssembly)
 
       // 保存
       await repository.storeNew(
@@ -80,7 +80,7 @@ describe('IndexedDBストレージフロー統合テスト', () => {
         fcs: candidates.fcs[0],
         generator: candidates.generator[0],
         expansion: candidates.expansion[0],
-      })
+      } as RawAssembly)
 
       const assembly2 = createAssembly({
         rightArmUnit: candidates.rightArmUnit[1],
@@ -95,7 +95,7 @@ describe('IndexedDBストレージフロー統合テスト', () => {
         fcs: candidates.fcs[1],
         generator: candidates.generator[1],
         expansion: candidates.expansion[1],
-      })
+      } as RawAssembly)
 
       await repository.storeNew(
         {
@@ -137,7 +137,7 @@ describe('IndexedDBストレージフロー統合テスト', () => {
   describe('v1形式データの自動変換', () => {
     it('v1形式データを直接挿入し、読み込み時に自動変換される', async () => {
       const testId = ulid()
-      const db = setupDataBase()
+      const db = setupDataBase(candidates)
 
       // v1形式データを直接IndexedDBに挿入
       const v1Data = {
@@ -169,7 +169,7 @@ describe('IndexedDBストレージフロー統合テスト', () => {
 
     it('v1形式データを読み込み後、更新するとv2形式で保存される', async () => {
       const testId = ulid()
-      const db = setupDataBase()
+      const db = setupDataBase(candidates)
 
       // v1形式データを挿入
       const v1Data = {
@@ -228,7 +228,7 @@ describe('IndexedDBストレージフロー統合テスト', () => {
         fcs: candidates.fcs[0],
         generator: candidates.generator[0],
         expansion: candidates.expansion[0],
-      })
+      } as RawAssembly)
 
       await repository.storeNew(
         { id: testId, name: 'To Be Deleted', description: '', assembly },
@@ -300,7 +300,7 @@ describe('IndexedDBストレージフロー統合テスト', () => {
         fcs: candidates.fcs[0],
         generator: candidates.generator[0],
         expansion: candidates.expansion[0],
-      })
+      } as RawAssembly)
 
       await repository.storeNew(
         {

@@ -8,6 +8,7 @@ import {
   assault_rifle,
 } from './category'
 import { head, core, arms, legs } from './classification'
+import type { Classification } from './classification'
 import { allmind, arquebus } from './manufacture'
 import type { ACParts } from './types'
 
@@ -74,7 +75,7 @@ describe('ACParts型', () => {
     it('カテゴリコードと連番の形式を持つ', () => {
       const testCases: Array<{
         id: string
-        classification: string
+        classification: Classification
         category: string
       }> = [
         { id: 'HD001', classification: head, category: headCategory },
