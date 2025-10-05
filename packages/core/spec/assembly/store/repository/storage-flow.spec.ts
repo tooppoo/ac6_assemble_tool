@@ -7,7 +7,7 @@ import { ulid } from 'ulid'
 import { describe, it, expect, beforeEach } from 'vitest'
 
 describe('IndexedDBストレージフロー統合テスト', () => {
-  const repository = new IndexedDbRepository()
+  const repository = new IndexedDbRepository(candidates)
 
   beforeEach(async () => {
     await repository.clear()
@@ -242,6 +242,82 @@ describe('IndexedDBストレージフロー統合テスト', () => {
 
       const after = await repository.findById(testId, candidates)
       expect(after).toBeNull()
+    }, 15000)
+  })
+
+  describe('v1形式データのDBバージョンアップグレード時自動移行', () => {
+    it('DBバージョン1からバージョン2へのアップグレード時にv1形式データが自動変換される', async () => {
+      // 既存のDBを完全に削除
+      await repository.clear()
+      const { Dexie } = await import('dexie')
+      await Dexie.delete('ac6-assembly-tool')
+
+      // DBバージョン1のスキーマでデータを作成
+      const dbV1 = new Dexie('ac6-assembly-tool')
+      dbV1.version(1).stores({
+        stored_assembly: 'id,name,createdAt,updatedAt',
+      })
+
+      // v1形式データを直接挿入
+      const v1Data = {
+        id: ulid(10000),
+        name: 'V1 Assembly',
+        description: 'v1形式テストデータ',
+        assembly: 'h=0&c=1&a=2&l=3&rau=4&lau=5&rbu=6&lbu=7&b=8&f=9&g=10&e=11',
+        createdAt: new Date('2024-01-01'),
+        updatedAt: new Date('2024-01-01'),
+      }
+
+      await dbV1.table('stored_assembly').add(v1Data)
+      await dbV1.close()
+
+      // バージョン2のDBを開く（アップグレードが自動実行される）
+      const dbV2 = setupDataBase(candidates)
+
+      // データを取得してv2形式に変換されていることを確認
+      const stored = await dbV2.stored_assembly.get(v1Data.id)
+      expect(stored).not.toBeUndefined()
+      expect(stored?.assembly).toContain('v=2')
+      expect(stored?.name).toBe('V1 Assembly')
+
+      await dbV2.close()
+      await Dexie.delete('ac6-assembly-tool')
+    }, 15000)
+
+    it('v2形式データはそのまま保持される', async () => {
+      // 既にv2形式のデータを保存
+      const testId = ulid()
+      const assembly = createAssembly({
+        rightArmUnit: candidates.rightArmUnit[0],
+        leftArmUnit: candidates.leftArmUnit[0],
+        rightBackUnit: candidates.rightBackUnit[0],
+        leftBackUnit: candidates.leftBackUnit[0],
+        head: candidates.head[0],
+        core: candidates.core[0],
+        arms: candidates.arms[0],
+        legs: candidates.legs[0],
+        booster: candidates.booster[0],
+        fcs: candidates.fcs[0],
+        generator: candidates.generator[0],
+        expansion: candidates.expansion[0],
+      })
+
+      await repository.storeNew(
+        {
+          id: testId,
+          name: 'V2 Assembly',
+          description: 'v2形式テストデータ',
+          assembly,
+        },
+        candidates,
+      )
+
+      // DBを再度開いてもv2形式のまま
+      const db = setupDataBase(candidates)
+      const stored = await db.stored_assembly.get(testId)
+      expect(stored?.assembly).toContain('v=2')
+
+      db.close()
     }, 15000)
   })
 })

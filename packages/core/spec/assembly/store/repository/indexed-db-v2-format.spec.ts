@@ -6,7 +6,7 @@ import { ulid } from 'ulid'
 import { describe, it, expect, beforeEach } from 'vitest'
 
 describe('IndexedDB v2形式対応', () => {
-  const repository = new IndexedDbRepository()
+  const repository = new IndexedDbRepository(candidates)
 
   beforeEach(async () => {
     await repository.clear()

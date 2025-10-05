@@ -24,7 +24,11 @@
   export let candidates: Candidates
   export let assembly: Assembly
 
-  const repository: StoredAssemblyRepository = new IndexedDbRepository()
+  let repository: StoredAssemblyRepository
+
+  $: {
+    repository = new IndexedDbRepository(candidates)
+  }
 
   let newName: string = ''
   let newDescription: string = ''

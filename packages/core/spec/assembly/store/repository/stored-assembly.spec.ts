@@ -16,7 +16,7 @@ describe('repository', () => {
   describe.each([
     {
       label: IndexedDbRepository.name,
-      repository: new IndexedDbRepository(),
+      repository: new IndexedDbRepository(candidates),
     },
   ])(
     'with $label',

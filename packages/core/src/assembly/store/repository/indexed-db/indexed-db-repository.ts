@@ -27,8 +27,8 @@ export class IndexedDbRepository
   /**
    * 直接の利用はテストからに限定すること
    */
-  constructor() {
-    this.database = setupDataBase()
+  constructor(candidates: Candidates) {
+    this.database = setupDataBase(candidates)
   }
 
   async storeNew(

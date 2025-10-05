@@ -1,22 +1,64 @@
+import { createAssembly } from '#core/assembly/assembly'
+import { assemblyToSearchV2 } from '#core/assembly/serialize/as-query-v2'
+import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
 import type { StoredAssemblyDto } from '#core/assembly/store/repository/data-transfer-object'
 
+import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 import { Dexie, type EntityTable } from 'dexie'
 
 export type DataBase = Dexie & {
   stored_assembly: EntityTable<StoredAssemblyDto, 'id'>
 }
 
-export const setupDataBase = (() => {
-  let db: DataBase | null = null
+export const setupDataBase = (candidates: Candidates): DataBase => {
+  const db = new Dexie('ac6-assembly-tool') as DataBase
 
-  return (): DataBase => {
-    if (db) return db
+  db.version(1).stores({
+    stored_assembly: 'id,name,createdAt,updatedAt',
+  })
 
-    db = new Dexie('ac6-assembly-tool') as DataBase
-    db.version(1).stores({
+  db.version(2)
+    .stores({
       stored_assembly: 'id,name,createdAt,updatedAt',
     })
+    .upgrade(async (tx) => {
+      // v1形式データをv2形式へ自動変換
+      const assemblies = await tx.table('stored_assembly').toArray()
 
-    return db
-  }
-})()
+      for (const dto of assemblies) {
+        const typedDto = dto as StoredAssemblyDto
+        // v1形式かどうかを判定（v=2パラメータの有無）
+        const isV1 = !typedDto.assembly.includes('v=2')
+
+        if (isV1) {
+          try {
+            // v1形式データをデシリアライズして機体構成を復元
+            const assembly = createAssembly(
+              deserializeAssembly(
+                new URLSearchParams(typedDto.assembly),
+                candidates,
+              ),
+            )
+
+            // v2形式でシリアライズ
+            const v2Assembly = assemblyToSearchV2(assembly).toString()
+
+            // v2形式で上書き
+            await tx.table('stored_assembly').update(typedDto.id, {
+              assembly: v2Assembly,
+            })
+
+            console.info(
+              `Migrated assembly ${typedDto.id} from v1 to v2 format`,
+            )
+          } catch (error) {
+            console.error(
+              `Failed to migrate assembly ${typedDto.id}: ${error instanceof Error ? error.message : String(error)}`,
+            )
+          }
+        }
+      }
+    })
+
+  return db
+}
