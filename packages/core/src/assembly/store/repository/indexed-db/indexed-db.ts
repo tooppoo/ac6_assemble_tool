@@ -2,6 +2,7 @@ import { createAssembly } from '#core/assembly/assembly'
 import { assemblyToSearchV2 } from '#core/assembly/serialize/as-query-v2'
 import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
 import type { StoredAssemblyDto } from '#core/assembly/store/repository/data-transfer-object'
+import { logger } from '#core/utils/logger'
 
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 import { Dexie, type EntityTable } from 'dexie'
@@ -48,13 +49,15 @@ export const setupDataBase = (candidates: Candidates): DataBase => {
               assembly: v2Assembly,
             })
 
-            console.info(
-              `Migrated assembly ${typedDto.id} from v1 to v2 format`,
-            )
+            logger.info('Migrated assembly from v1 to v2 format', {
+              assemblyId: typedDto.id,
+              assemblyName: typedDto.name,
+            })
           } catch (error) {
-            console.error(
-              `Failed to migrate assembly ${typedDto.id}: ${error instanceof Error ? error.message : String(error)}`,
-            )
+            logger.error('Failed to migrate assembly from v1 to v2', {
+              assemblyId: typedDto.id,
+              error: error instanceof Error ? error.message : String(error),
+            })
           }
         }
       }
