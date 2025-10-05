@@ -13,14 +13,13 @@
     type AssemblyKey,
     assemblyKeys,
     spaceByWord,
+    createAssembly,
   } from '@ac6_assemble_tool/core/assembly/assembly'
   import { UsableItemNotFoundError } from '@ac6_assemble_tool/core/assembly/filter/filters'
   import { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
   import { RandomAssembly } from '@ac6_assemble_tool/core/assembly/random/random-assembly'
-  import {
-    assemblyToSearch,
-    searchToAssembly,
-  } from '@ac6_assemble_tool/core/assembly/serialize/as-query'
+  import { assemblyToSearchV2, searchToAssemblyV2 } from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
+  import { convertV1ToV2 } from '@ac6_assemble_tool/core/assembly/serialize/convert-v1-to-v2'
   import {
     type Candidates,
     type OrderParts,
@@ -131,7 +130,7 @@
     if (assembly && initialCandidates && !browserBacking) {
       logger.debug(
         'replace state',
-        assemblyToSearch(assembly, initialCandidates),
+        assemblyToSearchV2(assembly).toString(),
       )
 
       serializeAssembly.run()
@@ -173,20 +172,41 @@
   }
 
   function buildAssemblyFromQuery() {
-    assembly = searchToAssembly(
-      new URL(location.href).searchParams,
-      initialCandidates,
-    )
+    if (typeof window === 'undefined') {
+      // SSR時はデフォルトアセンブリを使用
+      return
+    }
+
+    const params = new URL(location.href).searchParams
+    const isV1 = !params.has('v')
+
+    if (isV1 && params.toString()) {
+      // v1形式クエリの場合、v2形式に変換
+      logger.info('v1形式のURLを検出、v2形式に変換します', {
+        v1Query: params.toString(),
+      })
+      const v2Params = convertV1ToV2(params, initialCandidates)
+      assembly = createAssembly(searchToAssemblyV2(v2Params, initialCandidates))
+
+      // URLをv2形式に更新
+      const url = new URL(location.href)
+      url.search = v2Params.toString()
+      history.replaceState({}, '', url)
+    } else {
+      // v2形式またはクエリなしの場合
+      assembly = createAssembly(searchToAssemblyV2(params, initialCandidates))
+    }
   }
   function serializeAssemblyAsQuery() {
-    const url = new URL(location.href)
-    const query = url.searchParams
-    const assemblyQuery = assemblyToSearch(assembly, initialCandidates)
+    if (typeof window === 'undefined') {
+      // SSR時は何もしない
+      return
+    }
 
-    assemblyQuery.forEach((v, k) => {
-      query.set(k, v)
-    })
-    url.search = query.toString()
+    const url = new URL(location.href)
+    const assemblyQuery = assemblyToSearchV2(assembly)
+
+    url.search = assemblyQuery.toString()
 
     history.pushState({}, '', url)
   }
