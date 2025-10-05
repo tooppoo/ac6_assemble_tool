@@ -18,7 +18,7 @@
     "format": "eslint . --cache --fix && prettier . --write --cache",
     "check-types": "tsc --noEmit",
     "validate-ids": "tsx scripts/validate-part-ids.ts",
-    "prebuild": "pnpm validate-ids"
+    "build": "pnpm validate-ids"
   },
   "author": "philomagi <tooppoo56@gmail.com> (https://github.com/tooppoo)",
   "license": "MIT",

@@ -1,10 +1,21 @@
+#!/usr/bin/env tsx
 /**
  * ビルド時パーツID検証スクリプト
  *
  * 全パーツのIDに重複がないかチェックし、重複がある場合はビルドを失敗させる
  */
 
-// 簡略版: tsxを使わずに、Node.jsで直接実行可能なチェック
-console.log('✓ Part ID validation script executed')
-console.log('Note: Full validation will be performed at runtime')
-process.exit(0)
+import { validatePartsOnStartup } from '../src/validation/validate-on-startup'
+
+try {
+  console.log('🔍 Validating part IDs...')
+  validatePartsOnStartup()
+  console.log('✅ Part ID validation passed')
+  process.exit(0)
+} catch (error) {
+  console.error('❌ Part ID validation failed')
+  if (error instanceof Error) {
+    console.error(error.message)
+  }
+  process.exit(1)
+}
