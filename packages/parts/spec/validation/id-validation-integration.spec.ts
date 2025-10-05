@@ -9,16 +9,16 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 describe('ID重複検証 統合テスト', () => {
   // コンソール出力をキャプチャするためのモック
   let consoleErrorSpy: ReturnType<typeof vi.spyOn>
-  let consoleLogSpy: ReturnType<typeof vi.spyOn>
+  let consoleInfoSpy: ReturnType<typeof vi.spyOn>
 
   beforeEach(() => {
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {})
   })
 
   afterEach(() => {
     consoleErrorSpy.mockRestore()
-    consoleLogSpy.mockRestore()
+    consoleInfoSpy.mockRestore()
   })
 
   describe('validatePartIdUniqueness', () => {
@@ -91,8 +91,8 @@ describe('ID重複検証 統合テスト', () => {
       }).not.toThrow()
 
       // infoログが出力されることを確認
-      expect(consoleLogSpy).toHaveBeenCalled()
-      const logCall = consoleLogSpy.mock.calls[0][0]
+      expect(consoleInfoSpy).toHaveBeenCalled()
+      const logCall = consoleInfoSpy.mock.calls[0][0] as string
       const logEntry = JSON.parse(logCall)
 
       expect(logEntry.level).toBe('info')
