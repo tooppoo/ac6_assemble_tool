@@ -7,7 +7,29 @@
 import { logger } from '#core/utils/logger'
 
 /**
- * パーツIDでパーツを検索
+ * パーツ配列からID→パーツのMapを作成
+ *
+ * @param parts - パーツ配列
+ * @returns ID→パーツのMap
+ *
+ * @example
+ * ```typescript
+ * const parts = [
+ *   { id: 'HD001', name: 'Head A' },
+ *   { id: 'HD002', name: 'Head B' },
+ * ]
+ * const map = createPartIdMap(parts)
+ * // => Map { 'HD001' => { id: 'HD001', name: 'Head A' }, ... }
+ * ```
+ */
+export function createPartIdMap<T extends { id: string }>(
+  parts: ReadonlyArray<T>,
+): ReadonlyMap<string, T> {
+  return new Map(parts.map((part) => [part.id, part]))
+}
+
+/**
+ * パーツIDでパーツを検索（配列から検索）
  *
  * @param parts - 検索対象のパーツ配列
  * @param id - 検索するパーツID
@@ -22,12 +44,39 @@ import { logger } from '#core/utils/logger'
  * const result = findPartById(parts, 'HD001')
  * // => { id: 'HD001', name: 'Head A' }
  * ```
+ *
+ * @deprecated パフォーマンスのため、createPartIdMapでMapを作成してfindPartByIdFromMapを使用してください
  */
 export function findPartById<T extends { id: string }>(
   parts: ReadonlyArray<T>,
   id: string,
 ): T | undefined {
   return parts.find((part) => part.id === id)
+}
+
+/**
+ * パーツIDでパーツを検索（Mapから検索、O(1)）
+ *
+ * @param partMap - ID→パーツのMap
+ * @param id - 検索するパーツID
+ * @returns 見つかったパーツ、見つからない場合はundefined
+ *
+ * @example
+ * ```typescript
+ * const parts = [
+ *   { id: 'HD001', name: 'Head A' },
+ *   { id: 'HD002', name: 'Head B' },
+ * ]
+ * const map = createPartIdMap(parts)
+ * const result = findPartByIdFromMap(map, 'HD001')
+ * // => { id: 'HD001', name: 'Head A' }
+ * ```
+ */
+export function findPartByIdFromMap<T extends { id: string }>(
+  partMap: ReadonlyMap<string, T>,
+  id: string,
+): T | undefined {
+  return partMap.get(id)
 }
 
 /**

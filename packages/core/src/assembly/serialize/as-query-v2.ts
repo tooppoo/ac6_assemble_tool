@@ -5,7 +5,11 @@
  * v2形式は`v=2`パラメータを含み、各パーツをIDで指定します。
  */
 import type { Assembly, RawAssembly } from '#core/assembly/assembly'
-import { findPartByIdOrFirst } from '#core/assembly/parts-lookup'
+import {
+  createPartIdMap,
+  findPartByIdFromMap,
+} from '#core/assembly/parts-lookup'
+import { logger } from '#core/utils/logger'
 
 import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
@@ -68,51 +72,86 @@ export function searchToAssemblyV2(
   params: URLSearchParams,
   candidates: Candidates,
 ): RawAssembly {
-  const legs = findPartByIdOrFirst(
-    candidates.legs,
-    params.get('l') ?? undefined,
-  )!
+  // パフォーマンス向上のため、各候補配列からID→パーツのMapを作成
+  const rightArmUnitMap = createPartIdMap(candidates.rightArmUnit)
+  const leftArmUnitMap = createPartIdMap(candidates.leftArmUnit)
+  const rightBackUnitMap = createPartIdMap(candidates.rightBackUnit)
+  const leftBackUnitMap = createPartIdMap(candidates.leftBackUnit)
+  const headMap = createPartIdMap(candidates.head)
+  const coreMap = createPartIdMap(candidates.core)
+  const armsMap = createPartIdMap(candidates.arms)
+  const legsMap = createPartIdMap(candidates.legs)
+  const boosterMap = createPartIdMap(candidates.booster)
+  const fcsMap = createPartIdMap(candidates.fcs)
+  const generatorMap = createPartIdMap(candidates.generator)
+  const expansionMap = createPartIdMap(candidates.expansion)
+
+  const findWithFallback = <T extends { id: string; name: string }>(
+    map: ReadonlyMap<string, T>,
+    fallback: T,
+    id: string | null,
+  ): T => {
+    if (!id) return fallback
+    const found = findPartByIdFromMap(map, id)
+    if (!found) {
+      logger.warn('Part ID not found, using fallback', {
+        requestedId: id,
+        fallbackId: fallback.id,
+        fallbackName: fallback.name,
+      })
+      return fallback
+    }
+    return found
+  }
+
+  const legs = findWithFallback(legsMap, candidates.legs[0], params.get('l'))
 
   // タンク脚部の場合、ブースターは常にNotEquippedでなければならない
   const booster =
     legs.category === tank
       ? boosterNotEquipped
-      : findPartByIdOrFirst(candidates.booster, params.get('b') ?? undefined)!
+      : findWithFallback(boosterMap, candidates.booster[0], params.get('b'))
 
   return {
-    rightArmUnit: findPartByIdOrFirst(
-      candidates.rightArmUnit,
-      params.get('rau') ?? undefined,
-    )!,
-    leftArmUnit: findPartByIdOrFirst(
-      candidates.leftArmUnit,
-      params.get('lau') ?? undefined,
-    )!,
-    rightBackUnit: findPartByIdOrFirst(
-      candidates.rightBackUnit,
-      params.get('rbu') ?? undefined,
-    )!,
-    leftBackUnit: findPartByIdOrFirst(
-      candidates.leftBackUnit,
-      params.get('lbu') ?? undefined,
-    )!,
+    rightArmUnit: findWithFallback(
+      rightArmUnitMap,
+      candidates.rightArmUnit[0],
+      params.get('rau'),
+    ),
+    leftArmUnit: findWithFallback(
+      leftArmUnitMap,
+      candidates.leftArmUnit[0],
+      params.get('lau'),
+    ),
+    rightBackUnit: findWithFallback(
+      rightBackUnitMap,
+      candidates.rightBackUnit[0],
+      params.get('rbu'),
+    ),
+    leftBackUnit: findWithFallback(
+      leftBackUnitMap,
+      candidates.leftBackUnit[0],
+      params.get('lbu'),
+    ),
 
-    head: findPartByIdOrFirst(candidates.head, params.get('h') ?? undefined)!,
-    core: findPartByIdOrFirst(candidates.core, params.get('c') ?? undefined)!,
-    arms: findPartByIdOrFirst(candidates.arms, params.get('a') ?? undefined)!,
+    head: findWithFallback(headMap, candidates.head[0], params.get('h')),
+    core: findWithFallback(coreMap, candidates.core[0], params.get('c')),
+    arms: findWithFallback(armsMap, candidates.arms[0], params.get('a')),
     legs,
 
     booster,
-    fcs: findPartByIdOrFirst(candidates.fcs, params.get('f') ?? undefined)!,
-    generator: findPartByIdOrFirst(
-      candidates.generator,
-      params.get('g') ?? undefined,
-    )!,
+    fcs: findWithFallback(fcsMap, candidates.fcs[0], params.get('f')),
+    generator: findWithFallback(
+      generatorMap,
+      candidates.generator[0],
+      params.get('g'),
+    ),
 
-    expansion: findPartByIdOrFirst(
-      candidates.expansion,
-      params.get('e') ?? undefined,
-    )!,
+    expansion: findWithFallback(
+      expansionMap,
+      candidates.expansion[0],
+      params.get('e'),
+    ),
   } as RawAssembly
 }
 

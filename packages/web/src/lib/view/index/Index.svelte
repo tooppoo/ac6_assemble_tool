@@ -177,7 +177,8 @@
       return
     }
 
-    const params = new URL(location.href).searchParams
+    const url = new URL(location.href)
+    const params = url.searchParams
     const isV1 = !params.has('v')
 
     if (isV1 && params.toString()) {
@@ -188,15 +189,50 @@
       const v2Params = convertV1ToV2(params, initialCandidates)
       assembly = createAssembly(searchToAssemblyV2(v2Params, initialCandidates))
 
-      // URLをv2形式に更新
-      const url = new URL(location.href)
-      url.search = v2Params.toString()
+      // URLをv2形式に更新（既存の非アセンブリパラメータを保持）
+      mergeAssemblyParams(url.searchParams, v2Params)
       history.replaceState({}, '', url)
     } else {
       // v2形式またはクエリなしの場合
       assembly = createAssembly(searchToAssemblyV2(params, initialCandidates))
     }
   }
+  /**
+   * アセンブリ関連パラメータをマージ（既存の非アセンブリパラメータを保持）
+   *
+   * @param currentParams - 現在のURLSearchParams（変更される）
+   * @param assemblyParams - アセンブリ関連のURLSearchParams
+   */
+  function mergeAssemblyParams(
+    currentParams: URLSearchParams,
+    assemblyParams: URLSearchParams,
+  ) {
+    // アセンブリ関連のパラメータキー
+    const assemblyKeys = [
+      'v',
+      'h',
+      'c',
+      'a',
+      'l',
+      'b',
+      'f',
+      'g',
+      'e',
+      'rau',
+      'lau',
+      'rbu',
+      'lbu',
+    ]
+
+    // 既存のアセンブリ関連パラメータを削除
+    assemblyKeys.forEach((key) => currentParams.delete(key))
+
+    // 新しいアセンブリパラメータを追加
+    assemblyParams.forEach((value, key) => {
+      currentParams.set(key, value)
+    })
+  }
+
   function serializeAssemblyAsQuery() {
     if (typeof window === 'undefined') {
       // SSR時は何もしない
@@ -206,7 +242,8 @@
     const url = new URL(location.href)
     const assemblyQuery = assemblyToSearchV2(assembly)
 
-    url.search = assemblyQuery.toString()
+    // 既存の非アセンブリパラメータ（lng等）を保持
+    mergeAssemblyParams(url.searchParams, assemblyQuery)
 
     history.pushState({}, '', url)
   }

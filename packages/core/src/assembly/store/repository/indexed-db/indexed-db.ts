@@ -11,8 +11,12 @@ export type DataBase = Dexie & {
   stored_assembly: EntityTable<StoredAssemblyDto, 'id'>
 }
 
+let db: DataBase | null = null
+
 export const setupDataBase = (candidates: Candidates): DataBase => {
-  const db = new Dexie('ac6-assembly-tool') as DataBase
+  if (db) return db
+
+  db = new Dexie('ac6-assembly-tool') as DataBase
 
   db.version(1).stores({
     stored_assembly: 'id,name,createdAt,updatedAt',
