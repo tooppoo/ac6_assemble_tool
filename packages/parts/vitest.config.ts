@@ -13,12 +13,7 @@ export default defineConfig({
     coverage: {
       reporter: ['text', 'json'],
       all: true,
-      exclude: [
-        '*.config.*',
-        '**/**/*.d',
-        'dist/**/*',
-        'scripts/**/*',
-      ],
+      exclude: ['*.config.*', '**/**/*.d', 'dist/**/*', 'scripts/**/*'],
       provider: 'v8',
     },
   },

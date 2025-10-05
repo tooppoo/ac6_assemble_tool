@@ -13,11 +13,7 @@ export type LogContext = Record<string, unknown>
 /**
  * 構造化ログを出力する
  */
-function log(
-  level: LogLevel,
-  message: string,
-  context: LogContext = {},
-): void {
+function log(level: LogLevel, message: string, context: LogContext = {}): void {
   const logEntry = {
     level,
     timestamp: new Date().toISOString(),
