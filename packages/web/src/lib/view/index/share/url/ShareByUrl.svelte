@@ -22,6 +22,7 @@
     <button
       id="{id}-share-assembly-as-link"
       class="btn btn-dark border-secondary"
+      aria-label={$i18n.t('share:command.url.ariaLabel')}
       bind:this={targetButton}
       on:click={onClick}
     >

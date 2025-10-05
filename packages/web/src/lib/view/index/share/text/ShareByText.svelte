@@ -53,6 +53,7 @@ ${stringifyStatus(assembly(), $i18n)}`
     <button
       id="{id}-share-assembly-as-text"
       class="btn btn-dark border-secondary"
+      aria-label={$i18n.t('share:command.text.ariaLabel')}
       bind:this={targetButton}
       on:click={onCopy}
     >

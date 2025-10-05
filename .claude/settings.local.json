@@ -1,12 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx tsx:*)",
-      "Bash(timeout 20 npx vitest run:*)",
-      "Bash(pnpm --filter parts build)",
-      "Bash(npx tsc:*)",
-      "Bash(git add:*)",
-      "Bash(npx vitest run:*)"
+      "Bash(pnpm test*)",
+      "Bash(pnpm lint*)",
+      "Bash(pnpm format*)",
+      "Bash(pnpm check-types*)",
+      "Bash(pnpm --filter * test*)",
+      "Bash(pnpm --filter * lint*)",
+      "Bash(pnpm --filter * check-types*)"
     ],
     "deny": [],
     "ask": []
