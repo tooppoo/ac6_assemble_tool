@@ -11,9 +11,7 @@ import {
 
 import {
   createPartIdMap,
-  findPartById,
   findPartByIdFromMap,
-  findPartByIdOrFallback,
   findPartByIdOrFallbackFromMap,
   findPartByIdOrFirst,
 } from './parts-lookup'
@@ -25,50 +23,7 @@ const testParts = [
   { id: 'HD003', name: 'Head C', classification: 'head' },
 ] as const
 
-const testCores = [
-  { id: 'CR001', name: 'Core A', classification: 'core', ap: 1000 },
-  { id: 'CR002', name: 'Core B', classification: 'core', ap: 1200 },
-] as const
-
 describe('パーツID検索', () => {
-  describe('findPartById', () => {
-    // Parameterized test: 複数のIDで同じテストロジックを実行
-    it.each([
-      { id: 'HD001', expectedName: 'Head A' },
-      { id: 'HD002', expectedName: 'Head B' },
-      { id: 'HD003', expectedName: 'Head C' },
-    ])(
-      'ID $id でパーツを検索して $expectedName を返す',
-      ({ id, expectedName }) => {
-        const result = findPartById(testParts, id)
-
-        expect({
-          defined: result !== undefined,
-          id: result?.id,
-          name: result?.name,
-        }).toEqual({
-          defined: true,
-          id,
-          name: expectedName,
-        })
-      },
-    )
-
-    // Parameterized test: 見つからないケース
-    it.each(['HD999', 'HD000', 'INVALID', ''])(
-      '存在しないID "%s" の場合はundefinedを返す',
-      (invalidId) => {
-        const result = findPartById(testParts, invalidId)
-        expect(result).toBeUndefined()
-      },
-    )
-
-    it('空の配列の場合はundefinedを返す', () => {
-      const result = findPartById([], 'HD001')
-      expect(result).toBeUndefined()
-    })
-  })
-
   describe('createPartIdMap', () => {
     it('パーツ配列からID→パーツのMapを作成', () => {
       const map = createPartIdMap(testParts)
@@ -164,46 +119,6 @@ describe('パーツID検索', () => {
     )
   })
 
-  describe('findPartByIdOrFallback', () => {
-    const fallback = { id: 'HD000', name: 'Default Head' }
-
-    // Parameterized test: 見つかるケース
-    it.each([
-      { id: 'HD001', expectedName: 'Head A' },
-      { id: 'HD002', expectedName: 'Head B' },
-      { id: 'HD003', expectedName: 'Head C' },
-    ])(
-      'ID $id が見つかった場合は $expectedName を返す',
-      ({ id, expectedName }) => {
-        const result = findPartByIdOrFallback(testParts, id, fallback)
-
-        expect({
-          id: result.id,
-          name: result.name,
-        }).toEqual({
-          id,
-          name: expectedName,
-        })
-      },
-    )
-
-    // Parameterized test: 見つからないケース
-    it.each(['HD999', 'INVALID', 'HD000'])(
-      'ID "%s" が見つからない場合はフォールバックを返す',
-      (invalidId) => {
-        const result = findPartByIdOrFallback(testParts, invalidId, fallback)
-
-        expect({
-          id: result.id,
-          name: result.name,
-        }).toEqual({
-          id: 'HD000',
-          name: 'Default Head',
-        })
-      },
-    )
-  })
-
   describe('findPartByIdOrFirst', () => {
     // Parameterized test: 見つかるケース
     it.each([
@@ -251,42 +166,7 @@ describe('パーツID検索', () => {
     })
   })
 
-  describe('異なる型のパーツでも動作する', () => {
-    // Parameterized test: 異なる型のパーツ
-    it.each([
-      { id: 'CR001', expectedName: 'Core A', expectedAp: 1000 },
-      { id: 'CR002', expectedName: 'Core B', expectedAp: 1200 },
-    ])(
-      'ID $id の追加プロパティを持つパーツでも検索できる',
-      ({ id, expectedName, expectedAp }) => {
-        const result = findPartById(testCores, id)
-
-        expect({
-          defined: result !== undefined,
-          id: result?.id,
-          name: result?.name,
-          ap: result?.ap,
-        }).toEqual({
-          defined: true,
-          id,
-          name: expectedName,
-          ap: expectedAp,
-        })
-      },
-    )
-  })
-
   describe('Property-based tests', () => {
-    it('任意のパーツ配列で、存在するIDは必ず見つかる', () => {
-      fc.assert(
-        fc.property(genPartWithId(), ({ parts, targetPart }) => {
-          const result = findPartById(parts, targetPart.id)
-
-          expect(result).toEqual(targetPart)
-        }),
-        { numRuns: 100 },
-      )
-    })
 
     it('追加プロパティを持つ任意の型のパーツでも検索できる', () => {
       // 任意の追加プロパティを持つパーツを生成
@@ -314,24 +194,11 @@ describe('パーツID検索', () => {
 
       fc.assert(
         fc.property(genPartsWithExtras, ({ parts, targetPart }) => {
-          const result = findPartById(parts, targetPart.id)
+          const map = createPartIdMap(parts)
+          const result = findPartByIdFromMap(map, targetPart.id)
 
           // 基本プロパティと追加プロパティの両方が保持されていることを検証
           expect(result).toEqual(targetPart)
-        }),
-        { numRuns: 100 },
-      )
-    })
-
-    it('任意のパーツ配列とMapで、同じIDは同じ結果を返す', () => {
-      fc.assert(
-        fc.property(genPartsAndSearchId(), ({ parts, searchId }) => {
-          const arrayResult = findPartById(parts, searchId)
-          const map = createPartIdMap(parts)
-          const mapResult = findPartByIdFromMap(map, searchId)
-
-          expect(arrayResult?.id).toBe(mapResult?.id)
-          expect(arrayResult?.name).toBe(mapResult?.name)
         }),
         { numRuns: 100 },
       )
@@ -349,17 +216,6 @@ describe('パーツID検索', () => {
       )
     })
 
-    it('任意のパーツ配列とフォールバックで、findPartByIdOrFallbackは必ず値を返す', () => {
-      fc.assert(
-        fc.property(genPartsWithFallback(), ({ parts, searchId, fallback }) => {
-          const result = findPartByIdOrFallback(parts, searchId, fallback)
-          const expected = parts.find((p) => p.id === searchId) ?? fallback
-          expect(result).toEqual(expected)
-        }),
-        { numRuns: 100 },
-      )
-    })
-
     it('任意のパーツ配列とフォールバックで、findPartByIdOrFallbackFromMapは必ず値を返す', () => {
       fc.assert(
         fc.property(genPartsWithFallback(), ({ parts, searchId, fallback }) => {
@@ -367,22 +223,6 @@ describe('パーツID検索', () => {
           const result = findPartByIdOrFallbackFromMap(map, searchId, fallback)
           const expected = parts.find((p) => p.id === searchId) ?? fallback
           expect(result).toEqual(expected)
-        }),
-        { numRuns: 100 },
-      )
-    })
-
-    it('任意のパーツ配列で、findPartByIdOrFallbackとfindPartByIdOrFallbackFromMapは同じ結果を返す', () => {
-      fc.assert(
-        fc.property(genPartsWithFallback(), ({ parts, searchId, fallback }) => {
-          const arrayResult = findPartByIdOrFallback(parts, searchId, fallback)
-          const map = createPartIdMap(parts)
-          const mapResult = findPartByIdOrFallbackFromMap(
-            map,
-            searchId,
-            fallback,
-          )
-          expect(arrayResult).toEqual(mapResult)
         }),
         { numRuns: 100 },
       )
