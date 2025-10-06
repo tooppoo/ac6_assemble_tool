@@ -1,10 +1,13 @@
 import { createAssembly, type RawAssembly } from '#core/assembly/assembly'
-import { setupDataBase } from '#core/assembly/store/repository/indexed-db/indexed-db'
+import {
+  setupDataBase,
+  TEST_ONLY_resetDataBase,
+} from '#core/assembly/store/repository/indexed-db/indexed-db'
 import { IndexedDbRepository } from '#core/assembly/store/repository/indexed-db/indexed-db-repository'
 
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import { ulid } from 'ulid'
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
 describe('IndexedDBストレージフロー統合テスト', () => {
   const repository = new IndexedDbRepository(candidates)
@@ -280,8 +283,9 @@ describe('IndexedDBストレージフロー統合テスト', () => {
       expect(stored?.assembly).toContain('v=2')
       expect(stored?.name).toBe('V1 Assembly')
 
-      await dbV2.close()
+      // クリーンアップ
       await Dexie.delete('ac6-assembly-tool')
+      TEST_ONLY_resetDataBase()
     }, 15000)
 
     it('v2形式データはそのまま保持される', async () => {
@@ -317,7 +321,7 @@ describe('IndexedDBストレージフロー統合テスト', () => {
       const stored = await db.stored_assembly.get(testId)
       expect(stored?.assembly).toContain('v=2')
 
-      db.close()
+      // クリーンアップはafterEachで行われる
     }, 15000)
   })
 })

@@ -14,7 +14,7 @@ export type DataBase = Dexie & {
 let db: DataBase | null = null
 
 export const setupDataBase = (candidates: Candidates): DataBase => {
-  if (db) return db
+  if (db && db.isOpen()) return db
 
   db = new Dexie('ac6-assembly-tool') as DataBase
 
@@ -68,4 +68,15 @@ export const setupDataBase = (candidates: Candidates): DataBase => {
     })
 
   return db
+}
+
+/**
+ * テスト専用: DBインスタンスをリセット
+ * 本番コードでは使用しないこと
+ */
+export const TEST_ONLY_resetDataBase = (): void => {
+  if (db) {
+    db.close()
+    db = null
+  }
 }
