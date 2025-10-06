@@ -147,25 +147,47 @@ describe('v1→v2変換', () => {
       expect(result.get('h')).toBe('HD001')
     })
 
-    it('パラメータが欠けている場合は配列の最初の要素を使用', () => {
-      const v1Params = new URLSearchParams({
-        // headパラメータなし
-        c: '0',
-        a: '0',
-        l: '0',
-        b: '0',
-        f: '0',
-        g: '0',
-        e: '0',
-        rau: '0',
-        lau: '0',
-        rbu: '0',
-        lbu: '0',
-      })
+    // Parameterized test: すべてのキーで欠損時のフォールバック動作を検証
+    it.each([
+      { key: 'rau', expectedId: 'AU001' },
+      { key: 'lau', expectedId: 'AU001' },
+      { key: 'rbu', expectedId: 'BU001' },
+      { key: 'lbu', expectedId: 'BU001' },
+      { key: 'h', expectedId: 'HD001' },
+      { key: 'c', expectedId: 'CR001' },
+      { key: 'a', expectedId: 'AR001' },
+      { key: 'l', expectedId: 'LG001' },
+      { key: 'b', expectedId: 'BS001' },
+      { key: 'f', expectedId: 'FCS001' },
+      { key: 'g', expectedId: 'GN001' },
+      { key: 'e', expectedId: 'EXP001' },
+    ] as const)(
+      'パラメータ "$key" が欠けている場合は配列の最初の要素 $expectedId を使用',
+      ({ key, expectedId }) => {
+        // すべてのキーを含むベースパラメータを作成
+        const allKeys = {
+          rau: '0',
+          lau: '0',
+          rbu: '0',
+          lbu: '0',
+          h: '0',
+          c: '0',
+          a: '0',
+          l: '0',
+          b: '0',
+          f: '0',
+          g: '0',
+          e: '0',
+        }
 
-      const result = convertV1ToV2(v1Params, mockCandidates)
+        // テスト対象のキーを削除
+        const { [key]: _, ...paramsWithoutKey } = allKeys
+        const v1Params = new URLSearchParams(paramsWithoutKey)
 
-      expect(result.get('h')).toBe('HD001')
-    })
+        const result = convertV1ToV2(v1Params, mockCandidates)
+
+        expect(result.get(key)).toBe(expectedId)
+      },
+    )
   })
 })
