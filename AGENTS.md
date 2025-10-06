@@ -186,6 +186,11 @@ logger.info('User operation completed', {
 
 - 自動テストのカバレッジは80%以上を必ず維持し、90%以上を目標とする
 - 単体テストは実装と同じディレクトリに配置する。spec/ など別ディレクトリには分離しない
+  - 例:
+    - OK: `src/hoge/fuga.ts` `src/hoge/fuga.spec.ts`
+    - NG:
+      - `src/hoge/fuga.ts` `spec/hoge/fuga.spec.ts`
+      - `src/hoge/fuga.ts` `src/hoge/spec/fuga.spec.ts`
 - e2eテストは独立したパッケージとする。他パッケージからの import を禁止する。
 - **手動テスト**：自動テストが適正でない場合は、手順書を作成する（`docs/test` ディレクトリに作成）
 
