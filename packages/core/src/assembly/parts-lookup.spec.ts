@@ -263,13 +263,8 @@ describe('パーツID検索', () => {
         fc.property(genPartsAndSearchId(), ({ parts, searchId }) => {
           const result = findPartByIdOrFirst(parts, searchId)
 
-          expect(result).toBeDefined()
-
-          if (parts.some((p) => p.id === searchId)) {
-            expect(result?.id).toBe(searchId)
-          } else {
-            expect(result?.id).toBe(parts[0].id)
-          }
+          const expected = parts.find((p) => p.id === searchId) ?? parts[0];
+          expect(result).toEqual(expected);
         }),
         { numRuns: 100 },
       )
