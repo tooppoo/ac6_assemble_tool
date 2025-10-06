@@ -289,8 +289,7 @@ describe('パーツID検索', () => {
           expect(map.size).toBe(parts.length)
 
           for (const part of parts) {
-            expect(map.has(part.id)).toBe(true)
-            expect(map.get(part.id)?.name).toBe(part.name)
+            expect(map.get(part.id)).toEqual(part);
           }
         }),
         { numRuns: 100 },
