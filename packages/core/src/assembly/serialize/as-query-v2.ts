@@ -5,10 +5,8 @@
  * v2形式は`v=2`パラメータを含み、各パーツをIDで指定します。
  */
 import type { Assembly, RawAssembly } from '#core/assembly/assembly'
-import {
-  createPartIdMap,
-  findPartByIdOrFallbackFromMap,
-} from '#core/assembly/parts-lookup'
+import { findPartByIdOrFallbackFromMap } from '#core/assembly/parts-lookup'
+import { getCandidatesMaps } from '#core/assembly/parts-lookup-cache'
 
 import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
@@ -71,19 +69,8 @@ export function searchToAssemblyV2(
   params: URLSearchParams,
   candidates: Candidates,
 ): RawAssembly {
-  // パフォーマンス向上のため、各候補配列からID→パーツのMapを作成
-  const rightArmUnitMap = createPartIdMap(candidates.rightArmUnit)
-  const leftArmUnitMap = createPartIdMap(candidates.leftArmUnit)
-  const rightBackUnitMap = createPartIdMap(candidates.rightBackUnit)
-  const leftBackUnitMap = createPartIdMap(candidates.leftBackUnit)
-  const headMap = createPartIdMap(candidates.head)
-  const coreMap = createPartIdMap(candidates.core)
-  const armsMap = createPartIdMap(candidates.arms)
-  const legsMap = createPartIdMap(candidates.legs)
-  const boosterMap = createPartIdMap(candidates.booster)
-  const fcsMap = createPartIdMap(candidates.fcs)
-  const generatorMap = createPartIdMap(candidates.generator)
-  const expansionMap = createPartIdMap(candidates.expansion)
+  // パフォーマンス向上のため、各候補配列からID→パーツのMapを作成（メモ化）
+  const maps = getCandidatesMaps(candidates)
 
   const findWithFallback = <T extends { id: string; name: string }>(
     map: ReadonlyMap<string, T>,
@@ -94,51 +81,51 @@ export function searchToAssemblyV2(
     return findPartByIdOrFallbackFromMap(map, id, fallback)
   }
 
-  const legs = findWithFallback(legsMap, candidates.legs[0], params.get('l'))
+  const legs = findWithFallback(maps.legs, candidates.legs[0], params.get('l'))
 
   // タンク脚部の場合、ブースターは常にNotEquippedでなければならない
   const booster =
     legs.category === tank
       ? boosterNotEquipped
-      : findWithFallback(boosterMap, candidates.booster[0], params.get('b'))
+      : findWithFallback(maps.booster, candidates.booster[0], params.get('b'))
 
   return {
     rightArmUnit: findWithFallback(
-      rightArmUnitMap,
+      maps.rightArmUnit,
       candidates.rightArmUnit[0],
       params.get('rau'),
     ),
     leftArmUnit: findWithFallback(
-      leftArmUnitMap,
+      maps.leftArmUnit,
       candidates.leftArmUnit[0],
       params.get('lau'),
     ),
     rightBackUnit: findWithFallback(
-      rightBackUnitMap,
+      maps.rightBackUnit,
       candidates.rightBackUnit[0],
       params.get('rbu'),
     ),
     leftBackUnit: findWithFallback(
-      leftBackUnitMap,
+      maps.leftBackUnit,
       candidates.leftBackUnit[0],
       params.get('lbu'),
     ),
 
-    head: findWithFallback(headMap, candidates.head[0], params.get('h')),
-    core: findWithFallback(coreMap, candidates.core[0], params.get('c')),
-    arms: findWithFallback(armsMap, candidates.arms[0], params.get('a')),
+    head: findWithFallback(maps.head, candidates.head[0], params.get('h')),
+    core: findWithFallback(maps.core, candidates.core[0], params.get('c')),
+    arms: findWithFallback(maps.arms, candidates.arms[0], params.get('a')),
     legs,
 
     booster,
-    fcs: findWithFallback(fcsMap, candidates.fcs[0], params.get('f')),
+    fcs: findWithFallback(maps.fcs, candidates.fcs[0], params.get('f')),
     generator: findWithFallback(
-      generatorMap,
+      maps.generator,
       candidates.generator[0],
       params.get('g'),
     ),
 
     expansion: findWithFallback(
-      expansionMap,
+      maps.expansion,
       candidates.expansion[0],
       params.get('e'),
     ),
