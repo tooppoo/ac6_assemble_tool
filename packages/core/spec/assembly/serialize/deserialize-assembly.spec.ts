@@ -205,5 +205,33 @@ describe('機体構成デシリアライザー統合', () => {
         expansion: 'EXP001',
       })
     })
+
+    // Parameterized test: すべてのキーで動作を検証
+    it.each([
+      { key: 'rau', paramKey: 'rau', id: 'AU002', field: 'rightArmUnit' },
+      { key: 'lau', paramKey: 'lau', id: 'AU003', field: 'leftArmUnit' },
+      { key: 'rbu', paramKey: 'rbu', id: 'BU002', field: 'rightBackUnit' },
+      { key: 'lbu', paramKey: 'lbu', id: 'BU003', field: 'leftBackUnit' },
+      { key: 'h', paramKey: 'h', id: 'HD002', field: 'head' },
+      { key: 'c', paramKey: 'c', id: 'CR002', field: 'core' },
+      { key: 'a', paramKey: 'a', id: 'AR002', field: 'arms' },
+      { key: 'l', paramKey: 'l', id: 'LG002', field: 'legs' },
+      { key: 'b', paramKey: 'b', id: 'BS002', field: 'booster' },
+      { key: 'f', paramKey: 'f', id: 'FCS002', field: 'fcs' },
+      { key: 'g', paramKey: 'g', id: 'GN002', field: 'generator' },
+      { key: 'e', paramKey: 'e', id: 'EXP002', field: 'expansion' },
+    ] as const)(
+      'v2形式: キー "$key" で指定したパーツ $id が $field に設定される',
+      ({ paramKey, id, field }) => {
+        const params = new URLSearchParams({
+          v: '2',
+          [paramKey]: id,
+        })
+
+        const result = deserializeAssembly(params, mockCandidates)
+
+        expect(result[field].id).toBe(id)
+      },
+    )
   })
 })
