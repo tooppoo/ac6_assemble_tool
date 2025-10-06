@@ -1,3 +1,4 @@
+import { type AssemblyKey } from '#core/assembly/assembly'
 import { searchToAssemblyV2 } from '#core/assembly/serialize/as-query-v2'
 
 import type { ArmUnit, LeftArmUnit } from '@ac6_assemble_tool/parts/arm-units'
@@ -14,6 +15,7 @@ import type { Generator } from '@ac6_assemble_tool/parts/generators'
 import type { Head } from '@ac6_assemble_tool/parts/heads'
 import type { Legs } from '@ac6_assemble_tool/parts/legs'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
+import fc from 'fast-check'
 import { describe, it, expect } from 'vitest'
 
 // 共通テストデータ - describe外で定義
@@ -167,6 +169,96 @@ describe('v2形式URLデシリアライザー', () => {
       const result = searchToAssemblyV2(params, mockCandidates)
 
       expect(result.head.id).toBe('HD001')
+    })
+
+    // Property-based test: 複数の存在しないIDが全てフォールバックする
+    it('任意の組み合わせで存在しないIDを指定した場合、全てフォールバック（配列の最初の要素）になる', () => {
+      const slotToPrefix: Record<AssemblyKey, string> = {
+        rightArmUnit: 'AU',
+        leftArmUnit: 'AU',
+        rightBackUnit: 'BU',
+        leftBackUnit: 'BU',
+        head: 'HD',
+        core: 'CR',
+        arms: 'AR',
+        legs: 'LG',
+        booster: 'BS',
+        fcs: 'FCS',
+        generator: 'GN',
+        expansion: 'EXP',
+      }
+
+      const slotToParamKey: Record<AssemblyKey, string> = {
+        rightArmUnit: 'rau',
+        leftArmUnit: 'lau',
+        rightBackUnit: 'rbu',
+        leftBackUnit: 'lbu',
+        head: 'h',
+        core: 'c',
+        arms: 'a',
+        legs: 'l',
+        booster: 'b',
+        fcs: 'f',
+        generator: 'g',
+        expansion: 'e',
+      }
+
+      // 存在しないIDのジェネレータ（100-999の範囲で生成）
+      const genInvalidPartId = (prefix: string) =>
+        fc
+          .integer({ min: 100, max: 999 })
+          .map((v) => `${prefix}${v.toString().padStart(3, '0')}`)
+
+      // ランダムなスロットの組み合わせを選択
+      const genInvalidSlots = fc.uniqueArray(
+        fc.constantFrom<AssemblyKey>(
+          'rightArmUnit',
+          'leftArmUnit',
+          'rightBackUnit',
+          'leftBackUnit',
+          'head',
+          'core',
+          'arms',
+          'legs',
+          'booster',
+          'fcs',
+          'generator',
+          'expansion',
+        ),
+        { minLength: 1, maxLength: 12 },
+      )
+
+      fc.assert(
+        fc.property(genInvalidSlots, (invalidSlots) => {
+          const baseParams: Record<string, string> = { v: '2' }
+
+          // 正しいIDでベースパラメータを構築
+          Object.keys(slotToParamKey).forEach((slot) => {
+            const key = slotToParamKey[slot as AssemblyKey]
+            baseParams[key] = mockCandidates[slot as AssemblyKey][0].id
+          })
+
+          // 選択されたスロットに存在しないIDを設定
+          const invalidIds: Record<string, string> = {}
+          invalidSlots.forEach((slot) => {
+            const prefix = slotToPrefix[slot]
+            const paramKey = slotToParamKey[slot]
+            // 固定の存在しないID（範囲外）を使用
+            invalidIds[paramKey] = `${prefix}999`
+          })
+
+          const params = new URLSearchParams({ ...baseParams, ...invalidIds })
+          const result = searchToAssemblyV2(params, mockCandidates)
+
+          // 存在しないIDを指定したスロットが全てフォールバック（最初の要素）になることを検証
+          invalidSlots.forEach((slot) => {
+            const expected = mockCandidates[slot][0].id
+            const actual = result[slot].id
+            expect(actual).toBe(expected)
+          })
+        }),
+        { numRuns: 100 },
+      )
     })
   })
 })
