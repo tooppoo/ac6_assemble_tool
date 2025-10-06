@@ -1,5 +1,12 @@
-import { describe, it, expect } from 'vitest'
 import fc from 'fast-check'
+import { describe, it, expect } from 'vitest'
+
+import {
+  genPartWithId,
+  genPartsAndSearchId,
+  genPartsWithFallback,
+  genParts,
+} from '../../spec-helper/property-generator'
 
 import {
   createPartIdMap,
@@ -8,12 +15,6 @@ import {
   findPartByIdOrFallback,
   findPartByIdOrFirst,
 } from './parts-lookup'
-import {
-  genPartWithId,
-  genPartsAndSearchId,
-  genPartsWithFallback,
-  genParts,
-} from '../../spec-helper/property-generator'
 
 // 共通テストデータ - describe外で定義
 const testParts = [
@@ -34,30 +35,31 @@ describe('パーツID検索', () => {
       { id: 'HD001', expectedName: 'Head A' },
       { id: 'HD002', expectedName: 'Head B' },
       { id: 'HD003', expectedName: 'Head C' },
-    ])('ID $id でパーツを検索して $expectedName を返す', ({ id, expectedName }) => {
-      const result = findPartById(testParts, id)
+    ])(
+      'ID $id でパーツを検索して $expectedName を返す',
+      ({ id, expectedName }) => {
+        const result = findPartById(testParts, id)
 
-      expect({
-        defined: result !== undefined,
-        id: result?.id,
-        name: result?.name,
-      }).toEqual({
-        defined: true,
-        id,
-        name: expectedName,
-      })
-    })
+        expect({
+          defined: result !== undefined,
+          id: result?.id,
+          name: result?.name,
+        }).toEqual({
+          defined: true,
+          id,
+          name: expectedName,
+        })
+      },
+    )
 
     // Parameterized test: 見つからないケース
-    it.each([
-      'HD999',
-      'HD000',
-      'INVALID',
-      '',
-    ])('存在しないID "%s" の場合はundefinedを返す', (invalidId) => {
-      const result = findPartById(testParts, invalidId)
-      expect(result).toBeUndefined()
-    })
+    it.each(['HD999', 'HD000', 'INVALID', ''])(
+      '存在しないID "%s" の場合はundefinedを返す',
+      (invalidId) => {
+        const result = findPartById(testParts, invalidId)
+        expect(result).toBeUndefined()
+      },
+    )
 
     it('空の配列の場合はundefinedを返す', () => {
       const result = findPartById([], 'HD001')
@@ -93,20 +95,23 @@ describe('パーツID検索', () => {
       { id: 'HD001', expectedName: 'Head A' },
       { id: 'HD002', expectedName: 'Head B' },
       { id: 'HD003', expectedName: 'Head C' },
-    ])('MapからID $id で検索して $expectedName を返す', ({ id, expectedName }) => {
-      const map = createPartIdMap(testParts)
-      const result = findPartByIdFromMap(map, id)
+    ])(
+      'MapからID $id で検索して $expectedName を返す',
+      ({ id, expectedName }) => {
+        const map = createPartIdMap(testParts)
+        const result = findPartByIdFromMap(map, id)
 
-      expect({
-        defined: result !== undefined,
-        id: result?.id,
-        name: result?.name,
-      }).toEqual({
-        defined: true,
-        id,
-        name: expectedName,
-      })
-    })
+        expect({
+          defined: result !== undefined,
+          id: result?.id,
+          name: result?.name,
+        }).toEqual({
+          defined: true,
+          id,
+          name: expectedName,
+        })
+      },
+    )
 
     it('IDが見つからない場合はundefinedを返す', () => {
       const map = createPartIdMap(testParts)
@@ -123,34 +128,36 @@ describe('パーツID検索', () => {
       { id: 'HD001', expectedName: 'Head A' },
       { id: 'HD002', expectedName: 'Head B' },
       { id: 'HD003', expectedName: 'Head C' },
-    ])('ID $id が見つかった場合は $expectedName を返す', ({ id, expectedName }) => {
-      const result = findPartByIdOrFallback(testParts, id, fallback)
+    ])(
+      'ID $id が見つかった場合は $expectedName を返す',
+      ({ id, expectedName }) => {
+        const result = findPartByIdOrFallback(testParts, id, fallback)
 
-      expect({
-        id: result.id,
-        name: result.name,
-      }).toEqual({
-        id,
-        name: expectedName,
-      })
-    })
+        expect({
+          id: result.id,
+          name: result.name,
+        }).toEqual({
+          id,
+          name: expectedName,
+        })
+      },
+    )
 
     // Parameterized test: 見つからないケース
-    it.each([
-      'HD999',
-      'INVALID',
-      'HD000',
-    ])('ID "%s" が見つからない場合はフォールバックを返す', (invalidId) => {
-      const result = findPartByIdOrFallback(testParts, invalidId, fallback)
+    it.each(['HD999', 'INVALID', 'HD000'])(
+      'ID "%s" が見つからない場合はフォールバックを返す',
+      (invalidId) => {
+        const result = findPartByIdOrFallback(testParts, invalidId, fallback)
 
-      expect({
-        id: result.id,
-        name: result.name,
-      }).toEqual({
-        id: 'HD000',
-        name: 'Default Head',
-      })
-    })
+        expect({
+          id: result.id,
+          name: result.name,
+        }).toEqual({
+          id: 'HD000',
+          name: 'Default Head',
+        })
+      },
+    )
   })
 
   describe('findPartByIdOrFirst', () => {
@@ -159,19 +166,22 @@ describe('パーツID検索', () => {
       { id: 'HD001', expectedName: 'Head A' },
       { id: 'HD002', expectedName: 'Head B' },
       { id: 'HD003', expectedName: 'Head C' },
-    ])('ID $id が見つかった場合は $expectedName を返す', ({ id, expectedName }) => {
-      const result = findPartByIdOrFirst(testParts, id)
+    ])(
+      'ID $id が見つかった場合は $expectedName を返す',
+      ({ id, expectedName }) => {
+        const result = findPartByIdOrFirst(testParts, id)
 
-      expect({
-        defined: result !== undefined,
-        id: result?.id,
-        name: result?.name,
-      }).toEqual({
-        defined: true,
-        id,
-        name: expectedName,
-      })
-    })
+        expect({
+          defined: result !== undefined,
+          id: result?.id,
+          name: result?.name,
+        }).toEqual({
+          defined: true,
+          id,
+          name: expectedName,
+        })
+      },
+    )
 
     // Parameterized test: 見つからないケースと undefined ケース
     it.each([

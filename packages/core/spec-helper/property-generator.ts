@@ -118,7 +118,18 @@ export const genFilterApplyContext = () =>
 export const genPartId = () =>
   fc
     .record({
-      prefix: fc.constantFrom('HD', 'CR', 'AR', 'LG', 'BS', 'FCS', 'GN', 'EXP', 'AU', 'BU'),
+      prefix: fc.constantFrom(
+        'HD',
+        'CR',
+        'AR',
+        'LG',
+        'BS',
+        'FCS',
+        'GN',
+        'EXP',
+        'AU',
+        'BU',
+      ),
       number: fc.integer({ min: 1, max: 999 }),
     })
     .map(({ prefix, number }) => `${prefix}${String(number).padStart(3, '0')}`)

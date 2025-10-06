@@ -7,7 +7,7 @@ import { IndexedDbRepository } from '#core/assembly/store/repository/indexed-db/
 
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import { ulid } from 'ulid'
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 
 describe('IndexedDBストレージフロー統合テスト', () => {
   const repository = new IndexedDbRepository(candidates)
