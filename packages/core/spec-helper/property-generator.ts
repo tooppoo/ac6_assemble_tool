@@ -109,23 +109,3 @@ export const genFilterApplyContext = () =>
       ),
     }),
   )
-
-const genPartIdForSlot = (slot: AssemblyKey, opt: { idMin: number, idMax: number }) => fc.integer({ min: opt.idMin, max: opt.idMax })
-  .map((v) => v.toString().padStart(3, '0'))
-  .map((id) => {
-    switch (slot) {
-      case 'core':
-        return `CR${id}`
-      case 'head':
-        return `HD${id}`
-      // 省略
-      default:
-        throw new Error(`Unsupported slot: ${slot}`)
-    }
-  })
-const genAssemblyKeyAndPartIdPair = (opt: { idMin: number, idMax: number }) => genAssemblyKeys().chain((slots) => fc.tuple(
-  ...slots.map((slot) => fc.tuple(
-    fc.constant(slot),
-    genPartIdForSlot(slot, opt),
-  ))
-))
