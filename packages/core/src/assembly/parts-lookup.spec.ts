@@ -238,9 +238,7 @@ describe('パーツID検索', () => {
         fc.property(genPartWithId(), ({ parts, targetPart }) => {
           const result = findPartById(parts, targetPart.id)
 
-          expect(result).toBeDefined()
-          expect(result?.id).toBe(targetPart.id)
-          expect(result?.name).toBe(targetPart.name)
+          expect(result).toEqual(targetPart)
         }),
         { numRuns: 100 },
       )
