@@ -7,9 +7,8 @@
 import type { Assembly, RawAssembly } from '#core/assembly/assembly'
 import {
   createPartIdMap,
-  findPartByIdFromMap,
+  findPartByIdOrFallbackFromMap,
 } from '#core/assembly/parts-lookup'
-import { logger } from '#core/utils/logger'
 
 import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
@@ -92,16 +91,7 @@ export function searchToAssemblyV2(
     id: string | null,
   ): T => {
     if (!id) return fallback
-    const found = findPartByIdFromMap(map, id)
-    if (!found) {
-      logger.warn('Part ID not found, using fallback', {
-        requestedId: id,
-        fallbackId: fallback.id,
-        fallbackName: fallback.name,
-      })
-      return fallback
-    }
-    return found
+    return findPartByIdOrFallbackFromMap(map, id, fallback)
   }
 
   const legs = findWithFallback(legsMap, candidates.legs[0], params.get('l'))
