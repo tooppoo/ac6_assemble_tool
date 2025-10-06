@@ -109,3 +109,49 @@ export const genFilterApplyContext = () =>
       ),
     }),
   )
+
+/**
+ * パーツID検索テスト用のジェネレータ
+ */
+
+// 正しいフォーマットのパーツIDを生成 (例: HD001, CR042, FCS001)
+export const genPartId = () =>
+  fc
+    .record({
+      prefix: fc.constantFrom('HD', 'CR', 'AR', 'LG', 'BS', 'FCS', 'GN', 'EXP', 'AU', 'BU'),
+      number: fc.integer({ min: 1, max: 999 }),
+    })
+    .map(({ prefix, number }) => `${prefix}${String(number).padStart(3, '0')}`)
+
+export const genPart = () =>
+  fc.record({
+    id: genPartId(),
+    name: fc.string({ minLength: 1, maxLength: 20 }),
+  })
+
+export const genParts = (constraints: ArrayConstraints = {}) =>
+  fc.array(genPart(), { minLength: 1, maxLength: 20, ...constraints })
+
+// パーツ配列と、その配列に確実に存在するパーツを生成
+export const genPartWithId = () =>
+  genParts().chain((parts) =>
+    fc.record({
+      parts: fc.constant(parts),
+      targetPart: fc.constantFrom(...parts),
+    }),
+  )
+
+// パーツ配列と検索ID（存在するかは不明）を生成
+export const genPartsAndSearchId = () =>
+  fc.record({
+    parts: genParts(),
+    searchId: genPartId(),
+  })
+
+// パーツ配列、検索ID、フォールバックを生成
+export const genPartsWithFallback = () =>
+  fc.record({
+    parts: genParts({ minLength: 0 }),
+    searchId: genPartId(),
+    fallback: genPart(),
+  })
