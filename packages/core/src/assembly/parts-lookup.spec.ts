@@ -274,15 +274,8 @@ describe('パーツID検索', () => {
       fc.assert(
         fc.property(genPartsWithFallback(), ({ parts, searchId, fallback }) => {
           const result = findPartByIdOrFallback(parts, searchId, fallback)
-
-          expect(result).toBeDefined()
-
-          if (parts.some((p) => p.id === searchId)) {
-            expect(result.id).toBe(searchId)
-          } else {
-            expect(result.id).toBe(fallback.id)
-            expect(result.name).toBe(fallback.name)
-          }
+          const expected = parts.find((p) => p.id === searchId) ?? fallback;
+          expect(result).toEqual(expected);
         }),
         { numRuns: 100 },
       )
