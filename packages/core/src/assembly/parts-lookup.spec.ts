@@ -306,8 +306,8 @@ describe('パーツID検索', () => {
         fc.property(genPartsAndSearchId(), ({ parts, searchId }) => {
           const result = findPartByIdOrFirst(parts, searchId)
 
-          const expected = parts.find((p) => p.id === searchId) ?? parts[0];
-          expect(result).toEqual(expected);
+          const expected = parts.find((p) => p.id === searchId) ?? parts[0]
+          expect(result).toEqual(expected)
         }),
         { numRuns: 100 },
       )
@@ -317,8 +317,8 @@ describe('パーツID検索', () => {
       fc.assert(
         fc.property(genPartsWithFallback(), ({ parts, searchId, fallback }) => {
           const result = findPartByIdOrFallback(parts, searchId, fallback)
-          const expected = parts.find((p) => p.id === searchId) ?? fallback;
-          expect(result).toEqual(expected);
+          const expected = parts.find((p) => p.id === searchId) ?? fallback
+          expect(result).toEqual(expected)
         }),
         { numRuns: 100 },
       )
@@ -329,8 +329,8 @@ describe('パーツID検索', () => {
         fc.property(genPartsWithFallback(), ({ parts, searchId, fallback }) => {
           const map = createPartIdMap(parts)
           const result = findPartByIdOrFallbackFromMap(map, searchId, fallback)
-          const expected = parts.find((p) => p.id === searchId) ?? fallback;
-          expect(result).toEqual(expected);
+          const expected = parts.find((p) => p.id === searchId) ?? fallback
+          expect(result).toEqual(expected)
         }),
         { numRuns: 100 },
       )
@@ -341,8 +341,12 @@ describe('パーツID検索', () => {
         fc.property(genPartsWithFallback(), ({ parts, searchId, fallback }) => {
           const arrayResult = findPartByIdOrFallback(parts, searchId, fallback)
           const map = createPartIdMap(parts)
-          const mapResult = findPartByIdOrFallbackFromMap(map, searchId, fallback)
-          expect(arrayResult).toEqual(mapResult);
+          const mapResult = findPartByIdOrFallbackFromMap(
+            map,
+            searchId,
+            fallback,
+          )
+          expect(arrayResult).toEqual(mapResult)
         }),
         { numRuns: 100 },
       )
@@ -356,7 +360,7 @@ describe('パーツID検索', () => {
           expect(map.size).toBe(parts.length)
 
           for (const part of parts) {
-            expect(map.get(part.id)).toEqual(part);
+            expect(map.get(part.id)).toEqual(part)
           }
         }),
         { numRuns: 100 },
