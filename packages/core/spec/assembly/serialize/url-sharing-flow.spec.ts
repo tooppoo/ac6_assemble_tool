@@ -4,7 +4,10 @@ import { convertV1ToV2 } from '#core/assembly/serialize/convert-v1-to-v2'
 import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
 
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
+import fc from 'fast-check'
 import { describe, it, expect } from 'vitest'
+
+import { genAssembly } from '#spec-helper/property-generator'
 
 describe('URL共有フロー統合テスト', () => {
   describe('v2形式URL生成→共有→読み込みフロー', () => {
@@ -85,6 +88,20 @@ describe('URL共有フロー統合テスト', () => {
 
       // ブラウザのURL長制限（2084バイト）内であることを確認
       expect(urlString.length).toBeLessThan(2084)
+    })
+
+    // Property-based test: 任意のパーツ構成でURL長制限内
+    it('任意のパーツ構成でURL長がブラウザ制限（2084バイト）内に収まる', () => {
+      fc.assert(
+        fc.property(genAssembly(), (assembly) => {
+          const urlParams = assemblyToSearchV2(assembly)
+          const urlString = urlParams.toString()
+
+          // ブラウザのURL長制限（2084バイト）内であることを確認
+          expect(urlString.length).toBeLessThan(2084)
+        }),
+        { numRuns: 100 },
+      )
     })
   })
 
