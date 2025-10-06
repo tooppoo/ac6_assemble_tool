@@ -110,22 +110,67 @@ export const genFilterApplyContext = () =>
     }),
   )
 
-const genPartIdForSlot = (slot: AssemblyKey, opt: { idMin: number, idMax: number }) => fc.integer({ min: opt.idMin, max: opt.idMax })
-  .map((v) => v.toString().padStart(3, '0'))
-  .map((id) => {
-    switch (slot) {
-      case 'core':
-        return `CR${id}`
-      case 'head':
-        return `HD${id}`
-      // 省略
-      default:
-        throw new Error(`Unsupported slot: ${slot}`)
-    }
+/**
+ * パーツID検索テスト用のジェネレータ
+ */
+
+// 正しいフォーマットのパーツIDを生成 (例: HD001, CR042, FCS001)
+export const genPartId = () =>
+  fc
+    .record({
+      prefix: fc.constantFrom(
+        'HD',
+        'CR',
+        'AR',
+        'LG',
+        'BS',
+        'FCS',
+        'GN',
+        'EXP',
+        'AU',
+        'BU',
+      ),
+      number: fc.integer({ min: 1, max: 999 }),
+    })
+    .map(({ prefix, number }) => `${prefix}${String(number).padStart(3, '0')}`)
+
+export const genPart = () =>
+  fc.record({
+    id: genPartId(),
+    name: fc.string({ minLength: 1, maxLength: 20 }),
   })
-const genAssemblyKeyAndPartIdPair = (opt: { idMin: number, idMax: number }) => genAssemblyKeys().chain((slots) => fc.tuple(
-  ...slots.map((slot) => fc.tuple(
-    fc.constant(slot),
-    genPartIdForSlot(slot, opt),
-  ))
-))
+
+// IDがユニークなパーツ配列を生成
+export const genParts = (constraints: ArrayConstraints = {}) =>
+  fc
+    .uniqueArray(genPart(), {
+      minLength: 1,
+      maxLength: 20,
+      selector: (part) => part.id,
+      ...constraints,
+    })
+    .map((parts) => parts as Array<{ id: string; name: string }>)
+
+// パーツ配列と、その配列に確実に存在するパーツを生成
+export const genPartWithId = () =>
+  genParts().chain((parts) =>
+    fc.record({
+      parts: fc.constant(parts),
+      targetPart: fc.constantFrom(...parts),
+    }),
+  )
+
+// パーツ配列と検索ID（存在するかは不明）を生成
+export const genPartsAndSearchId = () =>
+  fc.record({
+    parts: genParts(),
+    searchId: genPartId(),
+  })
+
+// パーツ配列、検索ID、フォールバックを生成
+export const genPartsWithFallback = () =>
+  fc.record({
+    parts: genParts({ minLength: 0 }),
+    searchId: genPartId(),
+    fallback: genPart(),
+  })

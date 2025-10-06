@@ -7,7 +7,7 @@ import { IndexedDbRepository } from '#core/assembly/store/repository/indexed-db/
 
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import { ulid } from 'ulid'
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 
 describe('IndexedDBストレージフロー統合テスト', () => {
   const repository = new IndexedDbRepository(candidates)
@@ -48,21 +48,40 @@ describe('IndexedDBストレージフロー統合テスト', () => {
       // 読み込み
       const loaded = await repository.findById(testId, candidates)
 
-      expect(loaded).not.toBeNull()
-      expect(loaded?.name).toBe('Test Assembly v2')
-      expect(loaded?.description).toBe('v2形式テスト')
-
-      // 全部位が正しく復元されている
-      expect(loaded?.assembly.rightArmUnit.id).toBe(assembly.rightArmUnit.id)
-      expect(loaded?.assembly.leftArmUnit.id).toBe(assembly.leftArmUnit.id)
-      expect(loaded?.assembly.head.id).toBe(assembly.head.id)
-      expect(loaded?.assembly.core.id).toBe(assembly.core.id)
-      expect(loaded?.assembly.arms.id).toBe(assembly.arms.id)
-      expect(loaded?.assembly.legs.id).toBe(assembly.legs.id)
-      expect(loaded?.assembly.booster.id).toBe(assembly.booster.id)
-      expect(loaded?.assembly.fcs.id).toBe(assembly.fcs.id)
-      expect(loaded?.assembly.generator.id).toBe(assembly.generator.id)
-      expect(loaded?.assembly.expansion.id).toBe(assembly.expansion.id)
+      // 複数のexpectを1つにまとめて、全ての不一致を一度に確認
+      expect({
+        exists: loaded !== null,
+        name: loaded?.name,
+        description: loaded?.description,
+        rightArmUnit: loaded?.assembly.rightArmUnit.id,
+        leftArmUnit: loaded?.assembly.leftArmUnit.id,
+        rightBackUnit: loaded?.assembly.rightBackUnit.id,
+        leftBackUnit: loaded?.assembly.leftBackUnit.id,
+        head: loaded?.assembly.head.id,
+        core: loaded?.assembly.core.id,
+        arms: loaded?.assembly.arms.id,
+        legs: loaded?.assembly.legs.id,
+        booster: loaded?.assembly.booster.id,
+        fcs: loaded?.assembly.fcs.id,
+        generator: loaded?.assembly.generator.id,
+        expansion: loaded?.assembly.expansion.id,
+      }).toEqual({
+        exists: true,
+        name: 'Test Assembly v2',
+        description: 'v2形式テスト',
+        rightArmUnit: assembly.rightArmUnit.id,
+        leftArmUnit: assembly.leftArmUnit.id,
+        rightBackUnit: assembly.rightBackUnit.id,
+        leftBackUnit: assembly.leftBackUnit.id,
+        head: assembly.head.id,
+        core: assembly.core.id,
+        arms: assembly.arms.id,
+        legs: assembly.legs.id,
+        booster: assembly.booster.id,
+        fcs: assembly.fcs.id,
+        generator: assembly.generator.id,
+        expansion: assembly.expansion.id,
+      })
     }, 15000)
 
     it('複数の機体構成を保存し、全て読み込める', async () => {
@@ -130,10 +149,17 @@ describe('IndexedDBストレージフロー統合テスト', () => {
 
       const all = await repository.all(candidates)
 
-      expect(all).toHaveLength(3)
-      expect(all[0].name).toBe('Assembly 1')
-      expect(all[1].name).toBe('Assembly 2')
-      expect(all[2].name).toBe('Assembly 3')
+      expect({
+        count: all.length,
+        name1: all[0]?.name,
+        name2: all[1]?.name,
+        name3: all[2]?.name,
+      }).toEqual({
+        count: 3,
+        name1: 'Assembly 1',
+        name2: 'Assembly 2',
+        name3: 'Assembly 3',
+      })
     }, 15000)
   })
 
@@ -157,17 +183,24 @@ describe('IndexedDBストレージフロー統合テスト', () => {
       // リポジトリ経由で読み込み（自動変換される）
       const loaded = await repository.findById(testId, candidates)
 
-      expect(loaded).not.toBeNull()
-      expect(loaded?.name).toBe('v1 Format Assembly')
-
       // v1形式のインデックスから正しいパーツIDが取得されている
-      expect(loaded?.assembly.head.id).toBe(candidates.head[5].id)
-      expect(loaded?.assembly.core.id).toBe(candidates.core[3].id)
-      expect(loaded?.assembly.arms.id).toBe(candidates.arms[7].id)
-      expect(loaded?.assembly.legs.id).toBe(candidates.legs[4].id)
-      expect(loaded?.assembly.rightArmUnit.id).toBe(
-        candidates.rightArmUnit[3].id,
-      )
+      expect({
+        exists: loaded !== null,
+        name: loaded?.name,
+        head: loaded?.assembly.head.id,
+        core: loaded?.assembly.core.id,
+        arms: loaded?.assembly.arms.id,
+        legs: loaded?.assembly.legs.id,
+        rightArmUnit: loaded?.assembly.rightArmUnit.id,
+      }).toEqual({
+        exists: true,
+        name: 'v1 Format Assembly',
+        head: candidates.head[5].id,
+        core: candidates.core[3].id,
+        arms: candidates.arms[7].id,
+        legs: candidates.legs[4].id,
+        rightArmUnit: candidates.rightArmUnit[3].id,
+      })
     }, 15000)
 
     it('v1形式データを読み込み後、更新するとv2形式で保存される', async () => {
@@ -201,12 +234,19 @@ describe('IndexedDBストレージフロー統合テスト', () => {
 
       // 再度読み込み
       const reloaded = await repository.findById(testId, candidates)
-      expect(reloaded?.name).toBe('Updated Assembly')
 
       // データがv2形式になっていることを確認
       const rawData = await db.stored_assembly.get(testId)
-      expect(rawData?.assembly).toContain('v=2')
-      expect(rawData?.assembly).toMatch(/h=[A-Z]+\d+/)
+
+      expect({
+        name: reloaded?.name,
+        hasV2Param: rawData?.assembly.includes('v=2'),
+        hasIdFormat: rawData?.assembly.match(/h=[A-Z]+\d+/) !== null,
+      }).toEqual({
+        name: 'Updated Assembly',
+        hasV2Param: true,
+        hasIdFormat: true,
+      })
     }, 15000)
   })
 
@@ -272,16 +312,23 @@ describe('IndexedDBストレージフロー統合テスト', () => {
       }
 
       await dbV1.table('stored_assembly').add(v1Data)
-      await dbV1.close()
+      dbV1.close()
 
       // バージョン2のDBを開く（アップグレードが自動実行される）
       const dbV2 = setupDataBase(candidates)
 
       // データを取得してv2形式に変換されていることを確認
       const stored = await dbV2.stored_assembly.get(v1Data.id)
-      expect(stored).not.toBeUndefined()
-      expect(stored?.assembly).toContain('v=2')
-      expect(stored?.name).toBe('V1 Assembly')
+
+      expect({
+        exists: stored !== undefined,
+        hasV2Param: stored?.assembly.includes('v=2'),
+        name: stored?.name,
+      }).toEqual({
+        exists: true,
+        hasV2Param: true,
+        name: 'V1 Assembly',
+      })
 
       // クリーンアップ
       await Dexie.delete('ac6-assembly-tool')

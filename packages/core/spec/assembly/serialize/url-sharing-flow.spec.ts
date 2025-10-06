@@ -33,27 +33,34 @@ describe('URL共有フロー統合テスト', () => {
         deserializeAssembly(urlParams, candidates),
       )
 
-      // 全部位が正しく復元されていることを確認
-      expect(restoredAssembly.rightArmUnit.id).toBe(
-        originalAssembly.rightArmUnit.id,
-      )
-      expect(restoredAssembly.leftArmUnit.id).toBe(
-        originalAssembly.leftArmUnit.id,
-      )
-      expect(restoredAssembly.rightBackUnit.id).toBe(
-        originalAssembly.rightBackUnit.id,
-      )
-      expect(restoredAssembly.leftBackUnit.id).toBe(
-        originalAssembly.leftBackUnit.id,
-      )
-      expect(restoredAssembly.head.id).toBe(originalAssembly.head.id)
-      expect(restoredAssembly.core.id).toBe(originalAssembly.core.id)
-      expect(restoredAssembly.arms.id).toBe(originalAssembly.arms.id)
-      expect(restoredAssembly.legs.id).toBe(originalAssembly.legs.id)
-      expect(restoredAssembly.booster.id).toBe(originalAssembly.booster.id)
-      expect(restoredAssembly.fcs.id).toBe(originalAssembly.fcs.id)
-      expect(restoredAssembly.generator.id).toBe(originalAssembly.generator.id)
-      expect(restoredAssembly.expansion.id).toBe(originalAssembly.expansion.id)
+      // 複数のexpectを1つにまとめて、全ての不一致を一度に確認
+      expect({
+        rightArmUnit: restoredAssembly.rightArmUnit.id,
+        leftArmUnit: restoredAssembly.leftArmUnit.id,
+        rightBackUnit: restoredAssembly.rightBackUnit.id,
+        leftBackUnit: restoredAssembly.leftBackUnit.id,
+        head: restoredAssembly.head.id,
+        core: restoredAssembly.core.id,
+        arms: restoredAssembly.arms.id,
+        legs: restoredAssembly.legs.id,
+        booster: restoredAssembly.booster.id,
+        fcs: restoredAssembly.fcs.id,
+        generator: restoredAssembly.generator.id,
+        expansion: restoredAssembly.expansion.id,
+      }).toEqual({
+        rightArmUnit: originalAssembly.rightArmUnit.id,
+        leftArmUnit: originalAssembly.leftArmUnit.id,
+        rightBackUnit: originalAssembly.rightBackUnit.id,
+        leftBackUnit: originalAssembly.leftBackUnit.id,
+        head: originalAssembly.head.id,
+        core: originalAssembly.core.id,
+        arms: originalAssembly.arms.id,
+        legs: originalAssembly.legs.id,
+        booster: originalAssembly.booster.id,
+        fcs: originalAssembly.fcs.id,
+        generator: originalAssembly.generator.id,
+        expansion: originalAssembly.expansion.id,
+      })
     })
 
     it('URL長がブラウザ制限内に収まる', () => {
@@ -110,11 +117,18 @@ describe('URL共有フロー統合テスト', () => {
       const expectedHead = candidates.head[8]
       const expectedCore = candidates.core[4]
 
-      // 正しく復元されていることを確認
-      expect(restoredAssembly.rightArmUnit.id).toBe(expectedRightArmUnit.id)
-      expect(restoredAssembly.leftArmUnit.id).toBe(expectedLeftArmUnit.id)
-      expect(restoredAssembly.head.id).toBe(expectedHead.id)
-      expect(restoredAssembly.core.id).toBe(expectedCore.id)
+      // 複数のexpectを1つにまとめて、全ての不一致を一度に確認
+      expect({
+        rightArmUnit: restoredAssembly.rightArmUnit.id,
+        leftArmUnit: restoredAssembly.leftArmUnit.id,
+        head: restoredAssembly.head.id,
+        core: restoredAssembly.core.id,
+      }).toEqual({
+        rightArmUnit: expectedRightArmUnit.id,
+        leftArmUnit: expectedLeftArmUnit.id,
+        head: expectedHead.id,
+        core: expectedCore.id,
+      })
     })
 
     it('v1→v2変換後のURLがv2形式になる', () => {
@@ -135,12 +149,16 @@ describe('URL共有フロー統合テスト', () => {
 
       const v2Params = convertV1ToV2(v1Params, candidates)
 
-      // v=2パラメータが含まれることを確認
-      expect(v2Params.get('v')).toBe('2')
-
-      // IDベースのパラメータになっていることを確認（数字だけでなくアルファベットを含む）
-      expect(v2Params.get('h')).toMatch(/^[A-Z]+\d+$/)
-      expect(v2Params.get('c')).toMatch(/^[A-Z]+\d+$/)
+      // v2形式の各パラメータを確認
+      expect({
+        version: v2Params.get('v'),
+        headIdFormat: v2Params.get('h')?.match(/^[A-Z]+\d+$/) !== null,
+        coreIdFormat: v2Params.get('c')?.match(/^[A-Z]+\d+$/) !== null,
+      }).toEqual({
+        version: '2',
+        headIdFormat: true,
+        coreIdFormat: true,
+      })
     })
   })
 
@@ -166,9 +184,14 @@ describe('URL共有フロー統合テスト', () => {
         deserializeAssembly(invalidParams, candidates),
       )
 
-      // 存在しないIDの場合、配列の最初の要素が使用される
-      expect(restoredAssembly.head.id).toBe(candidates.head[0].id)
-      expect(restoredAssembly.core.id).toBe('CR001')
+      // 存在しないIDと正常なIDの結果を確認
+      expect({
+        head: restoredAssembly.head.id,
+        core: restoredAssembly.core.id,
+      }).toEqual({
+        head: candidates.head[0].id,
+        core: 'CR001',
+      })
     })
 
     it('パラメータが欠けている場合は配列の最初の要素を使用', () => {
@@ -192,8 +215,13 @@ describe('URL共有フロー統合テスト', () => {
         deserializeAssembly(incompleteParams, candidates),
       )
 
-      expect(restoredAssembly.head.id).toBe(candidates.head[0].id)
-      expect(restoredAssembly.core.id).toBe('CR002')
+      expect({
+        head: restoredAssembly.head.id,
+        core: restoredAssembly.core.id,
+      }).toEqual({
+        head: candidates.head[0].id,
+        core: 'CR002',
+      })
     })
   })
 })
