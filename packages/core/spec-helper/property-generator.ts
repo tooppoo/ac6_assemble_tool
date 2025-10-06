@@ -140,8 +140,16 @@ export const genPart = () =>
     name: fc.string({ minLength: 1, maxLength: 20 }),
   })
 
+// IDがユニークなパーツ配列を生成
 export const genParts = (constraints: ArrayConstraints = {}) =>
-  fc.array(genPart(), { minLength: 1, maxLength: 20, ...constraints })
+  fc
+    .uniqueArray(genPart(), {
+      minLength: 1,
+      maxLength: 20,
+      selector: (part) => part.id,
+      ...constraints,
+    })
+    .map((parts) => parts as Array<{ id: string; name: string }>)
 
 // パーツ配列と、その配列に確実に存在するパーツを生成
 export const genPartWithId = () =>
