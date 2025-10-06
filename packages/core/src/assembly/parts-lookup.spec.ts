@@ -13,6 +13,7 @@ import {
   findPartById,
   findPartByIdFromMap,
   findPartByIdOrFallback,
+  findPartByIdOrFallbackFromMap,
   findPartByIdOrFirst,
 } from './parts-lookup'
 
@@ -118,6 +119,48 @@ describe('パーツID検索', () => {
       const result = findPartByIdFromMap(map, 'HD999')
       expect(result).toBeUndefined()
     })
+  })
+
+  describe('findPartByIdOrFallbackFromMap', () => {
+    const fallback = { id: 'HD000', name: 'Default Head' }
+
+    // Parameterized test: 見つかるケース
+    it.each([
+      { id: 'HD001', expectedName: 'Head A' },
+      { id: 'HD002', expectedName: 'Head B' },
+      { id: 'HD003', expectedName: 'Head C' },
+    ])(
+      'MapからID $id が見つかった場合は $expectedName を返す',
+      ({ id, expectedName }) => {
+        const map = createPartIdMap(testParts)
+        const result = findPartByIdOrFallbackFromMap(map, id, fallback)
+
+        expect({
+          id: result.id,
+          name: result.name,
+        }).toEqual({
+          id,
+          name: expectedName,
+        })
+      },
+    )
+
+    // Parameterized test: 見つからないケース
+    it.each(['HD999', 'INVALID', 'HD000'])(
+      'MapからID "%s" が見つからない場合はフォールバックを返す',
+      (invalidId) => {
+        const map = createPartIdMap(testParts)
+        const result = findPartByIdOrFallbackFromMap(map, invalidId, fallback)
+
+        expect({
+          id: result.id,
+          name: result.name,
+        }).toEqual({
+          id: 'HD000',
+          name: 'Default Head',
+        })
+      },
+    )
   })
 
   describe('findPartByIdOrFallback', () => {
@@ -276,6 +319,30 @@ describe('パーツID検索', () => {
           const result = findPartByIdOrFallback(parts, searchId, fallback)
           const expected = parts.find((p) => p.id === searchId) ?? fallback;
           expect(result).toEqual(expected);
+        }),
+        { numRuns: 100 },
+      )
+    })
+
+    it('任意のパーツ配列とフォールバックで、findPartByIdOrFallbackFromMapは必ず値を返す', () => {
+      fc.assert(
+        fc.property(genPartsWithFallback(), ({ parts, searchId, fallback }) => {
+          const map = createPartIdMap(parts)
+          const result = findPartByIdOrFallbackFromMap(map, searchId, fallback)
+          const expected = parts.find((p) => p.id === searchId) ?? fallback;
+          expect(result).toEqual(expected);
+        }),
+        { numRuns: 100 },
+      )
+    })
+
+    it('任意のパーツ配列で、findPartByIdOrFallbackとfindPartByIdOrFallbackFromMapは同じ結果を返す', () => {
+      fc.assert(
+        fc.property(genPartsWithFallback(), ({ parts, searchId, fallback }) => {
+          const arrayResult = findPartByIdOrFallback(parts, searchId, fallback)
+          const map = createPartIdMap(parts)
+          const mapResult = findPartByIdOrFallbackFromMap(map, searchId, fallback)
+          expect(arrayResult).toEqual(mapResult);
         }),
         { numRuns: 100 },
       )
