@@ -450,9 +450,11 @@ function searchToAssembly(search: URLSearchParams, candidates: Candidates): Asse
 
 function deserializeV2(search: URLSearchParams, candidates: Candidates): Assembly {
   const partIds = extractPartIdsFromQuery(search);
+  const headMap = createPartIdMap(candidates.head);
+  const coreMap = createPartIdMap(candidates.core);
   return createAssembly({
-    head: findPartById(candidates.head, partIds.h) || candidates.head[0],
-    core: findPartById(candidates.core, partIds.c) || candidates.core[0],
+    head: headMap.get(partIds.h) || candidates.head[0],
+    core: coreMap.get(partIds.c) || candidates.core[0],
     // ... 他の部位
   });
 }

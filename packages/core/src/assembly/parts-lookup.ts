@@ -29,31 +29,6 @@ export function createPartIdMap<T extends { id: string }>(
 }
 
 /**
- * パーツIDでパーツを検索（Mapから検索、O(1)）
- *
- * @param partMap - ID→パーツのMap
- * @param id - 検索するパーツID
- * @returns 見つかったパーツ、見つからない場合はundefined
- *
- * @example
- * ```typescript
- * const parts = [
- *   { id: 'HD001', name: 'Head A' },
- *   { id: 'HD002', name: 'Head B' },
- * ]
- * const map = createPartIdMap(parts)
- * const result = findPartByIdFromMap(map, 'HD001')
- * // => { id: 'HD001', name: 'Head A' }
- * ```
- */
-export function findPartByIdFromMap<T extends { id: string }>(
-  partMap: ReadonlyMap<string, T>,
-  id: string,
-): T | undefined {
-  return partMap.get(id)
-}
-
-/**
  * パーツIDでパーツを検索し、見つからない場合はフォールバックを返す（Mapから検索、O(1)）
  *
  * @param partMap - ID→パーツのMap
@@ -76,7 +51,7 @@ export function findPartByIdFromMap<T extends { id: string }>(
 export function findPartByIdOrFallbackFromMap<
   T extends { id: string; name: string },
 >(partMap: ReadonlyMap<string, T>, id: string, fallback: T): T {
-  const found = findPartByIdFromMap(partMap, id)
+  const found = partMap.get(id)
 
   if (!found) {
     logger.warn('Part ID not found, using fallback', {

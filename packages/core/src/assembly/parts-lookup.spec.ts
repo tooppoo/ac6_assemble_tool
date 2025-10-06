@@ -2,19 +2,16 @@ import fc from 'fast-check'
 import { describe, it, expect } from 'vitest'
 
 import {
-  genPartWithId,
-  genPartsAndSearchId,
-  genPartsWithFallback,
-  genParts,
-  genPartId,
-} from '../../spec-helper/property-generator'
-
-import {
   createPartIdMap,
-  findPartByIdFromMap,
   findPartByIdOrFallbackFromMap,
   findPartByIdOrFirst,
 } from './parts-lookup'
+
+import {
+  genPartsAndSearchId,
+  genPartsWithFallback,
+  genParts,
+} from '#spec-helper/property-generator'
 
 // 共通テストデータ - describe外で定義
 const testParts = [
@@ -43,37 +40,6 @@ describe('パーツID検索', () => {
         hd001Name: 'Head A',
         hd002Name: 'Head B',
       })
-    })
-  })
-
-  describe('findPartByIdFromMap', () => {
-    // Parameterized test: 複数のIDでMap検索をテスト
-    it.each([
-      { id: 'HD001', expectedName: 'Head A' },
-      { id: 'HD002', expectedName: 'Head B' },
-      { id: 'HD003', expectedName: 'Head C' },
-    ])(
-      'MapからID $id で検索して $expectedName を返す',
-      ({ id, expectedName }) => {
-        const map = createPartIdMap(testParts)
-        const result = findPartByIdFromMap(map, id)
-
-        expect({
-          defined: result !== undefined,
-          id: result?.id,
-          name: result?.name,
-        }).toEqual({
-          defined: true,
-          id,
-          name: expectedName,
-        })
-      },
-    )
-
-    it('IDが見つからない場合はundefinedを返す', () => {
-      const map = createPartIdMap(testParts)
-      const result = findPartByIdFromMap(map, 'HD999')
-      expect(result).toBeUndefined()
     })
   })
 
@@ -167,42 +133,6 @@ describe('パーツID検索', () => {
   })
 
   describe('Property-based tests', () => {
-
-    it('追加プロパティを持つ任意の型のパーツでも検索できる', () => {
-      // 任意の追加プロパティを持つパーツを生成
-      const genPartWithExtras = fc.record({
-        id: genPartId(),
-        name: fc.string({ minLength: 1, maxLength: 20 }),
-        // 任意の追加プロパティ
-        extraNumber: fc.integer({ min: 0, max: 10000 }),
-        extraString: fc.string({ maxLength: 50 }),
-        extraBoolean: fc.boolean(),
-      })
-
-      const genPartsWithExtras = fc
-        .uniqueArray(genPartWithExtras, {
-          minLength: 1,
-          maxLength: 20,
-          selector: (part) => part.id,
-        })
-        .chain((parts) =>
-          fc.record({
-            parts: fc.constant(parts),
-            targetPart: fc.constantFrom(...parts),
-          }),
-        )
-
-      fc.assert(
-        fc.property(genPartsWithExtras, ({ parts, targetPart }) => {
-          const map = createPartIdMap(parts)
-          const result = findPartByIdFromMap(map, targetPart.id)
-
-          // 基本プロパティと追加プロパティの両方が保持されていることを検証
-          expect(result).toEqual(targetPart)
-        }),
-        { numRuns: 100 },
-      )
-    })
 
     it('任意のパーツ配列で、findPartByIdOrFirstは必ず値を返す（空配列以外）', () => {
       fc.assert(
