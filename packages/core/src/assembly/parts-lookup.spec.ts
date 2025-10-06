@@ -6,6 +6,7 @@ import {
   genPartsAndSearchId,
   genPartsWithFallback,
   genParts,
+  genPartId,
 } from '../../spec-helper/property-generator'
 
 import {
@@ -281,6 +282,41 @@ describe('パーツID検索', () => {
         fc.property(genPartWithId(), ({ parts, targetPart }) => {
           const result = findPartById(parts, targetPart.id)
 
+          expect(result).toEqual(targetPart)
+        }),
+        { numRuns: 100 },
+      )
+    })
+
+    it('追加プロパティを持つ任意の型のパーツでも検索できる', () => {
+      // 任意の追加プロパティを持つパーツを生成
+      const genPartWithExtras = fc.record({
+        id: genPartId(),
+        name: fc.string({ minLength: 1, maxLength: 20 }),
+        // 任意の追加プロパティ
+        extraNumber: fc.integer({ min: 0, max: 10000 }),
+        extraString: fc.string({ maxLength: 50 }),
+        extraBoolean: fc.boolean(),
+      })
+
+      const genPartsWithExtras = fc
+        .uniqueArray(genPartWithExtras, {
+          minLength: 1,
+          maxLength: 20,
+          selector: (part) => part.id,
+        })
+        .chain((parts) =>
+          fc.record({
+            parts: fc.constant(parts),
+            targetPart: fc.constantFrom(...parts),
+          }),
+        )
+
+      fc.assert(
+        fc.property(genPartsWithExtras, ({ parts, targetPart }) => {
+          const result = findPartById(parts, targetPart.id)
+
+          // 基本プロパティと追加プロパティの両方が保持されていることを検証
           expect(result).toEqual(targetPart)
         }),
         { numRuns: 100 },
