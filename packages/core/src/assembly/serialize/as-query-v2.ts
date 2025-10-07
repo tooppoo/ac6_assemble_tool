@@ -133,39 +133,30 @@ export function searchToAssemblyV2(
 }
 
 /**
+ * v2形式クエリパラメータのキー
+ */
+export const ASSEMBLY_QUERY_V2_KEYS = [
+  'v',
+  'rau',
+  'lau',
+  'rbu',
+  'lbu',
+  'h',
+  'c',
+  'a',
+  'l',
+  'b',
+  'f',
+  'g',
+  'e',
+] as const
+
+/**
+ * v2形式クエリパラメータのキー型
+ */
+export type AssemblyQueryV2Key = (typeof ASSEMBLY_QUERY_V2_KEYS)[number]
+
+/**
  * v2形式クエリパラメータ型
  */
-type AssemblyQueryV2 = Readonly<
-  Record<
-    /** VERSION */
-    | 'v'
-    /** RIGHT ARM UNIT */
-    | 'rau'
-    /** LEFT ARM UNIT */
-    | 'lau'
-    /** RIGHT BACK UNIT */
-    | 'rbu'
-    /** LEFT BACK UNIT */
-    | 'lbu'
-
-    /** HEAD */
-    | 'h'
-    /** CORE */
-    | 'c'
-    /** ARMS */
-    | 'a'
-    /** LEGS */
-    | 'l'
-
-    /** BOOSTER */
-    | 'b'
-    /** FCS */
-    | 'f'
-    /** GENERATOR */
-    | 'g'
-
-    /** EXPANSION */
-    | 'e',
-    string
-  >
->
+type AssemblyQueryV2 = Readonly<Record<AssemblyQueryV2Key, string>>

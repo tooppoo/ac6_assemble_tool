@@ -203,12 +203,6 @@ describe('v2形式URLデシリアライザー', () => {
         expansion: 'e',
       }
 
-      // 存在しないIDのジェネレータ（100-999の範囲で生成）
-      const genInvalidPartId = (prefix: string) =>
-        fc
-          .integer({ min: 100, max: 999 })
-          .map((v) => `${prefix}${v.toString().padStart(3, '0')}`)
-
       // ランダムなスロットの組み合わせを選択
       const genInvalidSlots = fc.uniqueArray(
         fc.constantFrom<AssemblyKey>(

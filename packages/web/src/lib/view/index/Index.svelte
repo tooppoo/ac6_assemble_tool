@@ -21,6 +21,7 @@
   import {
     assemblyToSearchV2,
     searchToAssemblyV2,
+    ASSEMBLY_QUERY_V2_KEYS,
   } from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
   import { convertV1ToV2 } from '@ac6_assemble_tool/core/assembly/serialize/convert-v1-to-v2'
   import {
@@ -207,25 +208,8 @@
     currentParams: URLSearchParams,
     assemblyParams: URLSearchParams,
   ) {
-    // アセンブリ関連のパラメータキー
-    const assemblyKeys = [
-      'v',
-      'h',
-      'c',
-      'a',
-      'l',
-      'b',
-      'f',
-      'g',
-      'e',
-      'rau',
-      'lau',
-      'rbu',
-      'lbu',
-    ]
-
     // 既存のアセンブリ関連パラメータを削除
-    assemblyKeys.forEach((key) => currentParams.delete(key))
+    ASSEMBLY_QUERY_V2_KEYS.forEach((key) => currentParams.delete(key))
 
     // 新しいアセンブリパラメータを追加
     assemblyParams.forEach((value, key) => {
