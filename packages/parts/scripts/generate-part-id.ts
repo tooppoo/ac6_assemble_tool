@@ -112,8 +112,3 @@ export function main() {
     process.exit(1)
   }
 }
-
-// CLIとして実行された場合のみmainを呼び出す
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main()
-}

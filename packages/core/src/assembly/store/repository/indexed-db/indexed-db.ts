@@ -75,8 +75,10 @@ export const setupDataBase = (candidates: Candidates): DataBase => {
  * 本番コードでは使用しないこと
  */
 export const TEST_ONLY_resetDataBase = (): void => {
-  if (db) {
-    db.close()
-    db = null
+  if (process.env.NODE_ENV === 'test') {
+    if (db) {
+      db.close()
+      db = null
+    }
   }
 }
