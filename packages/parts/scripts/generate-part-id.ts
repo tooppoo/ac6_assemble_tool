@@ -72,9 +72,9 @@ export function generateNextId(
 }
 
 /**
- * CLIエントリーポイント
+ * CLIメイン関数
  *
- * 使用例:
+ * 使用例（package.json経由）:
  * ```bash
  * pnpm generate-part-id -- --category=head
  * pnpm generate-part-id -- --category=core --existing="CR001,CR002,CR003"
