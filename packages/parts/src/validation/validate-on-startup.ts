@@ -1,17 +1,15 @@
 /**
  * 起動時パーツID検証
  */
-import { armUnits } from '../arm-units'
+import { armUnits, leftArmUnits } from '../arm-units'
 import { arms } from '../arms'
-import { backUnits } from '../back-units'
+import { backUnits, leftBackUnits } from '../back-units'
 import { boosters } from '../booster'
 import { cores } from '../cores'
 import { expansions } from '../expansions'
 import { fcses } from '../fces'
 import { generators } from '../generators'
 import { heads } from '../heads'
-import { leftArmUnits } from '../left-arm-units'
-import { leftBackUnits } from '../left-back-units'
 import { legs } from '../legs'
 import {
   boosterNotEquipped,
