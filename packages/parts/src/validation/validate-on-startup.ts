@@ -10,6 +10,8 @@ import { expansions } from '../expansions'
 import { fcses } from '../fces'
 import { generators } from '../generators'
 import { heads } from '../heads'
+import { leftArmUnits } from '../left-arm-units'
+import { leftBackUnits } from '../left-back-units'
 import { legs } from '../legs'
 import {
   boosterNotEquipped,
@@ -35,7 +37,9 @@ function collectAllParts(): ReadonlyArray<{ id: string; name: string }> {
     ...generators,
     ...expansions,
     ...armUnits,
+    ...leftArmUnits,
     ...backUnits,
+    ...leftBackUnits,
     boosterNotEquipped,
     expansionNotEquipped,
     armNotEquipped,

@@ -39,7 +39,7 @@ export const V1 = {
     params: URLSearchParams,
     candidates: Candidates,
   ): URLSearchParams {
-    logger.info('v1形式のURLを検出、v2形式に変換します', {
+    logger.info('v1形式と判定されたURLを変換します', {
       v1Query: params.toString(),
     })
     return convertV1ToV2(params, candidates)
