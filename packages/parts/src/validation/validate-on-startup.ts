@@ -23,6 +23,8 @@ import { validatePartIdUniqueness } from './id-validator'
 
 /**
  * 全パーツを収集
+ *
+ * 新しいパーツカテゴリファイルを追加した場合は、このリストにも追加する必要があります。
  */
 function collectAllParts(): ReadonlyArray<{ id: string; name: string }> {
   return [
