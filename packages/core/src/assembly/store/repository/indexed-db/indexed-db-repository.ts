@@ -36,14 +36,11 @@ export class IndexedDbRepository
     candidates: Candidates,
     current: Date = new Date(),
   ): Promise<void> {
-    const { data, error } = aggregationToDto(
-      {
-        ...aggregation,
-        createdAt: current,
-        updatedAt: current,
-      },
-      candidates,
-    )
+    const { data, error } = aggregationToDto({
+      ...aggregation,
+      createdAt: current,
+      updatedAt: current,
+    })
     if (error) {
       return Promise.reject(error)
     }
@@ -95,13 +92,10 @@ export class IndexedDbRepository
     candidates: Candidates,
     current: Date = new Date(),
   ): Promise<void> {
-    const { data, error } = aggregationToDto(
-      {
-        ...aggregation,
-        updatedAt: current,
-      },
-      candidates,
-    )
+    const { data, error } = aggregationToDto({
+      ...aggregation,
+      updatedAt: current,
+    })
     if (error) {
       return Promise.reject(error)
     }
@@ -110,9 +104,8 @@ export class IndexedDbRepository
   }
   async insert(
     aggregation: StoredAssemblyAggregation,
-    candidates: Candidates,
   ): Promise<void> {
-    const { data, error } = aggregationToDto(aggregation, candidates)
+    const { data, error } = aggregationToDto(aggregation)
     if (error) {
       return Promise.reject(error)
     }
@@ -130,7 +123,6 @@ type TransformResult<T> =
   | { data: null; error: Error }
 function aggregationToDto(
   aggregation: StoredAssemblyAggregation,
-  _candidates: Candidates,
 ): TransformResult<StoredAssemblyDto> {
   const dto = {
     id: aggregation.id,
