@@ -41,4 +41,5 @@ analyze.html
 .claude/settings.local.json
 
 # other
+.env
 tmp
