@@ -4,6 +4,7 @@
  * v1/v2形式を自動判定し、適切にデシリアライズします。
  */
 import type { RawAssembly } from '#core/assembly/assembly'
+import { logger } from '#core/utils/logger'
 
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 
@@ -47,5 +48,8 @@ export function deserializeAssembly(
   }
 
   // unknown形式の場合もv2形式として処理を試みる
+  logger.warn('Unknown URL version detected, attempting to process as v2', {
+    version: params.get('v'),
+  })
   return searchToAssemblyV2(params, candidates)
 }
