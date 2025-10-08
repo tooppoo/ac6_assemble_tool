@@ -19,10 +19,7 @@ import {
 } from '../not-equipped'
 import { logger } from '../utils/logger'
 
-import {
-  DuplicatePartIdError,
-  validatePartIdUniqueness,
-} from './id-validator'
+import { DuplicatePartIdError, validatePartIdUniqueness } from './id-validator'
 
 /**
  * 全パーツを収集
@@ -67,10 +64,7 @@ export function validatePartsOnStartup(): void {
     })
 
     // アプリケーション起動を中断
-    throw new DuplicatePartIdError(
-      result.duplicateId,
-      result.conflictingParts,
-    )
+    throw new DuplicatePartIdError(result.duplicateId, result.conflictingParts)
   }
 
   // 検証成功時のinfoログ

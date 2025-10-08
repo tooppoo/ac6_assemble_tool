@@ -102,9 +102,7 @@ export class IndexedDbRepository
 
     await this.database.stored_assembly.put(data)
   }
-  async insert(
-    aggregation: StoredAssemblyAggregation,
-  ): Promise<void> {
+  async insert(aggregation: StoredAssemblyAggregation): Promise<void> {
     const { data, error } = aggregationToDto(aggregation)
     if (error) {
       return Promise.reject(error)
