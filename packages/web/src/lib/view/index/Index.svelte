@@ -175,7 +175,9 @@
   function buildAssemblyFromQuery() {
     if (typeof window === 'undefined') {
       // SSR時はデフォルトアセンブリを使用
-      assembly = createAssembly(searchToAssemblyV2(new URLSearchParams(), initialCandidates))
+      assembly = createAssembly(
+        searchToAssemblyV2(new URLSearchParams(), initialCandidates),
+      )
       return
     }
 
