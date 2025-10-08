@@ -39,9 +39,9 @@ const FILES: FileConfig[] = [
   },
 ]
 
-function addIdsToFile(filepath: string, category: string): void {
+function addIdsToFile(filepath: string, config: FileConfig): void {
   const content = fs.readFileSync(filepath, 'utf-8')
-  const code = categoryToCode(category)
+  const code = categoryToCode(config.category)
 
   // idフィールドが既に存在するかチェック
   if (content.includes(`id: '${code}`)) {
@@ -51,11 +51,11 @@ function addIdsToFile(filepath: string, category: string): void {
 
   let counter = 1
   const updatedContent = content.replace(
-    /(\s+)(name: ')/g,
-    (match, spaces, namePrefix) => {
+    config.definePattern,
+    (match) => {
       const id = `${code}${String(counter).padStart(3, '0')}`
       counter++
-      return `${spaces}id: '${id}',\n${spaces}${namePrefix}`
+      return `${match}\n  id: '${id}',`
     },
   )
 
@@ -66,13 +66,13 @@ function addIdsToFile(filepath: string, category: string): void {
 function main() {
   const srcDir = path.join(__dirname, '..', 'src')
 
-  for (const { filename, category } of FILES) {
-    const filepath = path.join(srcDir, filename)
+  for (const config of FILES) {
+    const filepath = path.join(srcDir, config.filename)
     if (fs.existsSync(filepath)) {
       try {
-        addIdsToFile(filepath, category)
+        addIdsToFile(filepath, config)
       } catch (error) {
-        console.error(`Error processing ${filename}:`, error)
+        console.error(`Error processing ${config.filename}:`, error)
       }
     } else {
       console.warn(`File not found: ${filepath}`)
