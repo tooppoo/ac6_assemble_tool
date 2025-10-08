@@ -39,6 +39,8 @@ export const setupDataBase = (candidates: Candidates): DataBase => {
             assemblyId: typedDto.id,
             error: error instanceof Error ? error.message : String(error),
           })
+          // トランザクションをアボートさせるためにエラーを再スローします
+          throw error
         }
       }
     })
