@@ -23,7 +23,7 @@
     searchToAssemblyV2,
     ASSEMBLY_QUERY_V2_KEYS,
   } from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
-  import { convertV1ToV2 } from '@ac6_assemble_tool/core/assembly/serialize/convert-v1-to-v2'
+  import { VersionMigration } from '@ac6_assemble_tool/core/assembly/version-migration'
   import {
     type Candidates,
     type OrderParts,
@@ -180,22 +180,25 @@
 
     const url = new URL(location.href)
     const params = url.searchParams
-    const isV1 = !params.has('v')
 
-    if (isV1 && params.toString()) {
-      // v1形式クエリの場合、v2形式に変換
-      logger.info('v1形式のURLを検出、v2形式に変換します', {
-        v1Query: params.toString(),
-      })
-      const v2Params = convertV1ToV2(params, initialCandidates)
-      assembly = createAssembly(searchToAssemblyV2(v2Params, initialCandidates))
-
-      // URLをv2形式に更新（既存の非アセンブリパラメータを保持）
-      mergeAssemblyParams(url.searchParams, v2Params)
-      history.replaceState({}, '', url)
-    } else {
-      // v2形式またはクエリなしの場合
+    if (!params.toString()) {
+      // クエリなしの場合はデフォルトアセンブリ
       assembly = createAssembly(searchToAssemblyV2(params, initialCandidates))
+      return
+    }
+
+    // バージョン判定とマイグレーション
+    const migrate = VersionMigration.forQuery(params)
+    const convertedParams = migrate(params, initialCandidates)
+
+    assembly = createAssembly(
+      searchToAssemblyV2(convertedParams, initialCandidates),
+    )
+
+    // v1の場合はURLをv2形式に更新（既存の非アセンブリパラメータを保持）
+    if (convertedParams !== params) {
+      mergeAssemblyParams(url.searchParams, convertedParams)
+      history.replaceState({}, '', url)
     }
   }
   /**

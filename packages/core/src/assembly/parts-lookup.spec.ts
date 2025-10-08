@@ -133,7 +133,6 @@ describe('パーツID検索', () => {
   })
 
   describe('Property-based tests', () => {
-
     it('任意のパーツ配列で、findPartByIdOrFirstは必ず値を返す（空配列以外）', () => {
       fc.assert(
         fc.property(genPartsAndSearchId(), ({ parts, searchId }) => {

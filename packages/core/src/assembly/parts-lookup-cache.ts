@@ -4,6 +4,7 @@
  * Candidatesから生成したMapをメモ化し、パフォーマンスを向上させます。
  */
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
+
 import { createPartIdMap } from './parts-lookup'
 
 /**

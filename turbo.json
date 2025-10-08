@@ -69,8 +69,12 @@
       ]
     },
     "format": {
+      "outputs": [
+        ".eslintcache",
+        "node_modules/.cache/prettier/.prettier-cache"
+      ],
       "dependsOn": [
-        "transit"
+        "^format"
       ]
     },
     "clean": {
