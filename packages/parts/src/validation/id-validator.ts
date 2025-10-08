@@ -3,6 +3,24 @@
  */
 
 /**
+ * パーツID重複エラークラス
+ *
+ * ID重複という具体的なエラーを示すカスタムエラー型。
+ * instanceofでエラーハンドリングが可能になります。
+ */
+export class DuplicatePartIdError extends Error {
+  constructor(
+    public readonly duplicateId: string,
+    public readonly conflictingParts: readonly string[],
+  ) {
+    super(
+      `Duplicate part ID detected: ${duplicateId} (conflicting parts: ${conflictingParts.join(', ')})`,
+    )
+    this.name = 'DuplicatePartIdError'
+  }
+}
+
+/**
  * ID重複エラー情報
  */
 export type DuplicateIdError = Readonly<{
