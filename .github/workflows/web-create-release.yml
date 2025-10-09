@@ -27,16 +27,16 @@ jobs:
           git push origin "web/v${{ steps.version.outputs.version }}"
 
       - name: Release
-        uses: softprops/action-gh-release@6cbd405e2c4e67a21c47fa9e383d020e4e28b836 # v2
+        uses: softprops/action-gh-release@aec2ec56f94eb8180ceec724245f64ef008b89f5 # v2
         with:
           tag_name: "web/v${{ steps.version.outputs.version }}"
           generate_release_notes: true
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version-file: ".node-version"
           cache: "pnpm"
@@ -54,7 +54,7 @@ jobs:
         run: pnpm run build
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@9681c2997648301493e78cacbfb790a9f19c833f # v3
+        uses: cloudflare/wrangler-action@da0e0dfe58b7a431659754fdf3f186c529afbe65 # v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
