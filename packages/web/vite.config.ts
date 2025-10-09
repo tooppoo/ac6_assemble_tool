@@ -30,6 +30,9 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(`${pkg.version}-${shortHash}`),
   },
+  server: {
+    host: '0.0.0.0',
+  },
   preview: {
     host: '0.0.0.0',
     port: 4173,
