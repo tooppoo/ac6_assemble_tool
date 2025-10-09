@@ -12,7 +12,7 @@ jobs:
   update-package-version:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write # to commit changes
       pull-requests: write
     steps:
       # setup
