@@ -29,14 +29,12 @@ describe('IndexedDB v2形式対応', () => {
       expansion: candidates.expansion[0],
     } as RawAssembly)
 
-    await repository.storeNew(
-      {
-        id: testId,
-        name: 'Test v2',
-        description: 'Test v2 format',
-        assembly,
-      },
-    )
+    await repository.storeNew({
+      id: testId,
+      name: 'Test v2',
+      description: 'Test v2 format',
+      assembly,
+    })
 
     const result = await repository.findById(testId, candidates)
 

@@ -34,33 +34,27 @@ describe('repository', () => {
 
           await expect(repository.all(candidates)).resolves.toHaveLength(0)
 
-          await repository.storeNew(
-            {
-              id: id1,
-              name: 'test-1-name',
-              description: 'test-1-desc',
-              assembly: a1,
-            },
-          )
+          await repository.storeNew({
+            id: id1,
+            name: 'test-1-name',
+            description: 'test-1-desc',
+            assembly: a1,
+          })
 
           await expect(repository.all(candidates)).resolves.toHaveLength(1)
 
-          await repository.storeNew(
-            {
-              id: id2,
-              name: 'test-2-name',
-              description: 'test-2-desc',
-              assembly: a2,
-            },
-          )
-          await repository.storeNew(
-            {
-              id: id3,
-              name: 'test-3-name',
-              description: 'test-3-desc',
-              assembly: a3,
-            },
-          )
+          await repository.storeNew({
+            id: id2,
+            name: 'test-2-name',
+            description: 'test-2-desc',
+            assembly: a2,
+          })
+          await repository.storeNew({
+            id: id3,
+            name: 'test-3-name',
+            description: 'test-3-desc',
+            assembly: a3,
+          })
 
           const find1 = await repository.findById(id3, candidates)
           expect(find1).not.toBeNull()
@@ -78,15 +72,13 @@ describe('repository', () => {
 
           const updatedAssembly = createAssembly(mergedParts)
 
-          await repository.update(
-            {
-              id: id2,
-              name: 'test-2-new-name',
-              description: 'test-2-new-desc',
-              assembly: updatedAssembly,
-              createdAt: records1[1].createdAt,
-            },
-          )
+          await repository.update({
+            id: id2,
+            name: 'test-2-new-name',
+            description: 'test-2-new-desc',
+            assembly: updatedAssembly,
+            createdAt: records1[1].createdAt,
+          })
 
           const records2 = await repository.all(candidates)
 

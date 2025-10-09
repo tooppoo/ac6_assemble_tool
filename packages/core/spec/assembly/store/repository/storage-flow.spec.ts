@@ -35,14 +35,12 @@ describe('IndexedDBストレージフロー統合テスト', () => {
       } as RawAssembly)
 
       // 保存
-      await repository.storeNew(
-        {
-          id: testId,
-          name: 'Test Assembly v2',
-          description: 'v2形式テスト',
-          assembly,
-        },
-      )
+      await repository.storeNew({
+        id: testId,
+        name: 'Test Assembly v2',
+        description: 'v2形式テスト',
+        assembly,
+      })
 
       // 読み込み
       const loaded = await repository.findById(testId, candidates)
@@ -118,30 +116,24 @@ describe('IndexedDBストレージフロー統合テスト', () => {
         expansion: candidates.expansion[1],
       } as RawAssembly)
 
-      await repository.storeNew(
-        {
-          id: id1,
-          name: 'Assembly 1',
-          description: 'First',
-          assembly: assembly1,
-        },
-      )
-      await repository.storeNew(
-        {
-          id: id2,
-          name: 'Assembly 2',
-          description: 'Second',
-          assembly: assembly2,
-        },
-      )
-      await repository.storeNew(
-        {
-          id: id3,
-          name: 'Assembly 3',
-          description: 'Third',
-          assembly: assembly1,
-        },
-      )
+      await repository.storeNew({
+        id: id1,
+        name: 'Assembly 1',
+        description: 'First',
+        assembly: assembly1,
+      })
+      await repository.storeNew({
+        id: id2,
+        name: 'Assembly 2',
+        description: 'Second',
+        assembly: assembly2,
+      })
+      await repository.storeNew({
+        id: id3,
+        name: 'Assembly 3',
+        description: 'Third',
+        assembly: assembly1,
+      })
 
       const all = await repository.all(candidates)
 
@@ -220,12 +212,10 @@ describe('IndexedDBストレージフロー統合テスト', () => {
       expect(loaded).not.toBeNull()
 
       // 更新
-      await repository.update(
-        {
-          ...loaded!,
-          name: 'Updated Assembly',
-        },
-      )
+      await repository.update({
+        ...loaded!,
+        name: 'Updated Assembly',
+      })
 
       // 再度読み込み
       const reloaded = await repository.findById(testId, candidates)
@@ -268,9 +258,12 @@ describe('IndexedDBストレージフロー統合テスト', () => {
         expansion: candidates.expansion[0],
       } as RawAssembly)
 
-      await repository.storeNew(
-        { id: testId, name: 'To Be Deleted', description: '', assembly },
-      )
+      await repository.storeNew({
+        id: testId,
+        name: 'To Be Deleted',
+        description: '',
+        assembly,
+      })
 
       const before = await repository.findById(testId, candidates)
       expect(before).not.toBeNull()
@@ -347,14 +340,12 @@ describe('IndexedDBストレージフロー統合テスト', () => {
         expansion: candidates.expansion[0],
       } as RawAssembly)
 
-      await repository.storeNew(
-        {
-          id: testId,
-          name: 'V2 Assembly',
-          description: 'v2形式テストデータ',
-          assembly,
-        },
-      )
+      await repository.storeNew({
+        id: testId,
+        name: 'V2 Assembly',
+        description: 'v2形式テストデータ',
+        assembly,
+      })
 
       // DBを再度開いてもv2形式のまま
       const db = setupDataBase(candidates)
