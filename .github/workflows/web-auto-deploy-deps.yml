@@ -1,35 +1,26 @@
-name: Web Create Release
+name: Web Auto Deploy Dependencies
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: "Release version (e.g., 1.2.3)"
-        required: true
-        type: string
+  pull_request:
+    types: [closed]
+    branches: [main]
 
 jobs:
-  create-release:
+  deploy:
     environment: web
+    if: |
+      github.event.pull_request.merged == true &&
+      (
+        startsWith(github.event.pull_request.head.ref, 'renovate/') ||
+        startsWith(github.event.pull_request.head.ref, 'dependabot/')
+      )
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-
-      - name: Create tag
-        run: |
-          git tag "web/v${{ inputs.version }}"
-          git push origin "web/v${{ inputs.version }}"
-
-      - name: Release
-        uses: softprops/action-gh-release@6cbd405e2c4e67a21c47fa9e383d020e4e28b836 # v2
-        with:
-          tag_name: "web/v${{ inputs.version }}"
-          generate_release_notes: true
+          ref: main
 
       - name: Setup pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4
