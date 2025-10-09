@@ -1,5 +1,29 @@
 # @ac6_assemble_tool/web
 
+## 2.0.1
+### Patch Changes
+
+
+
+- [#854](https://github.com/tooppoo/ac6_assemble_tool/pull/854) [`1a860f1`](https://github.com/tooppoo/ac6_assemble_tool/commit/1a860f1bc8d7504976e5bf80224bc8757337bdb4) Thanks [@tooppoo](https://github.com/tooppoo)! - # 404.htmlとsitemap.xmlを配置
+  
+  ## WHY (なぜ)
+  
+  - SEO向上とユーザビリティ改善のため
+  - 検索エンジンのクローラビリティを向上させる必要があった
+  - 存在しないページへのアクセス時に適切なエラーページを表示するため
+  
+  ## WHAT (何を)
+  
+  - カスタム404エラーページ（404.html）を追加
+  - XMLサイトマップ（sitemap.xml）を生成・配置
+  - 静的ファイルとしてpublic/staticディレクトリに配置
+  
+  ## HOW (どのように)
+  
+  - 404.htmlページを作成し、ユーザーフレンドリーなエラーメッセージを実装
+  - sitemap.xmlを自動生成する仕組みをビルドプロセスに組み込み、デプロイ時に自動的に配置されるよう設定
+
 ## 2.0.0
 
 ### Major Changes
