@@ -4,6 +4,6 @@ import { appUrl } from '../src/lib/app-url'
 
 createSitemap(appUrl(), {
   outDir: 'dist',
-  changeFreq: 'weekly',
   resetTime: true,
+  ignore: ['google*', '404*'],
 })

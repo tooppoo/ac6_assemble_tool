@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "build:ci": "dotenv -e .env.test -- vite build",
+    "build:test": "dotenv -e .env.test -- vite build",
     "postbuild": "pnpm run sitemap && pnpm run purgecss",
     "preview": "vite preview",
     "test": "vitest run",
