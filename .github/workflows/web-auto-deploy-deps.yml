@@ -1,18 +1,12 @@
+# 依存更新の場合、アプリケーションのバージョンは変えずにデプロイする
 name: Web Auto Deploy Dependencies
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches: [main]
 
 jobs:
-  deploy:
+  check-and-deploy:
     environment: web
-    if: |
-      github.event.pull_request.merged == true &&
-      (
-        startsWith(github.event.pull_request.head.ref, 'renovate/') ||
-        startsWith(github.event.pull_request.head.ref, 'dependabot/')
-      )
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -20,24 +14,46 @@ jobs:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
         with:
-          ref: main
+          fetch-depth: 2
+
+      - name: Check if last commit was from dependency update
+        id: check-deps
+        run: |
+          LAST_COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
+          LAST_COMMIT_AUTHOR=$(git log -1 --pretty=format:"%an")
+          echo "Last commit message: $LAST_COMMIT_MESSAGE"
+          echo "Last commit author: $LAST_COMMIT_AUTHOR"
+
+          if echo "$LAST_COMMIT_MESSAGE" | grep -E "(renovate|dependabot)" > /dev/null || \
+            echo "$LAST_COMMIT_AUTHOR" | grep -E "(renovate|dependabot)" > /dev/null; then
+            echo "is_dep_update=true" >> $GITHUB_OUTPUT
+            echo "Dependency update detected - proceeding with deployment"
+          else
+            echo "is_dep_update=false" >> $GITHUB_OUTPUT
+            echo "No dependency update detected - skipping deployment"
+          fi
 
       - name: Setup pnpm
+        if: steps.check-deps.outputs.is_dep_update == 'true'
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4
 
       - name: Setup Node.js
+        if: steps.check-deps.outputs.is_dep_update == 'true'
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v4
         with:
           node-version-file: ".node-version"
           cache: "pnpm"
 
       - name: Install dependencies
+        if: steps.check-deps.outputs.is_dep_update == 'true'
         run: pnpm install --frozen-lockfile
 
       - name: Build
+        if: steps.check-deps.outputs.is_dep_update == 'true'
         run: pnpm run build
 
       - name: Deploy to Cloudflare Pages
+        if: steps.check-deps.outputs.is_dep_update == 'true'
         uses: cloudflare/wrangler-action@9681c2997648301493e78cacbfb790a9f19c833f # v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
