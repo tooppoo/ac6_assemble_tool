@@ -30,7 +30,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       # build
-      - run: pnpm run build:ci
+      - run: pnpm run build
 
       # test
       - name: type check

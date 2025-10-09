@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "build:ci": "dotenv -e .env.test -- vite build",
     "postbuild": "pnpm run sitemap && pnpm run purgecss",
     "preview": "vite preview",
     "test": "vitest run",
@@ -19,6 +18,7 @@
     "format": "pnpm run sync && eslint . --fix --cache && prettier . --write --cache",
     "purgecss": "purgecss --config purgecss.config.cjs",
     "sitemap": "tsx scripts/sitemap-generate.ts",
+    "sitemap:update-static": "tsx scripts/update-static-sitemap.ts",
     "test:integration": "playwright test",
     "test:all": "pnpm run test:integration && pnpm run test:unit"
   },

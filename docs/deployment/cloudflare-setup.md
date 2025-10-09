@@ -51,7 +51,7 @@ changeset version PR → マージ →
 
    ```bash
    pnpm install --frozen-lockfile
-   pnpm run build:ci
+   pnpm run build
    ```
 
 2. **出力ディレクトリを確認**

@@ -23,20 +23,6 @@
         "NODE_ENV"
       ]
     },
-    "build:ci": {
-      "outputs": [
-        "dist/**",
-        "analyze.html",
-        ".svelte-kit/"
-      ],
-      "dependsOn": [
-        "^build:ci"
-      ],
-      "env": [
-        "ANALYZE_MODE",
-        "NODE_ENV"
-      ]
-    },
     "test": {
       "dependsOn": [
         "^test"
