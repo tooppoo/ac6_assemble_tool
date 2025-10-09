@@ -41,7 +41,6 @@ describe('repository', () => {
               description: 'test-1-desc',
               assembly: a1,
             },
-            candidates,
           )
 
           await expect(repository.all(candidates)).resolves.toHaveLength(1)
@@ -53,7 +52,6 @@ describe('repository', () => {
               description: 'test-2-desc',
               assembly: a2,
             },
-            candidates,
           )
           await repository.storeNew(
             {
@@ -62,7 +60,6 @@ describe('repository', () => {
               description: 'test-3-desc',
               assembly: a3,
             },
-            candidates,
           )
 
           const find1 = await repository.findById(id3, candidates)
@@ -89,7 +86,6 @@ describe('repository', () => {
               assembly: updatedAssembly,
               createdAt: records1[1].createdAt,
             },
-            candidates,
           )
 
           const records2 = await repository.all(candidates)

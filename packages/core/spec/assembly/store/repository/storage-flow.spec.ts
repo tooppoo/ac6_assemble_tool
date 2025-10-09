@@ -42,7 +42,6 @@ describe('IndexedDBストレージフロー統合テスト', () => {
           description: 'v2形式テスト',
           assembly,
         },
-        candidates,
       )
 
       // 読み込み
@@ -126,7 +125,6 @@ describe('IndexedDBストレージフロー統合テスト', () => {
           description: 'First',
           assembly: assembly1,
         },
-        candidates,
       )
       await repository.storeNew(
         {
@@ -135,7 +133,6 @@ describe('IndexedDBストレージフロー統合テスト', () => {
           description: 'Second',
           assembly: assembly2,
         },
-        candidates,
       )
       await repository.storeNew(
         {
@@ -144,7 +141,6 @@ describe('IndexedDBストレージフロー統合テスト', () => {
           description: 'Third',
           assembly: assembly1,
         },
-        candidates,
       )
 
       const all = await repository.all(candidates)
@@ -229,7 +225,6 @@ describe('IndexedDBストレージフロー統合テスト', () => {
           ...loaded!,
           name: 'Updated Assembly',
         },
-        candidates,
       )
 
       // 再度読み込み
@@ -275,7 +270,6 @@ describe('IndexedDBストレージフロー統合テスト', () => {
 
       await repository.storeNew(
         { id: testId, name: 'To Be Deleted', description: '', assembly },
-        candidates,
       )
 
       const before = await repository.findById(testId, candidates)
@@ -360,7 +354,6 @@ describe('IndexedDBストレージフロー統合テスト', () => {
           description: 'v2形式テストデータ',
           assembly,
         },
-        candidates,
       )
 
       // DBを再度開いてもv2形式のまま

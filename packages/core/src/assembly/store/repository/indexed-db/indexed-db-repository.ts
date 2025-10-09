@@ -33,7 +33,6 @@ export class IndexedDbRepository
 
   async storeNew(
     aggregation: NewAssemblyAggregation,
-    candidates: Candidates,
     current: Date = new Date(),
   ): Promise<void> {
     const { data, error } = aggregationToDto({
@@ -89,7 +88,6 @@ export class IndexedDbRepository
 
   async update(
     aggregation: UpdatedAssemblyAggregation,
-    candidates: Candidates,
     current: Date = new Date(),
   ): Promise<void> {
     const { data, error } = aggregationToDto({

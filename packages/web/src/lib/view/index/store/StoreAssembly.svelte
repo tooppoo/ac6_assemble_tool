@@ -68,7 +68,7 @@ ${target.description}
       description: newDescription,
       assembly,
     })
-    repository.storeNew(aggregation, candidates).then(async () => {
+    repository.storeNew(aggregation).then(async () => {
       const inserted = await repository.findById(aggregation.id, candidates)
 
       if (inserted) {

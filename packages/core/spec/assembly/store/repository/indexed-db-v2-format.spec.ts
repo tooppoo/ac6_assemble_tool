@@ -36,7 +36,6 @@ describe('IndexedDB v2形式対応', () => {
         description: 'Test v2 format',
         assembly,
       },
-      candidates,
     )
 
     const result = await repository.findById(testId, candidates)
