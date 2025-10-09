@@ -9,7 +9,7 @@
 
 ### 依存更新の自動デプロイ
 
-```
+```txt
 renovate/dependabot PR → マージ →
 自動的にCloudflare Pagesへデプロイ
 ```
@@ -18,7 +18,7 @@ renovate/dependabot PR → マージ →
 
 ### 機能追加/修正の手動デプロイ
 
-```
+```txt
 changeset version PR → マージ →
 手動でworkflow_dispatch実行 →
 タグ作成 → Release作成 → Cloudflare Pagesへデプロイ
@@ -27,6 +27,7 @@ changeset version PR → マージ →
 トリガー: `.github/workflows/web-create-release.yml`
 
 実行方法:
+
 1. GitHub Actions → `Web Create Release`
 2. `Run workflow` → バージョンを入力（例: `1.2.3`）
 3. `Run workflow` をクリック
@@ -47,12 +48,14 @@ changeset version PR → マージ →
 ### ビルドが失敗する
 
 1. **ローカルでビルドを確認**
+
    ```bash
    pnpm install --frozen-lockfile
    pnpm run build:ci
    ```
 
 2. **出力ディレクトリを確認**
+
    ```bash
    ls -la packages/web/dist
    ```

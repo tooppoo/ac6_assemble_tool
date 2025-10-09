@@ -30,14 +30,16 @@
 ### 実装方針
 
 **依存更新フロー**:
-```
+
+```txt
 renovate/dependabot PR → 手動レビュー → マージ →
 自動的にCloudflare Pagesへデプロイ
 （バージョンアップなし、タグなし、Releaseなし）
 ```
 
 **機能追加/修正フロー**:
-```
+
+```txt
 changeset追加 → PR → マージ →
 changesetがversion PR作成 → レビュー → マージ →
 手動でworkflow_dispatch実行 →
