@@ -15,6 +15,35 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
+      # setup
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v4
+        with:
+          node-version-file: ".node-version"
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # build
+      - name: Create .env file
+        run: |
+          echo "PUBLIC_REPORT_BUG_URL=${{ vars.PUBLIC_REPORT_BUG_URL }}" > packages/web/.env
+          echo "PUBLIC_REPORT_REQUEST_URL=${{ vars.PUBLIC_REPORT_REQUEST_URL }}" >> packages/web/.env
+          echo "PUBLIC_LOG_LEVEL=${{ vars.PUBLIC_LOG_LEVEL }}" >> packages/web/.env
+      - name: Build
+        run: pnpm run build
+
+      # deploy
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@9681c2997648301493e78cacbfb790a9f19c833f # v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy packages/web/dist --project-name=ac6-assemble-tool --commit-dirty=true
+
+      # create release
       - name: Get version from package.json
         id: version
         run: |
@@ -31,31 +60,3 @@ jobs:
         with:
           tag_name: "web/v${{ steps.version.outputs.version }}"
           generate_release_notes: true
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
-        with:
-          node-version-file: ".node-version"
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Create .env file
-        run: |
-          echo "PUBLIC_REPORT_BUG_URL=${{ vars.PUBLIC_REPORT_BUG_URL }}" > packages/web/.env
-          echo "PUBLIC_REPORT_REQUEST_URL=${{ vars.PUBLIC_REPORT_REQUEST_URL }}" >> packages/web/.env
-          echo "PUBLIC_LOG_LEVEL=${{ vars.PUBLIC_LOG_LEVEL }}" >> packages/web/.env
-
-      - name: Build
-        run: pnpm run build
-
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@da0e0dfe58b7a431659754fdf3f186c529afbe65 # v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy packages/web/dist --project-name=ac6-assemble-tool --commit-dirty=true

@@ -48,6 +48,12 @@ jobs:
         if: steps.check-deps.outputs.is_dep_update == 'true'
         run: pnpm install --frozen-lockfile
 
+      - name: Create .env file
+        run: |
+          echo "PUBLIC_REPORT_BUG_URL=${{ vars.PUBLIC_REPORT_BUG_URL }}" > packages/web/.env
+          echo "PUBLIC_REPORT_REQUEST_URL=${{ vars.PUBLIC_REPORT_REQUEST_URL }}" >> packages/web/.env
+          echo "PUBLIC_LOG_LEVEL=${{ vars.PUBLIC_LOG_LEVEL }}" >> packages/web/.env
+
       - name: Build
         if: steps.check-deps.outputs.is_dep_update == 'true'
         run: pnpm run build
