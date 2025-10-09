@@ -44,11 +44,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Create .env file
+        run: |
+          echo "PUBLIC_REPORT_BUG_URL=${{ vars.PUBLIC_REPORT_BUG_URL }}" > packages/web/.env
+          echo "PUBLIC_REPORT_REQUEST_URL=${{ vars.PUBLIC_REPORT_REQUEST_URL }}" >> packages/web/.env
+
       - name: Build
         run: pnpm run build
-        env:
-          PUBLIC_REPORT_BUG_URL: ${{ vars.PUBLIC_REPORT_BUG_URL }}
-          PUBLIC_REPORT_REQUEST_URL: ${{ vars.PUBLIC_REPORT_REQUEST_URL }}
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@9681c2997648301493e78cacbfb790a9f19c833f # v3
