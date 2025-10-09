@@ -1,11 +1,6 @@
 name: Web Create Release
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: "Release version (e.g., 1.2.3)"
-        required: true
-        type: string
 
 jobs:
   create-release:
@@ -20,15 +15,21 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
+      - name: Get version from package.json
+        id: version
+        run: |
+          VERSION=$(jq -r '.version' packages/web/package.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Create tag
         run: |
-          git tag "web/v${{ inputs.version }}"
-          git push origin "web/v${{ inputs.version }}"
+          git tag "web/v${{ steps.version.outputs.version }}"
+          git push origin "web/v${{ steps.version.outputs.version }}"
 
       - name: Release
         uses: softprops/action-gh-release@6cbd405e2c4e67a21c47fa9e383d020e4e28b836 # v2
         with:
-          tag_name: "web/v${{ inputs.version }}"
+          tag_name: "web/v${{ steps.version.outputs.version }}"
           generate_release_notes: true
 
       - name: Setup pnpm
