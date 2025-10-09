@@ -23,6 +23,20 @@
         "NODE_ENV"
       ]
     },
+    "build:test": {
+      "outputs": [
+        "dist/**",
+        "analyze.html",
+        ".svelte-kit/"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "ANALYZE_MODE",
+        "NODE_ENV"
+      ]
+    },
     "test": {
       "dependsOn": [
         "^test"
