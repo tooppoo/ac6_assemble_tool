@@ -131,10 +131,10 @@ importers:
   packages/docs:
     devDependencies:
       markdownlint-cli2:
-        specifier: ^0.18.1
+        specifier: 0.18.1
         version: 0.18.1
       markdownlint-cli2-formatter-pretty:
-        specifier: ^0.0.8
+        specifier: 0.0.8
         version: 0.0.8(markdownlint-cli2@0.18.1)
 
   packages/eslint: {}
