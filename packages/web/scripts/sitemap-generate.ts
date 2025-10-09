@@ -5,5 +5,5 @@ import { appUrl } from '../src/lib/app-url'
 createSitemap(appUrl(), {
   outDir: 'dist',
   resetTime: true,
-  ignore: ['google*', '404*']
+  ignore: ['google*', '404*'],
 })
