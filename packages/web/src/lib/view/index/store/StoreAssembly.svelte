@@ -24,7 +24,11 @@
   export let candidates: Candidates
   export let assembly: Assembly
 
-  const repository: StoredAssemblyRepository = new IndexedDbRepository()
+  let repository: StoredAssemblyRepository
+
+  $: {
+    repository = new IndexedDbRepository(candidates)
+  }
 
   let newName: string = ''
   let newDescription: string = ''
@@ -64,7 +68,7 @@ ${target.description}
       description: newDescription,
       assembly,
     })
-    repository.storeNew(aggregation, candidates).then(async () => {
+    repository.storeNew(aggregation).then(async () => {
       const inserted = await repository.findById(aggregation.id, candidates)
 
       if (inserted) {

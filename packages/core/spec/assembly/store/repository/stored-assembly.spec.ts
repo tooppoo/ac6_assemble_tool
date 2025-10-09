@@ -16,7 +16,7 @@ describe('repository', () => {
   describe.each([
     {
       label: IndexedDbRepository.name,
-      repository: new IndexedDbRepository(),
+      repository: new IndexedDbRepository(candidates),
     },
   ])(
     'with $label',
@@ -34,36 +34,27 @@ describe('repository', () => {
 
           await expect(repository.all(candidates)).resolves.toHaveLength(0)
 
-          await repository.storeNew(
-            {
-              id: id1,
-              name: 'test-1-name',
-              description: 'test-1-desc',
-              assembly: a1,
-            },
-            candidates,
-          )
+          await repository.storeNew({
+            id: id1,
+            name: 'test-1-name',
+            description: 'test-1-desc',
+            assembly: a1,
+          })
 
           await expect(repository.all(candidates)).resolves.toHaveLength(1)
 
-          await repository.storeNew(
-            {
-              id: id2,
-              name: 'test-2-name',
-              description: 'test-2-desc',
-              assembly: a2,
-            },
-            candidates,
-          )
-          await repository.storeNew(
-            {
-              id: id3,
-              name: 'test-3-name',
-              description: 'test-3-desc',
-              assembly: a3,
-            },
-            candidates,
-          )
+          await repository.storeNew({
+            id: id2,
+            name: 'test-2-name',
+            description: 'test-2-desc',
+            assembly: a2,
+          })
+          await repository.storeNew({
+            id: id3,
+            name: 'test-3-name',
+            description: 'test-3-desc',
+            assembly: a3,
+          })
 
           const find1 = await repository.findById(id3, candidates)
           expect(find1).not.toBeNull()
@@ -71,20 +62,23 @@ describe('repository', () => {
           const records1 = await repository.all(candidates)
           expect(records1).toHaveLength(3)
 
-          await repository.update(
-            {
-              id: id2,
-              name: 'test-2-new-name',
-              description: 'test-2-new-desc',
-              assembly: createAssembly({
-                ...a2,
-                arms: a1.arms,
-                rightArmUnit: a3.rightArmUnit,
-              }),
-              createdAt: records1[1].createdAt,
-            },
-            candidates,
-          )
+          // マージしたアセンブリを作成
+          // タンク脚部の場合はboosterを強制的にNotEquippedにする
+          const mergedParts = {
+            ...a2,
+            arms: a1.arms,
+            rightArmUnit: a3.rightArmUnit,
+          }
+
+          const updatedAssembly = createAssembly(mergedParts)
+
+          await repository.update({
+            id: id2,
+            name: 'test-2-new-name',
+            description: 'test-2-new-desc',
+            assembly: updatedAssembly,
+            createdAt: records1[1].createdAt,
+          })
 
           const records2 = await repository.all(candidates)
 
@@ -95,11 +89,7 @@ describe('repository', () => {
             id: id2,
             name: 'test-2-new-name',
             description: 'test-2-new-desc',
-            assembly: createAssembly({
-              ...a2,
-              arms: a1.arms,
-              rightArmUnit: a3.rightArmUnit,
-            }),
+            assembly: updatedAssembly,
             createdAt: records1[1].createdAt,
           })
           expect(records2[2]).toStrictEqual(records1[2])

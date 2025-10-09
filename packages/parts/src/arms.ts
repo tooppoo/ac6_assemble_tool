@@ -16,6 +16,8 @@ import { defineArms } from './types/frame/types'
 
 export const arms = [
   defineArms({
+    id: 'AR001',
+
     name: 'AA-J-123 BASHO',
     classification: armsClass,
     category: armsCategory,
@@ -37,6 +39,8 @@ export const arms = [
     en_load: 210,
   }),
   defineArms({
+    id: 'AR002',
+
     name: 'AA-J-123/RC JAILBREAK',
     classification: armsClass,
     category: armsCategory,
@@ -58,6 +62,8 @@ export const arms = [
     en_load: 210,
   }),
   defineArms({
+    id: 'AR003',
+
     name: 'AR-011 MELANDER',
     classification: armsClass,
     category: armsCategory,
@@ -79,6 +85,8 @@ export const arms = [
     en_load: 265,
   }),
   defineArms({
+    id: 'AR004',
+
     name: 'AR-012 MELANDER C3',
     classification: armsClass,
     category: armsCategory,
@@ -100,6 +108,8 @@ export const arms = [
     en_load: 232,
   }),
   defineArms({
+    id: 'AR005',
+
     name: 'DF-AR-08 TIAN-QIANG',
     classification: armsClass,
     category: armsCategory,
@@ -121,6 +131,8 @@ export const arms = [
     en_load: 295,
   }),
   defineArms({
+    id: 'AR006',
+
     name: 'DF-AR-09 TIAN-LAO',
     classification: armsClass,
     category: armsCategory,
@@ -142,6 +154,8 @@ export const arms = [
     en_load: 266,
   }),
   defineArms({
+    id: 'AR007',
+
     name: 'VP-46S',
     classification: armsClass,
     category: armsCategory,
@@ -163,6 +177,8 @@ export const arms = [
     en_load: 278,
   }),
   defineArms({
+    id: 'AR008',
+
     name: 'VP-46D',
     classification: armsClass,
     category: armsCategory,
@@ -184,6 +200,8 @@ export const arms = [
     en_load: 248,
   }),
   defineArms({
+    id: 'AR009',
+
     name: 'NACHTREIHER/46E',
     classification: armsClass,
     category: armsCategory,
@@ -205,6 +223,8 @@ export const arms = [
     en_load: 290,
   }),
   defineArms({
+    id: 'AR010',
+
     name: 'LAMMERGEIER/46F',
     classification: armsClass,
     category: armsCategory,
@@ -226,6 +246,8 @@ export const arms = [
     en_load: 328,
   }),
   defineArms({
+    id: 'AR011',
+
     name: 'VE-46A',
     classification: armsClass,
     category: armsCategory,
@@ -247,6 +269,8 @@ export const arms = [
     en_load: 380,
   }),
   defineArms({
+    id: 'AR012',
+
     name: 'AC-2000 TOOL ARM',
     classification: armsClass,
     category: armsCategory,
@@ -268,6 +292,8 @@ export const arms = [
     en_load: 216,
   }),
   defineArms({
+    id: 'AR013',
+
     name: 'AC-3000 WRECKER',
     classification: armsClass,
     category: armsCategory,
@@ -289,6 +315,8 @@ export const arms = [
     en_load: 220,
   }),
   defineArms({
+    id: 'AR014',
+
     name: 'AS-5000 SALAD',
     classification: armsClass,
     category: armsCategory,
@@ -310,6 +338,8 @@ export const arms = [
     en_load: 324,
   }),
   defineArms({
+    id: 'AR015',
+
     name: 'EL-TA-10 FIRMEZA',
     classification: armsClass,
     category: armsCategory,
@@ -331,6 +361,8 @@ export const arms = [
     en_load: 270,
   }),
   defineArms({
+    id: 'AR016',
+
     name: 'EL-PA-00 ALBA',
     classification: armsClass,
     category: armsCategory,
@@ -352,6 +384,8 @@ export const arms = [
     en_load: 315,
   }),
   defineArms({
+    id: 'AR017',
+
     name: '04-101 MIND ALPHA',
     classification: armsClass,
     category: armsCategory,
@@ -373,6 +407,8 @@ export const arms = [
     en_load: 358,
   }),
   defineArms({
+    id: 'AR018',
+
     name: 'IA-C01A: EPHEMERA',
     classification: armsClass,
     category: armsCategory,
@@ -394,6 +430,8 @@ export const arms = [
     en_load: 312,
   }),
   defineArms({
+    id: 'AR019',
+
     name: 'IB-C03A: HAL 826',
     classification: armsClass,
     category: armsCategory,

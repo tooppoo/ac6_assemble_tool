@@ -1,7 +1,6 @@
-import {
-  assemblyToSearch,
-  searchToAssembly,
-} from '#core/assembly/serialize/as-query'
+import { createAssembly } from '#core/assembly/assembly'
+import { assemblyToSearchV2 } from '#core/assembly/serialize/as-query-v2'
+import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
 import {
   type StoredAssemblyDto,
   storedAssemblyDtoScheme,
@@ -28,23 +27,19 @@ export class IndexedDbRepository
   /**
    * 直接の利用はテストからに限定すること
    */
-  constructor() {
-    this.database = setupDataBase()
+  constructor(candidates: Candidates) {
+    this.database = setupDataBase(candidates)
   }
 
   async storeNew(
     aggregation: NewAssemblyAggregation,
-    candidates: Candidates,
     current: Date = new Date(),
   ): Promise<void> {
-    const { data, error } = aggregationToDto(
-      {
-        ...aggregation,
-        createdAt: current,
-        updatedAt: current,
-      },
-      candidates,
-    )
+    const { data, error } = aggregationToDto({
+      ...aggregation,
+      createdAt: current,
+      updatedAt: current,
+    })
     if (error) {
       return Promise.reject(error)
     }
@@ -93,27 +88,20 @@ export class IndexedDbRepository
 
   async update(
     aggregation: UpdatedAssemblyAggregation,
-    candidates: Candidates,
     current: Date = new Date(),
   ): Promise<void> {
-    const { data, error } = aggregationToDto(
-      {
-        ...aggregation,
-        updatedAt: current,
-      },
-      candidates,
-    )
+    const { data, error } = aggregationToDto({
+      ...aggregation,
+      updatedAt: current,
+    })
     if (error) {
       return Promise.reject(error)
     }
 
     await this.database.stored_assembly.put(data)
   }
-  async insert(
-    aggregation: StoredAssemblyAggregation,
-    candidates: Candidates,
-  ): Promise<void> {
-    const { data, error } = aggregationToDto(aggregation, candidates)
+  async insert(aggregation: StoredAssemblyAggregation): Promise<void> {
+    const { data, error } = aggregationToDto(aggregation)
     if (error) {
       return Promise.reject(error)
     }
@@ -131,13 +119,12 @@ type TransformResult<T> =
   | { data: null; error: Error }
 function aggregationToDto(
   aggregation: StoredAssemblyAggregation,
-  candidates: Candidates,
 ): TransformResult<StoredAssemblyDto> {
   const dto = {
     id: aggregation.id,
     name: aggregation.name,
     description: aggregation.description,
-    assembly: assemblyToSearch(aggregation.assembly, candidates).toString(),
+    assembly: assemblyToSearchV2(aggregation.assembly).toString(),
     createdAt: aggregation.createdAt,
     updatedAt: aggregation.updatedAt,
   }
@@ -159,9 +146,11 @@ function dtoToAggregation(
     ? {
         data: {
           ...result.data,
-          assembly: searchToAssembly(
-            new URLSearchParams(result.data.assembly),
-            candidates,
+          assembly: createAssembly(
+            deserializeAssembly(
+              new URLSearchParams(result.data.assembly),
+              candidates,
+            ),
           ),
         },
         error: null,

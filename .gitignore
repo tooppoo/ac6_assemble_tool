@@ -28,11 +28,18 @@ dist-ssr
 # test
 coverage/
 
+# lint
+.eslintcache
+
 # analyze
 analyze.html
 
 # turbo
 .turbo
 
+# claude code
+.claude/settings.local.json
+
 # other
+.env
 tmp

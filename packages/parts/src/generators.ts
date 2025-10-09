@@ -11,6 +11,8 @@ import { defineGenerator } from './types/inner/generator'
 
 export const generators = [
   defineGenerator({
+    id: 'GN001',
+
     name: 'AG-J-098 JOSO',
     classification: generatorClass,
     category: generatorCategory,
@@ -28,6 +30,8 @@ export const generators = [
     en_load: 0,
   }),
   defineGenerator({
+    id: 'GN002',
+
     name: 'AG-E-013 YABA',
     classification: generatorClass,
     category: generatorCategory,
@@ -45,6 +49,8 @@ export const generators = [
     en_load: 0,
   }),
   defineGenerator({
+    id: 'GN003',
+
     name: 'AG-T-005 HOKUSHI',
     classification: generatorClass,
     category: generatorCategory,
@@ -62,6 +68,8 @@ export const generators = [
     en_load: 0,
   }),
   defineGenerator({
+    id: 'GN004',
+
     name: 'DF-GN-02 LING-TAI',
     classification: generatorClass,
     category: generatorCategory,
@@ -79,6 +87,8 @@ export const generators = [
     en_load: 0,
   }),
   defineGenerator({
+    id: 'GN005',
+
     name: 'DF-GN-06 MING-TANG',
     classification: generatorClass,
     category: generatorCategory,
@@ -96,6 +106,8 @@ export const generators = [
     en_load: 0,
   }),
   defineGenerator({
+    id: 'GN006',
+
     name: 'DF-GN-08 SAN-TAI',
     classification: generatorClass,
     category: generatorCategory,
@@ -113,6 +125,8 @@ export const generators = [
     en_load: 0,
   }),
   defineGenerator({
+    id: 'GN007',
+
     name: 'VP-20S',
     classification: generatorClass,
     category: generatorCategory,
@@ -130,6 +144,8 @@ export const generators = [
     en_load: 0,
   }),
   defineGenerator({
+    id: 'GN008',
+
     name: 'VP-20C',
     classification: generatorClass,
     category: generatorCategory,
@@ -147,6 +163,8 @@ export const generators = [
     en_load: 0,
   }),
   defineGenerator({
+    id: 'GN009',
+
     name: 'VP-20D',
     classification: generatorClass,
     category: generatorCategory,
@@ -164,6 +182,8 @@ export const generators = [
     en_load: 0,
   }),
   defineGenerator({
+    id: 'GN010',
+
     name: 'VE-20A',
     classification: generatorClass,
     category: generatorCategory,
@@ -181,6 +201,8 @@ export const generators = [
     en_load: 0,
   }),
   defineGenerator({
+    id: 'GN011',
+
     name: 'VE-20B',
     classification: generatorClass,
     category: generatorCategory,
@@ -198,6 +220,8 @@ export const generators = [
     en_load: 0,
   }),
   defineGenerator({
+    id: 'GN012',
+
     name: 'VE-20C',
     classification: generatorClass,
     category: generatorCategory,
@@ -215,6 +239,8 @@ export const generators = [
     en_load: 0,
   }),
   defineGenerator({
+    id: 'GN013',
+
     name: 'IA-C01G: AORTA',
     classification: generatorClass,
     category: generatorCategory,
@@ -232,6 +258,8 @@ export const generators = [
     en_load: 0,
   }),
   defineGenerator({
+    id: 'GN014',
+
     name: 'IB-C03G: NGI 000',
     classification: generatorClass,
     category: generatorCategory,

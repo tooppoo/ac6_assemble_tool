@@ -10,6 +10,7 @@ import { defineFCS } from './types/inner/fcs'
 
 export const fcses = [
   defineFCS({
+    id: 'FCS001',
     name: 'FCS-G1/P01',
     classification: fcsClass,
     category: fcsCategory,
@@ -26,6 +27,7 @@ export const fcses = [
     en_load: 198,
   }),
   defineFCS({
+    id: 'FCS002',
     name: 'FCS-G2/P05',
     classification: fcsClass,
     category: fcsCategory,
@@ -42,6 +44,7 @@ export const fcses = [
     en_load: 232,
   }),
   defineFCS({
+    id: 'FCS003',
     name: 'FCS-G2/P10SLT',
     classification: fcsClass,
     category: fcsCategory,
@@ -58,6 +61,7 @@ export const fcses = [
     en_load: 209,
   }),
   defineFCS({
+    id: 'FCS004',
     name: 'FCS-G2/P12SML',
     classification: fcsClass,
     category: fcsCategory,
@@ -74,6 +78,7 @@ export const fcses = [
     en_load: 278,
   }),
   defineFCS({
+    id: 'FCS005',
     name: 'FC-006 ABBOT',
     classification: fcsClass,
     category: fcsCategory,
@@ -90,6 +95,7 @@ export const fcses = [
     en_load: 266,
   }),
   defineFCS({
+    id: 'FCS006',
     name: 'FC-008 TALBOT',
     classification: fcsClass,
     category: fcsCategory,
@@ -106,6 +112,7 @@ export const fcses = [
     en_load: 312,
   }),
   defineFCS({
+    id: 'FCS007',
     name: 'VE-21A',
     classification: fcsClass,
     category: fcsCategory,
@@ -122,6 +129,7 @@ export const fcses = [
     en_load: 364,
   }),
   defineFCS({
+    id: 'FCS008',
     name: 'VE-21B',
     classification: fcsClass,
     category: fcsCategory,
@@ -138,6 +146,7 @@ export const fcses = [
     en_load: 388,
   }),
   defineFCS({
+    id: 'FCS009',
     name: 'IA-C01F: OCELLUS',
     classification: fcsClass,
     category: fcsCategory,
@@ -154,6 +163,7 @@ export const fcses = [
     en_load: 292,
   }),
   defineFCS({
+    id: 'FCS010',
     name: 'IB-C03F: WLT 001',
     classification: fcsClass,
     category: fcsCategory,

@@ -106,6 +106,8 @@ import {
 
 export const leftArmUnits = [
   defineArmUnit<AsMelee>()({
+    id: 'AU001',
+
     name: 'PB-033M ASHMEAD',
     classification: leftArmUnit,
     category: pile_bunker,
@@ -137,6 +139,8 @@ export const leftArmUnits = [
       WithEffectiveRange &
       WithTotalRounds
   >()({
+    id: 'AU002',
+
     name: 'DF-ET-09 TAI-YANG-SHOU',
     classification: leftArmUnit,
     category: explosive_thrower,
@@ -165,6 +169,8 @@ export const leftArmUnits = [
     en_load: 160,
   }),
   defineArmUnit<AsMelee>()({
+    id: 'AU003',
+
     name: 'WB-0010 DOUBLE TROUBLE',
     classification: leftArmUnit,
     category: chainsaw,
@@ -190,6 +196,8 @@ export const leftArmUnits = [
     en_load: 108,
   }),
   defineArmUnit<AsMelee>()({
+    id: 'AU004',
+
     name: 'VP-67EB',
     classification: leftArmUnit,
     category: stun_baton,
@@ -215,6 +223,8 @@ export const leftArmUnits = [
     en_load: 198,
   }),
   defineArmUnit<AsMelee>()({
+    id: 'AU005',
+
     name: 'VP-67LD',
     classification: leftArmUnit,
     category: laser_dagger,
@@ -240,6 +250,8 @@ export const leftArmUnits = [
     en_load: 150,
   }),
   defineArmUnit<AsMelee>()({
+    id: 'AU006',
+
     name: 'Vvc-770LB',
     classification: leftArmUnit,
     category: laser_blade,
@@ -265,6 +277,8 @@ export const leftArmUnits = [
     en_load: 245,
   }),
   defineArmUnit<AsMelee>()({
+    id: 'AU007',
+
     name: 'Vvc-774LS',
     classification: leftArmUnit,
     category: laser_slicer,
@@ -290,6 +304,8 @@ export const leftArmUnits = [
     en_load: 328,
   }),
   defineArmUnit<AsMelee>()({
+    id: 'AU008',
+
     name: 'VE-67LLA',
     classification: leftArmUnit,
     category: laser_lance,
@@ -315,6 +331,8 @@ export const leftArmUnits = [
     en_load: 460,
   }),
   defineArmUnit<AsMelee & WithChargeBlast & WithEffectiveRange>()({
+    id: 'AU009',
+
     name: '44-143 HMMR',
     classification: leftArmUnit,
     category: plasma_thrower,
@@ -342,6 +360,8 @@ export const leftArmUnits = [
     en_load: 311,
   }),
   defineArmUnit<AsMelee>()({
+    id: 'AU010',
+
     name: 'HI-32: BU-TT/A',
     classification: leftArmUnit,
     category: pulse_blade,
@@ -367,6 +387,8 @@ export const leftArmUnits = [
     en_load: 213,
   }),
   defineArmUnit<AsMelee & WithEffectiveRange>()({
+    id: 'AU011',
+
     name: 'IA-C01W2: MOONLIGHT',
     classification: leftArmUnit,
     category: light_wave_blade,
@@ -393,6 +415,8 @@ export const leftArmUnits = [
     en_load: 544,
   }),
   defineArmUnit<AsMelee & WithEffectiveRange>()({
+    id: 'AU012',
+
     name: 'IA-C01W7: ML-REDSHIFT',
     classification: leftArmUnit,
     category: coral_oscillator,
@@ -419,6 +443,8 @@ export const leftArmUnits = [
     en_load: 544,
   }),
   defineArmUnit<AsMelee>()({
+    id: 'AU013',
+
     name: 'IB-C03W2: WLT 101',
     classification: leftArmUnit,
     category: coral_oscillator,
@@ -454,6 +480,8 @@ export const armUnits = [
       WithChargeTime &
       WithMagazine
   >()({
+    id: 'AU014',
+
     name: 'MA-J-200 RANSETSU-RF',
     classification: armUnit,
     category: burst_rifle,
@@ -485,6 +513,8 @@ export const armUnits = [
     en_load: 158,
   }),
   defineArmUnit<AsLinearRifle>()({
+    id: 'AU015',
+
     name: 'LR-036 CURTIS',
     classification: armUnit,
     category: linear_rifle,
@@ -518,6 +548,8 @@ export const armUnits = [
     en_load: 289,
   }),
   defineArmUnit<AsLinearRifle>()({
+    id: 'AU016',
+
     name: 'LR-037 HARRIS',
     classification: armUnit,
     category: linear_rifle,
@@ -551,6 +583,8 @@ export const armUnits = [
     en_load: 441,
   }),
   defineArmUnit<AsAssaultRifle>()({
+    id: 'AU017',
+
     name: 'RF-024 TURNER',
     classification: armUnit,
     category: assault_rifle,
@@ -577,6 +611,8 @@ export const armUnits = [
     en_load: 102,
   }),
   defineArmUnit<AsAssaultRifle>()({
+    id: 'AU018',
+
     name: 'RF-025 SCUDDER',
     classification: armUnit,
     category: assault_rifle,
@@ -603,6 +639,8 @@ export const armUnits = [
     en_load: 153,
   }),
   defineArmUnit<AsAssaultRifle>()({
+    id: 'AU019',
+
     name: 'MA-J-201 RANSETSU-AR',
     classification: armUnit,
     category: burst_assault_rifle,
@@ -629,6 +667,8 @@ export const armUnits = [
     en_load: 132,
   }),
   defineArmUnit<AsMachineGun>()({
+    id: 'AU020',
+
     name: 'MG-014 LUDLOW',
     classification: armUnit,
     category: machine_gun,
@@ -655,6 +695,8 @@ export const armUnits = [
     en_load: 82,
   }),
   defineArmUnit<AsMachineGun>()({
+    id: 'AU021',
+
     name: 'DF-MG-02 CHANG-CHEN',
     classification: armUnit,
     category: machine_gun,
@@ -681,6 +723,8 @@ export const armUnits = [
     en_load: 143,
   }),
   defineArmUnit<AsMachineGun>()({
+    id: 'AU022',
+
     name: 'WR-0555 ATTACHE',
     classification: armUnit,
     category: heavy_machine_gun,
@@ -707,6 +751,8 @@ export const armUnits = [
     en_load: 303,
   }),
   defineArmUnit<AsMachineGun>()({
+    id: 'AU023',
+
     name: 'MA-E-210 ETSUJIN',
     classification: armUnit,
     category: burst_machine_gun,
@@ -733,6 +779,8 @@ export const armUnits = [
     en_load: 98,
   }),
   defineArmUnit<AsGatling>()({
+    id: 'AU024',
+
     name: 'DF-GA-08 HU-BEN',
     classification: armUnit,
     category: gatling_gun,
@@ -759,6 +807,8 @@ export const armUnits = [
     en_load: 425,
   }),
   defineArmUnit<AsShotgun>()({
+    id: 'AU025',
+
     name: 'SG-026 HALDEMAN',
     classification: armUnit,
     category: shotgun,
@@ -784,6 +834,8 @@ export const armUnits = [
     en_load: 185,
   }),
   defineArmUnit<AsShotgun>()({
+    id: 'AU026',
+
     name: 'SG-027 ZIMMERMAN',
     classification: armUnit,
     category: shotgun,
@@ -809,6 +861,8 @@ export const armUnits = [
     en_load: 242,
   }),
   defineArmUnit<AsShotgun>()({
+    id: 'AU027',
+
     name: 'WR-0777 SWEET SIXTEEN',
     classification: armUnit,
     category: shotgun,
@@ -834,6 +888,8 @@ export const armUnits = [
     en_load: 268,
   }),
   defineArmUnit<AsHandgun>()({
+    id: 'AU028',
+
     name: 'HG-003 COQUILLETT',
     classification: armUnit,
     category: handgun,
@@ -860,6 +916,8 @@ export const armUnits = [
     en_load: 122,
   }),
   defineArmUnit<AsHandgun>()({
+    id: 'AU029',
+
     name: 'HG-004 DUCKETT',
     classification: armUnit,
     category: handgun,
@@ -886,6 +944,8 @@ export const armUnits = [
     en_load: 158,
   }),
   defineArmUnit<AsHandgun>()({
+    id: 'AU030',
+
     name: 'MA-E-211 SAMPU',
     classification: armUnit,
     category: burst_handgun,
@@ -912,6 +972,8 @@ export const armUnits = [
     en_load: 62,
   }),
   defineArmUnit<AsHandgun>()({
+    id: 'AU031',
+
     name: 'EL-PW-00 VIENTO',
     classification: armUnit,
     category: needle_gun,
@@ -939,6 +1001,8 @@ export const armUnits = [
   }),
 
   defineArmUnit<AsKineticShooting & WithRapidFire & WithMagazine>()({
+    id: 'AU032',
+
     name: 'VP-66EG',
     classification: armUnit,
     category: stun_gun,
@@ -966,6 +1030,8 @@ export const armUnits = [
   }),
 
   defineArmUnit<AsBlastShooting>()({
+    id: 'AU033',
+
     name: 'DF-BA-06 XUAN-GE',
     classification: armUnit,
     category: bazooka,
@@ -990,6 +1056,8 @@ export const armUnits = [
     en_load: 240,
   }),
   defineArmUnit<AsBlastShooting>()({
+    id: 'AU034',
+
     name: 'MAJESTIC',
     classification: armUnit,
     category: bazooka,
@@ -1014,6 +1082,8 @@ export const armUnits = [
     en_load: 178,
   }),
   defineArmUnit<AsBlastShooting>()({
+    id: 'AU035',
+
     name: 'LITTLE GEM',
     classification: armUnit,
     category: bazooka,
@@ -1038,6 +1108,8 @@ export const armUnits = [
     en_load: 192,
   }),
   defineArmUnit<AsBlastShooting>()({
+    id: 'AU036',
+
     name: '44-141 JVLN ALPHA',
     classification: armUnit,
     category: detonating_bazooka,
@@ -1062,6 +1134,8 @@ export const armUnits = [
     en_load: 299,
   }),
   defineArmUnit<AsBlastShooting>()({
+    id: 'AU037',
+
     name: 'DF-GR-07 GOU-CHEN',
     classification: armUnit,
     category: grenade,
@@ -1086,6 +1160,8 @@ export const armUnits = [
     en_load: 308,
   }),
   defineArmUnit<AsBlastShooting>()({
+    id: 'AU038',
+
     name: 'DIZZY',
     classification: armUnit,
     category: grenade,
@@ -1110,6 +1186,8 @@ export const armUnits = [
     en_load: 364,
   }),
   defineArmUnit<AsBlastShooting>()({
+    id: 'AU039',
+
     name: 'IRIDIUM',
     classification: armUnit,
     category: grenade,
@@ -1135,6 +1213,8 @@ export const armUnits = [
   }),
 
   defineArmUnit<AsLauncher>()({
+    id: 'AU040',
+
     name: 'MA-T-222 KYORAI',
     classification: armUnit,
     category: napalm_bomb_launcher,
@@ -1159,6 +1239,8 @@ export const armUnits = [
     en_load: 60,
   }),
   defineArmUnit<AsLauncher>()({
+    id: 'AU041',
+
     name: 'MA-T-223 KYORIKU',
     classification: armUnit,
     category: jamming_bomb_launcher,
@@ -1183,6 +1265,8 @@ export const armUnits = [
     en_load: 52,
   }),
   defineArmUnit<AsLauncher>()({
+    id: 'AU042',
+
     name: 'WS-1200 THERAPIST',
     classification: armUnit,
     category: stun_bomb_launcher,
@@ -1213,6 +1297,8 @@ export const armUnits = [
       WithRapidFire &
       WithCooling
   >()({
+    id: 'AU043',
+
     name: 'WB-0000 BAD COOK',
     classification: armUnit,
     category: flamethrower,
@@ -1239,6 +1325,8 @@ export const armUnits = [
   }),
 
   defineArmUnit<AsLaserRifle>()({
+    id: 'AU044',
+
     name: 'VP-66LR',
     classification: armUnit,
     category: laser_rifle,
@@ -1273,6 +1361,8 @@ export const armUnits = [
     en_load: 480,
   }),
   defineArmUnit<AsLaserRifle>()({
+    id: 'AU045',
+
     name: 'VE-66LRA',
     classification: armUnit,
     category: laser_rifle,
@@ -1307,6 +1397,8 @@ export const armUnits = [
     en_load: 532,
   }),
   defineArmUnit<AsLaserRifle>()({
+    id: 'AU046',
+
     name: 'VE-66LRB',
     classification: armUnit,
     category: laser_rifle,
@@ -1341,6 +1433,8 @@ export const armUnits = [
     en_load: 604,
   }),
   defineArmUnit<AsLaser & WithChargeAmmoConsumption>()({
+    id: 'AU047',
+
     name: 'WUERGER/66E',
     classification: armUnit,
     category: laser_shotgun,
@@ -1375,6 +1469,8 @@ export const armUnits = [
     en_load: 440,
   }),
   defineArmUnit<AsLaser & WithChargeAmmoConsumption & WithChargeBlast>()({
+    id: 'AU048',
+
     name: 'VP-66LS',
     classification: armUnit,
     category: laser_shotgun,
@@ -1410,6 +1506,8 @@ export const armUnits = [
     en_load: 510,
   }),
   defineArmUnit<AsLaser>()({
+    id: 'AU049',
+
     name: 'VP-66LH',
     classification: armUnit,
     category: laser_handgun,
@@ -1443,6 +1541,8 @@ export const armUnits = [
     en_load: 395,
   }),
   defineArmUnit<AsPlasmaRifle>()({
+    id: 'AU050',
+
     name: 'Vvc-760PR',
     classification: armUnit,
     category: plasma_rifle,
@@ -1478,6 +1578,8 @@ export const armUnits = [
     en_load: 490,
   }),
   defineArmUnit<AsPlasmaRifle>()({
+    id: 'AU051',
+
     name: 'IA-C01W1: NEBULA',
     classification: armUnit,
     category: plasma_rifle,
@@ -1514,6 +1616,8 @@ export const armUnits = [
   }),
 
   defineArmUnit<AsCoralShooting & WithChargeBlast>()({
+    id: 'AU052',
+
     name: 'IA-C01W6: NB-REDSHIFT',
     classification: armUnit,
     category: coral_rifle,
@@ -1550,6 +1654,8 @@ export const armUnits = [
     en_load: 667,
   }),
   defineArmUnit<AsCoralShooting>()({
+    id: 'AU053',
+
     name: 'IB-C03W1: WLT 011',
     classification: armUnit,
     category: coral_rifle,
@@ -1586,6 +1692,8 @@ export const armUnits = [
   }),
 
   defineArmUnit<AsPlasmaRifle>()({
+    id: 'AU054',
+
     name: '44-142 KRSV',
     classification: armUnit,
     category: multi_energy_rifle,
@@ -1622,6 +1730,8 @@ export const armUnits = [
   }),
 
   defineArmUnit<AsPulseGun>()({
+    id: 'AU055',
+
     name: 'HI-16: GU-Q1',
     classification: armUnit,
     category: pulse_gun,
@@ -1648,6 +1758,8 @@ export const armUnits = [
     en_load: 368,
   }),
   defineArmUnit<AsPulseGun>()({
+    id: 'AU056',
+
     name: 'HI-18: GU-A2',
     classification: armUnit,
     category: pulse_gun,
@@ -1675,6 +1787,8 @@ export const armUnits = [
   }),
 
   defineArmUnit<AsMissile>()({
+    id: 'AU057',
+
     name: 'HML-G2/P19MLT-04',
     classification: armUnit,
     category: hand_missile,
@@ -1700,6 +1814,8 @@ export const armUnits = [
     en_load: 165,
   }),
   defineArmUnit<AsMissile>()({
+    id: 'AU058',
+
     name: 'HML-G3/P08SPL-06',
     classification: armUnit,
     category: split_hand_missile,
@@ -1725,6 +1841,8 @@ export const armUnits = [
     en_load: 180,
   }),
   defineArmUnit<AsMissile>()({
+    id: 'AU059',
+
     name: 'WS-5000 APERITIF',
     classification: armUnit,
     category: siege_hand_missile,
@@ -1758,6 +1876,8 @@ export const armUnits = [
       WithPAInterference &
       WithReload
   >()({
+    id: 'AU060',
+
     name: 'PFAU/66D',
     classification: armUnit,
     category: pulse_hand_missile,

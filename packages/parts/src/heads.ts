@@ -17,6 +17,8 @@ import { defineHead } from './types/frame/types'
 
 export const heads = [
   defineHead({
+    id: 'HD001',
+
     name: 'AH-J-124 BASHO',
     classification: headClass,
     category: headCategory,
@@ -40,6 +42,8 @@ export const heads = [
     en_load: 95,
   }),
   defineHead({
+    id: 'HD002',
+
     name: 'AH-J-124/RC JAILBREAK',
     classification: headClass,
     category: headCategory,
@@ -63,6 +67,8 @@ export const heads = [
     en_load: 95,
   }),
   defineHead({
+    id: 'HD003',
+
     name: 'HD-011 MELANDER',
     classification: headClass,
     category: headCategory,
@@ -86,6 +92,8 @@ export const heads = [
     en_load: 135,
   }),
   defineHead({
+    id: 'HD004',
+
     name: 'HD-033M VERRILL',
     classification: headClass,
     category: headCategory,
@@ -109,6 +117,8 @@ export const heads = [
     en_load: 240,
   }),
   defineHead({
+    id: 'HD005',
+
     name: 'HD-012 MELANDER C3',
     classification: headClass,
     category: headCategory,
@@ -132,6 +142,8 @@ export const heads = [
     en_load: 165,
   }),
   defineHead({
+    id: 'HD006',
+
     name: 'DF-HD-08 TIAN-QIANG',
     classification: headClass,
     category: headCategory,
@@ -155,6 +167,8 @@ export const heads = [
     en_load: 88,
   }),
   defineHead({
+    id: 'HD007',
+
     name: 'VP-44S',
     classification: headClass,
     category: headCategory,
@@ -178,6 +192,8 @@ export const heads = [
     en_load: 148,
   }),
   defineHead({
+    id: 'HD008',
+
     name: 'VP-44D',
     classification: headClass,
     category: headCategory,
@@ -201,6 +217,8 @@ export const heads = [
     en_load: 177,
   }),
   defineHead({
+    id: 'HD009',
+
     name: 'NACHTREIHER/44E',
     classification: headClass,
     category: headCategory,
@@ -224,6 +242,8 @@ export const heads = [
     en_load: 210,
   }),
   defineHead({
+    id: 'HD010',
+
     name: 'KASUAR/44Z',
     classification: headClass,
     category: headCategory,
@@ -247,6 +267,8 @@ export const heads = [
     en_load: 254,
   }),
   defineHead({
+    id: 'HD011',
+
     name: 'LAMMERGEIER/44F',
     classification: headClass,
     category: headCategory,
@@ -270,6 +292,8 @@ export const heads = [
     en_load: 220,
   }),
   defineHead({
+    id: 'HD012',
+
     name: 'VE-44A',
     classification: headClass,
     category: headCategory,
@@ -293,6 +317,8 @@ export const heads = [
     en_load: 182,
   }),
   defineHead({
+    id: 'HD013',
+
     name: 'VE-44B',
     classification: headClass,
     category: headCategory,
@@ -316,6 +342,8 @@ export const heads = [
     en_load: 265,
   }),
   defineHead({
+    id: 'HD014',
+
     name: 'HC-2000 FINDER EYE',
     classification: headClass,
     category: headCategory,
@@ -339,6 +367,8 @@ export const heads = [
     en_load: 125,
   }),
   defineHead({
+    id: 'HD015',
+
     name: 'HC-2000/BC SHADE EYE',
     classification: headClass,
     category: headCategory,
@@ -362,6 +392,8 @@ export const heads = [
     en_load: 163,
   }),
   defineHead({
+    id: 'HD016',
+
     name: 'HC-3000 WRECKER',
     classification: headClass,
     category: headCategory,
@@ -385,6 +417,8 @@ export const heads = [
     en_load: 102,
   }),
   defineHead({
+    id: 'HD017',
+
     name: 'HS-5000 APPETIZER',
     classification: headClass,
     category: headCategory,
@@ -408,6 +442,8 @@ export const heads = [
     en_load: 103,
   }),
   defineHead({
+    id: 'HD018',
+
     name: 'EL-TH-10 FIRMEZA',
     classification: headClass,
     category: headCategory,
@@ -431,6 +467,8 @@ export const heads = [
     en_load: 134,
   }),
   defineHead({
+    id: 'HD019',
+
     name: 'EL-PH-00 ALBA',
     classification: headClass,
     category: headCategory,
@@ -454,6 +492,8 @@ export const heads = [
     en_load: 205,
   }),
   defineHead({
+    id: 'HD020',
+
     name: '20-081 MIND ALPHA',
     classification: headClass,
     category: headCategory,
@@ -477,6 +517,8 @@ export const heads = [
     en_load: 142,
   }),
   defineHead({
+    id: 'HD021',
+
     name: '20-082 MIND BETA',
     classification: headClass,
     category: headCategory,
@@ -500,6 +542,8 @@ export const heads = [
     en_load: 128,
   }),
   defineHead({
+    id: 'HD022',
+
     name: 'IA-C01H: EPHEMERA',
     classification: headClass,
     category: headCategory,
@@ -523,6 +567,8 @@ export const heads = [
     en_load: 233,
   }),
   defineHead({
+    id: 'HD023',
+
     name: 'IB-C03H: HAL 826',
     classification: headClass,
     category: headCategory,

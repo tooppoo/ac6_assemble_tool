@@ -14,6 +14,8 @@ import { defineBooster } from './types/inner/booster'
 
 export const boosters = [
   defineBooster({
+    id: 'BS001',
+
     name: 'AB-J-137 KIKAKU',
     classification: boosterClass,
     category: boosterCategory,
@@ -40,6 +42,8 @@ export const boosters = [
     en_load: 266,
   }),
   defineBooster({
+    id: 'BS002',
+
     name: 'BST-G1/P10',
     classification: boosterClass,
     category: boosterCategory,
@@ -66,6 +70,8 @@ export const boosters = [
     en_load: 130,
   }),
   defineBooster({
+    id: 'BS003',
+
     name: 'BST-G2/P04',
     classification: boosterClass,
     category: boosterCategory,
@@ -92,6 +98,8 @@ export const boosters = [
     en_load: 250,
   }),
   defineBooster({
+    id: 'BS004',
+
     name: 'BST-G2/P06SPD',
     classification: boosterClass,
     category: boosterCategory,
@@ -118,6 +126,8 @@ export const boosters = [
     en_load: 390,
   }),
   defineBooster({
+    id: 'BS005',
+
     name: 'ALULA/21E',
     classification: boosterClass,
     category: boosterCategory,
@@ -144,6 +154,8 @@ export const boosters = [
     en_load: 410,
   }),
   defineBooster({
+    id: 'BS006',
+
     name: 'FLUEGEL/21Z',
     classification: boosterClass,
     category: boosterCategory,
@@ -170,6 +182,8 @@ export const boosters = [
     en_load: 282,
   }),
   defineBooster({
+    id: 'BS007',
+
     name: 'BUERZEL/21D',
     classification: boosterClass,
     category: boosterCategory,
@@ -196,6 +210,8 @@ export const boosters = [
     en_load: 480,
   }),
   defineBooster({
+    id: 'BS008',
+
     name: 'BC-0600 12345',
     classification: boosterClass,
     category: boosterCategory,
@@ -222,6 +238,8 @@ export const boosters = [
     en_load: 180,
   }),
   defineBooster({
+    id: 'BS009',
+
     name: 'BC-0400 MULE',
     classification: boosterClass,
     category: boosterCategory,
@@ -248,6 +266,8 @@ export const boosters = [
     en_load: 200,
   }),
   defineBooster({
+    id: 'BS010',
+
     name: 'BC-0200 GRIDWALKER',
     classification: boosterClass,
     category: boosterCategory,
@@ -274,6 +294,8 @@ export const boosters = [
     en_load: 244,
   }),
   defineBooster({
+    id: 'BS011',
+
     name: 'IA-C01B: GILLS',
     classification: boosterClass,
     category: boosterCategory,
@@ -300,6 +322,8 @@ export const boosters = [
     en_load: 400,
   }),
   defineBooster({
+    id: 'BS012',
+
     name: 'IB-C03B: NGI 001',
     classification: boosterClass,
     category: boosterCategory,

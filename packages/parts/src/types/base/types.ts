@@ -7,6 +7,8 @@ export type ACParts<
   M extends Manufacture = Manufacture,
   Ca extends Category = Category,
 > = Readonly<{
+  /** グローバルユニークID */
+  id: string
   /** 名前 */
   name: string
   /** 分類 */

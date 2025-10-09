@@ -8,9 +8,11 @@ export const jaShare = {
       caption: 'テキストで共有する',
       onlyAssembly: 'アセンのみ',
       withStatus: '性能を含める',
+      ariaLabel: 'テキストとしてクリップボードにコピー',
     },
     url: {
       caption: 'URLで共有する',
+      ariaLabel: 'URLをクリップボードにコピー',
     },
   },
 }

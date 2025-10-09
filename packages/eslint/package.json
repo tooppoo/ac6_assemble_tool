@@ -11,7 +11,7 @@
   "license": "MIT",
   "description": "",
   "scripts": {
-    "lint": "eslint . && prettier . --check",
-    "format": "eslint . --fix && prettier . --write"
+    "lint": "eslint . --cache && prettier . --check --cache",
+    "format": "eslint . --fix --cache && prettier . --write --cache"
   }
 }

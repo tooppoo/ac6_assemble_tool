@@ -13,14 +13,17 @@
     type AssemblyKey,
     assemblyKeys,
     spaceByWord,
+    createAssembly,
   } from '@ac6_assemble_tool/core/assembly/assembly'
   import { UsableItemNotFoundError } from '@ac6_assemble_tool/core/assembly/filter/filters'
   import { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
   import { RandomAssembly } from '@ac6_assemble_tool/core/assembly/random/random-assembly'
   import {
-    assemblyToSearch,
-    searchToAssembly,
-  } from '@ac6_assemble_tool/core/assembly/serialize/as-query'
+    assemblyToSearchV2,
+    searchToAssemblyV2,
+    ASSEMBLY_QUERY_V2_KEYS,
+  } from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
+  import { VersionMigration } from '@ac6_assemble_tool/core/assembly/version-migration'
   import {
     type Candidates,
     type OrderParts,
@@ -129,10 +132,7 @@
   }
   $: {
     if (assembly && initialCandidates && !browserBacking) {
-      logger.debug(
-        'replace state',
-        assemblyToSearch(assembly, initialCandidates),
-      )
+      logger.debug('replace state', assemblyToSearchV2(assembly).toString())
 
       serializeAssembly.run()
     }
@@ -173,20 +173,67 @@
   }
 
   function buildAssemblyFromQuery() {
-    assembly = searchToAssembly(
-      new URL(location.href).searchParams,
-      initialCandidates,
-    )
-  }
-  function serializeAssemblyAsQuery() {
-    const url = new URL(location.href)
-    const query = url.searchParams
-    const assemblyQuery = assemblyToSearch(assembly, initialCandidates)
+    if (typeof window === 'undefined') {
+      // SSR時はデフォルトアセンブリを使用
+      assembly = createAssembly(
+        searchToAssemblyV2(new URLSearchParams(), initialCandidates),
+      )
+      return
+    }
 
-    assemblyQuery.forEach((v, k) => {
-      query.set(k, v)
+    const url = new URL(location.href)
+    const params = url.searchParams
+
+    if (!params.toString()) {
+      // クエリなしの場合はデフォルトアセンブリ
+      assembly = createAssembly(searchToAssemblyV2(params, initialCandidates))
+      return
+    }
+
+    // バージョン判定とマイグレーション
+    const migrate = VersionMigration.forQuery(params)
+    const convertedParams = migrate(params, initialCandidates)
+
+    assembly = createAssembly(
+      searchToAssemblyV2(convertedParams, initialCandidates),
+    )
+
+    // v1の場合はURLをv2形式に更新（既存の非アセンブリパラメータを保持）
+    if (convertedParams !== params) {
+      mergeAssemblyParams(url.searchParams, convertedParams)
+      history.replaceState({}, '', url)
+    }
+  }
+  /**
+   * アセンブリ関連パラメータをマージ（既存の非アセンブリパラメータを保持）
+   *
+   * @param currentParams - 現在のURLSearchParams（変更される）
+   * @param assemblyParams - アセンブリ関連のURLSearchParams
+   */
+  function mergeAssemblyParams(
+    currentParams: URLSearchParams,
+    assemblyParams: URLSearchParams,
+  ) {
+    // 既存のアセンブリ関連パラメータを削除
+    ASSEMBLY_QUERY_V2_KEYS.forEach((key) => currentParams.delete(key))
+
+    // 新しいアセンブリパラメータを追加
+    assemblyParams.forEach((value, key) => {
+      currentParams.set(key, value)
     })
-    url.search = query.toString()
+  }
+
+  function serializeAssemblyAsQuery() {
+    if (typeof window === 'undefined') {
+      // SSR時はデフォルトアセンブリを使用
+      return
+    }
+
+    const url = new URL(location.href)
+    const assemblyQuery = assemblyToSearchV2(assembly)
+
+    // 既存の非アセンブリパラメータ（lng等）を保持
+    mergeAssemblyParams(url.searchParams, assemblyQuery)
 
     history.pushState({}, '', url)
   }

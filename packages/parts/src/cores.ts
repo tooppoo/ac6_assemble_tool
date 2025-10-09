@@ -16,6 +16,8 @@ import { defineCore } from './types/frame/types'
 
 export const cores = [
   defineCore({
+    id: 'CR001',
+
     name: 'AC-J-120 BASHO',
     classification: coreClass,
     category: coreCategory,
@@ -37,6 +39,8 @@ export const cores = [
     en_load: 300,
   }),
   defineCore({
+    id: 'CR002',
+
     name: 'AC-J-120/RC JAILBREAK',
     classification: coreClass,
     category: coreCategory,
@@ -58,6 +62,8 @@ export const cores = [
     en_load: 300,
   }),
   defineCore({
+    id: 'CR003',
+
     name: 'BD-011 MELANDER',
     classification: coreClass,
     category: coreCategory,
@@ -81,6 +87,8 @@ export const cores = [
     en_load: 304,
   }),
   defineCore({
+    id: 'CR004',
+
     name: 'BD-012 MELANDER C3',
     classification: coreClass,
     category: coreCategory,
@@ -102,6 +110,8 @@ export const cores = [
     en_load: 322,
   }),
   defineCore({
+    id: 'CR005',
+
     name: 'DF-BD-08 TIAN-QIANG',
     classification: coreClass,
     category: coreCategory,
@@ -123,6 +133,8 @@ export const cores = [
     en_load: 388,
   }),
   defineCore({
+    id: 'CR006',
+
     name: 'VP-40S',
     classification: coreClass,
     category: coreCategory,
@@ -144,6 +156,8 @@ export const cores = [
     en_load: 337,
   }),
   defineCore({
+    id: 'CR007',
+
     name: 'NACHTREIHER/40E',
     classification: coreClass,
     category: coreCategory,
@@ -165,6 +179,8 @@ export const cores = [
     en_load: 330,
   }),
   defineCore({
+    id: 'CR008',
+
     name: 'LAMMERGEIER/40F',
     classification: coreClass,
     category: coreCategory,
@@ -186,6 +202,8 @@ export const cores = [
     en_load: 341,
   }),
   defineCore({
+    id: 'CR009',
+
     name: 'VE-40A',
     classification: coreClass,
     category: coreCategory,
@@ -207,6 +225,8 @@ export const cores = [
     en_load: 432,
   }),
   defineCore({
+    id: 'CR010',
+
     name: 'CC-2000 ORBITER',
     classification: coreClass,
     category: coreCategory,
@@ -228,6 +248,8 @@ export const cores = [
     en_load: 267,
   }),
   defineCore({
+    id: 'CR011',
+
     name: 'CC-3000 WRECKER',
     classification: coreClass,
     category: coreCategory,
@@ -249,6 +271,8 @@ export const cores = [
     en_load: 310,
   }),
   defineCore({
+    id: 'CR012',
+
     name: 'CS-5000 MAIN DISH',
     classification: coreClass,
     category: coreCategory,
@@ -270,6 +294,8 @@ export const cores = [
     en_load: 413,
   }),
   defineCore({
+    id: 'CR013',
+
     name: 'EL-TC-10 FIRMEZA',
     classification: coreClass,
     category: coreCategory,
@@ -291,6 +317,8 @@ export const cores = [
     en_load: 351,
   }),
   defineCore({
+    id: 'CR014',
+
     name: 'EL-PC-00 ALBA',
     classification: coreClass,
     category: coreCategory,
@@ -312,6 +340,8 @@ export const cores = [
     en_load: 315,
   }),
   defineCore({
+    id: 'CR015',
+
     name: '07-061 MIND ALPHA',
     classification: coreClass,
     category: coreCategory,
@@ -333,6 +363,8 @@ export const cores = [
     en_load: 364,
   }),
   defineCore({
+    id: 'CR016',
+
     name: 'IA-C01C: EPHEMERA',
     classification: coreClass,
     category: coreCategory,
@@ -354,6 +386,8 @@ export const cores = [
     en_load: 412,
   }),
   defineCore({
+    id: 'CR017',
+
     name: 'IB-C03C: HAL 826',
     classification: coreClass,
     category: coreCategory,

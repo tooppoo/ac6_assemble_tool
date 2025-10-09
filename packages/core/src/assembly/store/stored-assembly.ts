@@ -34,25 +34,11 @@ export type StoredAssemblyAggregation = Readonly<{
 }>
 
 export interface StoredAssemblyRepository {
-  storeNew(
-    aggregation: NewAssemblyAggregation,
-    candidates: Candidates,
-    current: Date,
-  ): Promise<void>
-  storeNew(
-    aggregation: NewAssemblyAggregation,
-    candidates: Candidates,
-  ): Promise<void>
+  storeNew(aggregation: NewAssemblyAggregation, current: Date): Promise<void>
+  storeNew(aggregation: NewAssemblyAggregation): Promise<void>
 
-  update(
-    aggregation: UpdatedAssemblyAggregation,
-    candidates: Candidates,
-    current: Date,
-  ): Promise<void>
-  update(
-    aggregation: UpdatedAssemblyAggregation,
-    candidates: Candidates,
-  ): Promise<void>
+  update(aggregation: UpdatedAssemblyAggregation, current: Date): Promise<void>
+  update(aggregation: UpdatedAssemblyAggregation): Promise<void>
 
   all(candidates: Candidates): Promise<StoredAssemblyAggregation[]>
   findById(

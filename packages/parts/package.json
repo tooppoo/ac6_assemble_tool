@@ -11,9 +11,15 @@
   "scripts": {
     "tsc": "tsc",
     "tsc:watch": "tsc -w",
-    "lint": "eslint . && prettier . --check",
-    "format": "eslint . --fix && prettier . --write",
-    "check-types": "tsc --noEmit"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "lint": "eslint . --cache && prettier . --check --cache",
+    "format": "eslint . --cache --fix && prettier . --write --cache",
+    "check-types": "tsc --noEmit",
+    "generate-part-id": "tsx scripts/generate-part-id-cli.ts",
+    "validate-ids": "tsx scripts/validate-part-ids.ts",
+    "build": "pnpm validate-ids"
   },
   "author": "philomagi <tooppoo56@gmail.com> (https://github.com/tooppoo)",
   "license": "MIT",

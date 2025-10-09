@@ -30,6 +30,10 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(`${pkg.version}-${shortHash}`),
   },
+  preview: {
+    host: '0.0.0.0',
+    port: 4173,
+  },
   plugins: [
     ...(isVitest ? [] : [sveltekit()]),
     svelteTesting(),

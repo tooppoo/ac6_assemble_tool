@@ -8,7 +8,7 @@ export const storedAssemblyDtoScheme = z
     assembly: z
       .string()
       .min(1)
-      .regex(/([a-z]+=\d+&?)+/)
+      .regex(/([a-z]+=[\dA-Z]+&?)+/)
       .readonly(),
     createdAt: z.date().readonly(),
     updatedAt: z.date().readonly(),
