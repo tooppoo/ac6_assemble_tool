@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "dev": "vite dev",
-    "prebuild": "pnpm run sync",
     "build": "pnpm run sync && vite build && pnpm run sitemap && pnpm run purgecss",
     "build:test": "pnpm run sync:test && vite build",
     "preview": "vite preview",
