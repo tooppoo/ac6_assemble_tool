@@ -3,11 +3,7 @@
   "private": true,
   "version": "1.23.0",
   "type": "module",
-  "engines": {
-    "node": "22.19.0",
-    "pnpm": "10.18.2"
-  },
-  "packageManager": "pnpm@10.18.2",
+  "packageManager": "bun@1.3.0",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -19,10 +15,10 @@
     "lint": "turbo run lint",
     "format": "turbo run format",
     "check-types": "turbo run check-types",
-    "core": "pnpm --filter @ac6_assemble_tool/core",
-    "web": "pnpm --filter @ac6_assemble_tool/web",
-    "parts": "pnpm --filter @ac6_assemble_tool/parts",
-    "docs": "pnpm --filter @ac6_assemble_tool/docs"
+    "core": "bun --filter @ac6_assemble_tool/core",
+    "web": "bun --filter @ac6_assemble_tool/web",
+    "parts": "bun --filter @ac6_assemble_tool/parts",
+    "docs": "bun --filter @ac6_assemble_tool/docs"
   },
   "devDependencies": {
     "@changesets/changelog-github": "0.5.1",
@@ -59,12 +55,11 @@
     "loglevel": "1.9.2"
   },
   "workspaces": [
-    "packages/parts",
-    "packages/tsconfig",
-    "packages/core",
-    "packages/web",
-    "packages/spec",
-    "packages/eslint",
-    "packages/docs"
+    "packages/*"
+  ],
+  "trustedDependencies": [
+    "@parcel/watcher",
+    "esbuild",
+    "unrs-resolver"
   ]
 }

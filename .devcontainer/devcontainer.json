@@ -1,9 +1,9 @@
 {
-  "name": "Node 22.19.0 + TypeScript",
-  "image": "node:22.19.0-bookworm",
+  "name": "Bun Development Container",
+  "image": "oven/bun:1.3.0-debian",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
-      "username": "node",
+      "username": "dev",
       "installZsh": true,
       "configureZshAsDefaultShell": false
     },
@@ -14,11 +14,11 @@
   "containerEnv": {
     "NODE_ENV": "development"
   },
-  "containerUser": "node",
+  "containerUser": "dev",
   "mounts": [
-    "type=volume,source=pnpm-store,target=/home/node/.pnpm-store",
-    "source=${localEnv:HOME}/.codex,target=/home/node/.codex,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind,consistency=cached"
+    "type=volume,source=pnpm-store,target=/home/dev/.pnpm-store",
+    "source=${localEnv:HOME}/.codex,target=/home/dev/.codex,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.claude,target=/home/dev/.claude,type=bind,consistency=cached"
   ],
   "forwardPorts": [
     5173,
@@ -50,7 +50,8 @@
         "redhat.vscode-yaml",
         "Vue.volar",
         "Anthropic.claude-code",
-        "jebbs.plantuml"
+        "jebbs.plantuml",
+        "oven.bun-vscode"
       ],
       "settings": {
         "typescript.tsdk": "node_modules/typescript/lib",
