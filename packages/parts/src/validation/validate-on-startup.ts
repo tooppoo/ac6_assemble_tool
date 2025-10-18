@@ -17,7 +17,7 @@ import {
   armNotEquipped,
   backNotEquipped,
 } from '../not-equipped'
-import { logger } from '../utils/logger'
+import { logger } from '@ac6_assemble_tool/shared/logger'
 
 import { DuplicatePartIdError, validatePartIdUniqueness } from './id-validator'
 

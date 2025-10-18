@@ -1,34 +1,28 @@
 {
-  "name": "@ac6_assemble_tool/parts",
-  "version": "1.8.1",
+  "name": "@ac6_assemble_tool/shared",
+  "version": "1.0.0",
   "type": "module",
   "exports": {
     "./*": "./src/*.ts"
   },
   "imports": {
-    "#parts/*": "./src/*.ts"
+    "#shared/*": "./src/*.ts"
   },
   "scripts": {
     "tsc": "tsc",
     "tsc:watch": "tsc -w",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "coverage": "vitest run --coverage",
+    "test": "echo 'No tests for shared package'",
+    "test:watch": "echo 'No tests for shared package'",
+    "coverage": "echo 'No tests for shared package'",
     "lint": "eslint . --cache && prettier . --check --cache",
     "format": "eslint . --cache --fix && prettier . --write --cache",
-    "check-types": "tsc --noEmit",
-    "generate-part-id": "tsx scripts/generate-part-id-cli.ts",
-    "validate-ids": "tsx scripts/validate-part-ids.ts",
-    "build": "pnpm validate-ids"
+    "check-types": "tsc --noEmit"
   },
   "author": "philomagi <tooppoo56@gmail.com> (https://github.com/tooppoo)",
   "license": "MIT",
-  "description": "",
+  "description": "Shared utilities for AC6 Assemble Tool",
   "devDependencies": {
     "@ac6_assemble_tool/eslint": "workspace:1.0.0",
     "@ac6_assemble_tool/tsconfig": "workspace:1.0.0"
-  },
-  "dependencies": {
-    "@ac6_assemble_tool/shared": "workspace:1.0.0"
   }
 }

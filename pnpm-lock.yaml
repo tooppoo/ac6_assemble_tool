@@ -105,6 +105,9 @@ importers:
       '@ac6_assemble_tool/parts':
         specifier: workspace:1.8.1
         version: link:../parts
+      '@ac6_assemble_tool/shared':
+        specifier: workspace:1.0.0
+        version: link:../shared
       dexie:
         specifier: 4.2.0
         version: 4.2.0
@@ -140,6 +143,19 @@ importers:
   packages/eslint: {}
 
   packages/parts:
+    dependencies:
+      '@ac6_assemble_tool/shared':
+        specifier: workspace:1.0.0
+        version: link:../shared
+    devDependencies:
+      '@ac6_assemble_tool/eslint':
+        specifier: workspace:1.0.0
+        version: link:../eslint
+      '@ac6_assemble_tool/tsconfig':
+        specifier: workspace:1.0.0
+        version: link:../tsconfig
+
+  packages/shared:
     devDependencies:
       '@ac6_assemble_tool/eslint':
         specifier: workspace:1.0.0
@@ -168,6 +184,9 @@ importers:
       '@ac6_assemble_tool/parts':
         specifier: workspace:1.8.1
         version: link:../parts
+      '@ac6_assemble_tool/shared':
+        specifier: workspace:1.0.0
+        version: link:../shared
       bootstrap:
         specifier: 5.3.8
         version: 5.3.8(@popperjs/core@2.11.8)

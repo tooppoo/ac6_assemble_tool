@@ -65,6 +65,7 @@
     "packages/web",
     "packages/spec",
     "packages/eslint",
-    "packages/docs"
+    "packages/docs",
+    "packages/shared"
   ]
 }

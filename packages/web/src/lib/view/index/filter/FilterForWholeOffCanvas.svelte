@@ -19,7 +19,7 @@
   import TextButton from '$lib/components/button/TextButton.svelte'
   import OffCanvas from '$lib/components/off-canvas/OffCanvas.svelte'
   import i18n from '$lib/i18n/define'
-  import { logger } from '$lib/utils/logger'
+  import { logger } from '@ac6_assemble_tool/shared/logger'
   import {
     assemblyWithHeadParts,
     enableFilterOnAllParts,

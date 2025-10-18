@@ -6,7 +6,7 @@
   import i18n from '$lib/i18n/define'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
   import { appVersion } from '$lib/utils/app-version'
-  import { logger } from '$lib/utils/logger'
+  import { logger } from '@ac6_assemble_tool/shared/logger'
 
   import {
     type Assembly,
