@@ -16,7 +16,7 @@
     "lint": "concurrently \"bun run sync:test && eslint . --cache\" \"prettier . --check --cache\"",
     "format": "bun run sync:test && eslint . --fix --cache && prettier . --write --cache",
     "purgecss": "purgecss --config purgecss.config.mjs",
-    "sitemap": "tsx scripts/sitemap-generate.ts",
+    "sitemap": "bun scripts/sitemap-generate.ts",
     "test:integration": "playwright test",
     "test:all": "bun run test:integration && bun run test:unit"
   },
