@@ -98,7 +98,7 @@ export function assemblyWithHeadParts(candidates: Candidates): Assembly {
   }
   const legs = candidates.legs[0]
 
-  logger.debug(assemblyWithHeadParts.name, candidates, { ...base, legs })
+  logger.debug(assemblyWithHeadParts.name, { candidates, base, legs })
 
   if (legs.category === tank) {
     return createAssembly({
