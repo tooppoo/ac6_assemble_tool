@@ -1,4 +1,4 @@
-import { logger } from '$lib/utils/logger'
+import { logger } from '@ac6_assemble_tool/shared/logger'
 
 import {
   type Assembly,

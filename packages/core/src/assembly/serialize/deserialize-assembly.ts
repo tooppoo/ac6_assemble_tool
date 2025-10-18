@@ -4,7 +4,7 @@
  * v1/v2形式を自動判定し、適切にデシリアライズします。
  */
 import type { RawAssembly } from '#core/assembly/assembly'
-import { logger } from '#core/utils/logger'
+import { logger } from '@ac6_assemble_tool/shared/logger'
 
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 

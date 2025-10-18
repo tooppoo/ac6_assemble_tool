@@ -3,7 +3,7 @@ import { assemblyToSearchV2 } from '#core/assembly/serialize/as-query-v2'
 import { convertV1ToV2 } from '#core/assembly/serialize/convert-v1-to-v2'
 import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
 import type { StoredAssemblyDto } from '#core/assembly/store/repository/data-transfer-object'
-import { logger } from '#core/utils/logger'
+import { logger } from '@ac6_assemble_tool/shared/logger'
 
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 import type { Transaction } from 'dexie'

@@ -1,6 +1,6 @@
 <script lang="ts">
   import TextButton from '$lib/components/button/TextButton.svelte'
-  import { logger } from '$lib/utils/logger'
+  import { logger } from '@ac6_assemble_tool/shared/logger'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
   import type { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'

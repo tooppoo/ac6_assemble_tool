@@ -4,7 +4,7 @@
  * IDベースでパーツを検索し、引当を行う機能を提供します。
  */
 
-import { logger } from '#core/utils/logger'
+import { logger } from '@ac6_assemble_tool/shared/logger'
 
 /**
  * パーツ配列からID→パーツのMapを作成
