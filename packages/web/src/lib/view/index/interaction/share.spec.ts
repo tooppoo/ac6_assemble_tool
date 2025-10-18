@@ -6,8 +6,8 @@ import {
   genAssembly,
   genCandidates,
 } from '@ac6_assemble_tool/core/spec-helper/property-generator'
-import * as fc from 'fast-check'
 import { describe, expect, test } from 'bun:test'
+import * as fc from 'fast-check'
 
 describe('query', () => {
   test('can inter-convert between assembly and query', () => {
@@ -21,7 +21,10 @@ describe('query', () => {
         ),
         ({ assembly, candidates }) => {
           expect(
-            searchToAssembly(assemblyToSearch(assembly, candidates), candidates),
+            searchToAssembly(
+              assemblyToSearch(assembly, candidates),
+              candidates,
+            ),
           ).toStrictEqual(assembly)
         },
       ),

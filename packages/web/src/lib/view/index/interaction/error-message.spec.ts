@@ -16,9 +16,17 @@ import {
   type ValidationName,
 } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
 import { genAssemblyKey } from '@ac6_assemble_tool/core/spec-helper/property-generator'
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  test,
+  type Mock,
+  vi,
+} from 'bun:test'
 import * as fc from 'fast-check'
 import type { ArrayConstraints } from 'fast-check'
-import { afterEach, beforeEach, describe, expect, test, type Mock, vi } from 'bun:test'
 
 describe(assemblyErrorMessage.name, () => {
   let i18n: Pick<I18Next, 't'>
@@ -175,12 +183,20 @@ describe(assemblyErrorMessage.name, () => {
                     ns: 'error',
                   },
                 )
-                expect(mock).toHaveBeenCalledTimesWith(1, 'assembly.retry.guide', {
-                  ns: 'error',
-                })
-                expect(mock).toHaveBeenCalledTimesWith(1, 'assembly.retry.guide', {
-                  ns: 'error',
-                })
+                expect(mock).toHaveBeenCalledTimesWith(
+                  1,
+                  'assembly.retry.guide',
+                  {
+                    ns: 'error',
+                  },
+                )
+                expect(mock).toHaveBeenCalledTimesWith(
+                  1,
+                  'assembly.retry.guide',
+                  {
+                    ns: 'error',
+                  },
+                )
                 expect(mock).toHaveBeenCalledTimesWith(
                   expected.load + expected.coam + expected.unknown,
                   'times',
@@ -251,18 +267,21 @@ function renderUnknownError(
   describe('unknown error', () => {
     test('should provide unknown message', () => {
       fc.assert(
-        fc.property(fc.string().map((s) => new Error(s)), (error) => {
-          const { i18n, mock } = provider()
+        fc.property(
+          fc.string().map((s) => new Error(s)),
+          (error) => {
+            const { i18n, mock } = provider()
 
-          f(error, i18n)
+            f(error, i18n)
 
-          expect(mock).toHaveBeenNthCalledWith(1, 'unknown.description', {
-            ns: 'error',
-          })
-          expect(mock).toHaveBeenNthCalledWith(2, 'guideToDevelop', {
-            ns: 'error',
-          })
-        }),
+            expect(mock).toHaveBeenNthCalledWith(1, 'unknown.description', {
+              ns: 'error',
+            })
+            expect(mock).toHaveBeenNthCalledWith(2, 'guideToDevelop', {
+              ns: 'error',
+            })
+          },
+        ),
       )
     })
   })

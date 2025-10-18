@@ -1,9 +1,6 @@
 {
   "compilerOptions": {
-    "types": [
-      "web",
-      "bun"
-    ],
+    "types": ["web", "bun"],
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",

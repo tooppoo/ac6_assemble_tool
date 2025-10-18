@@ -1,7 +1,7 @@
 import { BaseCustomError } from '#core/utils/error'
 
-import * as fc from 'fast-check'
 import { describe, expect, test } from 'bun:test'
+import * as fc from 'fast-check'
 
 describe('CustomError', () => {
   test('can distinguish a error is instance of the class', () => {

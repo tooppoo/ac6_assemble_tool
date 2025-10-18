@@ -10,58 +10,68 @@ describe('filter for stored assembly', () => {
   describe(filterByKeywords.name, () => {
     describe('empty keywords', () => {
       test('return all assemblies', () => {
-        fc.assert(fc.property(fc.array(genStoredAssembly()), (list) => {
-          expect(filterByKeywords([], list)).toEqual(list)
-        }))
+        fc.assert(
+          fc.property(fc.array(genStoredAssembly()), (list) => {
+            expect(filterByKeywords([], list)).toEqual(list)
+          }),
+        )
       })
     })
     describe('some keywords', () => {
       describe('name matched', () => {
         test('return all assemblies', () => {
-          fc.assert(fc.property(
-            genKeywords({ contain: ['TEST', 'FIZZ', 'BUZZ'] }),
-            fc.array(
-              fc.oneof(
-                genStoredAssembly({
-                  name: fc.constantFrom('TEST AAA', 'FIZZ BBB', 'BUZZ CCC'),
-                  description: fc.string({ minLength: 1 }),
-                }),
-                genStoredAssembly({
-                  name: fc.string({ minLength: 1 }),
-                  description: fc.constantFrom(
-                    'TEST DDD',
-                    'FIZZ EEE',
-                    'BUZZ FFF',
-                  ),
-                }),
-                genStoredAssembly({
-                  name: fc.constantFrom('TEST AAA', 'FIZZ BBB', 'BUZZ CCC'),
-                  description: fc.constantFrom(
-                    'TEST DDD',
-                    'FIZZ EEE',
-                    'BUZZ FFF',
-                  ),
-                }),
+          fc.assert(
+            fc.property(
+              genKeywords({ contain: ['TEST', 'FIZZ', 'BUZZ'] }),
+              fc.array(
+                fc.oneof(
+                  genStoredAssembly({
+                    name: fc.constantFrom('TEST AAA', 'FIZZ BBB', 'BUZZ CCC'),
+                    description: fc.string({ minLength: 1 }),
+                  }),
+                  genStoredAssembly({
+                    name: fc.string({ minLength: 1 }),
+                    description: fc.constantFrom(
+                      'TEST DDD',
+                      'FIZZ EEE',
+                      'BUZZ FFF',
+                    ),
+                  }),
+                  genStoredAssembly({
+                    name: fc.constantFrom('TEST AAA', 'FIZZ BBB', 'BUZZ CCC'),
+                    description: fc.constantFrom(
+                      'TEST DDD',
+                      'FIZZ EEE',
+                      'BUZZ FFF',
+                    ),
+                  }),
+                ),
               ),
-            ),
-            (keywords, list) => {
-              const filtered = filterByKeywords(keywords, list)
+              (keywords, list) => {
+                const filtered = filterByKeywords(keywords, list)
 
-              filtered.forEach((x) => {
-                expect(x.name + x.description).toEqual(
-                  expect.stringMatching(/(TEST|FIZZ|BUZZ)/),
-                )
-              })
-            }
-          ))
+                filtered.forEach((x) => {
+                  expect(x.name + x.description).toEqual(
+                    expect.stringMatching(/(TEST|FIZZ|BUZZ)/),
+                  )
+                })
+              },
+            ),
+          )
         })
 
         test('length of filtered <= original list', () => {
-          fc.assert(fc.property(genKeywords(), fc.array(genStoredAssembly()), (keywords, list) => {
-            expect(filterByKeywords(keywords, list).length).toBeLessThanOrEqual(
-              list.length,
-            )
-          }))
+          fc.assert(
+            fc.property(
+              genKeywords(),
+              fc.array(genStoredAssembly()),
+              (keywords, list) => {
+                expect(
+                  filterByKeywords(keywords, list).length,
+                ).toBeLessThanOrEqual(list.length)
+              },
+            ),
+          )
         })
       })
     })

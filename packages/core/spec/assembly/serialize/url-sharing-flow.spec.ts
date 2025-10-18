@@ -4,8 +4,8 @@ import { convertV1ToV2 } from '#core/assembly/serialize/convert-v1-to-v2'
 import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
 
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
-import fc from 'fast-check'
 import { describe, it, expect } from 'bun:test'
+import fc from 'fast-check'
 
 import { genAssembly } from '#spec-helper/property-generator'
 

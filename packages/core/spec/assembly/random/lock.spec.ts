@@ -5,8 +5,8 @@ import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import { notEquipped } from '@ac6_assemble_tool/parts/types/base/classification'
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
-import * as fc from 'fast-check'
 import { describe, expect, test } from 'bun:test'
+import * as fc from 'fast-check'
 
 import {
   genAssembly,
@@ -37,25 +37,25 @@ describe(LockedParts.name, () => {
           )
           .filter(({ a1, a2, key }) => a1[key].name !== a2[key].name),
         ({ lockedParts }, { a1, a2, key }) => {
-    const stat1 = lockedParts.lock(key, a1[key])
-    expect(stat1.isLocking(key)).toBe(true)
-    expect(stat1.lockedKeys).toContain(key)
-    expect(stat1.get(key, () => a2[key])).toEqual(a1[key])
+          const stat1 = lockedParts.lock(key, a1[key])
+          expect(stat1.isLocking(key)).toBe(true)
+          expect(stat1.lockedKeys).toContain(key)
+          expect(stat1.get(key, () => a2[key])).toEqual(a1[key])
 
-    const stat2 = lockedParts.unlock(key)
-    expect(stat2.isLocking(key)).toBe(false)
-    expect(stat2.lockedKeys).not.toContain(key)
-    expect(stat2.get(key, () => a1[key])).toEqual(a1[key])
+          const stat2 = lockedParts.unlock(key)
+          expect(stat2.isLocking(key)).toBe(false)
+          expect(stat2.lockedKeys).not.toContain(key)
+          expect(stat2.get(key, () => a1[key])).toEqual(a1[key])
 
-    const stat3 = lockedParts.lock(key, a2[key])
-    expect(stat3.isLocking(key)).toBe(true)
-    expect(stat3.lockedKeys).toContain(key)
-    expect(stat3.get(key, () => a1[key])).toEqual(a2[key])
+          const stat3 = lockedParts.lock(key, a2[key])
+          expect(stat3.isLocking(key)).toBe(true)
+          expect(stat3.lockedKeys).toContain(key)
+          expect(stat3.get(key, () => a1[key])).toEqual(a2[key])
 
-    const stat4 = lockedParts.lock(key, a1[key])
-    expect(stat4.isLocking(key)).toBe(true)
-    expect(stat4.lockedKeys).toContain(key)
-    expect(stat4.get(key, () => a2[key])).toEqual(a1[key])
+          const stat4 = lockedParts.lock(key, a1[key])
+          expect(stat4.isLocking(key)).toBe(true)
+          expect(stat4.lockedKeys).toContain(key)
+          expect(stat4.get(key, () => a2[key])).toEqual(a1[key])
         },
       ),
     )
@@ -75,7 +75,9 @@ describe(LockedParts.name, () => {
           genLockedParts(),
           fc.oneof(fc.constant(boosterNotEquipped), genBooster()),
           ({ lockedParts }, booster) => {
-            expect(lockedParts.lock('booster', booster).isLocking('legs')).toBe(false)
+            expect(lockedParts.lock('booster', booster).isLocking('legs')).toBe(
+              false,
+            )
           },
         ),
       )
@@ -133,13 +135,11 @@ describe(LockedParts.name, () => {
 
     test('not lock booster', () => {
       fc.assert(
-        fc.property(
-          genLockedParts(),
-          genLeg(),
-          ({ lockedParts }, legs) => {
-            expect(lockedParts.lock('legs', legs).isLocking('booster')).toBe(false)
-          },
-        ),
+        fc.property(genLockedParts(), genLeg(), ({ lockedParts }, legs) => {
+          expect(lockedParts.lock('legs', legs).isLocking('booster')).toBe(
+            false,
+          )
+        }),
       )
     })
 

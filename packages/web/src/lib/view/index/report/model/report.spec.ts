@@ -1,5 +1,5 @@
-import * as fc from 'fast-check'
 import { describe, expect, test } from 'bun:test'
+import * as fc from 'fast-check'
 
 import {
   Report,
@@ -12,33 +12,41 @@ import {
 describe(ReportAggregation, () => {
   describe(ReportAggregation.fromDto, () => {
     test('build from dto', () => {
-      fc.assert(fc.property(genReportAggregation(), (aggregation) => {
-        const dto = aggregation.toDto()
+      fc.assert(
+        fc.property(genReportAggregation(), (aggregation) => {
+          const dto = aggregation.toDto()
 
-        expect(ReportAggregation.fromDto(dto)).toEqual(aggregation)
-      }))
+          expect(ReportAggregation.fromDto(dto)).toEqual(aggregation)
+        }),
+      )
     })
   })
 
   describe('blocks', () => {
     test('show some reports every block', () => {
-      fc.assert(fc.property(genReportAggregation(), (aggregation) => {
-        expect(aggregation.blocks.every((b) => b.someReportsShown)).toBe(true)
-      }))
+      fc.assert(
+        fc.property(genReportAggregation(), (aggregation) => {
+          expect(aggregation.blocks.every((b) => b.someReportsShown)).toBe(true)
+        }),
+      )
     })
     test('length less than or equal allBlocks.length', () => {
-      fc.assert(fc.property(genReportAggregation(), (aggregation) => {
-        expect(aggregation.blocks.length).toBeLessThanOrEqual(
-          aggregation.allBlocks.length,
-        )
-      }))
+      fc.assert(
+        fc.property(genReportAggregation(), (aggregation) => {
+          expect(aggregation.blocks.length).toBeLessThanOrEqual(
+            aggregation.allBlocks.length,
+          )
+        }),
+      )
     })
     test('contained in all blocks', () => {
-      fc.assert(fc.property(genReportAggregation(), (aggregation) => {
-        expect(aggregation.allBlocks).toEqual(
-          expect.arrayContaining([...aggregation.blocks]),
-        )
-      }))
+      fc.assert(
+        fc.property(genReportAggregation(), (aggregation) => {
+          expect(aggregation.allBlocks).toEqual(
+            expect.arrayContaining([...aggregation.blocks]),
+          )
+        }),
+      )
     })
   })
 
@@ -111,9 +119,13 @@ describe(ReportAggregation, () => {
 
   describe(ReportAggregation.prototype.showAll, () => {
     test('always all reports shown', () => {
-      fc.assert(fc.property(genReportAggregation(), (aggregation) => {
-        expect(aggregation.showAll().allReports.every((r) => r.show)).toBe(true)
-      }))
+      fc.assert(
+        fc.property(genReportAggregation(), (aggregation) => {
+          expect(aggregation.showAll().allReports.every((r) => r.show)).toBe(
+            true,
+          )
+        }),
+      )
     })
   })
 })
@@ -121,62 +133,80 @@ describe(ReportAggregation, () => {
 describe(ReportBlock, () => {
   describe(ReportBlock.fromDto, () => {
     test('build from dto', () => {
-      fc.assert(fc.property(genReportBlock(), (block) => {
-        const dto = block.toDto()
+      fc.assert(
+        fc.property(genReportBlock(), (block) => {
+          const dto = block.toDto()
 
-        expect(ReportBlock.fromDto(dto)).toEqual(block)
-      }))
+          expect(ReportBlock.fromDto(dto)).toEqual(block)
+        }),
+      )
     })
   })
   describe('allReports', () => {
     test('return all reports', () => {
-      fc.assert(fc.property(fc.array(genReport()), (reports) => {
-        const block = ReportBlock.create(reports)
+      fc.assert(
+        fc.property(fc.array(genReport()), (reports) => {
+          const block = ReportBlock.create(reports)
 
-        expect(block.allReports).toEqual(reports)
-      }))
+          expect(block.allReports).toEqual(reports)
+        }),
+      )
     })
   })
   describe('reports', () => {
     test('less than or equal all reports', () => {
-      fc.assert(fc.property(genReportBlock(), (block) => {
-        expect(block.reports.length).toBeLessThanOrEqual(block.allReports.length)
-      }))
+      fc.assert(
+        fc.property(genReportBlock(), (block) => {
+          expect(block.reports.length).toBeLessThanOrEqual(
+            block.allReports.length,
+          )
+        }),
+      )
     })
     test('any report is show', () => {
-      fc.assert(fc.property(genReportBlock(), (block) => {
-        expect(block.reports.every((r) => r.show)).toBe(true)
-      }))
+      fc.assert(
+        fc.property(genReportBlock(), (block) => {
+          expect(block.reports.every((r) => r.show)).toBe(true)
+        }),
+      )
     })
     test('any report is contained in all reports', () => {
-      fc.assert(fc.property(genReportBlock(), (block) => {
-        expect(block.allReports).toEqual(
-          // readonly Report[] を Report[] にするために配列を作り直し
-          expect.arrayContaining([...block.reports]),
-        )
-      }))
+      fc.assert(
+        fc.property(genReportBlock(), (block) => {
+          expect(block.allReports).toEqual(
+            // readonly Report[] を Report[] にするために配列を作り直し
+            expect.arrayContaining([...block.reports]),
+          )
+        }),
+      )
     })
   })
   describe('someReportsShown', () => {
     describe('when some reports are shown', () => {
       test('should return true', () => {
-        fc.assert(fc.property(genReportBlock(), genReportKey(), (baseBlock, key) => {
-          const block = ReportBlock.create([
-            ...baseBlock.allReports,
-            new Report(key, true),
-          ])
+        fc.assert(
+          fc.property(genReportBlock(), genReportKey(), (baseBlock, key) => {
+            const block = ReportBlock.create([
+              ...baseBlock.allReports,
+              new Report(key, true),
+            ])
 
-          expect(block.someReportsShown).toBe(true)
-        }))
+            expect(block.someReportsShown).toBe(true)
+          }),
+        )
       })
     })
     describe('when no reports are shown', () => {
       test('should return false', () => {
-        fc.assert(fc.property(fc.array(genReportKey()), (keys) => {
-          const block = ReportBlock.create(keys.map((k) => new Report(k, false)))
+        fc.assert(
+          fc.property(fc.array(genReportKey()), (keys) => {
+            const block = ReportBlock.create(
+              keys.map((k) => new Report(k, false)),
+            )
 
-          expect(block.someReportsShown).toBe(false)
-        }))
+            expect(block.someReportsShown).toBe(false)
+          }),
+        )
       })
     })
   })
@@ -270,14 +300,18 @@ describe(ReportBlock, () => {
   })
   describe(ReportBlock.prototype.showAll, () => {
     test('all report should be shown', () => {
-      fc.assert(fc.property(genReportBlock(), (block) => {
-        expect(block.showAll().reports.every((r) => r.show)).toBe(true)
-      }))
+      fc.assert(
+        fc.property(genReportBlock(), (block) => {
+          expect(block.showAll().reports.every((r) => r.show)).toBe(true)
+        }),
+      )
     })
     test('after allShow, after.reports.length equals with before.allReports.length', () => {
-      fc.assert(fc.property(genReportBlock(), (block) => {
-        expect(block.showAll().reports.length).toBe(block.allReports.length)
-      }))
+      fc.assert(
+        fc.property(genReportBlock(), (block) => {
+          expect(block.showAll().reports.length).toBe(block.allReports.length)
+        }),
+      )
     })
   })
 })
@@ -285,18 +319,22 @@ describe(ReportBlock, () => {
 describe(Report, () => {
   describe(Report.fromDto, () => {
     test('build from dto', () => {
-      fc.assert(fc.property(genReport(), (report) => {
-        const dto = report.toDto()
+      fc.assert(
+        fc.property(genReport(), (report) => {
+          const dto = report.toDto()
 
-        expect(Report.fromDto(dto)).toEqual(report)
-      }))
+          expect(Report.fromDto(dto)).toEqual(report)
+        }),
+      )
     })
   })
   describe(Report.create, () => {
     test('always build as shown', () => {
-      fc.assert(fc.property(genReportKey(), (key) => {
-        expect(Report.create(key).show).toBe(true)
-      }))
+      fc.assert(
+        fc.property(genReportKey(), (key) => {
+          expect(Report.create(key).show).toBe(true)
+        }),
+      )
     })
   })
   describe(Report.prototype.statusFor, () => {
@@ -311,11 +349,13 @@ describe(Report, () => {
       const assemblyLike = { ...baseAssemblyLike, withinEnOutput: true }
 
       test('always be normal', () => {
-        fc.assert(fc.property(genReportKey(), (key) => {
-          const report = Report.create(key)
+        fc.assert(
+          fc.property(genReportKey(), (key) => {
+            const report = Report.create(key)
 
-          expect(report.statusFor(assemblyLike)).toBe('normal')
-        }))
+            expect(report.statusFor(assemblyLike)).toBe('normal')
+          }),
+        )
       })
     })
     describe('en load over energy output', () => {
@@ -326,28 +366,37 @@ describe(Report, () => {
         !k.includes('enFirearm')
       describe('key is about energy', () => {
         test('always be danger', () => {
-          fc.assert(fc.property(genReportKey().filter(keyIsAboutEnergy), (key) => {
-            const report = Report.create(key)
+          fc.assert(
+            fc.property(genReportKey().filter(keyIsAboutEnergy), (key) => {
+              const report = Report.create(key)
 
-            expect(report.statusFor(assemblyLike)).toBe('danger')
-          }), {
-            seed: 568392928,
-            path: '0',
-            endOnFailure: true,
-          })
+              expect(report.statusFor(assemblyLike)).toBe('danger')
+            }),
+            {
+              seed: 568392928,
+              path: '0',
+              endOnFailure: true,
+            },
+          )
         })
       })
       describe('key is not about energy', () => {
         test('always be normal', () => {
-          fc.assert(fc.property(genReportKey().filter((key) => !keyIsAboutEnergy(key)), (key) => {
-            const report = Report.create(key)
+          fc.assert(
+            fc.property(
+              genReportKey().filter((key) => !keyIsAboutEnergy(key)),
+              (key) => {
+                const report = Report.create(key)
 
-            expect(report.statusFor(assemblyLike)).toBe('normal')
-          }), {
-            seed: 568392928,
-            path: '0',
-            endOnFailure: true,
-          })
+                expect(report.statusFor(assemblyLike)).toBe('normal')
+              },
+            ),
+            {
+              seed: 568392928,
+              path: '0',
+              endOnFailure: true,
+            },
+          )
         })
       })
     })
@@ -356,11 +405,13 @@ describe(Report, () => {
       const assemblyLike = { ...baseAssemblyLike, withinLoadLimit: true }
 
       test('always be normal', () => {
-        fc.assert(fc.property(genReportKey(), (key) => {
-          const report = Report.create(key)
+        fc.assert(
+          fc.property(genReportKey(), (key) => {
+            const report = Report.create(key)
 
-          expect(report.statusFor(assemblyLike)).toBe('normal')
-        }))
+            expect(report.statusFor(assemblyLike)).toBe('normal')
+          }),
+        )
       })
     })
     describe('weight over load limit', () => {
@@ -368,20 +419,30 @@ describe(Report, () => {
 
       describe('key is about load', () => {
         test('always be danger', () => {
-          fc.assert(fc.property(genReportKey().filter((k) => k.startsWith('load')), (key) => {
-            const report = Report.create(key)
+          fc.assert(
+            fc.property(
+              genReportKey().filter((k) => k.startsWith('load')),
+              (key) => {
+                const report = Report.create(key)
 
-            expect(report.statusFor(assemblyLike)).toBe('danger')
-          }))
+                expect(report.statusFor(assemblyLike)).toBe('danger')
+              },
+            ),
+          )
         })
       })
       describe('key is not about load', () => {
         test('always be normal', () => {
-          fc.assert(fc.property(genReportKey().filter((k) => !k.startsWith('load')), (key) => {
-            const report = Report.create(key)
+          fc.assert(
+            fc.property(
+              genReportKey().filter((k) => !k.startsWith('load')),
+              (key) => {
+                const report = Report.create(key)
 
-            expect(report.statusFor(assemblyLike)).toBe('normal')
-          }))
+                expect(report.statusFor(assemblyLike)).toBe('normal')
+              },
+            ),
+          )
         })
       })
     })
@@ -390,11 +451,13 @@ describe(Report, () => {
       const assemblyLike = { ...baseAssemblyLike, withinArmsLoadLimit: true }
 
       test('always be normal', () => {
-        fc.assert(fc.property(genReportKey(), (key) => {
-          const report = Report.create(key)
+        fc.assert(
+          fc.property(genReportKey(), (key) => {
+            const report = Report.create(key)
 
-          expect(report.statusFor(assemblyLike)).toBe('normal')
-        }))
+            expect(report.statusFor(assemblyLike)).toBe('normal')
+          }),
+        )
       })
     })
     describe('weight over load limit', () => {
@@ -402,41 +465,55 @@ describe(Report, () => {
 
       describe('key is about arms load', () => {
         test('always be danger', () => {
-          fc.assert(fc.property(genReportKey().filter((k) => k.startsWith('armsLoad')), (key) => {
-            const report = Report.create(key)
+          fc.assert(
+            fc.property(
+              genReportKey().filter((k) => k.startsWith('armsLoad')),
+              (key) => {
+                const report = Report.create(key)
 
-            expect(report.statusFor(assemblyLike)).toBe('danger')
-          }))
+                expect(report.statusFor(assemblyLike)).toBe('danger')
+              },
+            ),
+          )
         })
       })
       describe('key is not about arms load', () => {
         test('always be normal', () => {
-          fc.assert(fc.property(genReportKey().filter((k) => !k.startsWith('armsLoad')), (key) => {
-            const report = Report.create(key)
+          fc.assert(
+            fc.property(
+              genReportKey().filter((k) => !k.startsWith('armsLoad')),
+              (key) => {
+                const report = Report.create(key)
 
-            expect(report.statusFor(assemblyLike)).toBe('normal')
-          }))
+                expect(report.statusFor(assemblyLike)).toBe('normal')
+              },
+            ),
+          )
         })
       })
     })
   })
   describe(Report.prototype.toggleShow, () => {
     test('always not equal before toggle and after', () => {
-      fc.assert(fc.property(genReportKey(), fc.boolean(), (key, show) => {
-        const before = new Report(key, show)
-        const after = before.toggleShow()
+      fc.assert(
+        fc.property(genReportKey(), fc.boolean(), (key, show) => {
+          const before = new Report(key, show)
+          const after = before.toggleShow()
 
-        expect(after.show).toBe(!before.show)
-      }))
+          expect(after.show).toBe(!before.show)
+        }),
+      )
     })
   })
   describe(Report.prototype.forceShow, () => {
     test('always show', () => {
-      fc.assert(fc.property(genReportKey(), fc.boolean(), (key, show) => {
-        const before = new Report(key, show)
+      fc.assert(
+        fc.property(genReportKey(), fc.boolean(), (key, show) => {
+          const before = new Report(key, show)
 
-        expect(before.forceShow().show).toBe(true)
-      }))
+          expect(before.forceShow().show).toBe(true)
+        }),
+      )
     })
   })
 })
@@ -480,4 +557,3 @@ function genReportKey(): fc.Arbitrary<ReportKey> {
 
 // Alias it to test for compatibility
 const it = test
-

@@ -1,7 +1,7 @@
 import { roundUpByRealPart } from '#core/utils/number'
 
-import * as fc from 'fast-check'
 import { describe, expect, test } from 'bun:test'
+import * as fc from 'fast-check'
 
 describe(roundUpByRealPart.name, () => {
   const genNumAndDigit = (digit: { min?: number; max?: number } = { min: 1 }) =>
@@ -34,7 +34,9 @@ describe(roundUpByRealPart.name, () => {
     test('behave as like digit is 1', () => {
       fc.assert(
         fc.property(genNumAndDigit({ max: 0 }), ({ num, digit }) => {
-          expect(roundUpByRealPart(digit)(num)).toEqual(roundUpByRealPart(1)(num))
+          expect(roundUpByRealPart(digit)(num)).toEqual(
+            roundUpByRealPart(1)(num),
+          )
         }),
       )
     })

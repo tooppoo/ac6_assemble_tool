@@ -1,5 +1,4 @@
 import { randomBuild } from '#core/assembly/random/random-builder'
-import { genCandidates, genLockedParts } from '#spec-helper/property-generator'
 
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import {
@@ -9,6 +8,8 @@ import {
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import { describe, expect, test } from 'bun:test'
 import * as fc from 'fast-check'
+
+import { genCandidates, genLockedParts } from '#spec-helper/property-generator'
 
 describe(randomBuild.name, () => {
   test('should build correct coupling booster and legs', () => {
@@ -40,17 +41,21 @@ describe(randomBuild.name, () => {
     describe('when locked parts exist in candidates', () => {
       test('should use locked parts', () => {
         fc.assert(
-          fc.property(fc.constant(candidates), genLockedParts(), (candidates, { lockedParts }) => {
-            const assembly = randomBuild(candidates, { lockedParts })
+          fc.property(
+            fc.constant(candidates),
+            genLockedParts(),
+            (candidates, { lockedParts }) => {
+              const assembly = randomBuild(candidates, { lockedParts })
 
-            const partsShouldBeLocked = lockedParts.lockedKeys.map(
-              (k) => assembly[k],
-            )
+              const partsShouldBeLocked = lockedParts.lockedKeys.map(
+                (k) => assembly[k],
+              )
 
-            expect(partsShouldBeLocked.toSorted()).toEqual(
-              lockedParts.list.toSorted(),
-            )
-          }),
+              expect(partsShouldBeLocked.toSorted()).toEqual(
+                lockedParts.list.toSorted(),
+              )
+            },
+          ),
         )
       })
     })
@@ -61,7 +66,9 @@ describe(randomBuild.name, () => {
             genCandidates({ minLength: 0, maxLength: 0 }),
             genLockedParts(),
             (candidates, { lockedParts }) => {
-              expect(() => randomBuild(candidates, { lockedParts })).toThrowError()
+              expect(() =>
+                randomBuild(candidates, { lockedParts }),
+              ).toThrowError()
             },
           ),
         )

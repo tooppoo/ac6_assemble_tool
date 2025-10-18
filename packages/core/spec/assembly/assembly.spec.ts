@@ -54,7 +54,8 @@ describe('assembly', () => {
       fc.assert(
         fc.property(
           genAssembly().filter(
-            (a) => a.withinEnOutput && a.withinLoadLimit && a.withinArmsLoadLimit,
+            (a) =>
+              a.withinEnOutput && a.withinLoadLimit && a.withinArmsLoadLimit,
           ),
           (assembly) => {
             expect(assembly.ap).toBeGreaterThanOrEqual(6400 - 700)
@@ -122,19 +123,23 @@ describe('assembly', () => {
       },
     ]
 
-    testCases.forEach(({ diff, expectedKinetic, expectedEnergy, expectedExplosive }) => {
-      describe(`diff is ${JSON.stringify(diff)}`, () => {
-        test(`anti kinetic defense should be ${expectedKinetic}`, () => {
-          expect(merge(sut, diff).antiKineticDefense).toBe(expectedKinetic)
+    testCases.forEach(
+      ({ diff, expectedKinetic, expectedEnergy, expectedExplosive }) => {
+        describe(`diff is ${JSON.stringify(diff)}`, () => {
+          test(`anti kinetic defense should be ${expectedKinetic}`, () => {
+            expect(merge(sut, diff).antiKineticDefense).toBe(expectedKinetic)
+          })
+          test(`anti energy defense should be ${expectedEnergy}`, () => {
+            expect(merge(sut, diff).antiEnergyDefense).toBe(expectedEnergy)
+          })
+          test(`anti explosive defense should be ${expectedExplosive}`, () => {
+            expect(merge(sut, diff).antiExplosiveDefense).toBe(
+              expectedExplosive,
+            )
+          })
         })
-        test(`anti energy defense should be ${expectedEnergy}`, () => {
-          expect(merge(sut, diff).antiEnergyDefense).toBe(expectedEnergy)
-        })
-        test(`anti explosive defense should be ${expectedExplosive}`, () => {
-          expect(merge(sut, diff).antiExplosiveDefense).toBe(expectedExplosive)
-        })
-      })
-    })
+      },
+    )
   })
 
   describe('weight', () => {
@@ -142,7 +147,8 @@ describe('assembly', () => {
       fc.assert(
         fc.property(
           genAssembly().filter(
-            (a) => a.withinEnOutput && a.withinLoadLimit && a.withinArmsLoadLimit,
+            (a) =>
+              a.withinEnOutput && a.withinLoadLimit && a.withinArmsLoadLimit,
           ),
           (assembly) => {
             expect(assembly.weight).toBeGreaterThanOrEqual(34900)
@@ -154,7 +160,8 @@ describe('assembly', () => {
       fc.assert(
         fc.property(
           genAssembly().filter(
-            (a) => a.withinEnOutput && a.withinLoadLimit && a.withinArmsLoadLimit,
+            (a) =>
+              a.withinEnOutput && a.withinLoadLimit && a.withinArmsLoadLimit,
           ),
           (assembly) => {
             expect(assembly.load).toBeGreaterThanOrEqual(23700)
@@ -288,22 +295,24 @@ describe('assembly', () => {
         },
       ]
 
-      armsTestCases.forEach(({ diff, expectedArmsLoad, expectedArmsLoadLimit, within }) => {
-        describe(`diff is ${JSON.stringify(diff)}`, () => {
-          beforeEach(() => {
-            sut = merge(sut, diff)
+      armsTestCases.forEach(
+        ({ diff, expectedArmsLoad, expectedArmsLoadLimit, within }) => {
+          describe(`diff is ${JSON.stringify(diff)}`, () => {
+            beforeEach(() => {
+              sut = merge(sut, diff)
+            })
+            test(`arms weight should be ${expectedArmsLoad}`, () => {
+              expect(sut.armsLoad).toBe(expectedArmsLoad)
+            })
+            test(`arms load should be ${expectedArmsLoadLimit}`, () => {
+              expect(sut.armsLoadLimit).toBe(expectedArmsLoadLimit)
+            })
+            test(`within energy output is ${within}`, () => {
+              expect(sut.withinArmsLoadLimit).toBe(within)
+            })
           })
-          test(`arms weight should be ${expectedArmsLoad}`, () => {
-            expect(sut.armsLoad).toBe(expectedArmsLoad)
-          })
-          test(`arms load should be ${expectedArmsLoadLimit}`, () => {
-            expect(sut.armsLoadLimit).toBe(expectedArmsLoadLimit)
-          })
-          test(`within energy output is ${within}`, () => {
-            expect(sut.withinArmsLoadLimit).toBe(within)
-          })
-        })
-      })
+        },
+      )
     })
   })
 
@@ -365,37 +374,39 @@ describe('assembly', () => {
       },
     ]
 
-    energyTestCases.forEach(({
-      core,
-      generator,
-      expectedEnLoad,
-      expectedOutput,
-      expectedEnSupply,
-      expectedEnRechargeDelay,
-      withinEnOutput,
-    }) => {
-      describe(`when core is ${core.name}, generator is ${generator.name}`, () => {
-        beforeEach(() => {
-          sut = merge(sut, { core, generator })
-        })
+    energyTestCases.forEach(
+      ({
+        core,
+        generator,
+        expectedEnLoad,
+        expectedOutput,
+        expectedEnSupply,
+        expectedEnRechargeDelay,
+        withinEnOutput,
+      }) => {
+        describe(`when core is ${core.name}, generator is ${generator.name}`, () => {
+          beforeEach(() => {
+            sut = merge(sut, { core, generator })
+          })
 
-        test(`energy load should be ${expectedOutput}`, () => {
-          expect(sut.enLoad).toBe(expectedEnLoad)
+          test(`energy load should be ${expectedOutput}`, () => {
+            expect(sut.enLoad).toBe(expectedEnLoad)
+          })
+          test(`energy output should be ${expectedOutput}`, () => {
+            expect(sut.enOutput).toBe(expectedOutput)
+          })
+          test(`within energy output should be ${withinEnOutput}`, () => {
+            expect(sut.withinEnOutput).toBe(withinEnOutput)
+          })
+          test(`energy supply efficiency should be ${expectedEnSupply}`, () => {
+            expect(sut.enSupplyEfficiency).toBe(expectedEnSupply)
+          })
+          test(`energy recharge delay should be ${expectedEnRechargeDelay}`, () => {
+            expect(sut.enRechargeDelay).toBe(expectedEnRechargeDelay)
+          })
         })
-        test(`energy output should be ${expectedOutput}`, () => {
-          expect(sut.enOutput).toBe(expectedOutput)
-        })
-        test(`within energy output should be ${withinEnOutput}`, () => {
-          expect(sut.withinEnOutput).toBe(withinEnOutput)
-        })
-        test(`energy supply efficiency should be ${expectedEnSupply}`, () => {
-          expect(sut.enSupplyEfficiency).toBe(expectedEnSupply)
-        })
-        test(`energy recharge delay should be ${expectedEnRechargeDelay}`, () => {
-          expect(sut.enRechargeDelay).toBe(expectedEnRechargeDelay)
-        })
-      })
-    })
+      },
+    )
   })
 
   describe('booster', () => {

@@ -33,10 +33,10 @@ export const baseRules = [
         typescript: {
           alwaysTryTypes: true,
           bun: true,
-          project: 'packages/*/tsconfig.json'
+          project: 'packages/*/tsconfig.json',
         },
       },
-    }
+    },
   },
 ]
 
