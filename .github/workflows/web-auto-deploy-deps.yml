@@ -33,20 +33,14 @@ jobs:
             echo "No dependency update detected - skipping deployment"
           fi
 
-      - name: Setup pnpm
+      - uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2
         if: steps.check-deps.outputs.is_dep_update == 'true'
-        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4
-
-      - name: Setup Node.js
-        if: steps.check-deps.outputs.is_dep_update == 'true'
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
-          node-version-file: ".node-version"
-          cache: "pnpm"
+          bun-version-file: ".tool-versions"
 
       - name: Install dependencies
         if: steps.check-deps.outputs.is_dep_update == 'true'
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Create .env file
         run: |
@@ -56,7 +50,7 @@ jobs:
 
       - name: Build
         if: steps.check-deps.outputs.is_dep_update == 'true'
-        run: pnpm run build
+        run: bun run build
 
       - name: Deploy to Cloudflare Pages
         if: steps.check-deps.outputs.is_dep_update == 'true'

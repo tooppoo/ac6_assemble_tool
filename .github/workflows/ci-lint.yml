@@ -9,7 +9,7 @@ on:
       - packages/spec/**
       - packages/web/**
       - .github/workflows/ci-lint.yml
-      - pnpm-lock.yaml
+      - bun.lockb
 
 jobs:
   lint-fix:
@@ -19,20 +19,17 @@ jobs:
     steps:
       # setup
       - uses: actions/checkout@master
-      - name: Setup pnpm
-        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+      - uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2
         with:
-          node-version-file: ".node-version"
-          cache: "pnpm"
+          bun-version-file: ".tool-versions"
       - name: setup
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
-      - run: pnpm run build:test
+      - run: bun run build:test
 
       # lint & fix
       - name: lint
-        run: pnpm run format
+        run: bun run format
 
       - name: auto commit
         uses: stefanzweifel/git-auto-commit-action@v7-next

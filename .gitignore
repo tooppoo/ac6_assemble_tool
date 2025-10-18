@@ -40,6 +40,9 @@ analyze.html
 # claude code
 .claude/settings.local.json
 
+# codex
+.codex/
+
 # other
 .env
 tmp
