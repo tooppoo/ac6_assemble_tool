@@ -19,7 +19,7 @@
     "check-types": "tsc --noEmit",
     "generate-part-id": "tsx scripts/generate-part-id-cli.ts",
     "validate-ids": "tsx scripts/validate-part-ids.ts",
-    "build": "pnpm validate-ids"
+    "build": "bun validate-ids"
   },
   "author": "philomagi <tooppoo56@gmail.com> (https://github.com/tooppoo)",
   "license": "MIT",
