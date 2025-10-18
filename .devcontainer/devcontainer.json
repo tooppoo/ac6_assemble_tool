@@ -3,7 +3,7 @@
   "image": "oven/bun:1.3.0-debian",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
-      "username": "dev",
+      "username": "vscode",
       "installZsh": true,
       "configureZshAsDefaultShell": false
     },
@@ -12,13 +12,15 @@
     "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {}
   },
   "containerEnv": {
-    "NODE_ENV": "development"
+    "NODE_ENV": "development",
+    "BUN_INSTALL_GLOBAL_DIR": "/home/vscode/.bun/install/global",
+    "BUN_INSTALL_BIN": "/home/vscode/.bun/bin"
   },
-  "containerUser": "dev",
+  "containerUser": "vscode",
   "mounts": [
-    "type=volume,source=pnpm-store,target=/home/dev/.pnpm-store",
-    "source=${localEnv:HOME}/.codex,target=/home/dev/.codex,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.claude,target=/home/dev/.claude,type=bind,consistency=cached"
+    "type=volume,source=pnpm-store,target=/home/vscode/.pnpm-store",
+    "source=${localEnv:HOME}/.codex,target=/home/vscode/.codex,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind,consistency=cached"
   ],
   "forwardPorts": [
     5173,
@@ -48,9 +50,7 @@
         "pmneo.tsimporter",
         "vscodevim.vim",
         "redhat.vscode-yaml",
-        "Vue.volar",
         "Anthropic.claude-code",
-        "jebbs.plantuml",
         "oven.bun-vscode"
       ],
       "settings": {
