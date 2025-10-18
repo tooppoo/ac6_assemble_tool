@@ -1,12 +1,12 @@
 <script lang="ts">
   import TextButton from '$lib/components/button/TextButton.svelte'
-  import { logger } from '@ac6_assemble_tool/shared/logger'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
   import type { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
   import type { RandomAssembly } from '@ac6_assemble_tool/core/assembly/random/random-assembly'
   import { notEquipped } from '@ac6_assemble_tool/parts/types/base/category'
   import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
+  import { logger } from '@ac6_assemble_tool/shared/logger'
   import { createEventDispatcher } from 'svelte'
 
   export let id: string

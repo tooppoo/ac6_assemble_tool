@@ -4,9 +4,9 @@
  * v1/v2形式を自動判定し、適切にデシリアライズします。
  */
 import type { RawAssembly } from '#core/assembly/assembly'
-import { logger } from '@ac6_assemble_tool/shared/logger'
 
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
+import { logger } from '@ac6_assemble_tool/shared/logger'
 
 import { searchToAssemblyV2 } from './as-query-v2'
 import { convertV1ToV2 } from './convert-v1-to-v2'

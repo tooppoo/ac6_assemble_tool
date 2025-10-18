@@ -1,11 +1,11 @@
 <script lang="ts">
   import TextButton from '$lib/components/button/TextButton.svelte'
   import i18n from '$lib/i18n/define'
-  import { logger } from '@ac6_assemble_tool/shared/logger'
   import type { ChangeFilter } from '$lib/view/index/filter/filter-by-parts/event'
   import type { CurrentFilter } from '$lib/view/index/interaction/filter'
 
   import type { ReadonlyPartsFilterState } from '@ac6_assemble_tool/core/assembly/filter/filter-set'
+  import { logger } from '@ac6_assemble_tool/shared/logger'
   import { createEventDispatcher } from 'svelte'
   import type { ChangeEventHandler } from 'svelte/elements'
 

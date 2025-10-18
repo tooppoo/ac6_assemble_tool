@@ -17,7 +17,6 @@
   import OffCanvas from '$lib/components/off-canvas/OffCanvas.svelte'
   import Margin from '$lib/components/spacing/Margin.svelte'
   import i18n from '$lib/i18n/define'
-  import { logger } from '@ac6_assemble_tool/shared/logger'
   import RandomAssembleButton from '$lib/view/index/random/button/RandomAssembleButton.svelte'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
@@ -30,6 +29,7 @@
     totalLoadNotOverMax,
   } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
   import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
+  import { logger } from '@ac6_assemble_tool/shared/logger'
   import { createEventDispatcher } from 'svelte'
 
   import CoamRangeSlider from './range/CoamRangeSlider.svelte'

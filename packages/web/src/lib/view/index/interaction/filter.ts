@@ -1,5 +1,3 @@
-import { logger } from '@ac6_assemble_tool/shared/logger'
-
 import {
   type Assembly,
   type AssemblyKey,
@@ -30,6 +28,7 @@ import { manufactures } from '@ac6_assemble_tool/parts/types/base/manufacture'
 import { type Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 import { attackType } from '@ac6_assemble_tool/parts/types/unit/attack_type'
 import type { Unit } from '@ac6_assemble_tool/parts/units'
+import { logger } from '@ac6_assemble_tool/shared/logger'
 
 export interface FilterState {
   open: boolean
