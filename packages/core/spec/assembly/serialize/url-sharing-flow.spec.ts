@@ -5,7 +5,7 @@ import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assemb
 
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import fc from 'fast-check'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 
 import { genAssembly } from '#spec-helper/property-generator'
 

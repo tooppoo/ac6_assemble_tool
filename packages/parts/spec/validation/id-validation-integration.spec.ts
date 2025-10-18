@@ -4,16 +4,16 @@ import {
 } from '#parts/validation/id-validator'
 import { validatePartsOnStartup } from '#parts/validation/validate-on-startup'
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, spyOn } from 'bun:test'
 
 describe('ID重複検証 統合テスト', () => {
   // コンソール出力をキャプチャするためのモック
-  let consoleErrorSpy: ReturnType<typeof vi.spyOn>
-  let consoleInfoSpy: ReturnType<typeof vi.spyOn>
+  let consoleErrorSpy: ReturnType<typeof spyOn>
+  let consoleInfoSpy: ReturnType<typeof spyOn>
 
   beforeEach(() => {
-    consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {})
+    consoleErrorSpy = spyOn(console, 'error').mockImplementation(() => {})
+    consoleInfoSpy = spyOn(console, 'info').mockImplementation(() => {})
   })
 
   afterEach(() => {

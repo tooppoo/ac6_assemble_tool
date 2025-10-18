@@ -5,8 +5,8 @@ import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import { notEquipped } from '@ac6_assemble_tool/parts/types/base/classification'
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
-import { it, fc, test } from '@fast-check/vitest'
-import { describe, expect } from 'vitest'
+import * as fc from 'fast-check'
+import { describe, expect, test } from 'bun:test'
 
 import {
   genAssembly,
@@ -16,24 +16,27 @@ import {
 } from '#spec-helper/property-generator'
 
 describe(LockedParts.name, () => {
-  it.prop([genLockedParts()])(
-    'list is same with lockedKeys',
-    ({ lockedParts }) => {
-      expect(lockedParts.list.length).toEqual(lockedParts.lockedKeys.length)
-    },
-  )
-  test.prop([
-    genLockedParts(),
-    genAssembly()
-      .chain((a1) =>
-        fc.record({
-          a1: fc.constant(a1),
-          a2: genAssembly(),
-          key: genAssemblyKeys({ minLength: 1 }).map(random),
-        }),
-      )
-      .filter(({ a1, a2, key }) => a1[key].name !== a2[key].name),
-  ])('lock state transition', ({ lockedParts }, { a1, a2, key }) => {
+  test('list is same with lockedKeys', () => {
+    fc.assert(
+      fc.property(genLockedParts(), ({ lockedParts }) => {
+        expect(lockedParts.list.length).toEqual(lockedParts.lockedKeys.length)
+      }),
+    )
+  })
+  test('lock state transition', () => {
+    fc.assert(
+      fc.property(
+        genLockedParts(),
+        genAssembly()
+          .chain((a1) =>
+            fc.record({
+              a1: fc.constant(a1),
+              a2: genAssembly(),
+              key: genAssemblyKeys({ minLength: 1 }).map(random),
+            }),
+          )
+          .filter(({ a1, a2, key }) => a1[key].name !== a2[key].name),
+        ({ lockedParts }, { a1, a2, key }) => {
     const stat1 = lockedParts.lock(key, a1[key])
     expect(stat1.isLocking(key)).toBe(true)
     expect(stat1.lockedKeys).toContain(key)
@@ -53,6 +56,9 @@ describe(LockedParts.name, () => {
     expect(stat4.isLocking(key)).toBe(true)
     expect(stat4.lockedKeys).toContain(key)
     expect(stat4.get(key, () => a2[key])).toEqual(a1[key])
+        },
+      ),
+    )
   })
 
   describe('when lock booster', () => {
@@ -63,42 +69,57 @@ describe(LockedParts.name, () => {
           .map((i) => candidates.booster[i]),
       )
 
-    it.prop([
-      genLockedParts(),
-      fc.oneof(fc.constant(boosterNotEquipped), genBooster()),
-    ])('not lock legs', ({ lockedParts }, booster) => {
-      expect(lockedParts.lock('booster', booster).isLocking('legs')).toBe(false)
+    test('not lock legs', () => {
+      fc.assert(
+        fc.property(
+          genLockedParts(),
+          fc.oneof(fc.constant(boosterNotEquipped), genBooster()),
+          ({ lockedParts }, booster) => {
+            expect(lockedParts.lock('booster', booster).isLocking('legs')).toBe(false)
+          },
+        ),
+      )
     })
 
     describe('with not-equipped', () => {
-      it.prop([genLockedParts(), genCandidates()])(
-        'filter only tank legs',
-        ({ lockedParts }, candidates) => {
-          const filtered = lockedParts
-            .lock('booster', boosterNotEquipped)
-            .filter(candidates)
+      test('filter only tank legs', () => {
+        fc.assert(
+          fc.property(
+            genLockedParts(),
+            genCandidates(),
+            ({ lockedParts }, candidates) => {
+              const filtered = lockedParts
+                .lock('booster', boosterNotEquipped)
+                .filter(candidates)
 
-          expect(filtered).toMatchObject({
-            ...candidates,
-            legs: candidates.legs.filter((l) => l.category === tank),
-          })
-        },
-      )
+              expect(filtered).toMatchObject({
+                ...candidates,
+                legs: candidates.legs.filter((l) => l.category === tank),
+              })
+            },
+          ),
+        )
+      })
     })
     describe('with equipped', () => {
-      it.prop([genLockedParts(), genCandidates()])(
-        'filter only two, four or reverse joint legs',
-        ({ lockedParts }, candidates) => {
-          const filtered = lockedParts
-            .lock('booster', random(candidates.booster))
-            .filter(candidates)
+      test('filter only two, four or reverse joint legs', () => {
+        fc.assert(
+          fc.property(
+            genLockedParts(),
+            genCandidates(),
+            ({ lockedParts }, candidates) => {
+              const filtered = lockedParts
+                .lock('booster', random(candidates.booster))
+                .filter(candidates)
 
-          expect(filtered).toMatchObject({
-            ...candidates,
-            legs: candidates.legs.filter((l) => l.category !== tank),
-          })
-        },
-      )
+              expect(filtered).toMatchObject({
+                ...candidates,
+                legs: candidates.legs.filter((l) => l.category !== tank),
+              })
+            },
+          ),
+        )
+      })
     })
   })
 
@@ -110,48 +131,57 @@ describe(LockedParts.name, () => {
           .map((i) => candidates.legs[i]),
       )
 
-    it.prop([genLockedParts(), genLeg()])(
-      'not lock booster',
-      ({ lockedParts }, legs) => {
-        expect(lockedParts.lock('legs', legs).isLocking('booster')).toBe(false)
-      },
-    )
-
-    describe('with tank', () => {
-      it.prop([
-        genLockedParts(),
-        genLeg().filter((l) => l.category === 'tank'),
-        genCandidates(),
-      ])(
-        'booster should not be equipped',
-        ({ lockedParts }, legs, candidates) => {
-          const filtered = lockedParts.lock('legs', legs).filter(candidates)
-
-          expect(filtered).toMatchObject({
-            ...candidates,
-            booster: [boosterNotEquipped],
-          })
-        },
+    test('not lock booster', () => {
+      fc.assert(
+        fc.property(
+          genLockedParts(),
+          genLeg(),
+          ({ lockedParts }, legs) => {
+            expect(lockedParts.lock('legs', legs).isLocking('booster')).toBe(false)
+          },
+        ),
       )
     })
-    describe('with not tank', () => {
-      it.prop([
-        genLockedParts(),
-        genLeg().filter((l) => l.category !== 'tank'),
-        genCandidates(),
-      ])(
-        'booster should not be equipped',
-        ({ lockedParts }, legs, candidates) => {
-          const filtered = lockedParts.lock('legs', legs).filter(candidates)
 
-          expect(filtered).toMatchObject({
-            ...candidates,
-            booster: candidates.booster.filter(
-              (b) => b.classification !== notEquipped,
-            ),
-          })
-        },
-      )
+    describe('with tank', () => {
+      test('booster should not be equipped', () => {
+        fc.assert(
+          fc.property(
+            genLockedParts(),
+            genLeg().filter((l) => l.category === 'tank'),
+            genCandidates(),
+            ({ lockedParts }, legs, candidates) => {
+              const filtered = lockedParts.lock('legs', legs).filter(candidates)
+
+              expect(filtered).toMatchObject({
+                ...candidates,
+                booster: [boosterNotEquipped],
+              })
+            },
+          ),
+        )
+      })
+    })
+    describe('with not tank', () => {
+      test('booster should not be equipped', () => {
+        fc.assert(
+          fc.property(
+            genLockedParts(),
+            genLeg().filter((l) => l.category !== 'tank'),
+            genCandidates(),
+            ({ lockedParts }, legs, candidates) => {
+              const filtered = lockedParts.lock('legs', legs).filter(candidates)
+
+              expect(filtered).toMatchObject({
+                ...candidates,
+                booster: candidates.booster.filter(
+                  (b) => b.classification !== notEquipped,
+                ),
+              })
+            },
+          ),
+        )
+      })
     })
   })
 })

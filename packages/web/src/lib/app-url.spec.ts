@@ -1,37 +1,36 @@
-import { appUrl, publicPath } from '$lib/app-url'
+import { describe, expect, test } from 'bun:test'
+import * as fc from 'fast-check'
 
-import { it as fcit, fc } from '@fast-check/vitest'
-import { describe, expect } from 'vitest'
+import { appUrl, publicPath } from './app-url'
 
 describe('app-url', () => {
   describe(appUrl.name, () => {
-    fcit.prop([fc.array(fc.webPath())])(
-      'not contain repeated slash except for protocol',
-      (paths) => {
+    test('not contain repeated slash except for protocol', () => {
+      fc.assert(fc.property(fc.array(fc.webPath()), (paths) => {
         const urlWithoutProtocol = appUrl(...paths).replace(/^https:\/\//, '')
 
         expect(urlWithoutProtocol).not.toMatch(/\/\/+/)
-      },
-    )
-    fcit.prop([fc.array(fc.webPath())])(
-      'start with application base path',
-      (paths) => {
+      }))
+    })
+    test('start with application base path', () => {
+      fc.assert(fc.property(fc.array(fc.webPath()), (paths) => {
         expect(appUrl(...paths)).toMatch(
           /^https:\/\/ac6-assemble-tool\.philomagi\.dev\//,
         )
-      },
-    )
+      }))
+    })
   })
 
   describe(publicPath.name, () => {
-    fcit.prop([fc.array(fc.webPath())])(
-      'not contain repeated slash except for protocol',
-      (paths) => {
+    test('not contain repeated slash except for protocol', () => {
+      fc.assert(fc.property(fc.array(fc.webPath()), (paths) => {
         expect(publicPath(...paths)).not.toMatch(/\/\/+/)
-      },
-    )
-    fcit.prop([fc.array(fc.webPath())])('start from root', (paths) => {
-      expect(publicPath(...paths)).toMatch(/^\//)
+      }))
+    })
+    test('start from root', () => {
+      fc.assert(fc.property(fc.array(fc.webPath()), (paths) => {
+        expect(publicPath(...paths)).toMatch(/^\//)
+      }))
     })
   })
 })

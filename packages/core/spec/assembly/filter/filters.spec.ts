@@ -14,10 +14,10 @@ import {
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import { armUnit } from '@ac6_assemble_tool/parts/types/base/classification'
 import { manufactures } from '@ac6_assemble_tool/parts/types/base/manufacture'
-import { fc, it } from '@fast-check/vitest'
+import { describe, expect, test } from 'bun:test'
+import * as fc from 'fast-check'
 import { uniq } from 'lodash-es'
 import sinon from 'sinon'
-import { describe, expect } from 'vitest'
 
 import {
   genAssemblyKey,
@@ -26,9 +26,8 @@ import {
 } from '#spec-helper/property-generator'
 
 describe(excludeNotEquipped.name, () => {
-  it.prop([genCandidates(), genAssemblyKey(), genFilterApplyContext()])(
-    'not contain not-equipped unit at specified key',
-    (candidates, key, context) => {
+  test('not contain not-equipped unit at specified key', () => {
+    fc.assert(fc.property(genCandidates(), genAssemblyKey(), genFilterApplyContext(), (candidates, key, context) => {
       const applied = excludeNotEquipped
         .build({
           key,
@@ -40,11 +39,10 @@ describe(excludeNotEquipped.name, () => {
       expect(actual).not.toContain(armNotEquipped)
       expect(actual).not.toContain(backNotEquipped)
       expect(actual).not.toContain(expansionNotEquipped)
-    },
-  )
-  it.prop([genCandidates(), genAssemblyKey(), genFilterApplyContext()])(
-    'not change other candidates',
-    (candidates, key, context) => {
+    }))
+  })
+  test('not change other candidates', () => {
+    fc.assert(fc.property(genCandidates(), genAssemblyKey(), genFilterApplyContext(), (candidates, key, context) => {
       const applied = excludeNotEquipped
         .build({
           key,
@@ -62,11 +60,10 @@ describe(excludeNotEquipped.name, () => {
         fcs: candidates.fcs,
         generator: candidates.generator,
       })
-    },
-  )
-  it.prop([genCandidates(), genAssemblyKey(), genFilterApplyContext()])(
-    'when no items exist on candidates after filter, onEmpty handle it',
-    (candidates, key, context) => {
+    }))
+  })
+  test('when no items exist on candidates after filter, onEmpty handle it', () => {
+    fc.assert(fc.property(genCandidates(), genAssemblyKey(), genFilterApplyContext(), (candidates, key, context) => {
       const withEmpty = { ...candidates, [key]: [] }
       const filter = excludeNotEquipped.build({
         key,
@@ -78,74 +75,76 @@ describe(excludeNotEquipped.name, () => {
       expect(() => filter.apply(withEmpty, context)).toThrowError(
         new Error('on empty'),
       )
-    },
-  )
+    }))
+  })
 })
 
 describe(notUseHanger.name, () => {
-  it.prop([
-    genCandidates(),
-    fc.constantFrom(...(['rightBackUnit', 'leftBackUnit'] as const)),
-    genFilterApplyContext(),
-  ])('remove arm unit from back unit', (candidates, key, context) => {
-    const applied = notUseHanger.build(key).apply(candidates, context)
+  test('remove arm unit from back unit', () => {
+    fc.assert(fc.property(
+      genCandidates(),
+      fc.constantFrom(...(['rightBackUnit', 'leftBackUnit'] as const)),
+      genFilterApplyContext(),
+      (candidates, key, context) => {
+        const applied = notUseHanger.build(key).apply(candidates, context)
 
-    expect(applied[key].map((p) => p.classification)).not.toContain(armUnit)
+        expect(applied[key].map((p) => p.classification)).not.toContain(armUnit)
+      }
+    ))
   })
-  it.prop([
-    genCandidates(),
-    genAssemblyKey({ without: ['rightBackUnit', 'leftBackUnit'] }),
-    genFilterApplyContext(),
-  ])('not change parts other than back unit', (candidates, key, context) => {
-    const applied = notUseHanger.build(key).apply(candidates, context)
+  test('not change parts other than back unit', () => {
+    fc.assert(fc.property(
+      genCandidates(),
+      genAssemblyKey({ without: ['rightBackUnit', 'leftBackUnit'] }),
+      genFilterApplyContext(),
+      (candidates, key, context) => {
+        const applied = notUseHanger.build(key).apply(candidates, context)
 
-    expect(applied[key]).toEqual(candidates[key])
+        expect(applied[key]).toEqual(candidates[key])
+      }
+    ))
   })
 })
 
 describe(assumeConstraintLegsAndBooster.name, () => {
   describe('when legs is tank', () => {
-    it.prop([
-      genCandidates(),
-      genFilterApplyContext().filter(
-        ({ assembly }) => assembly.legs.category === tank,
-      ),
-    ])(
-      'should allow only not-equipped as candidates of booster',
-      (candidates, context) => {
-        const applied = assumeConstraintLegsAndBooster
-          .build(candidates)
-          .apply(candidates, context)
+    test('should allow only not-equipped as candidates of booster', () => {
+      fc.assert(fc.property(
+        genCandidates(),
+        genFilterApplyContext().filter(
+          ({ assembly }) => assembly.legs.category === tank,
+        ),
+        (candidates, context) => {
+          const applied = assumeConstraintLegsAndBooster
+            .build(candidates)
+            .apply(candidates, context)
 
-        expect(applied.booster).toEqual([boosterNotEquipped])
-      },
-    )
+          expect(applied.booster).toEqual([boosterNotEquipped])
+        }
+      ))
+    })
   })
   describe('when legs is not tank', () => {
-    it.prop([
-      genCandidates(),
-      genFilterApplyContext().filter(
-        ({ assembly }) => assembly.legs.category !== tank,
-      ),
-    ])('should allow only actual booster', (candidates, context) => {
-      const applied = assumeConstraintLegsAndBooster
-        .build(candidates)
-        .apply(candidates, context)
+    test('should allow only actual booster', () => {
+      fc.assert(fc.property(
+        genCandidates(),
+        genFilterApplyContext().filter(
+          ({ assembly }) => assembly.legs.category !== tank,
+        ),
+        (candidates, context) => {
+          const applied = assumeConstraintLegsAndBooster
+            .build(candidates)
+            .apply(candidates, context)
 
-      expect(applied.booster).to.deep.equals(
-        candidates.booster,
-        'booster candidates should not be changed',
-      )
-      expect(applied.booster).not.to.contains(
-        boosterNotEquipped,
-        'booster candidates should not contain not-equipped',
-      )
+          expect(applied.booster).toStrictEqual(candidates.booster)
+          expect(applied.booster).not.toContain(boosterNotEquipped)
+        }
+      ))
     })
   })
   describe('when any filter for booster is enabled', () => {
-    it.prop([genCandidates(), genFilterApplyContext()])(
-      'should allow only actual booster',
-      (candidates, context) => {
+    test('should allow only actual booster', () => {
+      fc.assert(fc.property(genCandidates(), genFilterApplyContext(), (candidates, context) => {
         const boosterStub = sinon.stub(
           context.wholeFilter.booster,
           'containEnabled',
@@ -160,40 +159,39 @@ describe(assumeConstraintLegsAndBooster.name, () => {
           expect.arrayContaining([tank]),
         )
         boosterStub.restore()
-      },
-    )
+      }))
+    })
   })
 })
 
 describe(onlyPropertyIncludedInList('manufacture').name, () => {
-  it.prop([
-    genAssemblyKey(),
-    genManufactures(),
-    genCandidates(),
-    genFilterApplyContext(),
-  ])(
-    'select only item provided by specified manufactures',
-    (key, selected, candidates, context) => {
-      const filter = onlyPropertyIncludedInList('manufacture').build({
-        key,
-        selected,
-        whole: manufactures,
-        onEmpty: ({ key, candidates }) => ({ ...candidates, [key]: [] }),
-      })
+  test('select only item provided by specified manufactures', () => {
+    fc.assert(fc.property(
+      genAssemblyKey(),
+      genManufactures(),
+      genCandidates(),
+      genFilterApplyContext(),
+      (key, selected, candidates, context) => {
+        const filter = onlyPropertyIncludedInList('manufacture').build({
+          key,
+          selected,
+          whole: manufactures,
+          onEmpty: ({ key, candidates }) => ({ ...candidates, [key]: [] }),
+        })
 
-      const filtered = filter.apply(candidates, context)
+        const filtered = filter.apply(candidates, context)
 
-      // 実際の結果が選択された値のサブセットであること
-      expect(selected).toEqual(
-        expect.arrayContaining(uniq(filtered[key].map((p) => p.manufacture))),
-      )
-    },
-  )
+        // 実際の結果が選択された値のサブセットであること
+        expect(selected).toEqual(
+          expect.arrayContaining(uniq(filtered[key].map((p) => p.manufacture))),
+        )
+      }
+    ))
+  })
 
   describe('any item not found after apply filter', () => {
-    it.prop([genAssemblyKey(), genCandidates(), genFilterApplyContext()])(
-      'onEmpty called and used the result',
-      (key, candidates, context) => {
+    test('onEmpty called and used the result', () => {
+      fc.assert(fc.property(genAssemblyKey(), genCandidates(), genFilterApplyContext(), (key, candidates, context) => {
         const filter = onlyPropertyIncludedInList('manufacture').build({
           key,
           selected: [],
@@ -202,8 +200,8 @@ describe(onlyPropertyIncludedInList('manufacture').name, () => {
         })
 
         expect(filter.apply(candidates, context)).toBe(candidates)
-      },
-    )
+      }))
+    })
   })
 
   function genManufactures() {

@@ -14,9 +14,11 @@
   "scripts": {
     "tsc": "tsc",
     "tsc:watch": "tsc -w",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "coverage": "vitest run --coverage",
+    "test": "bun test --preload ./test-setup.ts",
+    "test:watch": "bun test --watch --preload ./test-setup.ts",
+    "coverage": "bun test --coverage --preload ./test-setup.ts",
+    "vitest": "vitest run",
+    "vitest:coverage": "vitest run --covereage",
     "lint": "eslint . --cache && prettier . --check --cache",
     "format": "eslint . --cache --fix && prettier . --write --cache",
     "check-types": "tsc --noEmit"

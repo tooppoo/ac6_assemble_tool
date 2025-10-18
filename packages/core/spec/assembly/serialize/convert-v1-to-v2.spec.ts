@@ -14,7 +14,7 @@ import type { Generator } from '@ac6_assemble_tool/parts/generators'
 import type { Head } from '@ac6_assemble_tool/parts/heads'
 import type { Legs } from '@ac6_assemble_tool/parts/legs'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 
 // 共通テストデータ - describe外で定義
 const mockCandidates: Candidates = {

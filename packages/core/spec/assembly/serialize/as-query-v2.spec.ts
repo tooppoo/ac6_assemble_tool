@@ -14,7 +14,7 @@ import type { FCS } from '@ac6_assemble_tool/parts/fces'
 import type { Generator } from '@ac6_assemble_tool/parts/generators'
 import type { Head } from '@ac6_assemble_tool/parts/heads'
 import type { Legs } from '@ac6_assemble_tool/parts/legs'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 
 // 共通テストデータ - describe外で定義
 const testAssemblyData: RawAssembly = {

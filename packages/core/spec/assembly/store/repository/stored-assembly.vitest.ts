@@ -6,9 +6,9 @@ import type {
 } from '#core/assembly/store/stored-assembly'
 
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
-import { it } from '@fast-check/vitest'
+import * as fc from 'fast-check'
 import { ulid } from 'ulid'
-import { describe, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 
 import { genAssembly } from '#spec-helper/property-generator'
 
@@ -25,9 +25,9 @@ describe('repository', () => {
     }: {
       repository: StoredAssemblyRepository & ClearableStoredAssemblyRepository
     }) => {
-      it.prop([genAssembly(), genAssembly(), genAssembly()])(
-        'walk through scenario',
-        async (a1, a2, a3) => {
+      test('walk through scenario', async () => {
+        await fc.assert(
+          fc.asyncProperty(genAssembly(), genAssembly(), genAssembly(), async (a1, a2, a3) => {
           await repository.clear()
 
           const [id1, id2, id3] = [ulid(10000), ulid(20000), ulid(30000)]
@@ -110,8 +110,9 @@ describe('repository', () => {
 
           const records4 = await repository.all(candidates)
           expect(records4).toStrictEqual(records2)
-        },
-      )
+          }),
+        )
+      })
     },
   )
 })

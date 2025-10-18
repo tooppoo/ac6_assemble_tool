@@ -1,13 +1,7 @@
-import { join } from 'path'
 
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      '#parts/': join(__dirname, 'src/'),
-    },
-  },
   test: {
     testTimeout: 10 * 1000,
     include: ['**/*.vitest.ts'],

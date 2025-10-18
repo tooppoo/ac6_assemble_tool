@@ -1,5 +1,5 @@
+import { describe, it, expect } from 'bun:test'
 import fc from 'fast-check'
-import { describe, it, expect } from 'vitest'
 
 import {
   createPartIdMap,

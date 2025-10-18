@@ -16,9 +16,9 @@ import {
   type ValidationName,
 } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
 import { genAssemblyKey } from '@ac6_assemble_tool/core/spec-helper/property-generator'
-import { fc, it } from '@fast-check/vitest'
+import * as fc from 'fast-check'
 import type { ArrayConstraints } from 'fast-check'
-import { afterEach, beforeEach, describe, expect, type Mock, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, test, type Mock, vi } from 'bun:test'
 
 describe(assemblyErrorMessage.name, () => {
   let i18n: Pick<I18Next, 't'>
@@ -128,69 +128,71 @@ describe(assemblyErrorMessage.name, () => {
         afterEach(() => {
           vi.restoreAllMocks()
         })
-        it.prop([
-          fc.array(genTotalLoadNotOverMax(), load),
-          fc.array(genTotalCoamNotOverMax(), coam),
-          fc.array(genNotAdjustable(), notAdjustable),
-          fc.array(
-            fc.string().map((s) => new Error(s)),
-            unknown,
-          ),
-        ])(
-          `should build error message for ${JSON.stringify(expected)}`,
-          (loadError, coamError, notAdjustableError, unknownError) => {
-            const shuffle = () => Math.random() - Math.random()
-            const sut = new OverTryLimitError({
-              limit: 5,
-              errors: [
-                ...loadError,
-                ...coamError,
-                ...notAdjustableError,
-                ...unknownError,
-              ].toSorted(shuffle),
-            })
+        test(`should build error message for ${JSON.stringify(expected)}`, () => {
+          fc.assert(
+            fc.property(
+              fc.array(genTotalLoadNotOverMax(), load),
+              fc.array(genTotalCoamNotOverMax(), coam),
+              fc.array(genNotAdjustable(), notAdjustable),
+              fc.array(
+                fc.string().map((s) => new Error(s)),
+                unknown,
+              ),
+              (loadError, coamError, notAdjustableError, unknownError) => {
+                const shuffle = () => Math.random() - Math.random()
+                const sut = new OverTryLimitError({
+                  limit: 5,
+                  errors: [
+                    ...loadError,
+                    ...coamError,
+                    ...notAdjustableError,
+                    ...unknownError,
+                  ].toSorted(shuffle),
+                })
 
-            mock.mockImplementation(() => '')
+                mock.mockImplementation(() => '')
 
-            assemblyErrorMessage(sut, i18n)
+                assemblyErrorMessage(sut, i18n)
 
-            expect(mock).toHaveBeenCalledTimesWith(
-              1,
-              'assembly.overTryLimit.description',
-              {
-                ns: 'error',
+                expect(mock).toHaveBeenCalledTimesWith(
+                  1,
+                  'assembly.overTryLimit.description',
+                  {
+                    ns: 'error',
+                  },
+                )
+                expect(mock).toHaveBeenCalledTimesWith(
+                  expected.load,
+                  `assembly.${totalLoadNotOverMaxName}.label`,
+                  {
+                    ns: 'error',
+                  },
+                )
+                expect(mock).toHaveBeenCalledTimesWith(
+                  expected.coam,
+                  `assembly.${totalCoamNotOverMaxName}.label`,
+                  {
+                    ns: 'error',
+                  },
+                )
+                expect(mock).toHaveBeenCalledTimesWith(1, 'assembly.retry.guide', {
+                  ns: 'error',
+                })
+                expect(mock).toHaveBeenCalledTimesWith(1, 'assembly.retry.guide', {
+                  ns: 'error',
+                })
+                expect(mock).toHaveBeenCalledTimesWith(
+                  expected.load + expected.coam + expected.unknown,
+                  'times',
+                )
+
+                // test(prop で実行する場合、
+                // beforeEachの前に次のプロパティが実行される模様
+                vi.restoreAllMocks()
               },
-            )
-            expect(mock).toHaveBeenCalledTimesWith(
-              expected.load,
-              `assembly.${totalLoadNotOverMaxName}.label`,
-              {
-                ns: 'error',
-              },
-            )
-            expect(mock).toHaveBeenCalledTimesWith(
-              expected.coam,
-              `assembly.${totalCoamNotOverMaxName}.label`,
-              {
-                ns: 'error',
-              },
-            )
-            expect(mock).toHaveBeenCalledTimesWith(1, 'assembly.retry.guide', {
-              ns: 'error',
-            })
-            expect(mock).toHaveBeenCalledTimesWith(1, 'assembly.retry.guide', {
-              ns: 'error',
-            })
-            expect(mock).toHaveBeenCalledTimesWith(
-              expected.load + expected.coam + expected.unknown,
-              'times',
-            )
-
-            // it.prop で実行する場合、
-            // beforeEachの前に次のプロパティが実行される模様
-            vi.restoreAllMocks()
-          },
-        )
+            ),
+          )
+        })
       },
     )
   })
@@ -213,31 +215,32 @@ describe(filterApplyErrorMessage.name, () => {
   renderUnknownError(() => ({ mock, i18n }), filterApplyErrorMessage)
 
   describe(UsableItemNotFoundError.name, () => {
-    it.prop([genAssemblyKey()])(
-      'should show description about the error and guide for next action',
-      (key) => {
-        const error = new UsableItemNotFoundError({
-          key,
-          property: 'manufacture',
-        })
+    test('should show description about the error and guide for next action', () => {
+      fc.assert(
+        fc.property(genAssemblyKey(), (key) => {
+          const error = new UsableItemNotFoundError({
+            key,
+            property: 'manufacture',
+          })
 
-        filterApplyErrorMessage(error, i18n)
+          filterApplyErrorMessage(error, i18n)
 
-        expect(mock).toHaveBeenCalledTimesWith(
-          1,
-          'filter.notFound.description',
-          {
+          expect(mock).toHaveBeenCalledTimesWith(
+            1,
+            'filter.notFound.description',
+            {
+              ns: 'error',
+            },
+          )
+          expect(mock).toHaveBeenCalledTimesWith(1, 'filter.notFound.guide', {
             ns: 'error',
-          },
-        )
-        expect(mock).toHaveBeenCalledTimesWith(1, 'filter.notFound.guide', {
-          ns: 'error',
-        })
-        // it.prop で実行する場合、
-        // beforeEachの前に次のプロパティが実行される模様
-        vi.restoreAllMocks()
-      },
-    )
+          })
+          // test(prop で実行する場合、
+          // beforeEachの前に次のプロパティが実行される模様
+          vi.restoreAllMocks()
+        }),
+      )
+    })
   })
 })
 
@@ -246,20 +249,21 @@ function renderUnknownError(
   f: (e: Error, i18n: Translator) => unknown,
 ) {
   describe('unknown error', () => {
-    it.prop([fc.string().map((s) => new Error(s))])(
-      'should provide unknown message',
-      (error) => {
-        const { i18n, mock } = provider()
+    test('should provide unknown message', () => {
+      fc.assert(
+        fc.property(fc.string().map((s) => new Error(s)), (error) => {
+          const { i18n, mock } = provider()
 
-        f(error, i18n)
+          f(error, i18n)
 
-        expect(mock).toHaveBeenNthCalledWith(1, 'unknown.description', {
-          ns: 'error',
-        })
-        expect(mock).toHaveBeenNthCalledWith(2, 'guideToDevelop', {
-          ns: 'error',
-        })
-      },
-    )
+          expect(mock).toHaveBeenNthCalledWith(1, 'unknown.description', {
+            ns: 'error',
+          })
+          expect(mock).toHaveBeenNthCalledWith(2, 'guideToDevelop', {
+            ns: 'error',
+          })
+        }),
+      )
+    })
   })
 }

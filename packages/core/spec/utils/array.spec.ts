@@ -1,12 +1,16 @@
 import { random, sum } from '#core/utils/array'
 
-import { fc, it as fcit } from '@fast-check/vitest'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, test } from 'bun:test'
+import * as fc from 'fast-check'
 
 describe('utils/array', () => {
   describe(sum.name, () => {
-    fcit.prop([fc.array(fc.integer())])('should return sum of them', (xs) => {
-      expect(sum(xs)).toStrictEqual(modelSum(xs))
+    test('should return sum of them', () => {
+      fc.assert(
+        fc.property(fc.array(fc.integer()), (xs) => {
+          expect(sum(xs)).toStrictEqual(modelSum(xs))
+        }),
+      )
     })
 
     function modelSum(xs: number[]): number {
@@ -20,42 +24,46 @@ describe('utils/array', () => {
   })
 
   describe(random.name, () => {
-    fcit.prop([nonEmptyArray(anyVal())])('should select a item', (xs) => {
-      expect(random(xs)).not.toBeUndefined()
+    test('should select a item', () => {
+      fc.assert(
+        fc.property(nonEmptyArray(anyVal()), (xs) => {
+          expect(random(xs)).not.toBeUndefined()
+        }),
+      )
     })
-    fcit.prop([nonEmptyArray(anyVal())])(
-      'should return item within list',
-      (xs) => {
-        expect(xs).contain(random(xs))
-      },
-    )
-    fcit.prop([fc.uniqueArray(fc.string(), { minLength: 1 })])(
-      'should return each items so-so',
-      (xs) => {
-        const tryCount = 10_000
-        const result: { [key: string]: number } = xs.reduce(
-          (acc, key) => ({
-            ...acc,
-            [key]: 0,
-          }),
-          {},
-        )
-        ;[...new Array(tryCount)].forEach(() => {
-          result[random(xs)] += 1
-        })
-        const per = Math.floor(tryCount / xs.length)
-
-        Object.values(result).forEach((count) => {
-          expect(count).between({
-            begin: per / 1.5,
-            end: per * 1.5,
+    test('should return item within list', () => {
+      fc.assert(
+        fc.property(nonEmptyArray(anyVal()), (xs) => {
+          expect(xs).toContain(random(xs))
+        }),
+      )
+    })
+    test('should return each items so-so', () => {
+      fc.assert(
+        fc.property(fc.uniqueArray(fc.string(), { minLength: 1 }), (xs) => {
+          const tryCount = 1000
+          const result: { [key: string]: number } = xs.reduce(
+            (acc, key) => ({
+              ...acc,
+              [key]: 0,
+            }),
+            {},
+          )
+          ;[...new Array(tryCount)].forEach(() => {
+            result[random(xs)] += 1
           })
-        })
-      },
-    )
+          const per = Math.floor(tryCount / xs.length)
+
+          Object.values(result).forEach((count) => {
+            expect(count).toBeGreaterThanOrEqual(per / 1.5)
+            expect(count).toBeLessThanOrEqual(per * 1.5)
+          })
+        }),
+      )
+    })
 
     describe('with empty array', () => {
-      it('should throw error', () => {
+      test('should throw error', () => {
         expect(() => random([])).toThrowError()
       })
     })

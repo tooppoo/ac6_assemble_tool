@@ -28,6 +28,15 @@ export const baseRules = [
         },
       ],
     },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          bun: true,
+          project: 'packages/*/tsconfig.json'
+        },
+      },
+    }
   },
 ]
 

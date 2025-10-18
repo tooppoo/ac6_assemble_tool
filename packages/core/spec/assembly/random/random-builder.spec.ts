@@ -1,4 +1,5 @@
 import { randomBuild } from '#core/assembly/random/random-builder'
+import { genCandidates, genLockedParts } from '#spec-helper/property-generator'
 
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import {
@@ -6,58 +7,64 @@ import {
   notEquipped,
 } from '@ac6_assemble_tool/parts/types/base/classification'
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
-import { fc, it } from '@fast-check/vitest'
-import { describe, expect } from 'vitest'
-
-import { genCandidates, genLockedParts } from '#spec-helper/property-generator'
+import { describe, expect, test } from 'bun:test'
+import * as fc from 'fast-check'
 
 describe(randomBuild.name, () => {
-  it.prop([genCandidates()])(
-    'should build correct coupling booster and legs',
-    (candidates) => {
-      const actual = randomBuild(candidates)
+  test('should build correct coupling booster and legs', () => {
+    fc.assert(
+      fc.property(genCandidates(), (candidates) => {
+        const actual = randomBuild(candidates)
 
-      switch (actual.legs.category) {
-        case tank:
-          expect(actual.booster.classification).toStrictEqual(notEquipped)
-          break
-        default:
-          expect(actual.booster.classification).toStrictEqual(booster)
-          break
-      }
-    },
-  )
-  it.prop([genCandidates()])(
-    'should not contain any empty parts',
-    (candidates) => {
-      const actual = randomBuild(candidates)
+        switch (actual.legs.category) {
+          case tank:
+            expect(actual.booster.classification).toStrictEqual(notEquipped)
+            break
+          default:
+            expect(actual.booster.classification).toStrictEqual(booster)
+            break
+        }
+      }),
+    )
+  })
+  test('should not contain any empty parts', () => {
+    fc.assert(
+      fc.property(genCandidates(), (candidates) => {
+        const actual = randomBuild(candidates)
 
-      expect(Object.values(actual)).not.toContain(undefined)
-    },
-  )
+        expect(Object.values(actual)).not.toContain(undefined)
+      }),
+    )
+  })
   describe('with lock', () => {
     describe('when locked parts exist in candidates', () => {
-      it.prop([fc.constant(candidates), genLockedParts()])(
-        'should use locked parts',
-        (candidates, { lockedParts }) => {
-          const assembly = randomBuild(candidates, { lockedParts })
+      test('should use locked parts', () => {
+        fc.assert(
+          fc.property(fc.constant(candidates), genLockedParts(), (candidates, { lockedParts }) => {
+            const assembly = randomBuild(candidates, { lockedParts })
 
-          const partsShouldBeLocked = lockedParts.lockedKeys.map(
-            (k) => assembly[k],
-          )
+            const partsShouldBeLocked = lockedParts.lockedKeys.map(
+              (k) => assembly[k],
+            )
 
-          expect(partsShouldBeLocked.toSorted()).toEqual(
-            lockedParts.list.toSorted(),
-          )
-        },
-      )
+            expect(partsShouldBeLocked.toSorted()).toEqual(
+              lockedParts.list.toSorted(),
+            )
+          }),
+        )
+      })
     })
     describe('when locked parts not exist in candidates', () => {
-      it.prop([
-        genCandidates({ minLength: 0, maxLength: 0 }),
-        genLockedParts(),
-      ])('should throw error', (candidates, { lockedParts }) => {
-        expect(() => randomBuild(candidates, { lockedParts })).toThrowError()
+      test('should throw error', () => {
+        fc.assert(
+          fc.property(
+            genCandidates({ minLength: 0, maxLength: 0 }),
+            genLockedParts(),
+            (candidates, { lockedParts }) => {
+              expect(() => randomBuild(candidates, { lockedParts })).toThrowError()
+            },
+          ),
+        )
       })
     })
   })

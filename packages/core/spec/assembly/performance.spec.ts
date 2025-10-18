@@ -21,7 +21,7 @@ import {
 } from '@ac6_assemble_tool/parts/not-equipped'
 import { validatePartIdUniqueness } from '@ac6_assemble_tool/parts/validation/id-validator'
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 
 describe('パフォーマンス検証', () => {
   describe('全パーツID検証', () => {

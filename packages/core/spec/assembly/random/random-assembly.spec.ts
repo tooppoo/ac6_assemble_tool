@@ -7,13 +7,12 @@ import type { Validator } from '#core/assembly/random/validator/base'
 import { failure, success } from '#core/assembly/random/validator/result'
 
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
-import { fc, it } from '@fast-check/vitest'
-import { afterEach, beforeEach, describe, expect, type Mock, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, test, type Mock, vi } from 'bun:test'
+import * as fc from 'fast-check'
 
 describe(RandomAssembly.name, () => {
-  it.prop([fc.array(generateValidatorWithKey())])(
-    'should return only valid assembly',
-    (validators) => {
+  test('should return only valid assembly', () => {
+    fc.assert(fc.property(fc.array(generateValidatorWithKey()), (validators) => {
       const sut = validators.reduce<RandomAssembly>(
         (r, { key, validator }) => r.addValidator(key, validator),
         RandomAssembly.init({ limit: 10000 }),
@@ -21,25 +20,23 @@ describe(RandomAssembly.name, () => {
       const assembly = sut.assemble(candidates)
 
       return sut.validate(assembly).isSuccess
-    },
-  )
+    }))
+  })
 
   describe('with validator', () => {
     describe('when add validator', () => {
       describe('with same key', () => {
-        it.prop([generateValidator(), generateValidator()])(
-          'return later validator for the key',
-          (val1, val2) => {
+        test('return later validator for the key', () => {
+          fc.assert(fc.property(generateValidator(), generateValidator(), (val1, val2) => {
             const sut = RandomAssembly.init({ limit: 10000 })
               .addValidator('key', val1)
               .addValidator('key', val2)
 
             expect(sut.getValidator('key')).toBe(val2)
-          },
-        )
-        it.prop([generateValidator(), generateValidator()])(
-          'count of validators should not change',
-          (val1, val2) => {
+          }))
+        })
+        test('count of validators should not change', () => {
+          fc.assert(fc.property(generateValidator(), generateValidator(), (val1, val2) => {
             const sut1 = RandomAssembly.init({ limit: 10000 }).addValidator(
               'key',
               val1,
@@ -47,8 +44,8 @@ describe(RandomAssembly.name, () => {
             const sut2 = sut1.addValidator('key', val2)
 
             expect(sut1.validators.length).toBe(sut2.validators.length)
-          },
-        )
+          }))
+        })
       })
 
       describe('with inner key', () => {
@@ -81,56 +78,51 @@ describe(RandomAssembly.name, () => {
       })
     })
     describe('when get validator via unknown key', () => {
-      it.prop([generateValidator()])(
-        'contain only later validator',
-        (validator) => {
+      test('contain only later validator', () => {
+        fc.assert(fc.property(generateValidator(), (validator) => {
           const sut = RandomAssembly.init().addValidator('key', validator)
 
           expect(sut.getValidator('unknown')).toBeNull()
-        },
-      )
+        }))
+      })
     })
     describe('remove validator', () => {
       describe('with used key', () => {
-        it.prop([generateValidator()])(
-          'count of validators is same before add',
-          (validator) => {
+        test('count of validators is same before add', () => {
+          fc.assert(fc.property(generateValidator(), (validator) => {
             const before = RandomAssembly.init({ limit: 10000 })
             const after = before
               .addValidator('key', validator)
               .removeValidator('key')
 
             expect(after.validators.length).toBe(before.validators.length)
-          },
-        )
-        it.prop([generateValidator()])(
-          'could not get the removed validator',
-          (validator) => {
+          }))
+        })
+        test('could not get the removed validator', () => {
+          fc.assert(fc.property(generateValidator(), (validator) => {
             const before = RandomAssembly.init({ limit: 10000 })
             const after = before
               .addValidator('key', validator)
               .removeValidator('key')
 
             expect(after.getValidator('key')).toBeNull()
-          },
-        )
+          }))
+        })
       })
 
       describe('with unused key', () => {
-        it.prop([generateValidator()])(
-          'should not throw error',
-          (validator) => {
+        test('should not throw error', () => {
+          fc.assert(fc.property(generateValidator(), (validator) => {
             const sut = RandomAssembly.init({ limit: 10000 }).addValidator(
               'key',
               validator,
             )
 
             expect(() => sut.removeValidator('unknown-key')).not.toThrowError()
-          },
-        )
-        it.prop([generateValidator()])(
-          'count of validators is same before remove',
-          (validator) => {
+          }))
+        })
+        test('count of validators is same before remove', () => {
+          fc.assert(fc.property(generateValidator(), (validator) => {
             const before = RandomAssembly.init({ limit: 10000 }).addValidator(
               'key',
               validator,
@@ -138,11 +130,10 @@ describe(RandomAssembly.name, () => {
             const after = before.removeValidator('unknown-key')
 
             expect(after.validators.length).toBe(before.validators.length)
-          },
-        )
-        it.prop([generateValidator()])(
-          'could not get validator the key',
-          (validator) => {
+          }))
+        })
+        test('could not get validator the key', () => {
+          fc.assert(fc.property(generateValidator(), (validator) => {
             const before = RandomAssembly.init({ limit: 10000 }).addValidator(
               'key',
               validator,
@@ -150,8 +141,8 @@ describe(RandomAssembly.name, () => {
             const after = before.removeValidator('unknown-key')
 
             expect(after.validators.length).toBe(before.validators.length)
-          },
-        )
+          }))
+        })
       })
 
       describe('with inner key', () => {

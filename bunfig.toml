@@ -4,3 +4,6 @@ exact = true
 minimumReleaseAge = 1440
 globalDir = "~/.bun/install/global"
 globalBinDir = "~/.bun/bin"
+
+[run]
+bun = true

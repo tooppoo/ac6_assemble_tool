@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { cleanup, render, screen } from '@testing-library/svelte'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 
 let Layout: any
 // Skip: requires SvelteKit plugin which is disabled during Vitest runs

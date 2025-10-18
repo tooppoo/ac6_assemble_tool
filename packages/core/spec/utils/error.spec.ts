@@ -1,33 +1,37 @@
 import { BaseCustomError } from '#core/utils/error'
 
-import { fc, it } from '@fast-check/vitest'
-import { describe, expect } from 'vitest'
+import * as fc from 'fast-check'
+import { describe, expect, test } from 'bun:test'
 
 describe('CustomError', () => {
-  it.prop([genErrorWithConstructor()])(
-    'can distinguish a error is instance of the class',
-    ({ klass, error }) => {
-      expect(error).toBeInstanceOf(klass)
-    },
-  )
-  it.prop([genErrorWithConstructor()])(
-    'can distinguish a error is not instance of other custom classes',
-    ({ other, error }) => {
-      expect(error).not.toBeInstanceOf(other)
-    },
-  )
-  it.prop([genErrorWithConstructor()])(
-    'is instance of built-in Error',
-    ({ error }) => {
-      expect(error).toBeInstanceOf(Error)
-    },
-  )
-  it.prop([genErrorWithConstructor()])(
-    'provide constructor name as name property',
-    ({ klass, error }) => {
-      expect(error.name).toEqual(klass.name)
-    },
-  )
+  test('can distinguish a error is instance of the class', () => {
+    fc.assert(
+      fc.property(genErrorWithConstructor(), ({ klass, error }) => {
+        expect(error).toBeInstanceOf(klass)
+      }),
+    )
+  })
+  test('can distinguish a error is not instance of other custom classes', () => {
+    fc.assert(
+      fc.property(genErrorWithConstructor(), ({ other, error }) => {
+        expect(error).not.toBeInstanceOf(other)
+      }),
+    )
+  })
+  test('is instance of built-in Error', () => {
+    fc.assert(
+      fc.property(genErrorWithConstructor(), ({ error }) => {
+        expect(error).toBeInstanceOf(Error)
+      }),
+    )
+  })
+  test('provide constructor name as name property', () => {
+    fc.assert(
+      fc.property(genErrorWithConstructor(), ({ klass, error }) => {
+        expect(error.name).toEqual(klass.name)
+      }),
+    )
+  })
 })
 
 const genErrorWithConstructor = () =>

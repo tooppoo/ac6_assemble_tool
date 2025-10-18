@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
+    "types": [
+      "web",
+      "bun"
+    ],
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",
-
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

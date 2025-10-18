@@ -10,7 +10,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "module": "preserve",
-    "types": ["@ac6_assemble_tool/spec/lib/vitest"]
+    "types": ["@ac6_assemble_tool/spec/lib/vitest", "web", "bun"]
   }
   // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
   // except $lib which is handled by https://kit.svelte.dev/docs/configuration#files

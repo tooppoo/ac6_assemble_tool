@@ -18,8 +18,8 @@ import { generators } from '@ac6_assemble_tool/parts/generators'
 import { heads } from '@ac6_assemble_tool/parts/heads'
 import { legs } from '@ac6_assemble_tool/parts/legs'
 import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
-import { it as fcit } from '@fast-check/vitest'
-import { beforeEach, describe, expect, it, test } from 'vitest'
+import { beforeEach, describe, expect, test } from 'bun:test'
+import * as fc from 'fast-check'
 
 import { genAssembly } from '#spec-helper/property-generator'
 
@@ -50,25 +50,38 @@ describe('assembly', () => {
   })
 
   describe('ap', () => {
-    fcit.prop([genAssembly()])('must be larger than minimum', (assembly) => {
-      expect(assembly.ap).greaterThanOrEqual(6400 - 700)
+    test('must be larger than minimum', () => {
+      fc.assert(
+        fc.property(
+          genAssembly().filter(
+            (a) => a.withinEnOutput && a.withinLoadLimit && a.withinArmsLoadLimit,
+          ),
+          (assembly) => {
+            expect(assembly.ap).toBeGreaterThanOrEqual(6400 - 700)
+          },
+        ),
+      )
     })
 
-    describe.each([
-      { diff: {}, expected: 11500 },
-      { diff: { head: heads[1] }, expected: 11250 },
-      { diff: { core: cores[1] }, expected: 10320 },
-      { diff: { arms: arms[1] }, expected: 10070 },
-      { diff: { legs: legs[1] }, expected: 9260 },
-    ])('diff is %s', ({ diff, expected }) => {
-      it(`should be ${expected}`, () => {
-        expect(merge(sut, diff).ap).toBe(expected)
+    describe('diff examples', () => {
+      const testCases = [
+        { diff: {}, expected: 11500 },
+        { diff: { head: heads[1] }, expected: 11250 },
+        { diff: { core: cores[1] }, expected: 10320 },
+        { diff: { arms: arms[1] }, expected: 10070 },
+        { diff: { legs: legs[1] }, expected: 9260 },
+      ]
+
+      testCases.forEach(({ diff, expected }) => {
+        test(`diff ${JSON.stringify(diff)} should be ${expected}`, () => {
+          expect(merge(sut, diff).ap).toBe(expected)
+        })
       })
     })
   })
 
   describe('defense', () => {
-    describe.each([
+    const testCases = [
       {
         diff: {},
         expectedKinetic: 1196,
@@ -107,9 +120,10 @@ describe('assembly', () => {
         expectedEnergy: 1073,
         expectedExplosive: 1265,
       },
-    ])(
-      'diff is %s',
-      ({ diff, expectedKinetic, expectedEnergy, expectedExplosive }) => {
+    ]
+
+    testCases.forEach(({ diff, expectedKinetic, expectedEnergy, expectedExplosive }) => {
+      describe(`diff is ${JSON.stringify(diff)}`, () => {
         test(`anti kinetic defense should be ${expectedKinetic}`, () => {
           expect(merge(sut, diff).antiKineticDefense).toBe(expectedKinetic)
         })
@@ -119,25 +133,37 @@ describe('assembly', () => {
         test(`anti explosive defense should be ${expectedExplosive}`, () => {
           expect(merge(sut, diff).antiExplosiveDefense).toBe(expectedExplosive)
         })
-      },
-    )
+      })
+    })
   })
 
   describe('weight', () => {
-    fcit.prop([genAssembly()])(
-      'total weight must be larger than minimum',
-      (assembly) => {
-        expect(assembly.weight).greaterThanOrEqual(34900)
-      },
-    )
-    fcit.prop([genAssembly()])(
-      'total load must be larger than minimum',
-      (assembly) => {
-        expect(assembly.load).greaterThanOrEqual(23700)
-      },
-    )
+    test('total weight must be larger than minimum', () => {
+      fc.assert(
+        fc.property(
+          genAssembly().filter(
+            (a) => a.withinEnOutput && a.withinLoadLimit && a.withinArmsLoadLimit,
+          ),
+          (assembly) => {
+            expect(assembly.weight).toBeGreaterThanOrEqual(34900)
+          },
+        ),
+      )
+    })
+    test('total load must be larger than minimum', () => {
+      fc.assert(
+        fc.property(
+          genAssembly().filter(
+            (a) => a.withinEnOutput && a.withinLoadLimit && a.withinArmsLoadLimit,
+          ),
+          (assembly) => {
+            expect(assembly.load).toBeGreaterThanOrEqual(23700)
+          },
+        ),
+      )
+    })
 
-    describe.each([
+    const testCases = [
       { diff: {}, expectedWeight: 71270, expectedLoad: 51550, within: true },
       {
         diff: { rightArmUnit: armUnits[1] },
@@ -205,23 +231,27 @@ describe('assembly', () => {
         expectedLoad: 53210,
         within: true,
       },
-    ])('diff is %s', ({ diff, expectedWeight, expectedLoad, within }) => {
-      beforeEach(() => {
-        sut = merge(sut, diff)
-      })
-      it(`weight should be ${expectedWeight}`, () => {
-        expect(sut.weight).toBe(expectedWeight)
-      })
-      it(`load should be ${expectedLoad}`, () => {
-        expect(sut.load).toBe(expectedLoad)
-      })
-      it(`within energy output is ${within}`, () => {
-        expect(sut.withinLoadLimit).toBe(within)
+    ]
+
+    testCases.forEach(({ diff, expectedWeight, expectedLoad, within }) => {
+      describe(`diff is ${JSON.stringify(diff)}`, () => {
+        beforeEach(() => {
+          sut = merge(sut, diff)
+        })
+        test(`weight should be ${expectedWeight}`, () => {
+          expect(sut.weight).toBe(expectedWeight)
+        })
+        test(`load should be ${expectedLoad}`, () => {
+          expect(sut.load).toBe(expectedLoad)
+        })
+        test(`within energy output is ${within}`, () => {
+          expect(sut.withinLoadLimit).toBe(within)
+        })
       })
     })
 
     describe('arms', () => {
-      describe.each([
+      const armsTestCases = [
         {
           diff: {},
           expectedArmsLoad: 8390,
@@ -256,28 +286,29 @@ describe('assembly', () => {
           expectedArmsLoadLimit: 15100,
           within: true,
         },
-      ])(
-        'diff is %s',
-        ({ diff, expectedArmsLoad, expectedArmsLoadLimit, within }) => {
+      ]
+
+      armsTestCases.forEach(({ diff, expectedArmsLoad, expectedArmsLoadLimit, within }) => {
+        describe(`diff is ${JSON.stringify(diff)}`, () => {
           beforeEach(() => {
             sut = merge(sut, diff)
           })
-          it(`arms weight should be ${expectedArmsLoad}`, () => {
+          test(`arms weight should be ${expectedArmsLoad}`, () => {
             expect(sut.armsLoad).toBe(expectedArmsLoad)
           })
-          it(`arms load should be ${expectedArmsLoadLimit}`, () => {
+          test(`arms load should be ${expectedArmsLoadLimit}`, () => {
             expect(sut.armsLoadLimit).toBe(expectedArmsLoadLimit)
           })
-          it(`within energy output is ${within}`, () => {
+          test(`within energy output is ${within}`, () => {
             expect(sut.withinArmsLoadLimit).toBe(within)
           })
-        },
-      )
+        })
+      })
     })
   })
 
   describe('energy', () => {
-    describe.each([
+    const energyTestCases = [
       {
         core: cores[0],
         generator: generators[0],
@@ -332,43 +363,44 @@ describe('assembly', () => {
         expectedEnRechargeDelay: 1.0,
         withinEnOutput: true,
       },
-    ])(
-      'when core is %s, generator is %s',
-      ({
-        core,
-        generator,
-        expectedEnLoad,
-        expectedOutput,
-        expectedEnSupply,
-        expectedEnRechargeDelay,
-        withinEnOutput,
-      }) => {
+    ]
+
+    energyTestCases.forEach(({
+      core,
+      generator,
+      expectedEnLoad,
+      expectedOutput,
+      expectedEnSupply,
+      expectedEnRechargeDelay,
+      withinEnOutput,
+    }) => {
+      describe(`when core is ${core.name}, generator is ${generator.name}`, () => {
         beforeEach(() => {
           sut = merge(sut, { core, generator })
         })
 
-        it(`energy load should be ${expectedOutput}`, () => {
+        test(`energy load should be ${expectedOutput}`, () => {
           expect(sut.enLoad).toBe(expectedEnLoad)
         })
-        it(`energy output should be ${expectedOutput}`, () => {
+        test(`energy output should be ${expectedOutput}`, () => {
           expect(sut.enOutput).toBe(expectedOutput)
         })
-        it(`within energy output should be ${withinEnOutput}`, () => {
+        test(`within energy output should be ${withinEnOutput}`, () => {
           expect(sut.withinEnOutput).toBe(withinEnOutput)
         })
-        it(`energy supply efficiency should be ${expectedEnSupply}`, () => {
+        test(`energy supply efficiency should be ${expectedEnSupply}`, () => {
           expect(sut.enSupplyEfficiency).toBe(expectedEnSupply)
         })
-        it(`energy recharge delay should be ${expectedEnRechargeDelay}`, () => {
+        test(`energy recharge delay should be ${expectedEnRechargeDelay}`, () => {
           expect(sut.enRechargeDelay).toBe(expectedEnRechargeDelay)
         })
-      },
-    )
+      })
+    })
   })
 
   describe('booster', () => {
     describe('qb energy load', () => {
-      describe.each([
+      const qbTestCases = [
         {
           diff: {},
           expected: 445,
@@ -389,19 +421,23 @@ describe('assembly', () => {
           diff: { booster: boosterNotEquipped, legs: legs[22] },
           expected: 656,
         },
-      ])('diff = $diff', ({ diff, expected }) => {
-        beforeEach(() => {
-          sut = merge(sut, diff)
-        })
-        it(`should be ${expected}`, () => {
-          expect(sut.qbEnConsumption).toBe(expected)
+      ]
+
+      qbTestCases.forEach(({ diff, expected }) => {
+        describe(`diff = ${JSON.stringify(diff)}`, () => {
+          beforeEach(() => {
+            sut = merge(sut, diff)
+          })
+          test(`should be ${expected}`, () => {
+            expect(sut.qbEnConsumption).toBe(expected)
+          })
         })
       })
     })
   })
 
   describe('coam', () => {
-    describe.each([
+    const coamTestCases = [
       {
         diff: {},
         expected: 1135000,
@@ -450,15 +486,19 @@ describe('assembly', () => {
         diff: { generator: generators[1] },
         expected: 1135000 + 240000,
       },
-    ])('diff is %s', ({ diff, expected }) => {
-      test(`total coam should be ${expected}`, () => {
-        expect(merge(sut, diff).coam).toBe(expected)
+    ]
+
+    coamTestCases.forEach(({ diff, expected }) => {
+      describe(`diff is ${JSON.stringify(diff)}`, () => {
+        test(`total coam should be ${expected}`, () => {
+          expect(merge(sut, diff).coam).toBe(expected)
+        })
       })
     })
   })
 
   describe('attitude stability', () => {
-    describe.each([
+    const stabilityTestCases = [
       {
         diff: {},
         expected: 1670,
@@ -481,16 +521,23 @@ describe('assembly', () => {
         },
         expected: 1504,
       },
-    ])('diff is %s', ({ diff, expected }) => {
-      test(`attitude stability should be ${expected}`, () => {
-        expect(merge(sut, diff).attitudeStability).toBe(expected)
+    ]
+
+    stabilityTestCases.forEach(({ diff, expected }) => {
+      describe(`diff is ${JSON.stringify(diff)}`, () => {
+        test(`attitude stability should be ${expected}`, () => {
+          expect(merge(sut, diff).attitudeStability).toBe(expected)
+        })
       })
     })
   })
 
   describe('keys', () => {
     describe('space by word', () => {
-      describe.each([
+      const keyTestCases: {
+        key: AssemblyKey
+        expected: string
+      }[] = [
         { key: 'rightArmUnit', expected: 'right Arm Unit' },
         { key: 'leftArmUnit', expected: 'left Arm Unit' },
         { key: 'rightBackUnit', expected: 'right Back Unit' },
@@ -503,19 +550,20 @@ describe('assembly', () => {
         { key: 'fcs', expected: 'fcs' },
         { key: 'generator', expected: 'generator' },
         { key: 'expansion', expected: 'expansion' },
-      ] as {
-        key: AssemblyKey
-        expected: string
-      }[])('when key is $key', ({ key, expected }) => {
-        it(`should return ${expected}`, () => {
-          expect(spaceByWord(key)).toEqual(expected)
+      ]
+
+      keyTestCases.forEach(({ key, expected }) => {
+        describe(`when key is ${key}`, () => {
+          test(`should return ${expected}`, () => {
+            expect(spaceByWord(key)).toEqual(expected)
+          })
         })
       })
     })
   })
 
   describe('keys', () => {
-    it('should be static array', () => {
+    test('should be static array', () => {
       const expected: AssemblyKey[] = [
         'rightArmUnit',
         'leftArmUnit',

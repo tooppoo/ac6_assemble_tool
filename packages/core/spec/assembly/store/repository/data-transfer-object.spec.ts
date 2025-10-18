@@ -1,6 +1,6 @@
 import { storedAssemblyDtoScheme } from '#core/assembly/store/repository/data-transfer-object'
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 
 describe('StoredAssemblyDto スキーマ', () => {
   describe('storedAssemblyDtoScheme', () => {

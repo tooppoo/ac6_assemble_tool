@@ -15,9 +15,9 @@ import {
 import { notEquipped as notEquippedClass } from '@ac6_assemble_tool/parts/types/base/classification'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
-import { fc, it as fcit } from '@fast-check/vitest'
+import * as fc from 'fast-check'
 import sinon from 'sinon'
-import { afterEach, beforeEach, describe, expect } from 'vitest'
+import { afterEach, beforeEach, describe, expect, test } from 'bun:test'
 
 import { genAssembly } from '#spec-helper/property-generator'
 
@@ -34,17 +34,16 @@ describe('validator', () => {
     describe.each([{ withinEnOutput: true }, { withinEnOutput: false }])(
       'when within en output is $withinEnLoad',
       ({ withinEnOutput }) => {
-        fcit.prop([genAssembly()])(
-          `is energy enough -> ${withinEnOutput}`,
-          (assembly) => {
+        test(`is energy enough -> ${withinEnOutput}`, () => {
+          fc.assert(fc.property(genAssembly(), (assembly) => {
             const stubAssembly = sinon.stub(assembly, 'withinEnOutput')
             stubAssembly.value(withinEnOutput)
 
             expect(notOverEnergyOutput.validate(assembly).isSuccess).toBe(
               withinEnOutput,
             )
-          },
-        )
+          }))
+        })
       },
     )
   })
@@ -66,9 +65,8 @@ describe('validator', () => {
       })()
 
       describe('at right side', () => {
-        fcit.prop([genAssembly(candidatesForTest)])(
-          'should evaluate as invalid',
-          (assembly) => {
+        test('should evaluate as invalid', () => {
+          fc.assert(fc.property(genAssembly(candidatesForTest), (assembly) => {
             assembly.rightBackUnit = assembly.rightArmUnit
             assembly.leftArmUnit = candidatesForTest.leftArmUnit[0]
             assembly.leftBackUnit = candidatesForTest.leftBackUnit[0]
@@ -76,13 +74,12 @@ describe('validator', () => {
             expect(
               notCarrySameUnitInSameSide.validate(assembly).isSuccess,
             ).toBe(false)
-          },
-        )
+          }))
+        })
 
         describe('when not equipped', () => {
-          fcit.prop([genAssembly(candidatesForTest)])(
-            'should evaluate as valid. "not equipped" is allowed',
-            (assembly) => {
+          test('should evaluate as valid. "not equipped" is allowed', () => {
+            fc.assert(fc.property(genAssembly(candidatesForTest), (assembly) => {
               assembly.rightBackUnit = assembly.rightArmUnit = armNotEquipped
               assembly.leftArmUnit = candidatesForTest.leftArmUnit[0]
               assembly.leftBackUnit = candidatesForTest.leftBackUnit[0]
@@ -90,14 +87,13 @@ describe('validator', () => {
               expect(
                 notCarrySameUnitInSameSide.validate(assembly).isSuccess,
               ).toBe(true)
-            },
-          )
+            }))
+          })
         })
       })
       describe('at left side', () => {
-        fcit.prop([genAssembly(candidatesForTest)])(
-          'should evaluate as invalid',
-          (assembly) => {
+        test('should evaluate as invalid', () => {
+          fc.assert(fc.property(genAssembly(candidatesForTest), (assembly) => {
             assembly.leftBackUnit = assembly.leftArmUnit
             assembly.rightArmUnit = candidatesForTest.rightArmUnit[0]
             assembly.rightBackUnit = candidatesForTest.rightBackUnit[0]
@@ -105,12 +101,11 @@ describe('validator', () => {
             expect(
               notCarrySameUnitInSameSide.validate(assembly).isSuccess,
             ).toBe(false)
-          },
-        )
+          }))
+        })
         describe('when not equipped', () => {
-          fcit.prop([genAssembly(candidatesForTest)])(
-            'should evaluate as valid. "not equipped" is allowed',
-            (assembly) => {
+          test('should evaluate as valid. "not equipped" is allowed', () => {
+            fc.assert(fc.property(genAssembly(candidatesForTest), (assembly) => {
               assembly.leftBackUnit = assembly.leftArmUnit = armNotEquipped
               assembly.rightArmUnit = candidatesForTest.rightArmUnit[0]
               assembly.rightBackUnit = candidatesForTest.rightBackUnit[0]
@@ -118,34 +113,32 @@ describe('validator', () => {
               expect(
                 notCarrySameUnitInSameSide.validate(assembly).isSuccess,
               ).toBe(true)
-            },
-          )
+            }))
+          })
         })
       })
       describe('at both side', () => {
-        fcit.prop([genAssembly(candidatesForTest)])(
-          'should evaluate as invalid',
-          (assembly) => {
+        test('should evaluate as invalid', () => {
+          fc.assert(fc.property(genAssembly(candidatesForTest), (assembly) => {
             assembly.rightBackUnit = assembly.rightArmUnit
             assembly.leftBackUnit = assembly.leftArmUnit
 
             expect(
               notCarrySameUnitInSameSide.validate(assembly).isSuccess,
             ).toBe(false)
-          },
-        )
+          }))
+        })
         describe('when not equipped', () => {
-          fcit.prop([genAssembly(candidatesForTest)])(
-            'should evaluate as valid. "not equipped" is allowed',
-            (assembly) => {
+          test('should evaluate as valid. "not equipped" is allowed', () => {
+            fc.assert(fc.property(genAssembly(candidatesForTest), (assembly) => {
               assembly.rightBackUnit = assembly.rightArmUnit = armNotEquipped
               assembly.leftBackUnit = assembly.leftArmUnit = armNotEquipped
 
               expect(
                 notCarrySameUnitInSameSide.validate(assembly).isSuccess,
               ).toBe(true)
-            },
-          )
+            }))
+          })
         })
       })
     })
@@ -180,78 +173,73 @@ describe('validator', () => {
         }
       })()
 
-      fcit.prop([genAssembly(candidatesForTest)])(
-        'should evaluate as valid',
-        (assembly) => {
+      test('should evaluate as valid', () => {
+        fc.assert(fc.property(genAssembly(candidatesForTest), (assembly) => {
           expect(notCarrySameUnitInSameSide.validate(assembly).isSuccess).toBe(
             true,
           )
-        },
-      )
+        }))
+      })
     })
   })
 
   describe('total coam not over max', () => {
-    fcit.prop([genAssembly(), fc.integer({ min: 0 })])(
-      'when total coam <= max then success, else failure',
-      (assembly, max) => {
+    test('when total coam <= max then success, else failure', () => {
+      fc.assert(fc.property(genAssembly(), fc.integer({ min: 0 }), (assembly, max) => {
         const sut = totalCoamNotOverMax(max)
 
         expect(sut.validate(assembly).isSuccess).toBe(assembly.coam <= max)
-      },
-    )
+      }))
+    })
   })
   describe('total load not over max', () => {
-    fcit.prop([genAssembly(), fc.integer({ min: 0 })])(
-      'when total load <= max then success, else failure',
-      (assembly, max) => {
+    test('when total load <= max then success, else failure', () => {
+      fc.assert(fc.property(genAssembly(), fc.integer({ min: 0 }), (assembly, max) => {
         const sut = totalLoadNotOverMax(max)
 
         expect(sut.validate(assembly).isSuccess).toBe(assembly.load <= max)
-      },
-    )
+      }))
+    })
   })
 
   describe('disallow over load', () => {
-    fcit.prop([genAssembly()])(
-      'when within load, validation is success',
-      (assembly) => {
+    test('when within load, validation is success', () => {
+      fc.assert(fc.property(genAssembly(), (assembly) => {
         const sut = disallowLoadOver()
 
         expect(sut.validate(assembly).isSuccess).toBe(assembly.withinLoadLimit)
-      },
-    )
-    fcit.prop([
-      genAssembly().filter((a) => !a.withinArmsLoadLimit && a.withinLoadLimit),
-    ])(
-      'even if arms load over, if load not over, validation success',
-      (assembly) => {
-        const sut = disallowLoadOver()
+      }))
+    })
+    test('even if arms load over, if load not over, validation success', () => {
+      fc.assert(fc.property(
+        genAssembly().filter((a) => !a.withinArmsLoadLimit && a.withinLoadLimit),
+        (assembly) => {
+          const sut = disallowLoadOver()
 
-        expect(sut.validate(assembly).isSuccess).toBe(true)
-      },
-    )
+          expect(sut.validate(assembly).isSuccess).toBe(true)
+        }
+      ))
+    })
   })
   describe('disallow over arms load', () => {
-    fcit.prop([genAssembly()])(
-      'when within arms load, validation is success',
-      (assembly) => {
+    test('when within arms load, validation is success', () => {
+      fc.assert(fc.property(genAssembly(), (assembly) => {
         const sut = disallowArmsLoadOver()
 
         expect(sut.validate(assembly).isSuccess).toBe(
           assembly.withinArmsLoadLimit,
         )
-      },
-    )
-    fcit.prop([
-      genAssembly().filter((a) => a.withinArmsLoadLimit && !a.withinLoadLimit),
-    ])(
-      'even if load over, if arms load not over, validation success',
-      (assembly) => {
-        const sut = disallowArmsLoadOver()
+      }))
+    })
+    test('even if load over, if arms load not over, validation success', () => {
+      fc.assert(fc.property(
+        genAssembly().filter((a) => a.withinArmsLoadLimit && !a.withinLoadLimit),
+        (assembly) => {
+          const sut = disallowArmsLoadOver()
 
-        expect(sut.validate(assembly).isSuccess).toBe(true)
-      },
-    )
+          expect(sut.validate(assembly).isSuccess).toBe(true)
+        }
+      ))
+    })
   })
 })

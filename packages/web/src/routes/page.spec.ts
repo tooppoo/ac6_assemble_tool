@@ -3,7 +3,7 @@ import i18n from '$lib/i18n/define'
 
 import { candidates, orders } from '@ac6_assemble_tool/parts/versions/v1.07'
 import { cleanup, render, screen } from '@testing-library/svelte'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 
 let Index: any
 // Skip: requires SvelteKit plugin which is disabled during Vitest runs

@@ -39,7 +39,8 @@
     },
     "test": {
       "dependsOn": [
-        "^test"
+        "^test",
+        "^vitest"
       ]
     },
     "test:watch": {
@@ -51,7 +52,8 @@
         "coverage/**"
       ],
       "dependsOn": [
-        "^coverage"
+        "^coverage",
+        "^vitest:coverage"
       ]
     },
     "check-types": {
