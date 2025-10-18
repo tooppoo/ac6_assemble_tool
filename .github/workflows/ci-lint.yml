@@ -25,11 +25,11 @@ jobs:
       - name: setup
         run: bun install --frozen-lockfile
 
-      - run: bun run build:test
+      - run: bun run --bun build:test
 
       # lint & fix
       - name: lint
-        run: bun run format
+        run: bun run --bun format
 
       - name: auto commit
         uses: stefanzweifel/git-auto-commit-action@v7-next

@@ -27,7 +27,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: lint documents
-        run: bun run docs format
+        run: bun run --bun docs format
 
       - name: auto commit
         uses: stefanzweifel/git-auto-commit-action@v7-next

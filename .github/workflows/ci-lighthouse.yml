@@ -24,7 +24,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       # build
-      - run: bun run build:test
+      - run: bun run --bun build:test
 
       # lighthouse
       - name: Run Lighthouse

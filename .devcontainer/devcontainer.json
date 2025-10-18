@@ -18,7 +18,6 @@
   },
   "containerUser": "vscode",
   "mounts": [
-    "type=volume,source=pnpm-store,target=/home/vscode/.pnpm-store",
     "source=${localEnv:HOME}/.codex,target=/home/vscode/.codex,type=bind,consistency=cached",
     "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind,consistency=cached"
   ],

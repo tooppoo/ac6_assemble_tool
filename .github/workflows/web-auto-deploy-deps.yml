@@ -50,7 +50,7 @@ jobs:
 
       - name: Build
         if: steps.check-deps.outputs.is_dep_update == 'true'
-        run: bun run build
+        run: bun run --bun build
 
       - name: Deploy to Cloudflare Pages
         if: steps.check-deps.outputs.is_dep_update == 'true'

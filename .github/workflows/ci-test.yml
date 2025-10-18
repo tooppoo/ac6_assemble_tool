@@ -26,14 +26,14 @@ jobs:
         run: bun install --frozen-lockfile
 
       # build
-      - run: bun run build:test
+      - run: bun run --bun build:test
 
       # test
       - name: type check
-        run: bun run check-types
+        run: bun run --bun check-types
 
       - name: test with coverage
-        run: bun run coverage
+        run: bun run --bun coverage
 
       # coverage tools
       - name: Upload coverage reports to Codecov
