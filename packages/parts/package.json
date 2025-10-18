@@ -17,9 +17,9 @@
     "lint": "eslint . --cache && prettier . --check --cache",
     "format": "eslint . --cache --fix && prettier . --write --cache",
     "check-types": "tsc --noEmit",
-    "generate-part-id": "bun --bun scripts/generate-part-id-cli.ts",
-    "validate-ids": "bun --bun scripts/validate-part-ids.ts",
-    "build": "bun --bun validate-ids"
+    "generate-part-id": "bun scripts/generate-part-id-cli.ts",
+    "validate-ids": "bun scripts/validate-part-ids.ts",
+    "build": "bun run validate-ids"
   },
   "author": "philomagi <tooppoo56@gmail.com> (https://github.com/tooppoo)",
   "license": "MIT",
