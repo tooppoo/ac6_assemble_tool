@@ -1,198 +1,198 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
 import {
-	FavoriteStore,
-	FavoritesDatabase,
-	TEST_ONLY_resetDatabase,
+  FavoriteStore,
+  FavoritesDatabase,
+  TEST_ONLY_resetDatabase,
 } from './favorite-store'
 
 describe('FavoritesDatabase', () => {
-	let db: FavoritesDatabase
+  let db: FavoritesDatabase
 
-	beforeEach(async () => {
-		db = new FavoritesDatabase()
-		await db.delete() // テスト前にDBをクリア
-		db = new FavoritesDatabase() // 再作成
-	})
+  beforeEach(async () => {
+    db = new FavoritesDatabase()
+    await db.delete() // テスト前にDBをクリア
+    db = new FavoritesDatabase() // 再作成
+  })
 
-	afterEach(async () => {
-		await db.close()
-		TEST_ONLY_resetDatabase()
-	})
+  afterEach(async () => {
+    await db.close()
+    TEST_ONLY_resetDatabase()
+  })
 
-	describe('スキーマ定義', () => {
-		it('favoritesテーブルが存在すること', () => {
-			expect(db.favorites).toBeDefined()
-		})
+  describe('スキーマ定義', () => {
+    it('favoritesテーブルが存在すること', () => {
+      expect(db.favorites).toBeDefined()
+    })
 
-		it('favoritesテーブルに主キー(&id)が設定されていること', () => {
-			expect(db.favorites.schema.primKey.name).toBe('id')
-		})
+    it('favoritesテーブルに主キー(&id)が設定されていること', () => {
+      expect(db.favorites.schema.primKey.name).toBe('id')
+    })
 
-		it('favoritesテーブルにslot, partsId, createdAtのインデックスが設定されていること', () => {
-			const indexes = db.favorites.schema.indexes.map((idx) => idx.name)
-			expect(indexes).toContain('slot')
-			expect(indexes).toContain('partsId')
-			expect(indexes).toContain('createdAt')
-		})
-	})
+    it('favoritesテーブルにslot, partsId, createdAtのインデックスが設定されていること', () => {
+      const indexes = db.favorites.schema.indexes.map((idx) => idx.name)
+      expect(indexes).toContain('slot')
+      expect(indexes).toContain('partsId')
+      expect(indexes).toContain('createdAt')
+    })
+  })
 })
 
 describe('FavoriteStore', () => {
-	let store: FavoriteStore
+  let store: FavoriteStore
 
-	beforeEach(async () => {
-		const db = new FavoritesDatabase()
-		await db.delete()
-		store = new FavoriteStore()
-	})
+  beforeEach(async () => {
+    const db = new FavoritesDatabase()
+    await db.delete()
+    store = new FavoriteStore()
+  })
 
-	afterEach(async () => {
-		await store.close()
-		TEST_ONLY_resetDatabase()
-	})
+  afterEach(async () => {
+    await store.close()
+    TEST_ONLY_resetDatabase()
+  })
 
-	describe('addFavorite', () => {
-		it('お気に入りを追加できること', async () => {
-			const result = await store.addFavorite('head', 'AC-HEAD-001')
+  describe('addFavorite', () => {
+    it('お気に入りを追加できること', async () => {
+      const result = await store.addFavorite('head', 'AC-HEAD-001')
 
-			expect(result.ok).toBe(true)
-		})
+      expect(result.ok).toBe(true)
+    })
 
-		it('追加したお気に入りを取得できること', async () => {
-			await store.addFavorite('head', 'AC-HEAD-001')
+    it('追加したお気に入りを取得できること', async () => {
+      await store.addFavorite('head', 'AC-HEAD-001')
 
-			const favorites = await store.getFavorites('head')
-			expect(favorites.ok).toBe(true)
-			if (favorites.ok) {
-				expect(favorites.value.has('AC-HEAD-001')).toBe(true)
-			}
-		})
+      const favorites = await store.getFavorites('head')
+      expect(favorites.ok).toBe(true)
+      if (favorites.ok) {
+        expect(favorites.value.has('AC-HEAD-001')).toBe(true)
+      }
+    })
 
-		it('同じスロット×パーツIDの組み合わせを重複登録できないこと', async () => {
-			await store.addFavorite('head', 'AC-HEAD-001')
-			const result = await store.addFavorite('head', 'AC-HEAD-001')
+    it('同じスロット×パーツIDの組み合わせを重複登録できないこと', async () => {
+      await store.addFavorite('head', 'AC-HEAD-001')
+      const result = await store.addFavorite('head', 'AC-HEAD-001')
 
-			expect(result.ok).toBe(true) // 既存のものを返すだけでエラーにはしない
+      expect(result.ok).toBe(true) // 既存のものを返すだけでエラーにはしない
 
-			const favorites = await store.getFavorites('head')
-			if (favorites.ok) {
-				expect(favorites.value.size).toBe(1)
-			}
-		})
+      const favorites = await store.getFavorites('head')
+      if (favorites.ok) {
+        expect(favorites.value.size).toBe(1)
+      }
+    })
 
-		it('異なるスロットで同じパーツIDを登録できること', async () => {
-			await store.addFavorite('head', 'AC-HEAD-001')
-			await store.addFavorite('core', 'AC-HEAD-001') // 異なるスロット
+    it('異なるスロットで同じパーツIDを登録できること', async () => {
+      await store.addFavorite('head', 'AC-HEAD-001')
+      await store.addFavorite('core', 'AC-HEAD-001') // 異なるスロット
 
-			const headFavorites = await store.getFavorites('head')
-			const coreFavorites = await store.getFavorites('core')
+      const headFavorites = await store.getFavorites('head')
+      const coreFavorites = await store.getFavorites('core')
 
-			if (headFavorites.ok && coreFavorites.ok) {
-				expect(headFavorites.value.has('AC-HEAD-001')).toBe(true)
-				expect(coreFavorites.value.has('AC-HEAD-001')).toBe(true)
-			}
-		})
+      if (headFavorites.ok && coreFavorites.ok) {
+        expect(headFavorites.value.has('AC-HEAD-001')).toBe(true)
+        expect(coreFavorites.value.has('AC-HEAD-001')).toBe(true)
+      }
+    })
 
-		it('データベースエラーが発生した場合、Errorを返すこと', async () => {
-			await store.close() // DBを閉じてエラーを誘発
+    it('データベースエラーが発生した場合、Errorを返すこと', async () => {
+      await store.close() // DBを閉じてエラーを誘発
 
-			const result = await store.addFavorite('head', 'AC-HEAD-001')
+      const result = await store.addFavorite('head', 'AC-HEAD-001')
 
-			expect(result.ok).toBe(false)
-			if (!result.ok) {
-				expect(result.error.type).toBe('database_error')
-			}
-		})
-	})
+      expect(result.ok).toBe(false)
+      if (!result.ok) {
+        expect(result.error.type).toBe('database_error')
+      }
+    })
+  })
 
-	describe('removeFavorite', () => {
-		it('お気に入りを削除できること', async () => {
-			await store.addFavorite('head', 'AC-HEAD-001')
+  describe('removeFavorite', () => {
+    it('お気に入りを削除できること', async () => {
+      await store.addFavorite('head', 'AC-HEAD-001')
 
-			const result = await store.removeFavorite('head', 'AC-HEAD-001')
+      const result = await store.removeFavorite('head', 'AC-HEAD-001')
 
-			expect(result.ok).toBe(true)
+      expect(result.ok).toBe(true)
 
-			const favorites = await store.getFavorites('head')
-			if (favorites.ok) {
-				expect(favorites.value.has('AC-HEAD-001')).toBe(false)
-			}
-		})
+      const favorites = await store.getFavorites('head')
+      if (favorites.ok) {
+        expect(favorites.value.has('AC-HEAD-001')).toBe(false)
+      }
+    })
 
-		it('存在しないお気に入りを削除しても成功すること', async () => {
-			const result = await store.removeFavorite('head', 'NON-EXISTENT')
+    it('存在しないお気に入りを削除しても成功すること', async () => {
+      const result = await store.removeFavorite('head', 'NON-EXISTENT')
 
-			expect(result.ok).toBe(true)
-		})
-	})
+      expect(result.ok).toBe(true)
+    })
+  })
 
-	describe('getFavorites', () => {
-		it('スロット単位でお気に入りを取得できること', async () => {
-			await store.addFavorite('head', 'AC-HEAD-001')
-			await store.addFavorite('head', 'AC-HEAD-002')
-			await store.addFavorite('core', 'AC-CORE-001')
+  describe('getFavorites', () => {
+    it('スロット単位でお気に入りを取得できること', async () => {
+      await store.addFavorite('head', 'AC-HEAD-001')
+      await store.addFavorite('head', 'AC-HEAD-002')
+      await store.addFavorite('core', 'AC-CORE-001')
 
-			const headFavorites = await store.getFavorites('head')
+      const headFavorites = await store.getFavorites('head')
 
-			expect(headFavorites.ok).toBe(true)
-			if (headFavorites.ok) {
-				expect(headFavorites.value.size).toBe(2)
-				expect(headFavorites.value.has('AC-HEAD-001')).toBe(true)
-				expect(headFavorites.value.has('AC-HEAD-002')).toBe(true)
-				expect(headFavorites.value.has('AC-CORE-001')).toBe(false)
-			}
-		})
+      expect(headFavorites.ok).toBe(true)
+      if (headFavorites.ok) {
+        expect(headFavorites.value.size).toBe(2)
+        expect(headFavorites.value.has('AC-HEAD-001')).toBe(true)
+        expect(headFavorites.value.has('AC-HEAD-002')).toBe(true)
+        expect(headFavorites.value.has('AC-CORE-001')).toBe(false)
+      }
+    })
 
-		it('お気に入りが0件の場合、空のSetを返すこと', async () => {
-			const favorites = await store.getFavorites('head')
+    it('お気に入りが0件の場合、空のSetを返すこと', async () => {
+      const favorites = await store.getFavorites('head')
 
-			expect(favorites.ok).toBe(true)
-			if (favorites.ok) {
-				expect(favorites.value.size).toBe(0)
-			}
-		})
-	})
+      expect(favorites.ok).toBe(true)
+      if (favorites.ok) {
+        expect(favorites.value.size).toBe(0)
+      }
+    })
+  })
 
-	describe('isFavorite', () => {
-		it('お気に入りに登録されているパーツはtrueを返すこと', async () => {
-			await store.addFavorite('head', 'AC-HEAD-001')
+  describe('isFavorite', () => {
+    it('お気に入りに登録されているパーツはtrueを返すこと', async () => {
+      await store.addFavorite('head', 'AC-HEAD-001')
 
-			const result = await store.isFavorite('head', 'AC-HEAD-001')
+      const result = await store.isFavorite('head', 'AC-HEAD-001')
 
-			expect(result.ok).toBe(true)
-			if (result.ok) {
-				expect(result.value).toBe(true)
-			}
-		})
+      expect(result.ok).toBe(true)
+      if (result.ok) {
+        expect(result.value).toBe(true)
+      }
+    })
 
-		it('お気に入りに登録されていないパーツはfalseを返すこと', async () => {
-			const result = await store.isFavorite('head', 'AC-HEAD-001')
+    it('お気に入りに登録されていないパーツはfalseを返すこと', async () => {
+      const result = await store.isFavorite('head', 'AC-HEAD-001')
 
-			expect(result.ok).toBe(true)
-			if (result.ok) {
-				expect(result.value).toBe(false)
-			}
-		})
-	})
+      expect(result.ok).toBe(true)
+      if (result.ok) {
+        expect(result.value).toBe(false)
+      }
+    })
+  })
 
-	describe('clearFavorites', () => {
-		it('指定したスロットのお気に入りをすべて削除できること', async () => {
-			await store.addFavorite('head', 'AC-HEAD-001')
-			await store.addFavorite('head', 'AC-HEAD-002')
-			await store.addFavorite('core', 'AC-CORE-001')
+  describe('clearFavorites', () => {
+    it('指定したスロットのお気に入りをすべて削除できること', async () => {
+      await store.addFavorite('head', 'AC-HEAD-001')
+      await store.addFavorite('head', 'AC-HEAD-002')
+      await store.addFavorite('core', 'AC-CORE-001')
 
-			const result = await store.clearFavorites('head')
+      const result = await store.clearFavorites('head')
 
-			expect(result.ok).toBe(true)
+      expect(result.ok).toBe(true)
 
-			const headFavorites = await store.getFavorites('head')
-			const coreFavorites = await store.getFavorites('core')
+      const headFavorites = await store.getFavorites('head')
+      const coreFavorites = await store.getFavorites('core')
 
-			if (headFavorites.ok && coreFavorites.ok) {
-				expect(headFavorites.value.size).toBe(0)
-				expect(coreFavorites.value.size).toBe(1) // coreは削除されない
-			}
-		})
-	})
+      if (headFavorites.ok && coreFavorites.ok) {
+        expect(headFavorites.value.size).toBe(0)
+        expect(coreFavorites.value.size).toBe(1) // coreは削除されない
+      }
+    })
+  })
 })
