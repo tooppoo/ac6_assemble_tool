@@ -208,7 +208,7 @@ class FavoritesDatabase extends Dexie {
   favorites!: Table<Favorite, string>
 
   constructor() {
-    super('FavoritesDB')
+    super('AC6FavoritesDB')
     this.version(1).stores({
       favorites: '&id, slot, partsId, createdAt'
     })
@@ -1131,7 +1131,7 @@ interface AssemblyNavigationParams {
 **Data Protection**:
 - お気に入りデータは個人のブラウザにのみ保存され、外部に送信されない
 - URLパラメータにはフィルタ条件のみが含まれ、個人情報は含まれない
-- LocalStorageのデータは30日で期限切れとし、古いデータを自動削除する
+- LocalStorageのデータは永続的に保存される（TTL機能は将来拡張として検討可能）
 
 **Input Validation**:
 - URL パラメータのデシリアライズ時に Zod によるスキーマバリデーションを実施
