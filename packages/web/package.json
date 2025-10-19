@@ -48,9 +48,11 @@
     "@ac6_assemble_tool/shared": "workspace:1.0.0",
     "bootstrap": "5.3.8",
     "bootstrap-icons": "1.13.1",
+    "dexie": "4.2.0",
     "i18next": "25.5.3",
     "svelte": "5.38.6",
-    "svelte-i18next": "2.2.2"
+    "svelte-i18next": "2.2.2",
+    "ulid": "3.0.1"
   },
   "optionalDependencies": {
     "sass-embedded-darwin-arm64": "1.92.0",
