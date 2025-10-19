@@ -1,10 +1,10 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+
 import {
   validatePartIdUniqueness,
   createDuplicateIdLogEntry,
-} from '#parts/validation/id-validator'
-import { validatePartsOnStartup } from '#parts/validation/validate-on-startup'
-
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+} from './id-validator'
+import { validatePartsOnStartup } from './validate-on-startup'
 
 describe('ID重複検証 統合テスト', () => {
   // コンソール出力をキャプチャするためのモック

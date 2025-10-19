@@ -1,7 +1,4 @@
 import { createAssembly, type RawAssembly } from '#core/assembly/assembly'
-import { assemblyToSearchV2 } from '#core/assembly/serialize/as-query-v2'
-import { convertV1ToV2 } from '#core/assembly/serialize/convert-v1-to-v2'
-import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
 
 import { armUnits } from '@ac6_assemble_tool/parts/arm-units'
 import { arms } from '@ac6_assemble_tool/parts/arms'
@@ -22,6 +19,10 @@ import {
 import { validatePartIdUniqueness } from '@ac6_assemble_tool/parts/validation/id-validator'
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import { describe, it, expect } from 'vitest'
+
+import { assemblyToSearchV2 } from './as-query-v2'
+import { convertV1ToV2 } from './convert-v1-to-v2'
+import { deserializeAssembly } from './deserialize-assembly'
 
 describe('パフォーマンス検証', () => {
   describe('全パーツID検証', () => {

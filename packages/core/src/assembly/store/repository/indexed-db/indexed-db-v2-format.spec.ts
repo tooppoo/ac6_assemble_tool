@@ -1,9 +1,10 @@
 import { createAssembly, type RawAssembly } from '#core/assembly/assembly'
-import { IndexedDbRepository } from '#core/assembly/store/repository/indexed-db/indexed-db-repository'
 
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import { ulid } from 'ulid'
 import { describe, it, expect, beforeEach } from 'vitest'
+
+import { IndexedDbRepository } from './indexed-db-repository'
 
 describe('IndexedDB v2形式対応', () => {
   const repository = new IndexedDbRepository(candidates)

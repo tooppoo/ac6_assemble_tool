@@ -1,5 +1,3 @@
-import { randomBuild } from '#core/assembly/random/random-builder'
-
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import {
   booster,
@@ -8,6 +6,8 @@ import {
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import { fc, it } from '@fast-check/vitest'
 import { describe, expect } from 'vitest'
+
+import { randomBuild } from './random-builder'
 
 import { genCandidates, genLockedParts } from '#spec-helper/property-generator'
 

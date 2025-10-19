@@ -1,5 +1,4 @@
 import { createAssembly, type RawAssembly } from '#core/assembly/assembly'
-import { assemblyToSearchV2 } from '#core/assembly/serialize/as-query-v2'
 
 import type { ArmUnit, LeftArmUnit } from '@ac6_assemble_tool/parts/arm-units'
 import type { Arms } from '@ac6_assemble_tool/parts/arms'
@@ -15,6 +14,8 @@ import type { Generator } from '@ac6_assemble_tool/parts/generators'
 import type { Head } from '@ac6_assemble_tool/parts/heads'
 import type { Legs } from '@ac6_assemble_tool/parts/legs'
 import { describe, it, expect } from 'vitest'
+
+import { assemblyToSearchV2 } from './as-query-v2'
 
 // 共通テストデータ - describe外で定義
 const testAssemblyData: RawAssembly = {

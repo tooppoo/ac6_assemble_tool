@@ -1,11 +1,8 @@
-import {
-  assemblyToSearch,
-  searchToAssembly,
-} from '#core/assembly/serialize/as-query'
-
 import { it } from '@fast-check/vitest'
 import fc from 'fast-check'
 import { describe, expect } from 'vitest'
+
+import { assemblyToSearch, searchToAssembly } from './as-query'
 
 import {
   genAssembly,

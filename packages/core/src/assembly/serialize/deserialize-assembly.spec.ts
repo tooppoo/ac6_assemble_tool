@@ -1,5 +1,3 @@
-import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
-
 import type { ArmUnit, LeftArmUnit } from '@ac6_assemble_tool/parts/arm-units'
 import type { Arms } from '@ac6_assemble_tool/parts/arms'
 import type {
@@ -15,6 +13,8 @@ import type { Head } from '@ac6_assemble_tool/parts/heads'
 import type { Legs } from '@ac6_assemble_tool/parts/legs'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 import { describe, it, expect } from 'vitest'
+
+import { deserializeAssembly } from './deserialize-assembly'
 
 // 共通テストデータ - describe外で定義
 const mockCandidates: Candidates = {

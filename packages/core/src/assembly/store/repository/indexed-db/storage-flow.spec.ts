@@ -1,13 +1,11 @@
 import { createAssembly, type RawAssembly } from '#core/assembly/assembly'
-import {
-  setupDataBase,
-  TEST_ONLY_resetDataBase,
-} from '#core/assembly/store/repository/indexed-db/indexed-db'
-import { IndexedDbRepository } from '#core/assembly/store/repository/indexed-db/indexed-db-repository'
 
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import { ulid } from 'ulid'
 import { describe, it, expect, beforeEach } from 'vitest'
+
+import { setupDataBase, TEST_ONLY_resetDataBase } from './indexed-db'
+import { IndexedDbRepository } from './indexed-db-repository'
 
 describe('IndexedDBストレージフロー統合テスト', () => {
   const repository = new IndexedDbRepository(candidates)

@@ -1,6 +1,3 @@
-import { type AssemblyKey } from '#core/assembly/assembly'
-import { searchToAssemblyV2 } from '#core/assembly/serialize/as-query-v2'
-
 import type { ArmUnit, LeftArmUnit } from '@ac6_assemble_tool/parts/arm-units'
 import type { Arms } from '@ac6_assemble_tool/parts/arms'
 import type {
@@ -17,6 +14,10 @@ import type { Legs } from '@ac6_assemble_tool/parts/legs'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 import fc from 'fast-check'
 import { describe, it, expect } from 'vitest'
+
+import { type AssemblyKey } from '../assembly'
+
+import { searchToAssemblyV2 } from './as-query-v2'
 
 // 共通テストデータ - describe外で定義
 const mockCandidates: Candidates = {
