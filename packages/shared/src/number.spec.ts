@@ -1,7 +1,7 @@
-import { roundUpByRealPart } from '@ac6_assemble_tool/shared/number'
-
 import { it, fc } from '@fast-check/vitest'
 import { describe, expect } from 'vitest'
+
+import { roundUpByRealPart } from '@ac6_assemble_tool/shared/number'
 
 describe(roundUpByRealPart.name, () => {
   const genNumAndDigit = (digit: { min?: number; max?: number } = { min: 1 }) =>

@@ -11,9 +11,9 @@
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
   import type { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
+  import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
   import { sum } from '@ac6_assemble_tool/shared/array'
   import { roundUpByRealPart } from '@ac6_assemble_tool/shared/number'
-  import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
   import {
     Dropdown,
     DropdownItem,

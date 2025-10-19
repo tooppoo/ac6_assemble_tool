@@ -1,5 +1,3 @@
-import { sum } from '@ac6_assemble_tool/shared/array'
-
 import type * as ArmUnits from '@ac6_assemble_tool/parts/arm-units'
 import type { Arms } from '@ac6_assemble_tool/parts/arms'
 import type * as BackUnits from '@ac6_assemble_tool/parts/back-units'
@@ -17,6 +15,7 @@ import type {
   ExpansionNotEquipped,
 } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
+import { sum } from '@ac6_assemble_tool/shared/array'
 
 export function spaceByWord(key: AssemblyKey): string {
   return key.replaceAll(/([A-Z])/g, ' $1')

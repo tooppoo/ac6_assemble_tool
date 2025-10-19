@@ -1,10 +1,10 @@
 import { LockedParts } from '#core/assembly/random/lock'
-import { random } from '@ac6_assemble_tool/shared/array'
 
 import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import { notEquipped } from '@ac6_assemble_tool/parts/types/base/classification'
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
+import { random } from '@ac6_assemble_tool/shared/array'
 import { it, fc, test } from '@fast-check/vitest'
 import { describe, expect } from 'vitest'
 

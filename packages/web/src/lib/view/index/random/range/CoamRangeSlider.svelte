@@ -1,9 +1,9 @@
 <script lang="ts">
   import i18n from '$lib/i18n/define'
 
+  import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
   import { sum } from '@ac6_assemble_tool/shared/array'
   import { roundUpByRealPart } from '@ac6_assemble_tool/shared/number'
-  import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
   import { createEventDispatcher } from 'svelte'
 
   import RangeSlider from './base/RangeSlider.svelte'

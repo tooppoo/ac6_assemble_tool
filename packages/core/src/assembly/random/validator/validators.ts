@@ -1,7 +1,7 @@
 import type { Assembly } from '#core/assembly/assembly'
-import { BaseCustomError } from '@ac6_assemble_tool/shared/error'
 
 import { notEquipped } from '@ac6_assemble_tool/parts/types/base/classification'
+import { BaseCustomError } from '@ac6_assemble_tool/shared/error'
 
 import type { Validator } from './base'
 import { failure, success, type ValidationResult } from './result'

@@ -3,12 +3,12 @@ import {
   createAssembly,
   type RawAssembly,
 } from '#core/assembly/assembly'
-import { random } from '@ac6_assemble_tool/shared/array'
 
 import { boosterMustBeEquipped } from '@ac6_assemble_tool/parts/booster'
 import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
+import { random } from '@ac6_assemble_tool/shared/array'
 
 import { LockedParts } from './lock'
 
