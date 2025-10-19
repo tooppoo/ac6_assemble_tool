@@ -1,12 +1,15 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
-import { StateSerializer, type SharedState } from './state-serializer'
+import {
+  serializeToURL,
+  deserializeFromURL,
+  saveViewMode,
+  loadViewMode,
+  type SharedState,
+} from './state-serializer'
 
 describe('StateSerializer', () => {
-  let serializer: StateSerializer
-
   beforeEach(() => {
-    serializer = new StateSerializer()
     // LocalStorageをクリア
     if (typeof localStorage !== 'undefined') {
       localStorage.clear()
@@ -29,7 +32,7 @@ describe('StateSerializer', () => {
         sortOrder: null,
       }
 
-      const params = serializer.serializeToURL(state)
+      const params = serializeToURL(state)
 
       expect(params.get('slot')).toBe('head')
     })
@@ -45,7 +48,7 @@ describe('StateSerializer', () => {
         sortOrder: null,
       }
 
-      const params = serializer.serializeToURL(state)
+      const params = serializeToURL(state)
 
       const filterParams = params.getAll('filter')
       expect(filterParams).toHaveLength(2)
@@ -61,7 +64,7 @@ describe('StateSerializer', () => {
         sortOrder: 'asc',
       }
 
-      const params = serializer.serializeToURL(state)
+      const params = serializeToURL(state)
 
       expect(params.get('sort')).toBe('weight:asc')
     })
@@ -74,7 +77,7 @@ describe('StateSerializer', () => {
         sortOrder: null,
       }
 
-      const params = serializer.serializeToURL(state)
+      const params = serializeToURL(state)
 
       expect(params.has('sort')).toBe(false)
     })
@@ -84,7 +87,7 @@ describe('StateSerializer', () => {
     it('URLパラメータからスロット選択状態を復元できること', () => {
       const params = new URLSearchParams('slot=head')
 
-      const result = serializer.deserializeFromURL(params)
+      const result = deserializeFromURL(params)
 
       expect(result.ok).toBe(true)
       if (result.ok) {
@@ -97,7 +100,7 @@ describe('StateSerializer', () => {
         'slot=arms&filter=weight:lt:5000&filter=price:lte:100000',
       )
 
-      const result = serializer.deserializeFromURL(params)
+      const result = deserializeFromURL(params)
 
       expect(result.ok).toBe(true)
       if (result.ok) {
@@ -118,7 +121,7 @@ describe('StateSerializer', () => {
     it('URLパラメータから並び替え設定を復元できること', () => {
       const params = new URLSearchParams('slot=legs&sort=weight:asc')
 
-      const result = serializer.deserializeFromURL(params)
+      const result = deserializeFromURL(params)
 
       expect(result.ok).toBe(true)
       if (result.ok) {
@@ -130,7 +133,7 @@ describe('StateSerializer', () => {
     it('スロットパラメータが不正な場合、エラーを返すこと', () => {
       const params = new URLSearchParams('slot=invalid')
 
-      const result = serializer.deserializeFromURL(params)
+      const result = deserializeFromURL(params)
 
       expect(result.ok).toBe(false)
       if (!result.ok) {
@@ -141,7 +144,7 @@ describe('StateSerializer', () => {
     it('スロットパラメータが存在しない場合、デフォルト値(head)を使用すること', () => {
       const params = new URLSearchParams('')
 
-      const result = serializer.deserializeFromURL(params)
+      const result = deserializeFromURL(params)
 
       expect(result.ok).toBe(true)
       if (result.ok) {
@@ -154,7 +157,7 @@ describe('StateSerializer', () => {
         'slot=head&filter=weight:lt:5000&filter=invalid',
       )
 
-      const result = serializer.deserializeFromURL(params)
+      const result = deserializeFromURL(params)
 
       expect(result.ok).toBe(true)
       if (result.ok) {
@@ -166,7 +169,7 @@ describe('StateSerializer', () => {
     it('並び替えパラメータが不正な形式の場合、並び替えをnullにすること', () => {
       const params = new URLSearchParams('slot=head&sort=invalid')
 
-      const result = serializer.deserializeFromURL(params)
+      const result = deserializeFromURL(params)
 
       expect(result.ok).toBe(true)
       if (result.ok) {
@@ -178,15 +181,15 @@ describe('StateSerializer', () => {
 
   describe('saveViewMode', () => {
     it('表示モードをLocalStorageに保存できること', () => {
-      serializer.saveViewMode('list')
+      saveViewMode('list')
 
       const saved = localStorage.getItem('ac6-parts-list-view-mode')
       expect(saved).toBe('list')
     })
 
     it('表示モードを上書き保存できること', () => {
-      serializer.saveViewMode('grid')
-      serializer.saveViewMode('list')
+      saveViewMode('grid')
+      saveViewMode('list')
 
       const saved = localStorage.getItem('ac6-parts-list-view-mode')
       expect(saved).toBe('list')
@@ -197,13 +200,13 @@ describe('StateSerializer', () => {
     it('LocalStorageから表示モードを読み込めること', () => {
       localStorage.setItem('ac6-parts-list-view-mode', 'list')
 
-      const viewMode = serializer.loadViewMode()
+      const viewMode = loadViewMode()
 
       expect(viewMode).toBe('list')
     })
 
     it('LocalStorageに表示モードが存在しない場合、デフォルト(grid)を返すこと', () => {
-      const viewMode = serializer.loadViewMode()
+      const viewMode = loadViewMode()
 
       expect(viewMode).toBe('grid')
     })
@@ -211,7 +214,7 @@ describe('StateSerializer', () => {
     it('LocalStorageの値が不正な場合、デフォルト(grid)を返すこと', () => {
       localStorage.setItem('ac6-parts-list-view-mode', 'invalid')
 
-      const viewMode = serializer.loadViewMode()
+      const viewMode = loadViewMode()
 
       expect(viewMode).toBe('grid')
     })
