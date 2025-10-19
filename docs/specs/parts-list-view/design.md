@@ -11,6 +11,7 @@
 **Architecture Context**: 本アプリケーションは**SSG（Static Site Generation）**で実装されており、サーバーサイド処理は存在しない。すべての処理はクライアントサイド（ブラウザ）で完結する。
 
 **Impact**:
+
 - 既存のアセンブリページ（`/packages/web/src/routes/+page.svelte`）から**フィルタリング機能を廃止**し、新しいパーツ一覧ページ（`/packages/web/src/routes/parts-list/+page.svelte`）が追加される
 - **役割分担の明確化**:
   - **パーツ一覧ページ**: パーツの探索（フィルタリング、並び替え、お気に入り）に専念
@@ -39,6 +40,7 @@
 ### Existing Architecture Analysis
 
 **現在のアーキテクチャパターン**:
+
 - **SSG（Static Site Generation）**: SvelteKit の Static Adapter によるビルド時静的生成、サーバーサイド処理なし
 - **クライアントサイド完結**: すべての処理（フィルタリング、並び替え、計算）はブラウザで実行
 - **モノレポ構成**: pnpm workspaces + Turboによるパッケージ管理
@@ -48,24 +50,28 @@
 - **データ配信**: パーツデータは静的JSONファイルとして配信され、ビルド時にバンドル
 
 **既存のドメイン境界**:
+
 - `@ac6_assemble_tool/core`: ビジネスロジック（アセンブリ計算、フィルタ、シリアライズ）
 - `@ac6_assemble_tool/parts`: パーツデータとタイプ定義
 - `@ac6_assemble_tool/web`: フロントエンド（SvelteKit）
 - `@ac6_assemble_tool/shared`: 共通ユーティリティ
 
 **保持すべき統合ポイント**:
+
 - フィルタリングロジック: `PartsFilterSet` クラスと `applyFilter()` メソッドを再利用
 - パーツデータ構造: `Candidates` 型（スロットごとのパーツ配列）を踏襲
 - URL シリアライゼーション: `as-query-v2.ts` のパターンを拡張
 - IndexedDB: Dexie による永続化パターンを継承
 
 **アセンブリページへの影響**:
+
 - **フィルタリング機能の廃止**: 既存の `FilterByPartsOffCanvas.svelte` などフィルタ関連UIは削除またはパーツ一覧ページに移行
 - **母集団の受け渡し**: URLパラメータでフィルタ済み母集団を受け取り、その範囲でのみパーツ選択を許可
 - **組み立て機能の継続**: ロック、ランダム、計算結果表示など「組み立て」に関する機能はそのまま維持
 - **シンプル化**: フィルタUIの削除により、アセンブリページの責務が明確化され、UIがシンプルになる
 
 **技術的負債への対応**:
+
 - 既存のフィルタUIコンポーネントはアセンブリページから削除され、パーツ一覧ページで新規実装される
 - お気に入り機能は新規実装だが、既存のIndexedDB（Dexie）インフラを活用する
 
@@ -110,6 +116,7 @@ graph TB
 ```
 
 **アーキテクチャ統合**:
+
 - **保持される既存パターン**:
   - SvelteKit のファイルベースルーティング
   - Svelte 5 の runes システム（`$state`, `$derived`, `$effect`）
@@ -140,6 +147,7 @@ graph TB
 本機能は既存システムへの拡張であるため、既存の技術スタックと完全に整合します。
 
 **既存技術スタックとの整合**:
+
 - **Frontend**: Svelte 5 + SvelteKit（既存パターンを踏襲）
 - **State Management**: Svelte stores + URL params + IndexedDB（既存パターンを継承）
 - **Styling**: Bootstrap 5 + Sveltestrap（既存UIライブラリを継続使用）
@@ -148,9 +156,11 @@ graph TB
 - **Persistence**: Dexie（既存のIndexedDB抽象化を再利用）
 
 **新規導入される依存**:
+
 - なし（すべて既存の依存を再利用）
 
 **確立されたパターンからの逸脱**:
+
 - なし（既存パターンに完全に従う）
 
 ### Key Design Decisions
@@ -160,6 +170,7 @@ graph TB
 **Context**: 既存のアセンブリページには `PartsFilterSet` クラスによるフィルタリングロジックが実装されているが、パーツ一覧ページでは異なる表示形態が必要。
 
 **Alternatives**:
+
 1. **完全新規実装**: パーツ一覧専用のフィルタロジックを新規作成
 2. **フィルタロジック再利用 + UI新規作成**: 既存の `PartsFilterSet` を再利用し、UIのみ新規作成
 3. **フィルタロジック・UI両方再利用**: 既存のフィルタUIをそのまま使用
@@ -181,11 +192,13 @@ import { PartsFilterSet } from '@ac6_assemble_tool/core/assembly/filter/filters'
 ```
 
 **Rationale**:
+
 - **コード重複の排除**: フィルタリングロジックは既にテスト済みで安定しており、再利用することでバグリスクを低減
 - **保守性の向上**: フィルタリングルールの変更時、1箇所の修正で両ページに反映される
 - **UI柔軟性の確保**: パーツ一覧ページ特有のUI要件（スロット文脈の明示、0件時の表示など）に対応可能
 
 **Trade-offs**:
+
 - **獲得**: コード重複の排除、テスト済みロジックの再利用、保守性の向上
 - **犠牲**: UIコンポーネントの新規作成コスト（ただし、既存パターンを参考にできるため限定的）
 
@@ -194,6 +207,7 @@ import { PartsFilterSet } from '@ac6_assemble_tool/core/assembly/filter/filters'
 **Context**: お気に入り機能は新規実装であり、スロット単位での管理が必要。
 
 **Alternatives**:
+
 1. **LocalStorage直接利用**: `localStorage.setItem()` / `getItem()` で直接管理
 2. **IndexedDB (Dexie)**: 既存のDexieインフラを拡張してお気に入りテーブルを追加
 3. **URL Parameters**: お気に入り情報をURLに含める
@@ -224,12 +238,14 @@ interface Favorite {
 ```
 
 **Rationale**:
+
 - **スケーラビリティ**: お気に入りが多数になってもパフォーマンスを維持
 - **型安全性**: Dexieの型定義により、お気に入りデータの型安全性を確保
 - **クエリ能力**: スロット単位でのフィルタリングが効率的に実行可能
 - **既存パターン整合**: アセンブリ保存と同じDexieパターンを使用
 
 **Trade-offs**:
+
 - **獲得**: スケーラビリティ、型安全性、クエリ効率、既存パターンとの整合性
 - **犠牲**: LocalStorageより実装が複雑（ただし、Dexieの抽象化により許容範囲）
 
@@ -238,6 +254,7 @@ interface Favorite {
 **Context**: スロットを切り替えた際、前スロットのフィルタ条件のうち、新スロットで有効なものだけを引き継ぐ必要がある。
 
 **Alternatives**:
+
 1. **全条件クリア**: スロット切替時にすべてのフィルタ条件をリセット
 2. **選択的引き継ぎ**: 新スロットで有効な条件のみを引き継ぎ、無効な条件は削除
 3. **無効条件の保持**: 無効な条件も保持し、UIで明示するが適用はしない
@@ -266,11 +283,13 @@ function switchSlot(newSlot: SlotType, currentFilters: FilterSet): FilterSet {
 ```
 
 **Rationale**:
+
 - **探索文脈の維持**: 共通属性（例: weight, price）は引き継がれ、探索の連続性を保つ
 - **ユーザー理解の促進**: 無効化された条件を明示することで、スロット切替の影響を理解できる
 - **エラーなし探索**: エラーではなく情報提供として扱い、探索を継続可能にする
 
 **Trade-offs**:
+
 - **獲得**: 探索文脈の維持、ユーザー理解の促進、エラーなし探索体験
 - **犠牲**: スロットごとの有効属性管理の実装コスト（ただし、型定義により自動化可能）
 
@@ -402,13 +421,15 @@ flowchart LR
 
 #### PartsListView
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: パーツ一覧ページのメインコンポーネントとして、スロット文脈、フィルタ、並び替え、お気に入りの状態を統合管理
 - **Domain Boundary**: プレゼンテーション層（`/packages/web/src/routes/parts-list/`）
 - **Data Ownership**: スロット選択状態、フィルタ状態、並び替え状態、表示モード状態
 - **Transaction Boundary**: なし（状態変更は即座にUIに反映、永続化は非同期）
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: なし（ルートコンポーネント）
 - **Outbound**:
   - `SlotSelector` - スロット選択UI
@@ -421,9 +442,10 @@ flowchart LR
   - `svelte` - Svelte 5 runtime
   - `@sveltejs/kit` - SvelteKit navigation
 
-**Contract Definition**
+##### Contract Definition
 
 **Component Interface**:
+
 ```typescript
 // PartsListView.svelte
 interface PartsListViewProps {
@@ -448,32 +470,38 @@ interface PartsListViewEvents {
 ```
 
 **Preconditions**:
+
 - パーツデータ（`Candidates`）がロード済みであること
 - i18n リソースが初期化済みであること
 
 **Postconditions**:
+
 - スロット選択状態、フィルタ、並び替えがURL/LocalStorageに保存される
 - フィルタ済みパーツリストが正しく計算・表示される
 
 **Invariants**:
+
 - `currentSlot` は常に有効な `SlotType` 値を持つ（未選択状態は存在しない）
 - `filteredParts` は常に `currentSlot` に対応するパーツのみを含む
 
 #### SlotSelector
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: スロット選択UIを提供し、スロット切替イベントを発火
 - **Domain Boundary**: プレゼンテーション層（`/packages/web/src/lib/view/parts-list/`）
 - **Data Ownership**: なし（状態は親コンポーネントが管理）
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: `PartsListView`
 - **Outbound**: なし
 - **External**: `sveltestrap` - Bootstrap UIコンポーネント
 
-**Contract Definition**
+##### Contract Definition
 
 **Component Interface**:
+
 ```typescript
 // SlotSelector.svelte
 interface SlotSelectorProps {
@@ -492,21 +520,24 @@ interface SlotSelectorEvents {
 
 #### FilterPanel
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: スロット対応の属性フィルタUIを提供し、フィルタ条件の変更イベントを発火
 - **Domain Boundary**: プレゼンテーション層（`/packages/web/src/lib/view/parts-list/`）
 - **Data Ownership**: なし（状態は親コンポーネントが管理）
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: `PartsListView`
 - **Outbound**: `PartsFilterSet` (from `@ac6_assemble_tool/core`) - 有効属性の取得
 - **External**:
   - `sveltestrap` - Bootstrap UIコンポーネント
   - `i18next` - 多言語化
 
-**Contract Definition**
+##### Contract Definition
 
 **Component Interface**:
+
 ```typescript
 // FilterPanel.svelte
 interface FilterPanelProps {
@@ -524,26 +555,30 @@ interface FilterPanelEvents {
 **Preconditions**: `slot` が有効な `SlotType` であること
 
 **Postconditions**:
+
 - `filterChange` イベントが発火され、親コンポーネントがフィルタを適用する
 - 無効化されたフィルタが存在する場合、UIで明示される（エラー扱いはしない）
 
 #### PartsGrid / PartsList
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: フィルタ済みパーツをグリッド/リスト形式で表示し、お気に入り追加/削除を処理
 - **Domain Boundary**: プレゼンテーション層（`/packages/web/src/lib/view/parts-list/`）
 - **Data Ownership**: なし（表示のみ）
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: `PartsListView`
 - **Outbound**: `FavoriteStore` - お気に入り状態の参照
 - **External**:
   - `sveltestrap` - Bootstrap UIコンポーネント
   - `i18next` - 多言語化
 
-**Contract Definition**
+##### Contract Definition
 
 **Component Interface**:
+
 ```typescript
 // PartsGrid.svelte / PartsList.svelte
 interface PartsDisplayProps {
@@ -562,6 +597,7 @@ interface PartsDisplayEvents {
 **Preconditions**: `parts` が `slot` に対応するパーツのみを含むこと
 
 **Postconditions**:
+
 - パーツがグリッド/リスト形式で正しく表示される
 - お気に入りアイコンが状態に応じて表示される
 - 0件の場合、`EmptyState` が表示される
@@ -570,20 +606,23 @@ interface PartsDisplayEvents {
 
 #### FavoriteStore
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: スロット単位のお気に入り状態を管理し、IndexedDBへの永続化を担当
 - **Domain Boundary**: アプリケーション層（`/packages/web/src/lib/view/parts-list/stores/`）
 - **Data Ownership**: お気に入りデータ（スロット × パーツID）
 - **Transaction Boundary**: お気に入りの追加/削除は即座にIndexedDBに反映される
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: `PartsListView`, `PartsGrid/PartsList`
 - **Outbound**: `FavoritesDatabase` (Dexie)
 - **External**: `dexie` - IndexedDB抽象化ライブラリ
 
-**Contract Definition**
+##### Contract Definition
 
 **Service Interface**:
+
 ```typescript
 // favoriteStore.ts
 interface FavoriteStore {
@@ -617,35 +656,41 @@ interface Favorite {
 ```
 
 **Preconditions**:
+
 - IndexedDBが利用可能であること
 - `partsId` が有効なパーツIDであること
 
 **Postconditions**:
+
 - お気に入りの追加/削除がIndexedDBに永続化される
 - お気に入り状態がSvelteストアとして反応的に更新される
 
 **Invariants**:
+
 - 同じスロット × パーツIDの組み合わせは1つのみ存在する（重複登録不可）
 
 #### StateSerializer
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**:
   - URLパラメータ: スロット、フィルタ、並び替えのシリアライズ/デシリアライズ（共有用）
   - LocalStorage: 表示モード（grid/list）のシリアライズ/デシリアライズ（プライベート設定）
 - **Domain Boundary**: アプリケーション層（`/packages/web/src/lib/view/parts-list/`）
 - **Data Ownership**: シリアライゼーションロジック（データそのものは所有しない）
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: `PartsListView`
 - **Outbound**:
   - `PartsFilterSet` (from `@ac6_assemble_tool/core`)
   - `as-query-v2.ts` (from `@ac6_assemble_tool/core`) - 既存のシリアライゼーションパターンを参考
 - **External**: なし
 
-**Contract Definition**
+##### Contract Definition
 
 **Service Interface**:
+
 ```typescript
 // stateSerializer.ts
 interface StateSerializer {
@@ -679,14 +724,17 @@ type DeserializeError =
 ```
 
 **Preconditions**:
+
 - URLパラメータが有効な形式であること（デシリアライズ時）
 
 **Postconditions**:
+
 - 共有状態（スロット、フィルタ、並び替え）がURLパラメータに保存される
 - プライベート設定（表示モード）がLocalStorageに保存される
 - デシリアライズされた状態が正しく復元される、または適切なエラーが返される
 
 **Invariants**:
+
 - URLパラメータには共有用の状態のみが含まれる（表示モードは含まれない）
 - LocalStorageにはプライベート設定のみが含まれる（スロット、フィルタ、並び替えは含まれない）
 
@@ -694,20 +742,23 @@ type DeserializeError =
 
 #### PartsFilterSet (既存コンポーネント - 再利用)
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: パーツのフィルタリングロジックを提供（既存のアセンブリページで使用中）
 - **Domain Boundary**: ドメイン層（`/packages/core/src/assembly/filter/`）
 - **Data Ownership**: フィルタ条件の定義と適用ロジック
 - **Transaction Boundary**: なし（純粋関数）
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: `PartsListView`, `FilterPanel`, アセンブリページ
 - **Outbound**: `Candidates` (from `@ac6_assemble_tool/parts`)
 - **External**: なし
 
-**Contract Definition**
+##### Contract Definition
 
 **Service Interface**:
+
 ```typescript
 // filters.ts (既存)
 class PartsFilterSet {
@@ -755,14 +806,17 @@ interface EnableFilter {
 ```
 
 **Preconditions**:
+
 - `parts` が有効な `ACParts` 配列であること
 - `filters` が有効な `Filter` 配列であること
 
 **Postconditions**:
+
 - フィルタ条件を満たすパーツのみが返される
 - 属性を持たないパーツはフィルタ対象外として除外される
 
 **Invariants**:
+
 - フィルタ適用は純粋関数であり、元の配列を変更しない
 
 ## Data Models
@@ -792,12 +846,14 @@ interface EnableFilter {
   - createdAt: 作成日時
 
 **Business Rules & Invariants**:
+
 - スロット未選択状態は存在しない（初期表示で必ず1スロットが選択される）
 - フィルタ済みパーツは常に選択中スロットに対応するパーツのみを含む
 - お気に入りは同じスロット × パーツIDの組み合わせが重複しない
 - スロット切替時、新スロットで無効な条件は自動的に除外される（エラーにはしない）
 
 **Domain Events**:
+
 - `SlotSwitched`: スロットが切り替えられた
 - `FilterApplied`: フィルタが適用された
 - `FavoriteAdded`: お気に入りが追加された
@@ -845,15 +901,18 @@ erDiagram
 ```
 
 **Entity Relationships**:
+
 - `PartsListState` は `SlotType`, `PartsFilterSet`, `SortConfig` を持つ（1:1）
 - `SlotType` は複数の `ACParts` を含む（1:N）
 - `Favorite` は `SlotType` に属し、`ACParts` を参照する（N:1, N:1）
 
 **Referential Integrity Rules**:
+
 - `Favorite.partsId` は有効な `ACParts.id` を参照する
 - `Favorite` の削除時、参照されている `ACParts` は削除されない（カスケードなし）
 
 **Temporal Aspects**:
+
 - `Favorite.createdAt` でお気に入り追加日時を記録（ソート用）
 
 ### Physical Data Model
@@ -883,6 +942,7 @@ interface Favorite {
 ```
 
 **Index Definitions**:
+
 - `id`: 主キー（UUID）
 - `slot`: スロット単位でのクエリ最適化
 - `partsId`: パーツ単位でのクエリ最適化
@@ -915,6 +975,7 @@ interface URLState {
 ```
 
 **TTL and Compaction**:
+
 - LocalStorageにはviewModeのみを保存し、TTLは設定しない（永続的なユーザー設定）
 - IndexedDBのお気に入りにはTTLなし（ユーザーが明示的に削除するまで保持）
 
@@ -934,6 +995,7 @@ interface AssemblyNavigationParams {
 ```
 
 **Validation Rules**:
+
 - パラメータキーは `{SlotType}_parts` 形式であること
 - 値は有効なパーツIDのカンマ区切りリストであること
 - パーツIDは実際に存在するパーツを参照していること
@@ -941,6 +1003,7 @@ interface AssemblyNavigationParams {
 **Serialization Format**: カンマ区切りリスト (URL-encoded)
 
 **Cross-Service Data Management**:
+
 - パーツ一覧ページはフィルタ済みパーツのIDリストをURLパラメータで渡す
 - アセンブリページは受け取ったIDリストで母集団を制限し、その範囲でのみパーツ選択を許可
 - アセンブリページはフィルタUIを提供せず、ロック・ランダムなど組み立て機能のみを提供
@@ -961,6 +1024,7 @@ interface AssemblyNavigationParams {
 #### User Errors (クライアント側エラー)
 
 **Invalid URL Parameters**:
+
 - **発生条件**: URLパラメータが不正な形式、または未知のスロット名を含む
 - **Response**:
   - デフォルト状態（例: `slot=head`, フィルタなし）にフォールバック
@@ -968,6 +1032,7 @@ interface AssemblyNavigationParams {
   - エラーログ出力（`warn` レベル）
 
 **Invalid Filter Condition**:
+
 - **発生条件**: フィルタ条件が不正な形式（例: `weight:invalid:5000`）
 - **Response**:
   - 該当フィルタのみスキップし、他のフィルタは適用
@@ -977,6 +1042,7 @@ interface AssemblyNavigationParams {
 #### System Errors (サーバー/インフラ側エラー)
 
 **IndexedDB Access Failure**:
+
 - **発生条件**: IndexedDBへのアクセスが失敗（ブラウザ制限、ストレージ不足など）
 - **Response**:
   - お気に入り機能を一時的に無効化
@@ -985,6 +1051,7 @@ interface AssemblyNavigationParams {
   - グレースフルデグラデーション: お気に入りなしで一覧表示を継続
 
 **Parts Data Load Failure**:
+
 - **発生条件**: パーツデータのロードが失敗
 - **Response**:
   - エラーページ表示
@@ -994,6 +1061,7 @@ interface AssemblyNavigationParams {
 #### Business Logic Errors (ビジネスルール違反)
 
 **Filter Result is Empty**:
+
 - **発生条件**: フィルタ条件の結果が0件
 - **Response**:
   - EmptyState コンポーネントを表示
@@ -1002,6 +1070,7 @@ interface AssemblyNavigationParams {
   - エラー扱いはしない（`info` レベルログ）
 
 **Slot Switch Invalidates Filters**:
+
 - **発生条件**: スロット切替により一部のフィルタ条件が無効化
 - **Response**:
   - 無効化された条件をUIで明示（通知バナー）
@@ -1012,6 +1081,7 @@ interface AssemblyNavigationParams {
 ### Monitoring
 
 **Error Tracking**:
+
 - **Structured Logging**: すべてのエラーを構造化ログとして出力（JSON形式）
 - **Log Levels**:
   - `info`: フィルタ結果0件、スロット切替による条件無効化
@@ -1020,11 +1090,13 @@ interface AssemblyNavigationParams {
   - `fatal`: パーツデータロード失敗
 
 **Health Monitoring**:
+
 - IndexedDB の可用性チェック（初期化時）
 - パーツデータのロード成功率
 - フィルタ適用のパフォーマンス（1秒以内を監視）
 
 **User Experience Metrics**:
+
 - フィルタ結果0件の発生率
 - スロット切替による条件無効化の発生率
 - お気に入り機能の利用率
@@ -1125,36 +1197,43 @@ interface AssemblyNavigationParams {
 ## Security Considerations
 
 **Authentication & Authorization**:
+
 - 本機能は公開Webアプリであり、認証・認可は不要
 - お気に入りデータはブラウザローカル（IndexedDB）に保存され、サーバーには送信されない
 
 **Data Protection**:
+
 - お気に入りデータは個人のブラウザにのみ保存され、外部に送信されない
 - URLパラメータにはフィルタ条件のみが含まれ、個人情報は含まれない
 - LocalStorageのデータは永続的に保存される（TTL機能は将来拡張として検討可能）
 
 **Input Validation**:
+
 - URL パラメータのデシリアライズ時に Zod によるスキーマバリデーションを実施
 - 無効な入力はデフォルト状態にフォールバックし、エラーログを出力
 - フィルタ条件の値は型安全性を確保し、SQLインジェクション等の脅威を排除
 
 **XSS Prevention**:
+
 - すべてのユーザー入力（フィルタ条件、パーツ名など）はSvelteのエスケープ機能で自動的にサニタイズ
 - `{@html}` 構文は使用しない
 
 **CSRF Protection**:
+
 - 本機能はフォーム送信やAPI呼び出しを行わないため、CSRF対策は不要
 - すべての操作はクライアントサイドで完結
 
 ## Performance & Scalability
 
 **Target Metrics**:
+
 - **初回表示**: 3秒以内（パーツデータロード + 初期レンダリング）
 - **フィルタ適用**: 1秒以内（フィルタ計算 + リスト更新）
 - **スロット切替**: 1秒以内（条件引き継ぎ + リスト更新）
 - **お気に入り操作**: 500ms以内（IndexedDB読み書き + UI更新）
 
 **Measurement Strategies**:
+
 - Lighthouse による Core Web Vitals 測定
 - ブラウザ DevTools の Performance プロファイラによる計測
 - 構造化ログによるパフォーマンスメトリクスの記録
