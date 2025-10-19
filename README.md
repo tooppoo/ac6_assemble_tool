@@ -101,18 +101,6 @@ packages/
 
 ### 依存関係図
 
-```txt
-shared (技術的インフラ: logger等)
-  ↑
-  ├── core (ビジネスロジック: AC6アセンブリ計算エンジン)
-  │    ↑
-  │    └── web (UI: フロントエンド)
-  │
-  └── parts (ドメインデータ: パーツ定義)
-       ↑
-       └── core
-```
-
 ```mermaid
 ---
   config:
@@ -135,6 +123,7 @@ core --> shared
 web --> core
 core --> parts
 parts --> shared
+web --> shared
 ```
 
 ## 開発環境のセットアップ
