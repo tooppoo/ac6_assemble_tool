@@ -14,7 +14,6 @@ export function roundUpByRealPart(posFromLeft: number): (x: number) => number {
     if (allRestDigitsAreZero) return x
 
     const index = strAbsX.length - posFromLeft
-
     const floated = x * Math.pow(0.1, index)
 
     return Math.ceil(floated) * Math.pow(10, index)

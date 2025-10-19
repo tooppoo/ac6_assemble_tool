@@ -1,6 +1,8 @@
 /**
  * 起動時パーツID検証
  */
+import { logger } from '@ac6_assemble_tool/shared/logger'
+
 import { armUnits, leftArmUnits } from '../arm-units'
 import { arms } from '../arms'
 import { backUnits, leftBackUnits } from '../back-units'
@@ -17,7 +19,6 @@ import {
   armNotEquipped,
   backNotEquipped,
 } from '../not-equipped'
-import { logger } from '../utils/logger'
 
 import { DuplicatePartIdError, validatePartIdUniqueness } from './id-validator'
 

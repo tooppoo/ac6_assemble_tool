@@ -5,7 +5,6 @@ import {
   enableOrNot,
   type FilterByProp,
 } from '#core/assembly/filter/filter-type'
-import { BaseCustomError } from '#core/utils/error'
 
 import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
@@ -18,6 +17,7 @@ import {
   type Candidates,
   type CandidatesKey,
 } from '@ac6_assemble_tool/parts/types/candidates'
+import { BaseCustomError } from '@ac6_assemble_tool/shared/error'
 
 type FilterBuilder<A, T> = Readonly<{
   name: string

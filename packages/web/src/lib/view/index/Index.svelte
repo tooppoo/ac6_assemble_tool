@@ -6,7 +6,6 @@
   import i18n from '$lib/i18n/define'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
   import { appVersion } from '$lib/utils/app-version'
-  import { logger } from '$lib/utils/logger'
 
   import {
     type Assembly,
@@ -31,6 +30,7 @@
     defineOrder,
   } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
+  import { logger } from '@ac6_assemble_tool/shared/logger'
   import { onMount } from 'svelte'
 
   import FilterByPartsOffCanvas from './filter/FilterByPartsOffCanvas.svelte'

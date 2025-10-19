@@ -19,9 +19,11 @@
     "lint": "turbo run lint",
     "format": "turbo run format",
     "check-types": "turbo run check-types",
+    "changeset": "changeset",
     "core": "pnpm --filter @ac6_assemble_tool/core",
     "web": "pnpm --filter @ac6_assemble_tool/web",
     "parts": "pnpm --filter @ac6_assemble_tool/parts",
+    "shared": "pnpm --filter @ac6_assemble_tool/shared",
     "docs": "pnpm --filter @ac6_assemble_tool/docs"
   },
   "devDependencies": {
@@ -65,6 +67,7 @@
     "packages/web",
     "packages/spec",
     "packages/eslint",
-    "packages/docs"
+    "packages/docs",
+    "packages/shared"
   ]
 }

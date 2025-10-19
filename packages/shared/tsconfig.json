@@ -1,0 +1,9 @@
+{
+  "extends": "@ac6_assemble_tool/tsconfig/base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "types": ["@ac6_assemble_tool/spec/lib/vitest"]
+  },
+  "include": ["src/**/*"]
+}

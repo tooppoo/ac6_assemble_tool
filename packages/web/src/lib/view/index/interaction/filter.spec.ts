@@ -11,11 +11,11 @@ import {
   genCandidates,
   genFilterApplyContext,
 } from '@ac6_assemble_tool/core/spec-helper/property-generator'
-import { random } from '@ac6_assemble_tool/core/utils/array'
 import { booster, tank } from '@ac6_assemble_tool/parts/types/base/category'
 import { notEquipped } from '@ac6_assemble_tool/parts/types/base/classification'
 import type { Unit } from '@ac6_assemble_tool/parts/units'
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
+import { random } from '@ac6_assemble_tool/shared/array'
 import { fc, it } from '@fast-check/vitest'
 import { beforeEach, describe, expect } from 'vitest'
 

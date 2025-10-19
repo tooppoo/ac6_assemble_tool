@@ -1,7 +1,7 @@
-import { random, sum } from '#core/utils/array'
-
 import { fc, it as fcit } from '@fast-check/vitest'
 import { describe, expect, it } from 'vitest'
+
+import { random, sum } from '@ac6_assemble_tool/shared/array'
 
 describe('utils/array', () => {
   describe(sum.name, () => {
