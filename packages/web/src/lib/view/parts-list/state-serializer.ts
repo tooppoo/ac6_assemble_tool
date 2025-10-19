@@ -1,6 +1,7 @@
+import { ok, err, type Result } from '$lib/utils/result'
+
 import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
-import { ok, err, type Result } from '$lib/utils/result'
 
 /**
  * 表示モード（grid/list）

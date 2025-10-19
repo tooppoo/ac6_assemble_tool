@@ -1,10 +1,11 @@
+import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+
 import {
 	StateSerializer,
 	type SharedState,
 	type ViewMode,
 } from './state-serializer'
-import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 
 describe('StateSerializer', () => {
 	let serializer: StateSerializer
