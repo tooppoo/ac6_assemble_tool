@@ -5,8 +5,9 @@
 
 
 
-- [#868](https://github.com/tooppoo/ac6_assemble_tool/pull/868) [`2e56eca`](https://github.com/tooppoo/ac6_assemble_tool/commit/2e56eca12ed43cb8fd86fcab687ea37975238c6b) Thanks [@tooppoo](https://github.com/tooppoo)! - - 内部構造を整理
-    - 共有パッケージを作って依存を整理
+- [#868](https://github.com/tooppoo/ac6_assemble_tool/pull/868) [`2e56eca`](https://github.com/tooppoo/ac6_assemble_tool/commit/2e56eca12ed43cb8fd86fcab687ea37975238c6b) Thanks [@tooppoo](https://github.com/tooppoo)!
+    - 内部構造を整理
+        - 共有パッケージを作って依存を整理    
 
 ## 2.0.1
 
