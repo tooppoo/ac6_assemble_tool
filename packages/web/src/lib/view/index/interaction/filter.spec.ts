@@ -11,7 +11,7 @@ import {
   genCandidates,
   genFilterApplyContext,
 } from '@ac6_assemble_tool/core/spec-helper/property-generator'
-import { random } from '@ac6_assemble_tool/core/utils/array'
+import { random } from '@ac6_assemble_tool/shared/array'
 import { booster, tank } from '@ac6_assemble_tool/parts/types/base/category'
 import { notEquipped } from '@ac6_assemble_tool/parts/types/base/classification'
 import type { Unit } from '@ac6_assemble_tool/parts/units'

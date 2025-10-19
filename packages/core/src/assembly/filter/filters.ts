@@ -5,7 +5,7 @@ import {
   enableOrNot,
   type FilterByProp,
 } from '#core/assembly/filter/filter-type'
-import { BaseCustomError } from '#core/utils/error'
+import { BaseCustomError } from '@ac6_assemble_tool/shared/error'
 
 import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'

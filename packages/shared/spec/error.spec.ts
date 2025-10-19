@@ -1,4 +1,4 @@
-import { BaseCustomError } from '#core/utils/error'
+import { BaseCustomError } from '@ac6_assemble_tool/shared/error'
 
 import { fc, it } from '@fast-check/vitest'
 import { describe, expect } from 'vitest'

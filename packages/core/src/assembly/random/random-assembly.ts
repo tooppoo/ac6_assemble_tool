@@ -1,5 +1,5 @@
 import type { Assembly } from '#core/assembly/assembly'
-import { BaseCustomError } from '#core/utils/error'
+import { BaseCustomError } from '@ac6_assemble_tool/shared/error'
 
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 

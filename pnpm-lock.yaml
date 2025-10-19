@@ -160,6 +160,9 @@ importers:
       '@ac6_assemble_tool/eslint':
         specifier: workspace:1.0.0
         version: link:../eslint
+      '@ac6_assemble_tool/spec':
+        specifier: workspace:1.0.0
+        version: link:../spec
       '@ac6_assemble_tool/tsconfig':
         specifier: workspace:1.0.0
         version: link:../tsconfig

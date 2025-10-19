@@ -1,5 +1,5 @@
 import { LockedParts } from '#core/assembly/random/lock'
-import { random } from '#core/utils/array'
+import { random } from '@ac6_assemble_tool/shared/array'
 
 import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'

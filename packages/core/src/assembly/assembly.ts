@@ -1,4 +1,4 @@
-import { sum } from '#core/utils/array'
+import { sum } from '@ac6_assemble_tool/shared/array'
 
 import type * as ArmUnits from '@ac6_assemble_tool/parts/arm-units'
 import type { Arms } from '@ac6_assemble_tool/parts/arms'

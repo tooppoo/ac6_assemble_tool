@@ -1,4 +1,4 @@
-import { random, sum } from '#core/utils/array'
+import { random, sum } from '@ac6_assemble_tool/shared/array'
 
 import { fc, it as fcit } from '@fast-check/vitest'
 import { describe, expect, it } from 'vitest'
