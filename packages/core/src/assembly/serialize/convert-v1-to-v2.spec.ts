@@ -1,4 +1,3 @@
-import { convertV1ToV2 } from '#core/assembly/serialize/convert-v1-to-v2'
 
 import type { ArmUnit, LeftArmUnit } from '@ac6_assemble_tool/parts/arm-units'
 import type { Arms } from '@ac6_assemble_tool/parts/arms'
@@ -15,6 +14,8 @@ import type { Head } from '@ac6_assemble_tool/parts/heads'
 import type { Legs } from '@ac6_assemble_tool/parts/legs'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 import { describe, it, expect } from 'vitest'
+
+import { convertV1ToV2 } from './convert-v1-to-v2'
 
 // 共通テストデータ - describe外で定義
 const mockCandidates: Candidates = {

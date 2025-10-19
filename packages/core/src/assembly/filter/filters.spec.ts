@@ -1,11 +1,4 @@
 import {
-  assumeConstraintLegsAndBooster,
-  excludeNotEquipped,
-  notUseHanger,
-  onlyPropertyIncludedInList,
-} from '#core/assembly/filter/filters'
-
-import {
   armNotEquipped,
   backNotEquipped,
   boosterNotEquipped,
@@ -18,6 +11,13 @@ import { fc, it } from '@fast-check/vitest'
 import { uniq } from 'lodash-es'
 import sinon from 'sinon'
 import { describe, expect } from 'vitest'
+
+import {
+  assumeConstraintLegsAndBooster,
+  excludeNotEquipped,
+  notUseHanger,
+  onlyPropertyIncludedInList,
+} from './filters'
 
 import {
   genAssemblyKey,

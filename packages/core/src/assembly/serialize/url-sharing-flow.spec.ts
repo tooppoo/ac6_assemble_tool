@@ -1,11 +1,12 @@
-import { createAssembly, type RawAssembly } from '#core/assembly/assembly'
-import { assemblyToSearchV2 } from '#core/assembly/serialize/as-query-v2'
-import { convertV1ToV2 } from '#core/assembly/serialize/convert-v1-to-v2'
-import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
-
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import fc from 'fast-check'
 import { describe, it, expect } from 'vitest'
+
+import { createAssembly, type RawAssembly } from '../assembly'
+
+import { assemblyToSearchV2 } from './as-query-v2'
+import { convertV1ToV2 } from './convert-v1-to-v2'
+import { deserializeAssembly } from './deserialize-assembly'
 
 import { genAssembly } from '#spec-helper/property-generator'
 

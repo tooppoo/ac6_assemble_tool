@@ -1,10 +1,10 @@
-import { type PartsFilter } from '#core/assembly/filter/base'
-import { PartsFilterSet } from '#core/assembly/filter/filter-set'
-import { enableOrNot, type FilterType } from '#core/assembly/filter/filter-type'
-
 import { fc, it } from '@fast-check/vitest'
 import sinon from 'sinon'
 import { afterEach, describe, expect } from 'vitest'
+
+import { type PartsFilter } from './base'
+import { PartsFilterSet } from './filter-set'
+import { enableOrNot, type FilterType } from './filter-type'
 
 import {
   genCandidates,

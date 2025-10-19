@@ -1,5 +1,3 @@
-import { type AssemblyKey } from '#core/assembly/assembly'
-import { searchToAssemblyV2 } from '#core/assembly/serialize/as-query-v2'
 
 import type { ArmUnit, LeftArmUnit } from '@ac6_assemble_tool/parts/arm-units'
 import type { Arms } from '@ac6_assemble_tool/parts/arms'
@@ -15,8 +13,9 @@ import type { Generator } from '@ac6_assemble_tool/parts/generators'
 import type { Head } from '@ac6_assemble_tool/parts/heads'
 import type { Legs } from '@ac6_assemble_tool/parts/legs'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
-import fc from 'fast-check'
 import { describe, it, expect } from 'vitest'
+
+import { deserializeAssembly } from './deserialize-assembly'
 
 // 共通テストデータ - describe外で定義
 const mockCandidates: Candidates = {
@@ -76,8 +75,8 @@ const mockCandidates: Candidates = {
   ],
 }
 
-describe('v2形式URLデシリアライザー', () => {
-  describe('searchToAssemblyV2', () => {
+describe('機体構成デシリアライザー統合', () => {
+  describe('deserializeAssembly', () => {
     it('v2形式URLから機体構成を復元できる', () => {
       const params = new URLSearchParams({
         v: '2',
@@ -95,7 +94,7 @@ describe('v2形式URLデシリアライザー', () => {
         e: 'EXP001',
       })
 
-      const result = searchToAssemblyV2(params, mockCandidates)
+      const result = deserializeAssembly(params, mockCandidates)
 
       // 複数のexpectを1つにまとめて、全ての不一致を一度に確認
       expect({
@@ -127,132 +126,113 @@ describe('v2形式URLデシリアライザー', () => {
       })
     })
 
-    it('存在しないIDの場合は配列の最初の要素をフォールバックとして使用', () => {
-      const params = new URLSearchParams({
-        v: '2',
-        h: 'HD999', // 存在しないID
-        c: 'CR001',
-        a: 'AR001',
-        l: 'LG001',
-        b: 'BS001',
-        f: 'FCS001',
-        g: 'GN001',
-        e: 'EXP001',
-        rau: 'AU001',
-        lau: 'AU001',
-        rbu: 'BU001',
-        lbu: 'BU001',
+    it('v1形式URLを自動的にv2形式に変換して機体構成を復元できる', () => {
+      const v1Params = new URLSearchParams({
+        rau: '0', // AU001
+        lau: '1', // AU003
+        rbu: '0', // BU001
+        lbu: '1', // BU003
+        h: '0', // HD001
+        c: '1', // CR002
+        a: '0', // AR001
+        l: '0', // LG001
+        b: '0', // BS001
+        f: '0', // FCS001
+        g: '0', // GN001
+        e: '0', // EXP001
       })
 
-      const result = searchToAssemblyV2(params, mockCandidates)
+      const result = deserializeAssembly(v1Params, mockCandidates)
 
-      expect(result.head.id).toBe('HD001')
-    })
-
-    it('パラメータが欠けている場合は配列の最初の要素を使用', () => {
-      const params = new URLSearchParams({
-        v: '2',
-        // headパラメータなし
-        c: 'CR001',
-        a: 'AR001',
-        l: 'LG001',
-        b: 'BS001',
-        f: 'FCS001',
-        g: 'GN001',
-        e: 'EXP001',
-        rau: 'AU001',
-        lau: 'AU001',
-        rbu: 'BU001',
-        lbu: 'BU001',
+      expect({
+        rightArmUnit: result.rightArmUnit.id,
+        leftArmUnit: result.leftArmUnit.id,
+        rightBackUnit: result.rightBackUnit.id,
+        leftBackUnit: result.leftBackUnit.id,
+        head: result.head.id,
+        core: result.core.id,
+        arms: result.arms.id,
+        legs: result.legs.id,
+        booster: result.booster.id,
+        fcs: result.fcs.id,
+        generator: result.generator.id,
+        expansion: result.expansion.id,
+      }).toEqual({
+        rightArmUnit: 'AU001',
+        leftArmUnit: 'AU003',
+        rightBackUnit: 'BU001',
+        leftBackUnit: 'BU003',
+        head: 'HD001',
+        core: 'CR002',
+        arms: 'AR001',
+        legs: 'LG001',
+        booster: 'BS001',
+        fcs: 'FCS001',
+        generator: 'GN001',
+        expansion: 'EXP001',
       })
-
-      const result = searchToAssemblyV2(params, mockCandidates)
-
-      expect(result.head.id).toBe('HD001')
     })
 
-    // Property-based test: 複数の存在しないIDが全てフォールバックする
-    it('任意の組み合わせで存在しないIDを指定した場合、全てフォールバック（配列の最初の要素）になる', () => {
-      const slotToPrefix: Record<AssemblyKey, string> = {
-        rightArmUnit: 'AU',
-        leftArmUnit: 'AU',
-        rightBackUnit: 'BU',
-        leftBackUnit: 'BU',
-        head: 'HD',
-        core: 'CR',
-        arms: 'AR',
-        legs: 'LG',
-        booster: 'BS',
-        fcs: 'FCS',
-        generator: 'GN',
-        expansion: 'EXP',
-      }
+    it('空のURLSearchParamsの場合は各配列の最初の要素を使用', () => {
+      const params = new URLSearchParams()
 
-      const slotToParamKey: Record<AssemblyKey, string> = {
-        rightArmUnit: 'rau',
-        leftArmUnit: 'lau',
-        rightBackUnit: 'rbu',
-        leftBackUnit: 'lbu',
-        head: 'h',
-        core: 'c',
-        arms: 'a',
-        legs: 'l',
-        booster: 'b',
-        fcs: 'f',
-        generator: 'g',
-        expansion: 'e',
-      }
+      const result = deserializeAssembly(params, mockCandidates)
 
-      // ランダムなスロットの組み合わせを選択
-      const genInvalidSlots = fc.uniqueArray(
-        fc.constantFrom<AssemblyKey>(
-          'rightArmUnit',
-          'leftArmUnit',
-          'rightBackUnit',
-          'leftBackUnit',
-          'head',
-          'core',
-          'arms',
-          'legs',
-          'booster',
-          'fcs',
-          'generator',
-          'expansion',
-        ),
-        { minLength: 1, maxLength: 12 },
-      )
-
-      fc.assert(
-        fc.property(genInvalidSlots, (invalidSlots) => {
-          const baseParams: Record<string, string> = { v: '2' }
-
-          // 正しいIDでベースパラメータを構築
-          Object.keys(slotToParamKey).forEach((slot) => {
-            const key = slotToParamKey[slot as AssemblyKey]
-            baseParams[key] = mockCandidates[slot as AssemblyKey][0].id
-          })
-
-          // 選択されたスロットに存在しないIDを設定
-          const invalidIds: Record<string, string> = {}
-          invalidSlots.forEach((slot) => {
-            const prefix = slotToPrefix[slot]
-            const paramKey = slotToParamKey[slot]
-            // 固定の存在しないID（範囲外）を使用
-            invalidIds[paramKey] = `${prefix}999`
-          })
-
-          const params = new URLSearchParams({ ...baseParams, ...invalidIds })
-          const result = searchToAssemblyV2(params, mockCandidates)
-
-          // 存在しないIDを指定したスロットが全てフォールバック（最初の要素）になることを検証
-          invalidSlots.forEach((slot) => {
-            const expected = mockCandidates[slot][0].id
-            const actual = result[slot].id
-            expect(actual).toBe(expected)
-          })
-        }),
-        { numRuns: 100 },
-      )
+      expect({
+        rightArmUnit: result.rightArmUnit.id,
+        leftArmUnit: result.leftArmUnit.id,
+        rightBackUnit: result.rightBackUnit.id,
+        leftBackUnit: result.leftBackUnit.id,
+        head: result.head.id,
+        core: result.core.id,
+        arms: result.arms.id,
+        legs: result.legs.id,
+        booster: result.booster.id,
+        fcs: result.fcs.id,
+        generator: result.generator.id,
+        expansion: result.expansion.id,
+      }).toEqual({
+        rightArmUnit: 'AU001',
+        leftArmUnit: 'AU001',
+        rightBackUnit: 'BU001',
+        leftBackUnit: 'BU001',
+        head: 'HD001',
+        core: 'CR001',
+        arms: 'AR001',
+        legs: 'LG001',
+        booster: 'BS001',
+        fcs: 'FCS001',
+        generator: 'GN001',
+        expansion: 'EXP001',
+      })
     })
+
+    // Parameterized test: すべてのキーで動作を検証
+    it.each([
+      { key: 'rau', paramKey: 'rau', id: 'AU002', field: 'rightArmUnit' },
+      { key: 'lau', paramKey: 'lau', id: 'AU003', field: 'leftArmUnit' },
+      { key: 'rbu', paramKey: 'rbu', id: 'BU002', field: 'rightBackUnit' },
+      { key: 'lbu', paramKey: 'lbu', id: 'BU003', field: 'leftBackUnit' },
+      { key: 'h', paramKey: 'h', id: 'HD002', field: 'head' },
+      { key: 'c', paramKey: 'c', id: 'CR002', field: 'core' },
+      { key: 'a', paramKey: 'a', id: 'AR002', field: 'arms' },
+      { key: 'l', paramKey: 'l', id: 'LG002', field: 'legs' },
+      { key: 'b', paramKey: 'b', id: 'BS002', field: 'booster' },
+      { key: 'f', paramKey: 'f', id: 'FCS002', field: 'fcs' },
+      { key: 'g', paramKey: 'g', id: 'GN002', field: 'generator' },
+      { key: 'e', paramKey: 'e', id: 'EXP002', field: 'expansion' },
+    ] as const)(
+      'v2形式: キー "$key" で指定したパーツ $id が $field に設定される',
+      ({ paramKey, id, field }) => {
+        const params = new URLSearchParams({
+          v: '2',
+          [paramKey]: id,
+        })
+
+        const result = deserializeAssembly(params, mockCandidates)
+
+        expect(result[field].id).toBe(id)
+      },
+    )
   })
 })
