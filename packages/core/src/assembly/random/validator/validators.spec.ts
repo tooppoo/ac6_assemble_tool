@@ -1,4 +1,3 @@
-
 import type { LeftArmUnit, ArmUnit } from '@ac6_assemble_tool/parts/arm-units'
 import {
   type ArmNotEquipped,

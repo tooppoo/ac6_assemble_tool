@@ -4,10 +4,7 @@ import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import { ulid } from 'ulid'
 import { describe, it, expect, beforeEach } from 'vitest'
 
-import {
-  setupDataBase,
-  TEST_ONLY_resetDataBase,
-} from './indexed-db'
+import { setupDataBase, TEST_ONLY_resetDataBase } from './indexed-db'
 import { IndexedDbRepository } from './indexed-db-repository'
 
 describe('IndexedDBストレージフロー統合テスト', () => {
