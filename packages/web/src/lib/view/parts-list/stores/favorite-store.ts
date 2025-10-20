@@ -1,9 +1,8 @@
-import { Result, type Result as ResultType } from '@ac6_assemble_tool/shared/result'
 import { serializeError } from '$lib/utils/error-serializer'
 
 import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
-import { ok, err, type Result } from '@ac6_assemble_tool/shared/result'
+import { Result, type ResultType } from '@ac6_assemble_tool/shared/result'
 import { Dexie, type EntityTable } from 'dexie'
 import { ulid } from 'ulid'
 

@@ -83,7 +83,10 @@ describe('FavoriteStore', () => {
       const headFavorites = await store.getFavorites('head')
       const coreFavorites = await store.getFavorites('core')
 
-      if (headFavorites.type === 'Success' && coreFavorites.type === 'Success') {
+      if (
+        headFavorites.type === 'Success' &&
+        coreFavorites.type === 'Success'
+      ) {
         expect(headFavorites.value.has('AC-HEAD-001')).toBe(true)
         expect(coreFavorites.value.has('AC-HEAD-001')).toBe(true)
       }
@@ -184,7 +187,10 @@ describe('FavoriteStore', () => {
       const headFavorites = await store.getFavorites('head')
       const coreFavorites = await store.getFavorites('core')
 
-      if (headFavorites.type === 'Success' && coreFavorites.type === 'Success') {
+      if (
+        headFavorites.type === 'Success' &&
+        coreFavorites.type === 'Success'
+      ) {
         expect(headFavorites.value.size).toBe(0)
         expect(coreFavorites.value.size).toBe(1) // coreは削除されない
       }
