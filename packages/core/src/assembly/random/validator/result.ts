@@ -1,4 +1,5 @@
 import type { Assembly } from '#core/assembly/assembly'
+
 import { Result, type ResultType } from '@ac6_assemble_tool/shared/result'
 
 /**
