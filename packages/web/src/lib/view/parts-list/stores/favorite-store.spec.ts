@@ -1,10 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
-import {
-  FavoriteStore,
-  FavoritesDatabase,
-  TEST_ONLY_resetDatabase,
-} from './favorite-store'
+import { FavoriteStore, FavoritesDatabase } from './favorite-store'
 
 describe('FavoritesDatabase', () => {
   let db: FavoritesDatabase
@@ -17,7 +13,7 @@ describe('FavoritesDatabase', () => {
 
   afterEach(async () => {
     await db.close()
-    TEST_ONLY_resetDatabase()
+    await db.delete()
   })
 
   describe('スキーマ定義', () => {
@@ -49,7 +45,6 @@ describe('FavoriteStore', () => {
 
   afterEach(async () => {
     await store.close()
-    TEST_ONLY_resetDatabase()
   })
 
   describe('addFavorite', () => {

@@ -212,13 +212,3 @@ export class FavoriteStore {
     await this.db.close()
   }
 }
-
-/**
- * テスト専用: DBインスタンスをリセット
- * 本番コードでは使用しないこと
- */
-export const TEST_ONLY_resetDatabase = (): void => {
-  if (process.env.NODE_ENV === 'test') {
-    // テスト時のみリセットを許可
-  }
-}
