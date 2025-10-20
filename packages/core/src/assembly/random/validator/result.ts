@@ -1,4 +1,5 @@
 import type { Assembly } from '#core/assembly/assembly'
+
 import type { Result } from '@ac6_assemble_tool/shared/result'
 import { ok, err } from '@ac6_assemble_tool/shared/result'
 
@@ -38,6 +39,12 @@ export const failure = (errors: Error[]): ValidationResult => ({
       return this
     }
     // 両方失敗の場合はエラーをマージ
-    return failure([...errors, ...other.fold((e) => e, () => [])])
+    return failure([
+      ...errors,
+      ...other.fold(
+        (e) => e,
+        () => [],
+      ),
+    ])
   },
 })

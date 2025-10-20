@@ -1,10 +1,9 @@
-import { ok, err, type Result } from '@ac6_assemble_tool/shared/result'
-
 import {
   type CandidatesKey,
   CANDIDATES_KEYS,
 } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
+import { ok, err, type Result } from '@ac6_assemble_tool/shared/result'
 
 /**
  * 表示モード（grid/list）

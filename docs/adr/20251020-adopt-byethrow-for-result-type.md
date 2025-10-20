@@ -8,6 +8,7 @@
 技術ストーリー: tech-architect エージェントによる技術評価セッション
 
 **実装サマリー**:
+
 - 使用バージョン: `@praha/byethrow@0.6.3` (npmレジストリで公開されている最新版)
 - 移行完了: web（2ファイル）、core（ValidationResult）、shared（互換レイヤー）
 - テスト結果: 全434テスト通過（web: 108、core: 285、parts: 41）
@@ -63,6 +64,7 @@
 ```
 
 **バージョン固定の根拠**:
+
 - セマンティックバージョニングに従い、メジャー・マイナー・パッチ番号を具体的に指定（AGENTS.md L349）
 - キャレット（^）やチルダ（~）の範囲指定は使用しない
 
@@ -74,6 +76,7 @@
 4. **Phase 4**: 独自実装を削除（`web/src/lib/utils/result.ts`, `core/src/assembly/random/validator/result.ts`）
 
 **配置場所**: `packages/shared` パッケージ
+
 - 理由: ADR 20251018 で確立した「技術的インフラレイヤー」として、logger と同様に配置
 
 ## 影響評価
@@ -106,14 +109,16 @@
 ### byethrow@0.8.0 を採用（採用）
 
 byethrowは`@praha-inc`社が開発する型安全なエラーハンドリングライブラリ。
-公式リポジトリ: https://github.com/praha-inc/byethrow
+公式リポジトリ: <https://github.com/praha-inc/byethrow>
 
 **主要機能**:
+
 - Result型の基本操作（ok, err, isOk, isErr）
 - 関数型プログラミング機能（pipe, andThen, orElse, unwrapOr）
 - TypeScript完全サポート（型推論が強力）
 
 **ベンチマーク**:
+
 - バンドルサイズ: 1.7KB (gzip)
 - TypeScript型チェック: 完全サポート
 - ブラウザ互換性: モダンブラウザ全対応
@@ -134,6 +139,7 @@ byethrowは`@praha-inc`社が開発する型安全なエラーハンドリング
 packages/web/src/lib/utils/result.ts (23行) をプロジェクト標準とし、coreから参照。
 
 **実装概要**:
+
 - シンプルなユニオン型（`Ok<T> | Err<E>`）
 - 基本的な `ok()` / `err()` ヘルパー関数のみ
 
@@ -150,6 +156,7 @@ packages/web/src/lib/utils/result.ts (23行) をプロジェクト標準とし�
 packages/core/src/assembly/random/validator/result.ts (約100行) をプロジェクト標準とし、webから参照。
 
 **実装概要**:
+
 - クラスベース型（`ValidationSuccess` / `ValidationFailure`）
 - `fold()` メソッドでパターンマッチング
 - `concat()` で複数エラーの集約
