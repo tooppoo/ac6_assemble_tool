@@ -9,7 +9,7 @@ import { ulid } from 'ulid'
  * お気に入りパーツを表すエンティティ
  */
 export interface Favorite {
-  id: string // UUID
+  id: string // ULID
   slot: CandidatesKey // スロット
   partsId: string // パーツID
   createdAt: number // 作成日時（UNIXタイムスタンプ）
