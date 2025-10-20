@@ -1,3 +1,4 @@
+import { Result, type Result as ResultType } from '@ac6_assemble_tool/shared/result'
 import { serializeError } from '$lib/utils/error-serializer'
 
 import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
@@ -55,7 +56,7 @@ export class FavoriteStore {
   async addFavorite(
     slot: CandidatesKey,
     partsId: string,
-  ): Promise<Result<void, FavoriteError>> {
+  ): Promise<ResultType<void, FavoriteError>> {
     try {
       // 既存のお気に入りをチェック
       const existing = await this.db.favorites
@@ -65,7 +66,7 @@ export class FavoriteStore {
 
       if (existing) {
         // 既に存在する場合は何もしない
-        return ok(undefined)
+        return Result.succeed(undefined)
       }
 
       // 新規追加
@@ -80,7 +81,7 @@ export class FavoriteStore {
 
       logger.info('Favorite added', { slot, partsId })
 
-      return ok(undefined)
+      return Result.succeed(undefined)
     } catch (error) {
       logger.error('Failed to add favorite', {
         slot,
@@ -88,7 +89,7 @@ export class FavoriteStore {
         error: serializeError(error),
       })
 
-      return err({
+      return Result.fail({
         type: 'database_error',
         message: serializeError(error),
       })
@@ -101,7 +102,7 @@ export class FavoriteStore {
   async removeFavorite(
     slot: CandidatesKey,
     partsId: string,
-  ): Promise<Result<void, FavoriteError>> {
+  ): Promise<ResultType<void, FavoriteError>> {
     try {
       await this.db.favorites
         .where('[slot+partsId]')
@@ -110,7 +111,7 @@ export class FavoriteStore {
 
       logger.info('Favorite removed', { slot, partsId })
 
-      return ok(undefined)
+      return Result.succeed(undefined)
     } catch (error) {
       logger.error('Failed to remove favorite', {
         slot,
@@ -118,7 +119,7 @@ export class FavoriteStore {
         error: serializeError(error),
       })
 
-      return err({
+      return Result.fail({
         type: 'database_error',
         message: serializeError(error),
       })
@@ -130,7 +131,7 @@ export class FavoriteStore {
    */
   async getFavorites(
     slot: CandidatesKey,
-  ): Promise<Result<Set<string>, FavoriteError>> {
+  ): Promise<ResultType<Set<string>, FavoriteError>> {
     try {
       const favorites = await this.db.favorites
         .where('slot')
@@ -139,14 +140,14 @@ export class FavoriteStore {
 
       const partsIds = new Set(favorites.map((f) => f.partsId))
 
-      return ok(partsIds)
+      return Result.succeed(partsIds)
     } catch (error) {
       logger.error('Failed to get favorites', {
         slot,
         error: serializeError(error),
       })
 
-      return err({
+      return Result.fail({
         type: 'database_error',
         message: serializeError(error),
       })
@@ -159,14 +160,14 @@ export class FavoriteStore {
   async isFavorite(
     slot: CandidatesKey,
     partsId: string,
-  ): Promise<Result<boolean, FavoriteError>> {
+  ): Promise<ResultType<boolean, FavoriteError>> {
     try {
       const favorite = await this.db.favorites
         .where('[slot+partsId]')
         .equals([slot, partsId])
         .first()
 
-      return ok(!!favorite)
+      return Result.succeed(!!favorite)
     } catch (error) {
       logger.error('Failed to check favorite', {
         slot,
@@ -174,7 +175,7 @@ export class FavoriteStore {
         error: serializeError(error),
       })
 
-      return err({
+      return Result.fail({
         type: 'database_error',
         message: serializeError(error),
       })
@@ -186,20 +187,20 @@ export class FavoriteStore {
    */
   async clearFavorites(
     slot: CandidatesKey,
-  ): Promise<Result<void, FavoriteError>> {
+  ): Promise<ResultType<void, FavoriteError>> {
     try {
       await this.db.favorites.where('slot').equals(slot).delete()
 
       logger.info('Favorites cleared', { slot })
 
-      return ok(undefined)
+      return Result.succeed(undefined)
     } catch (error) {
       logger.error('Failed to clear favorites', {
         slot,
         error: serializeError(error),
       })
 
-      return err({
+      return Result.fail({
         type: 'database_error',
         message: serializeError(error),
       })

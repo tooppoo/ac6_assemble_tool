@@ -1,3 +1,5 @@
+import { Result, type Result as ResultType } from '@ac6_assemble_tool/shared/result'
+
 import {
   type CandidatesKey,
   CANDIDATES_KEYS,
@@ -96,7 +98,7 @@ export function serializeToURL(state: SharedState): URLSearchParams {
  */
 export function deserializeFromURL(
   params: URLSearchParams,
-): Result<SharedState, DeserializeError> {
+): ResultType<SharedState, DeserializeError> {
   try {
     // スロット
     const slotParam = params.get('slot')
@@ -104,7 +106,7 @@ export function deserializeFromURL(
 
     if (slotParam) {
       if (!VALID_SLOTS.has(slotParam as CandidatesKey)) {
-        return err({ type: 'invalid_slot', slot: slotParam })
+        return Result.fail({ type: 'invalid_slot', slot: slotParam })
       }
       slot = slotParam as CandidatesKey
     }
@@ -141,13 +143,13 @@ export function deserializeFromURL(
       }
     }
 
-    return ok({ slot, filters, sortKey, sortOrder })
+    return Result.succeed({ slot, filters, sortKey, sortOrder })
   } catch (error) {
     logger.error('Failed to deserialize state from URL', {
       error: error instanceof Error ? error.message : String(error),
     })
 
-    return err({
+    return Result.fail({
       type: 'invalid_format',
       message: error instanceof Error ? error.message : String(error),
     })

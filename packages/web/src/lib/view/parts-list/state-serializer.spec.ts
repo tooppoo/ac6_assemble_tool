@@ -7,6 +7,7 @@ import {
   loadViewMode,
   type SharedState,
 } from './state-serializer'
+import { Result } from '@ac6_assemble_tool/shared/result'
 
 describe('StateSerializer', () => {
   beforeEach(() => {
@@ -89,8 +90,8 @@ describe('StateSerializer', () => {
 
       const result = deserializeFromURL(params)
 
-      expect(result.ok).toBe(true)
-      if (result.ok) {
+      expect(Result.isSuccess(result)).toBe(true)
+      if (result.type === 'Success') {
         expect(result.value.slot).toBe('head')
       }
     })
@@ -102,8 +103,8 @@ describe('StateSerializer', () => {
 
       const result = deserializeFromURL(params)
 
-      expect(result.ok).toBe(true)
-      if (result.ok) {
+      expect(Result.isSuccess(result)).toBe(true)
+      if (result.type === 'Success') {
         expect(result.value.filters).toHaveLength(2)
         expect(result.value.filters[0]).toEqual({
           property: 'weight',
@@ -123,8 +124,8 @@ describe('StateSerializer', () => {
 
       const result = deserializeFromURL(params)
 
-      expect(result.ok).toBe(true)
-      if (result.ok) {
+      expect(Result.isSuccess(result)).toBe(true)
+      if (result.type === 'Success') {
         expect(result.value.sortKey).toBe('weight')
         expect(result.value.sortOrder).toBe('asc')
       }
@@ -135,8 +136,8 @@ describe('StateSerializer', () => {
 
       const result = deserializeFromURL(params)
 
-      expect(result.ok).toBe(false)
-      if (!result.ok) {
+      expect(Result.isSuccess(result)).toBe(false)
+      if (result.type === 'Failure') {
         expect(result.error.type).toBe('invalid_slot')
       }
     })
@@ -146,8 +147,8 @@ describe('StateSerializer', () => {
 
       const result = deserializeFromURL(params)
 
-      expect(result.ok).toBe(true)
-      if (result.ok) {
+      expect(Result.isSuccess(result)).toBe(true)
+      if (result.type === 'Success') {
         expect(result.value.slot).toBe('head')
       }
     })
@@ -159,8 +160,8 @@ describe('StateSerializer', () => {
 
       const result = deserializeFromURL(params)
 
-      expect(result.ok).toBe(true)
-      if (result.ok) {
+      expect(Result.isSuccess(result)).toBe(true)
+      if (result.type === 'Success') {
         expect(result.value.filters).toHaveLength(1)
         expect(result.value.filters[0].property).toBe('weight')
       }
@@ -171,8 +172,8 @@ describe('StateSerializer', () => {
 
       const result = deserializeFromURL(params)
 
-      expect(result.ok).toBe(true)
-      if (result.ok) {
+      expect(Result.isSuccess(result)).toBe(true)
+      if (result.type === 'Success') {
         expect(result.value.sortKey).toBe(null)
         expect(result.value.sortOrder).toBe(null)
       }
@@ -185,8 +186,8 @@ describe('StateSerializer', () => {
 
       const result = deserializeFromURL(params)
 
-      expect(result.ok).toBe(true)
-      if (result.ok) {
+      expect(Result.isSuccess(result)).toBe(true)
+      if (result.type === 'Success') {
         expect(result.value.filters).toHaveLength(2)
         expect(result.value.filters[0].property).toBe('weight')
         expect(result.value.filters[1].property).toBe('price')
@@ -200,8 +201,8 @@ describe('StateSerializer', () => {
 
       const result = deserializeFromURL(params)
 
-      expect(result.ok).toBe(true)
-      if (result.ok) {
+      expect(Result.isSuccess(result)).toBe(true)
+      if (result.type === 'Success') {
         expect(result.value.filters).toHaveLength(4)
         expect(result.value.filters.map((f) => f.property)).toEqual([
           'weight',
