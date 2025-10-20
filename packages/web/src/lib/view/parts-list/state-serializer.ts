@@ -1,4 +1,4 @@
-import { ok, err, type Result } from '$lib/utils/result'
+import { ok, err, type Result } from '@ac6_assemble_tool/shared/result'
 
 import {
   type CandidatesKey,
