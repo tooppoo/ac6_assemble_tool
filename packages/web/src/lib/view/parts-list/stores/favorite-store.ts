@@ -25,8 +25,8 @@ export class FavoritesDatabase extends Dexie {
     super('AC6FavoritesDB')
 
     this.version(1).stores({
-      // インデックス定義: &id (主キー), [slot+partsId] (複合インデックス), slot, partsId, createdAt
-      favorites: '&id, [slot+partsId], slot, partsId, createdAt',
+      // インデックス定義: &id (主キー), &[slot+partsId] (一意複合インデックス), slot, partsId, createdAt
+      favorites: '&id, &[slot+partsId], slot, partsId, createdAt',
     })
   }
 }
