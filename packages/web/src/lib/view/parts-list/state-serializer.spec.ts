@@ -177,6 +177,40 @@ describe('StateSerializer', () => {
         expect(result.value.sortOrder).toBe(null)
       }
     })
+
+    it('無効なプロパティを持つフィルタをスキップすること', () => {
+      const params = new URLSearchParams(
+        'slot=head&filter=weight:lt:5000&filter=invalid_property:gt:100&filter=price:lte:10000',
+      )
+
+      const result = deserializeFromURL(params)
+
+      expect(result.ok).toBe(true)
+      if (result.ok) {
+        expect(result.value.filters).toHaveLength(2)
+        expect(result.value.filters[0].property).toBe('weight')
+        expect(result.value.filters[1].property).toBe('price')
+      }
+    })
+
+    it('有効なプロパティのみを許可すること', () => {
+      const params = new URLSearchParams(
+        'slot=head&filter=weight:lt:5000&filter=price:lte:10000&filter=en_load:gt:500&filter=name:eq:test',
+      )
+
+      const result = deserializeFromURL(params)
+
+      expect(result.ok).toBe(true)
+      if (result.ok) {
+        expect(result.value.filters).toHaveLength(4)
+        expect(result.value.filters.map((f) => f.property)).toEqual([
+          'weight',
+          'price',
+          'en_load',
+          'name',
+        ])
+      }
+    })
   })
 
   describe('saveViewMode', () => {

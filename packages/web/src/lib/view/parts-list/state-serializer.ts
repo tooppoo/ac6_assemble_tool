@@ -54,6 +54,20 @@ const VIEW_MODE_KEY = 'ac6-parts-list-view-mode'
 const VALID_SLOTS: ReadonlySet<CandidatesKey> = new Set(CANDIDATES_KEYS)
 
 /**
+ * 有効なフィルタプロパティ一覧
+ * 全パーツ共通の基本プロパティのみを許可
+ */
+const VALID_FILTER_PROPERTIES: ReadonlySet<string> = new Set([
+  'price',
+  'weight',
+  'en_load',
+  'name',
+  'classification',
+  'manufacture',
+  'category',
+])
+
+/**
  * URLパラメータへのシリアライズ（共有用）
  */
 export function serializeToURL(state: SharedState): URLSearchParams {
@@ -187,6 +201,11 @@ function parseFilter(filterParam: string): Filter | null {
   }
 
   const [property, operator, valueStr] = parts
+
+  // propertyの検証: 無効なプロパティはスキップ
+  if (!VALID_FILTER_PROPERTIES.has(property)) {
+    return null
+  }
 
   // operatorの検証
   const validOperators: Filter['operator'][] = [
