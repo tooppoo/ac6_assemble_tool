@@ -1,5 +1,5 @@
 import type { Assembly } from '#core/assembly/assembly'
-import { Result, type Result as ResultType } from '@ac6_assemble_tool/shared/result'
+import { Result, type ResultType } from '@ac6_assemble_tool/shared/result'
 
 /**
  * バリデーション結果を表す型
