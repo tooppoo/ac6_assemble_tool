@@ -1,4 +1,5 @@
 import { ok, err, type Result } from '$lib/utils/result'
+import { serializeError } from '$lib/utils/error-serializer'
 
 import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
@@ -84,12 +85,12 @@ export class FavoriteStore {
       logger.error('Failed to add favorite', {
         slot,
         partsId,
-        error: error instanceof Error ? error.message : String(error),
+        error: serializeError(error),
       })
 
       return err({
         type: 'database_error',
-        message: error instanceof Error ? error.message : String(error),
+        message: serializeError(error),
       })
     }
   }
@@ -114,12 +115,12 @@ export class FavoriteStore {
       logger.error('Failed to remove favorite', {
         slot,
         partsId,
-        error: error instanceof Error ? error.message : String(error),
+        error: serializeError(error),
       })
 
       return err({
         type: 'database_error',
-        message: error instanceof Error ? error.message : String(error),
+        message: serializeError(error),
       })
     }
   }
@@ -142,12 +143,12 @@ export class FavoriteStore {
     } catch (error) {
       logger.error('Failed to get favorites', {
         slot,
-        error: error instanceof Error ? error.message : String(error),
+        error: serializeError(error),
       })
 
       return err({
         type: 'database_error',
-        message: error instanceof Error ? error.message : String(error),
+        message: serializeError(error),
       })
     }
   }
@@ -170,12 +171,12 @@ export class FavoriteStore {
       logger.error('Failed to check favorite', {
         slot,
         partsId,
-        error: error instanceof Error ? error.message : String(error),
+        error: serializeError(error),
       })
 
       return err({
         type: 'database_error',
-        message: error instanceof Error ? error.message : String(error),
+        message: serializeError(error),
       })
     }
   }
@@ -195,12 +196,12 @@ export class FavoriteStore {
     } catch (error) {
       logger.error('Failed to clear favorites', {
         slot,
-        error: error instanceof Error ? error.message : String(error),
+        error: serializeError(error),
       })
 
       return err({
         type: 'database_error',
-        message: error instanceof Error ? error.message : String(error),
+        message: serializeError(error),
       })
     }
   }
