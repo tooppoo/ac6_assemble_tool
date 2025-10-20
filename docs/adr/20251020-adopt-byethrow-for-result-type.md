@@ -1,10 +1,18 @@
 # byethrow を採用し、独自Result型実装を統一する
 
-- ステータス: 提案中
+- ステータス: 承認済み
 - 日付: 2025-10-20
+- 実装完了日: 2025-10-20
 - タグ: architecture, error-handling, dependency-management, type-safety
 
 技術ストーリー: tech-architect エージェントによる技術評価セッション
+
+**実装サマリー**:
+- 使用バージョン: `@praha/byethrow@0.6.3` (npmレジストリで公開されている最新版)
+- 移行完了: web（2ファイル）、core（ValidationResult）、shared（互換レイヤー）
+- テスト結果: 全434テスト通過（web: 108、core: 285、parts: 41）
+- 型チェック: 全パッケージ成功
+- ビルド: 全パッケージ成功
 
 ## 背景 / 文脈
 
