@@ -1,3 +1,4 @@
+import { Result } from '@ac6_assemble_tool/shared/result'
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
 import {
@@ -7,7 +8,6 @@ import {
   loadViewMode,
   type SharedState,
 } from './state-serializer'
-import { Result } from '@ac6_assemble_tool/shared/result'
 
 describe('StateSerializer', () => {
   beforeEach(() => {
@@ -204,12 +204,9 @@ describe('StateSerializer', () => {
       expect(Result.isSuccess(result)).toBe(true)
       if (result.type === 'Success') {
         expect(result.value.filters).toHaveLength(4)
-        expect(result.value.filters.map((f) => f.property)).toEqual([
-          'weight',
-          'price',
-          'en_load',
-          'name',
-        ])
+        expect(
+          result.value.filters.map((f: { property: string }) => f.property),
+        ).toEqual(['weight', 'price', 'en_load', 'name'])
       }
     })
   })
