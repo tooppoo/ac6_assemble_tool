@@ -1,4 +1,4 @@
-import { Result } from '@ac6_assemble_tool/shared/result'
+import { Result } from '@praha/byethrow'
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
 import {

@@ -2,7 +2,7 @@ import { serializeError } from '$lib/utils/error-serializer'
 
 import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
-import { Result, type ResultType } from '@ac6_assemble_tool/shared/result'
+import { Result } from '@praha/byethrow'
 import { Dexie, type EntityTable } from 'dexie'
 import { ulid } from 'ulid'
 
@@ -55,7 +55,7 @@ export class FavoriteStore {
   async addFavorite(
     slot: CandidatesKey,
     partsId: string,
-  ): Promise<ResultType<void, FavoriteError>> {
+  ): Promise<Result.Result<void, FavoriteError>> {
     try {
       // 既存のお気に入りをチェック
       const existing = await this.db.favorites
@@ -101,7 +101,7 @@ export class FavoriteStore {
   async removeFavorite(
     slot: CandidatesKey,
     partsId: string,
-  ): Promise<ResultType<void, FavoriteError>> {
+  ): Promise<Result.Result<void, FavoriteError>> {
     try {
       await this.db.favorites
         .where('[slot+partsId]')
@@ -130,7 +130,7 @@ export class FavoriteStore {
    */
   async getFavorites(
     slot: CandidatesKey,
-  ): Promise<ResultType<Set<string>, FavoriteError>> {
+  ): Promise<Result.Result<Set<string>, FavoriteError>> {
     try {
       const favorites = await this.db.favorites
         .where('slot')
@@ -159,7 +159,7 @@ export class FavoriteStore {
   async isFavorite(
     slot: CandidatesKey,
     partsId: string,
-  ): Promise<ResultType<boolean, FavoriteError>> {
+  ): Promise<Result.Result<boolean, FavoriteError>> {
     try {
       const favorite = await this.db.favorites
         .where('[slot+partsId]')
@@ -186,7 +186,7 @@ export class FavoriteStore {
    */
   async clearFavorites(
     slot: CandidatesKey,
-  ): Promise<ResultType<void, FavoriteError>> {
+  ): Promise<Result.Result<void, FavoriteError>> {
     try {
       await this.db.favorites.where('slot').equals(slot).delete()
 

@@ -3,7 +3,7 @@ import {
   CANDIDATES_KEYS,
 } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
-import { Result, type ResultType } from '@ac6_assemble_tool/shared/result'
+import { Result } from '@praha/byethrow'
 
 /**
  * 表示モード（grid/list）
@@ -96,7 +96,7 @@ export function serializeToURL(state: SharedState): URLSearchParams {
  */
 export function deserializeFromURL(
   params: URLSearchParams,
-): ResultType<SharedState, DeserializeError> {
+): Result.Result<SharedState, DeserializeError> {
   try {
     // スロット
     const slotParam = params.get('slot')
