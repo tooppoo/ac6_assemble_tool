@@ -76,30 +76,32 @@ export class RandomAssembly {
 
     const opt = { ...defaultRandomBuildOption, ...option }
 
-    return Result.unwrap(
-      Result.pipe(
-        this.validate(randomBuild(candidates, opt)),
-        Result.orElse((errors) => {
-          this.errors = [...this.errors, ...errors]
+    try {
+      return Result.unwrap(
+        Result.pipe(
+          this.validate(randomBuild(candidates, opt)),
+          Result.orElse((errors) => {
+            this.errors = [...this.errors, ...errors]
 
-          if (this.tryCount >= this.config.limit) {
-            const error = new OverTryLimitError(
-              { limit: this.config.limit, errors: this.errors },
-              `over limit of try(${this.config.limit})`,
-            )
-            this.reset()
+            if (this.tryCount >= this.config.limit) {
+              const error = new OverTryLimitError(
+                { limit: this.config.limit, errors: this.errors },
+                `over limit of try(${this.config.limit})`,
+              )
 
-            throw error
-          }
+              throw error
+            }
 
-          return Result.succeed(this.assemble(candidates, option))
-        }),
-        Result.andThrough((assembly) => {
-          this.reset()
-          return Result.succeed(assembly)
-        }),
-      ),
-    )
+            return Result.succeed(this.assemble(candidates, option))
+          }),
+          Result.andThrough((assembly) =>
+            Result.succeed(assembly)
+          ),
+        ),
+      )
+    } finally {
+      this.reset()
+    }
   }
 
   validate(assembly: Assembly): Result.Result<Assembly, Error[]> {

@@ -249,8 +249,11 @@ describe(RandomAssembly.name, () => {
       const sut = RandomAssembly.init({ limit }).addValidator('test', validator)
 
       expect(() => sut.assemble(candidates)).toThrowError(OverTryLimitError)
-      expect(() => sut.assemble(candidates)).toThrowError(OverTryLimitError)
+      expect(mockValidate).toHaveBeenCalledTimes(limit)
 
+      // mockValidateがlimitより多く呼ばれている
+      // => 一度リミット到達後、リセットされて再利用できている
+      expect(() => sut.assemble(candidates)).toThrowError(OverTryLimitError)
       expect(mockValidate).toHaveBeenCalledTimes(limit * 2)
     })
   })
