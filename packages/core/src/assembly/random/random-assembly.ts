@@ -97,21 +97,19 @@ export class RandomAssembly {
         Result.andThrough((assembly) => {
           this.reset()
           return Result.succeed(assembly)
-        })
-      )
+        }),
+      ),
     )
   }
 
   validate(assembly: Assembly): Result.Result<Assembly, Error[]> {
     const failed = Object.values(this._validators)
-      .map(v => v.validate(assembly))
+      .map((v) => v.validate(assembly))
       .filter(Result.isFailure)
 
     return failed.length === 0
       ? Result.succeed(assembly)
-      : Result.fail(
-          failed.flatMap(f => Result.unwrapError(f)),
-        )
+      : Result.fail(failed.flatMap((f) => Result.unwrapError(f)))
   }
 
   /**

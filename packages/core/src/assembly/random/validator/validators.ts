@@ -1,4 +1,3 @@
-
 import { notEquipped } from '@ac6_assemble_tool/parts/types/base/classification'
 import { BaseCustomError } from '@ac6_assemble_tool/shared/error'
 import { Result } from '@praha/byethrow'

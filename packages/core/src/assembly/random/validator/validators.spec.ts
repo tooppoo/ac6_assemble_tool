@@ -41,9 +41,9 @@ describe('validator', () => {
             const stubAssembly = sinon.stub(assembly, 'withinEnOutput')
             stubAssembly.value(withinEnOutput)
 
-            expect(Result.isSuccess(notOverEnergyOutput.validate(assembly))).toBe(
-              withinEnOutput,
-            )
+            expect(
+              Result.isSuccess(notOverEnergyOutput.validate(assembly)),
+            ).toBe(withinEnOutput)
           },
         )
       },
@@ -184,9 +184,9 @@ describe('validator', () => {
       fcit.prop([genAssembly(candidatesForTest)])(
         'should evaluate as valid',
         (assembly) => {
-          expect(Result.isSuccess(notCarrySameUnitInSameSide.validate(assembly))).toBe(
-            true,
-          )
+          expect(
+            Result.isSuccess(notCarrySameUnitInSameSide.validate(assembly)),
+          ).toBe(true)
         },
       )
     })
@@ -198,7 +198,9 @@ describe('validator', () => {
       (assembly, max) => {
         const sut = totalCoamNotOverMax(max)
 
-        expect(Result.isSuccess(sut.validate(assembly))).toBe(assembly.coam <= max)
+        expect(Result.isSuccess(sut.validate(assembly))).toBe(
+          assembly.coam <= max,
+        )
       },
     )
   })
@@ -208,7 +210,9 @@ describe('validator', () => {
       (assembly, max) => {
         const sut = totalLoadNotOverMax(max)
 
-        expect(Result.isSuccess(sut.validate(assembly))).toBe(assembly.load <= max)
+        expect(Result.isSuccess(sut.validate(assembly))).toBe(
+          assembly.load <= max,
+        )
       },
     )
   })
@@ -219,7 +223,9 @@ describe('validator', () => {
       (assembly) => {
         const sut = disallowLoadOver()
 
-        expect(Result.isSuccess(sut.validate(assembly))).toBe(assembly.withinLoadLimit)
+        expect(Result.isSuccess(sut.validate(assembly))).toBe(
+          assembly.withinLoadLimit,
+        )
       },
     )
     fcit.prop([

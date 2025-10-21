@@ -20,9 +20,7 @@ describe(RandomAssembly.name, () => {
       )
       const assembly = sut.assemble(candidates)
 
-      expect(
-        Result.isSuccess(sut.validate(assembly))
-      ).toBe(true)
+      expect(Result.isSuccess(sut.validate(assembly))).toBe(true)
     },
   )
 
