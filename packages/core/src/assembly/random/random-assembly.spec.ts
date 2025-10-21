@@ -1,5 +1,6 @@
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import { fc, it } from '@fast-check/vitest'
+import { Result } from '@praha/byethrow'
 import { afterEach, beforeEach, describe, expect, type Mock, vi } from 'vitest'
 
 import {
@@ -8,11 +9,10 @@ import {
   RandomAssembly,
 } from './random-assembly'
 import type { Validator } from './validator/base'
-import { failure, success } from './validator/result'
 
 describe(RandomAssembly.name, () => {
   it.prop([fc.array(generateValidatorWithKey())])(
-    'should return only valid assembly',
+    '[flaky test] should return only valid assembly',
     (validators) => {
       const sut = validators.reduce<RandomAssembly>(
         (r, { key, validator }) => r.addValidator(key, validator),
@@ -20,7 +20,9 @@ describe(RandomAssembly.name, () => {
       )
       const assembly = sut.assemble(candidates)
 
-      return sut.validate(assembly).isSuccess
+      expect(
+        Result.isSuccess(sut.validate(assembly))
+      ).toBe(true)
     },
   )
 
@@ -190,7 +192,7 @@ describe(RandomAssembly.name, () => {
 
       mockValidate = vi.fn().mockImplementation(() => {
         errorCount += 1
-        return failure([new Error(`test-${errorCount}`)])
+        return Result.fail([new Error(`test-${errorCount}`)])
       })
       validator = {
         validate: mockValidate,
@@ -261,20 +263,20 @@ const generateValidator = () =>
     fc.integer({ min: 8480, max: 26740 }).map<Validator>((border) => ({
       validate: (a) =>
         a.arms.weight <= border
-          ? success(a)
-          : failure([new Error(`not arms.weight <= ${border}`)]),
+          ? Result.succeed(a)
+          : Result.fail([new Error(`not arms.weight <= ${border}`)]),
     })),
     fc.constant<Validator>({
       validate: (a) =>
         a.head.manufacture === 'baws'
-          ? success(a)
-          : failure([new Error(`not head.manufacture = baws`)]),
+          ? Result.succeed(a)
+          : Result.fail([new Error(`not head.manufacture = baws`)]),
     }),
     fc.constant<Validator>({
       validate: (a) =>
         a.core.price > 0
-          ? success(a)
-          : failure([new Error('not core.price > 0')]),
+          ? Result.succeed(a)
+          : Result.fail([new Error('not core.price > 0')]),
     }),
   )
 const generateValidatorWithKey = () =>

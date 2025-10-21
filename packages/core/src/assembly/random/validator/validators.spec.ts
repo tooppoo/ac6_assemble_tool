@@ -7,6 +7,7 @@ import { notEquipped as notEquippedClass } from '@ac6_assemble_tool/parts/types/
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import { fc, it as fcit } from '@fast-check/vitest'
+import { Result } from '@praha/byethrow'
 import sinon from 'sinon'
 import { afterEach, beforeEach, describe, expect } from 'vitest'
 
@@ -40,7 +41,7 @@ describe('validator', () => {
             const stubAssembly = sinon.stub(assembly, 'withinEnOutput')
             stubAssembly.value(withinEnOutput)
 
-            expect(notOverEnergyOutput.validate(assembly).isSuccess).toBe(
+            expect(Result.isSuccess(notOverEnergyOutput.validate(assembly))).toBe(
               withinEnOutput,
             )
           },
@@ -74,7 +75,7 @@ describe('validator', () => {
             assembly.leftBackUnit = candidatesForTest.leftBackUnit[0]
 
             expect(
-              notCarrySameUnitInSameSide.validate(assembly).isSuccess,
+              Result.isSuccess(notCarrySameUnitInSameSide.validate(assembly)),
             ).toBe(false)
           },
         )
@@ -88,7 +89,7 @@ describe('validator', () => {
               assembly.leftBackUnit = candidatesForTest.leftBackUnit[0]
 
               expect(
-                notCarrySameUnitInSameSide.validate(assembly).isSuccess,
+                Result.isSuccess(notCarrySameUnitInSameSide.validate(assembly)),
               ).toBe(true)
             },
           )
@@ -103,7 +104,7 @@ describe('validator', () => {
             assembly.rightBackUnit = candidatesForTest.rightBackUnit[0]
 
             expect(
-              notCarrySameUnitInSameSide.validate(assembly).isSuccess,
+              Result.isSuccess(notCarrySameUnitInSameSide.validate(assembly)),
             ).toBe(false)
           },
         )
@@ -116,7 +117,7 @@ describe('validator', () => {
               assembly.rightBackUnit = candidatesForTest.rightBackUnit[0]
 
               expect(
-                notCarrySameUnitInSameSide.validate(assembly).isSuccess,
+                Result.isSuccess(notCarrySameUnitInSameSide.validate(assembly)),
               ).toBe(true)
             },
           )
@@ -130,7 +131,7 @@ describe('validator', () => {
             assembly.leftBackUnit = assembly.leftArmUnit
 
             expect(
-              notCarrySameUnitInSameSide.validate(assembly).isSuccess,
+              Result.isSuccess(notCarrySameUnitInSameSide.validate(assembly)),
             ).toBe(false)
           },
         )
@@ -142,7 +143,7 @@ describe('validator', () => {
               assembly.leftBackUnit = assembly.leftArmUnit = armNotEquipped
 
               expect(
-                notCarrySameUnitInSameSide.validate(assembly).isSuccess,
+                Result.isSuccess(notCarrySameUnitInSameSide.validate(assembly)),
               ).toBe(true)
             },
           )
@@ -183,7 +184,7 @@ describe('validator', () => {
       fcit.prop([genAssembly(candidatesForTest)])(
         'should evaluate as valid',
         (assembly) => {
-          expect(notCarrySameUnitInSameSide.validate(assembly).isSuccess).toBe(
+          expect(Result.isSuccess(notCarrySameUnitInSameSide.validate(assembly))).toBe(
             true,
           )
         },
@@ -197,7 +198,7 @@ describe('validator', () => {
       (assembly, max) => {
         const sut = totalCoamNotOverMax(max)
 
-        expect(sut.validate(assembly).isSuccess).toBe(assembly.coam <= max)
+        expect(Result.isSuccess(sut.validate(assembly))).toBe(assembly.coam <= max)
       },
     )
   })
@@ -207,7 +208,7 @@ describe('validator', () => {
       (assembly, max) => {
         const sut = totalLoadNotOverMax(max)
 
-        expect(sut.validate(assembly).isSuccess).toBe(assembly.load <= max)
+        expect(Result.isSuccess(sut.validate(assembly))).toBe(assembly.load <= max)
       },
     )
   })
@@ -218,7 +219,7 @@ describe('validator', () => {
       (assembly) => {
         const sut = disallowLoadOver()
 
-        expect(sut.validate(assembly).isSuccess).toBe(assembly.withinLoadLimit)
+        expect(Result.isSuccess(sut.validate(assembly))).toBe(assembly.withinLoadLimit)
       },
     )
     fcit.prop([
@@ -228,7 +229,7 @@ describe('validator', () => {
       (assembly) => {
         const sut = disallowLoadOver()
 
-        expect(sut.validate(assembly).isSuccess).toBe(true)
+        expect(Result.isSuccess(sut.validate(assembly))).toBe(true)
       },
     )
   })
@@ -238,7 +239,7 @@ describe('validator', () => {
       (assembly) => {
         const sut = disallowArmsLoadOver()
 
-        expect(sut.validate(assembly).isSuccess).toBe(
+        expect(Result.isSuccess(sut.validate(assembly))).toBe(
           assembly.withinArmsLoadLimit,
         )
       },
@@ -250,7 +251,7 @@ describe('validator', () => {
       (assembly) => {
         const sut = disallowArmsLoadOver()
 
-        expect(sut.validate(assembly).isSuccess).toBe(true)
+        expect(Result.isSuccess(sut.validate(assembly))).toBe(true)
       },
     )
   })
