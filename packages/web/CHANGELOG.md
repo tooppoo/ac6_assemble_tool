@@ -1,5 +1,12 @@
 # @ac6_assemble_tool/web
 
+## 2.1.0
+### Minor Changes
+
+
+
+- [#875](https://github.com/tooppoo/ac6_assemble_tool/pull/875) [`4cc30dd`](https://github.com/tooppoo/ac6_assemble_tool/commit/4cc30ddd5431ad0b3e6ce81ba7ea31d602aa30a8) Thanks [@tooppoo](https://github.com/tooppoo)! - ツール概要ページを追加
+
 ## 2.0.2
 
 ### Patch Changes
