@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { aboutSections } from './content'
+import { aboutSections } from './content.ja'
 
 describe('aboutSections', () => {
   it('本文の総文字数が 3200 文字以上であること', () => {

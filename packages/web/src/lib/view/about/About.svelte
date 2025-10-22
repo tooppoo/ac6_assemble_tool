@@ -1,9 +1,20 @@
 <script lang="ts">
   import Navbar from '$lib/view/index/layout/Navbar.svelte'
 
-  import { aboutSections } from './content'
+  import type { AboutSection } from './types'
 
-  const tocItems = aboutSections.map((section) => ({
+  export let sections: readonly AboutSection[]
+  export let heroTitle: string
+  export let heroLead: string
+  export let backLinkLabel: string
+  export let homeHref: string = '/'
+  export let languageSwitcher: readonly {
+    readonly label: string
+    readonly href: string
+    readonly active: boolean
+  }[] = []
+
+  const tocItems = sections.map((section) => ({
     id: section.id,
     title: section.title,
   }))
@@ -11,18 +22,29 @@
 
 <div class="bg-dark text-light min-vh-100">
   <Navbar>
-    <a class="nav-link text-light" href="/" data-testid="nav-home-link">
-      ホームに戻る
+    <a class="nav-link text-light" href={homeHref} data-testid="nav-home-link">
+      {backLinkLabel}
     </a>
+    {#if languageSwitcher.length > 0}
+      {#each languageSwitcher as locale}
+        <a
+          class={`nav-link ms-3 ${locale.active ? 'fw-bold text-primary' : 'text-light'}`}
+          href={locale.href}
+          aria-current={locale.active ? 'page' : undefined}
+        >
+          {locale.label}
+        </a>
+      {/each}
+    {/if}
   </Navbar>
 
   <main class="container py-5" data-testid="about-page">
     <header class="mb-5">
       <h1 class="display-5 fw-bold mb-3">
-        AC6 ASSEMBLE TOOL /about
+        {heroTitle}
       </h1>
       <p class="lead text-secondary">
-        本ページでは、AC6 ASSEMBLE TOOL の設計思想、提供価値、品質保証、今後の展望を包括的に紹介します。初めて訪れる方にも既存の利用者にも同じ情報量を提示し、プロジェクト全体を俯瞰したうえで安心して使い続けられるようにすることが目的です。
+        {heroLead}
       </p>
     </header>
 
@@ -55,7 +77,7 @@
       </aside>
 
       <div class="col-lg-9">
-        {#each aboutSections as section (section.id)}
+        {#each sections as section (section.id)}
           <section id={section.id} class="mb-5">
             <div class="mb-3">
               <span class="badge text-bg-primary text-uppercase">
