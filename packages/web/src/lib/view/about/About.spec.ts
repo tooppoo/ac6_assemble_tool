@@ -44,7 +44,9 @@ const baseProps = {
 
 const renderAbout = (
   props: Partial<Omit<typeof baseProps, 'languageSwitcher'>> & {
-    languageSwitcher?: ReadonlyArray<(typeof baseProps.languageSwitcher)[number]>
+    languageSwitcher?: ReadonlyArray<
+      (typeof baseProps.languageSwitcher)[number]
+    >
   } = {},
 ) =>
   render(About, {
@@ -159,10 +161,7 @@ describe(About.name, () => {
     const tocNav = screen.getByRole('navigation', {
       name: baseProps.tocNavigationLabel,
     })
-    expect(tocNav).toHaveAttribute(
-      'aria-label',
-      baseProps.tocNavigationLabel,
-    )
+    expect(tocNav).toHaveAttribute('aria-label', baseProps.tocNavigationLabel)
 
     const activeLanguageLink = screen.getByRole('link', { name: '日本語' })
     expect(activeLanguageLink.getAttribute('aria-current')).toBe('page')
