@@ -92,7 +92,7 @@ export class RandomAssembly {
               throw error
             }
 
-            return Result.succeed(this.assemble(candidates, option))
+            return this.assemble(candidates, option)
           }),
         ),
       )
