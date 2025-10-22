@@ -2,7 +2,8 @@
   import type { I18NextStore } from '$lib/i18n/define'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
 
-  import { getContext, onMount, SvelteURL } from 'svelte'
+  import { getContext, onMount } from 'svelte'
+  import { SvelteURL } from 'svelte/reactivity'
 
   const i18n = getContext<I18NextStore>('i18n')
 
