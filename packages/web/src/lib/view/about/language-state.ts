@@ -16,7 +16,10 @@ export type LanguageSyncState = {
   readonly languageSwitcher: readonly LanguageLink[]
 }
 
-export function withLanguage(search: string, language: SupportedLanguage): string {
+export function withLanguage(
+  search: string,
+  language: SupportedLanguage,
+): string {
   const raw = search.startsWith('?') ? search.slice(1) : search
   const params = new SvelteURLSearchParams(raw)
 
@@ -40,8 +43,16 @@ export function createLanguageSyncState(
   const enQuery = withLanguage(normalizedSearch, 'en')
   const activeQuery = activeLanguage === 'ja' ? jaQuery : enQuery
   const languageSwitcher: readonly LanguageLink[] = [
-    { label: '日本語', href: `/about/ja${jaQuery}`, active: activeLanguage === 'ja' },
-    { label: 'English', href: `/about/en${enQuery}`, active: activeLanguage === 'en' },
+    {
+      label: '日本語',
+      href: `/about/ja${jaQuery}`,
+      active: activeLanguage === 'ja',
+    },
+    {
+      label: 'English',
+      href: `/about/en${enQuery}`,
+      active: activeLanguage === 'en',
+    },
   ]
 
   return {

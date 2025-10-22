@@ -1,9 +1,12 @@
 <script lang="ts">
   import { appUrl } from '$lib/app-url'
   import { aboutSections } from '$lib/i18n/locales/en/pages/about/content.en'
-  import { createLanguageSyncState, type LanguageLink } from '$lib/view/about/language-state'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
   import About from '$lib/view/about/About.svelte'
+  import {
+    createLanguageSyncState,
+    type LanguageLink,
+  } from '$lib/view/about/language-state'
 
   import { onMount } from 'svelte'
 
@@ -11,9 +14,6 @@
   const heroLead =
     'This page introduces AC6 ASSEMBLE TOOL, explains why it exists, highlights the current features, and outlines what comes next so that pilots can rely on the application while planning their builds.'
 
-  let currentSearch: string = ''
-  let jaQuery: string = ''
-  let enQuery: string = ''
   let homeHref: string = '/'
   let languageSwitcher: readonly LanguageLink[] = [
     { label: '日本語', href: '/about/ja', active: false },
@@ -27,9 +27,6 @@
 
     const state = createLanguageSyncState(window.location.search, 'en')
 
-    currentSearch = state.currentSearch
-    jaQuery = state.jaQuery
-    enQuery = state.enQuery
     homeHref = state.homeHref
     languageSwitcher = state.languageSwitcher
   }

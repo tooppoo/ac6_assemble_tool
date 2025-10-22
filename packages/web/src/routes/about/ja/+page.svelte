@@ -3,7 +3,10 @@
   import { aboutSections } from '$lib/i18n/locales/ja/pages/about/content.ja'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
   import About from '$lib/view/about/About.svelte'
-  import { createLanguageSyncState, type LanguageLink } from '$lib/view/about/language-state'
+  import {
+    createLanguageSyncState,
+    type LanguageLink,
+  } from '$lib/view/about/language-state'
 
   import { onMount } from 'svelte'
 
@@ -11,9 +14,6 @@
   const heroLead =
     '本ページでは、AC6 ASSEMBLE TOOL の役割、提供価値、利用方法、今後の展望をまとめています。初めて触れる方も既存ユーザーも同じ情報を確認でき、安心してアセンブル検討に集中できるようにすることが目的です。'
 
-  let currentSearch: string = ''
-  let jaQuery: string = ''
-  let enQuery: string = ''
   let homeHref: string = '/'
   let languageSwitcher: readonly LanguageLink[] = [
     { label: '日本語', href: '/about/ja', active: true },
@@ -27,9 +27,6 @@
 
     const state = createLanguageSyncState(window.location.search, 'ja')
 
-    currentSearch = state.currentSearch
-    jaQuery = state.jaQuery
-    enQuery = state.enQuery
     homeHref = state.homeHref
     languageSwitcher = state.languageSwitcher
   }
