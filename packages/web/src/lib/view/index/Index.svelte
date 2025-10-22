@@ -82,6 +82,10 @@
     rel: 'external noopener noreferrer',
   } as const
 
+  let aboutHref: string = '/about/ja'
+
+  $: aboutHref = $i18n.language === 'en' ? '/about/en' : '/about/ja'
+
   const tryLimit = 3000
 
   // state
@@ -117,11 +121,11 @@
   $: {
     if (initialCandidates && filter && assembly && lockedParts) {
       try {
-        logger.debug('update candidates', filter, lockedParts)
+        logger.debug('update candidates', { filter, lockedParts })
 
         updateCandidates()
-      } catch (e) {
-        logger.error(e)
+      } catch (e: unknown) {
+        logger.error(`${e}`)
 
         errorMessage = filterApplyErrorMessage(
           e instanceof UsableItemNotFoundError ? e : new Error(`${e}`),
@@ -132,7 +136,7 @@
   }
   $: {
     if (assembly && initialCandidates && !browserBacking) {
-      logger.debug('replace state', assemblyToSearchV2(assembly).toString())
+      logger.debug('replace state', { query: assemblyToSearchV2(assembly).toString() })
 
       serializeAssembly.run()
     }
@@ -300,12 +304,24 @@
   </NavButton>
   <NavButton
     id="open-assembly-store"
+    class="me-3"
     title={$i18n.t('command.store.description', { ns: 'page/index' })}
     on:click={() => (openAssemblyStore = true)}
   >
     <i slot="icon" class="bi bi-database"></i>
     <span class="d-none d-md-inline">
       {$i18n.t('command.store.label', { ns: 'page/index' })}
+    </span>
+  </NavButton>
+  <NavButton
+    id="open-about-page"
+    title={$i18n.t('command.about.description', { ns: 'page/index' })}
+    href={aboutHref}
+    class="ms-md-2"
+  >
+    <i slot="icon" class="bi bi-info-circle"></i>
+    <span class="d-none d-md-inline">
+      {$i18n.t('command.about.label', { ns: 'page/index' })}
     </span>
   </NavButton>
 </Navbar>
