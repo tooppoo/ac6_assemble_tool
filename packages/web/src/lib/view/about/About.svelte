@@ -52,12 +52,12 @@
     {/if}
   </Navbar>
 
-  <main class="container py-5" data-testid="about-page">
+  <main class="container py-5 fs-5" data-testid="about-page">
     <header class="mb-5">
       <h1 class="display-5 fw-bold mb-3">
         {heroTitle}
       </h1>
-      <p class="lead text-secondary">
+      <p class="lead text-light fs-4">
         {heroLead}
       </p>
     </header>
@@ -68,16 +68,16 @@
           class="position-sticky top-0 pt-lg-3"
           aria-label={tocNavigationLabel}
         >
-          <div class="card bg-secondary-subtle border-0">
+          <div class="card bg-dark border border-secondary">
             <div class="card-body">
-              <h2 class="h6 text-uppercase fw-semibold mb-3">
+              <h2 class="h6 text-uppercase fw-semibold mb-3 text-light">
                 {tocHeadingLabel}
               </h2>
-              <ul class="list-unstyled m-0">
+              <ul class="m-0 ps-4 text-light">
                 {#each tocItems as item (item.id)}
                   <li class="mb-2">
                     <a
-                      class="link-light link-underline-opacity-0 link-underline-opacity-75-hover"
+                      class="link-light link-underline-opacity-25 link-underline-opacity-75-hover"
                       href={`#${item.id}`}
                     >
                       {item.title}
@@ -99,7 +99,7 @@
               </span>
             </div>
             <h2 class="h3 fw-bold mb-3">{section.title}</h2>
-            <p class="text-secondary border-start border-3 border-primary ps-3">
+            <p class="text-light border-start border-3 border-primary ps-3">
               {section.lead}
             </p>
 
