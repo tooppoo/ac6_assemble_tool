@@ -25,10 +25,9 @@ describe('FavoritesDatabase', () => {
       expect(db.favorites.schema.primKey.name).toBe('id')
     })
 
-    it('favoritesテーブルにslot, partsId, createdAtのインデックスが設定されていること', () => {
+    it('favoritesテーブルに slot+partsId 複合インデックスと、createdAtのインデックスが設定されていること', () => {
       const indexes = db.favorites.schema.indexes.map((idx) => idx.name)
-      expect(indexes).toContain('slot')
-      expect(indexes).toContain('partsId')
+      expect(indexes).toContain('[slot+partsId]')
       expect(indexes).toContain('createdAt')
     })
   })
