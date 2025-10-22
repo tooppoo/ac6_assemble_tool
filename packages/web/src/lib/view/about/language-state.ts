@@ -30,3 +30,25 @@ export function withLanguage(search: string, language: SupportedLanguage): strin
 
   return query ? `?${query}` : ''
 }
+
+export function createLanguageSyncState(
+  search: string,
+  activeLanguage: SupportedLanguage,
+): LanguageSyncState {
+  const normalizedSearch = search
+  const jaQuery = withLanguage(normalizedSearch, 'ja')
+  const enQuery = withLanguage(normalizedSearch, 'en')
+  const activeQuery = activeLanguage === 'ja' ? jaQuery : enQuery
+  const languageSwitcher: readonly LanguageLink[] = [
+    { label: '日本語', href: `/about/ja${jaQuery}`, active: activeLanguage === 'ja' },
+    { label: 'English', href: `/about/en${enQuery}`, active: activeLanguage === 'en' },
+  ]
+
+  return {
+    currentSearch: normalizedSearch,
+    jaQuery,
+    enQuery,
+    homeHref: activeQuery ? `/${activeQuery}` : '/',
+    languageSwitcher,
+  }
+}

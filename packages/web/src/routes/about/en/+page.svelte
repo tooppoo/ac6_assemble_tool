@@ -1,7 +1,7 @@
 <script lang="ts">
   import { appUrl } from '$lib/app-url'
   import { aboutSections } from '$lib/i18n/locales/en/pages/about/content.en'
-  import { withLanguage } from '$lib/view/about/language-state'
+  import { createLanguageSyncState, type LanguageLink } from '$lib/view/about/language-state'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
   import About from '$lib/view/about/About.svelte'
 
@@ -10,12 +10,6 @@
   const heroTitle = 'AC6 ASSEMBLE TOOL /about'
   const heroLead =
     'This page introduces AC6 ASSEMBLE TOOL, explains why it exists, highlights the current features, and outlines what comes next so that pilots can rely on the application while planning their builds.'
-
-  type LanguageLink = {
-    readonly label: string
-    readonly href: string
-    readonly active: boolean
-  }
 
   let currentSearch: string = ''
   let jaQuery: string = ''
@@ -31,14 +25,13 @@
       return
     }
 
-    currentSearch = window.location.search
-    jaQuery = withLanguage(currentSearch, 'ja')
-    enQuery = withLanguage(currentSearch, 'en')
-    homeHref = enQuery ? `/${enQuery}` : '/'
-    languageSwitcher = [
-      { label: '日本語', href: `/about/ja${jaQuery}`, active: false },
-      { label: 'English', href: `/about/en${enQuery}`, active: true },
-    ]
+    const state = createLanguageSyncState(window.location.search, 'en')
+
+    currentSearch = state.currentSearch
+    jaQuery = state.jaQuery
+    enQuery = state.enQuery
+    homeHref = state.homeHref
+    languageSwitcher = state.languageSwitcher
   }
 
   const syncQueriesWithEnable = useWithEnableState(syncQueries)
