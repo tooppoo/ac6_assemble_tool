@@ -5,6 +5,7 @@
   import About from '$lib/view/about/About.svelte'
 
   import { onMount } from 'svelte'
+  import { SvelteURLSearchParams } from 'svelte/reactivity'
 
   const heroTitle = 'AC6 ASSEMBLE TOOL /about'
   const heroLead =
@@ -18,7 +19,7 @@
 
   function withLanguage(search: string, language: 'ja' | 'en'): string {
     const raw = search.startsWith('?') ? search.slice(1) : search
-    const params = new URLSearchParams(raw)
+    const params = new SvelteURLSearchParams(raw)
 
     if (language === 'ja') {
       params.delete('lng')
