@@ -1,17 +1,15 @@
-import type { Assembly } from '#core/assembly/assembly'
-
 import { notEquipped } from '@ac6_assemble_tool/parts/types/base/classification'
 import { BaseCustomError } from '@ac6_assemble_tool/shared/error'
+import { Result } from '@praha/byethrow'
 
 import type { Validator } from './base'
-import { failure, success, type ValidationResult } from './result'
 
 export const notOverEnergyOutputName = 'notOverEnergyOutput'
 export const notOverEnergyOutput: Validator = {
-  validate(assembly: Assembly): ValidationResult {
+  validate(assembly) {
     return assembly.withinEnOutput
-      ? success(assembly)
-      : failure([
+      ? Result.succeed(assembly)
+      : Result.fail([
           new ValidationError(
             {
               validationName: notOverEnergyOutputName,
@@ -25,7 +23,7 @@ export const notOverEnergyOutput: Validator = {
 
 export const notCarrySameUnitInSameSideName = 'notCarrySameUnitInSameSide'
 export const notCarrySameUnitInSameSide: Validator = {
-  validate(assembly: Assembly): ValidationResult {
+  validate(assembly) {
     const errors = (() => {
       const rightErrors =
         assembly.rightArmUnit.classification !== notEquipped &&
@@ -59,16 +57,16 @@ export const notCarrySameUnitInSameSide: Validator = {
       return [...rightErrors, ...leftErrors]
     })()
 
-    return errors.length === 0 ? success(assembly) : failure(errors)
+    return errors.length === 0 ? Result.succeed(assembly) : Result.fail(errors)
   },
 }
 
 export const totalCoamNotOverMaxName = 'totalCoamNotOverMax'
 export const totalCoamNotOverMax = (max: number): Validator => ({
-  validate(assembly: Assembly): ValidationResult {
+  validate(assembly) {
     return assembly.coam <= max
-      ? success(assembly)
-      : failure([
+      ? Result.succeed(assembly)
+      : Result.fail([
           new ValidationError(
             { validationName: totalCoamNotOverMaxName, adjustable: true },
             `total coam of assembly(${assembly.coam}) over max(${max})`,
@@ -79,10 +77,10 @@ export const totalCoamNotOverMax = (max: number): Validator => ({
 
 export const totalLoadNotOverMaxName = 'totalLoadNotOverMax'
 export const totalLoadNotOverMax = (max: number): Validator => ({
-  validate(assembly: Assembly): ValidationResult {
+  validate(assembly) {
     return assembly.load <= max
-      ? success(assembly)
-      : failure([
+      ? Result.succeed(assembly)
+      : Result.fail([
           new ValidationError(
             { validationName: totalLoadNotOverMaxName, adjustable: true },
             `total load of assembly(${assembly.load}) over max(${max})`,
@@ -93,10 +91,10 @@ export const totalLoadNotOverMax = (max: number): Validator => ({
 
 export const disallowLoadOverName = 'disallowLoadOver'
 export const disallowLoadOver = (): Validator => ({
-  validate(assembly: Assembly): ValidationResult {
+  validate(assembly) {
     return assembly.withinLoadLimit
-      ? success(assembly)
-      : failure([
+      ? Result.succeed(assembly)
+      : Result.fail([
           new ValidationError(
             { validationName: disallowLoadOverName, adjustable: true },
             `load limit of assembly is (${assembly.loadLimit}), but load is ${assembly.load})`,
@@ -107,10 +105,10 @@ export const disallowLoadOver = (): Validator => ({
 
 export const disallowArmsLoadOverName = 'disallowArmsLoadOver'
 export const disallowArmsLoadOver = (): Validator => ({
-  validate(assembly: Assembly): ValidationResult {
+  validate(assembly) {
     return assembly.withinArmsLoadLimit
-      ? success(assembly)
-      : failure([
+      ? Result.succeed(assembly)
+      : Result.fail([
           new ValidationError(
             { validationName: disallowArmsLoadOverName, adjustable: true },
             `arms load limit of assembly is (${assembly.armsLoadLimit}), but load is ${assembly.armsLoad})`,

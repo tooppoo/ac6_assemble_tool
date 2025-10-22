@@ -52,6 +52,25 @@ export type Candidates = Readonly<{
   expansion: ReadonlyArray<Expansion.Expansion | ExpansionNotEquipped>
 }>
 
+/**
+ * CandidatesKeyの全ての有効な値
+ * webパッケージなど外部から参照する場合はこの定数を使用すること
+ */
+export const CANDIDATES_KEYS = [
+  'rightArmUnit',
+  'leftArmUnit',
+  'rightBackUnit',
+  'leftBackUnit',
+  'head',
+  'core',
+  'arms',
+  'legs',
+  'booster',
+  'fcs',
+  'generator',
+  'expansion',
+] as const satisfies readonly CandidatesKey[]
+
 export function onlyTank(xs: readonly Legs[]): Legs[] {
   return xs.filter((x) => x.category === tank)
 }

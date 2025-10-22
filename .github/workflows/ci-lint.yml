@@ -8,6 +8,9 @@ on:
       - packages/eslint/**
       - packages/spec/**
       - packages/web/**
+      - "*.md"
+      - ".github/**/*.md"
+      - "docs/**/*.md"
       - .github/workflows/ci-lint.yml
       - pnpm-lock.yaml
 

@@ -2,6 +2,7 @@ import type { Assembly } from '#core/assembly/assembly'
 
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 import { BaseCustomError } from '@ac6_assemble_tool/shared/error'
+import { Result } from '@praha/byethrow'
 
 import {
   defaultRandomBuildOption,
@@ -9,7 +10,6 @@ import {
   type RandomBuildOption,
 } from './random-builder'
 import type { Validator } from './validator/base'
-import { success, type ValidationResult } from './validator/result'
 import {
   notCarrySameUnitInSameSide,
   notOverEnergyOutput,
@@ -77,33 +77,43 @@ export class RandomAssembly {
     const opt = { ...defaultRandomBuildOption, ...option }
 
     try {
-      return this.validate(randomBuild(candidates, opt)).fold(
-        (errors) => {
-          this.errors = [...this.errors, ...errors]
+      return Result.unwrap(
+        Result.pipe(
+          this.validate(randomBuild(candidates, opt)),
+          Result.orElse((errors) => {
+            this.errors = [...this.errors, ...errors]
 
-          if (this.tryCount >= this.config.limit) {
-            throw new OverTryLimitError(
-              { limit: this.config.limit, errors: this.errors },
-              `over limit of try(${this.config.limit})`,
-            )
-          }
+            if (this.tryCount >= this.config.limit) {
+              const error = new OverTryLimitError(
+                { limit: this.config.limit, errors: this.errors },
+                `over limit of try(${this.config.limit})`,
+              )
 
-          return this.assemble(candidates, option)
-        },
-        (a) => a,
+              throw error
+            }
+
+            return Result.succeed(this.assemble(candidates, option))
+          }),
+        ),
       )
     } finally {
       this.reset()
     }
   }
 
-  validate(assembly: Assembly): ValidationResult {
-    return Object.values(this._validators).reduce(
-      (r, v) => r.concat(v.validate(assembly)),
-      success(assembly),
-    )
+  validate(assembly: Assembly): Result.Result<Assembly, Error[]> {
+    const failed = Object.values(this._validators)
+      .map((v) => v.validate(assembly))
+      .filter(Result.isFailure)
+
+    return failed.length === 0
+      ? Result.succeed(assembly)
+      : Result.fail(failed.flatMap((f) => Result.unwrapError(f)))
   }
 
+  /**
+   * リトライ回数とエラー履歴をリセットする破壊的メソッド.
+   */
   private reset() {
     this.tryCount = 0
     this.errors = []

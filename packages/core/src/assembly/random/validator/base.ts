@@ -1,7 +1,7 @@
 import type { Assembly } from '#core/assembly/assembly'
 
-import type { ValidationResult } from './result'
+import type { Result } from '@praha/byethrow'
 
 export interface Validator {
-  validate(assembly: Assembly): ValidationResult
+  validate(assembly: Assembly): Result.Result<Assembly, Error[]>
 }
