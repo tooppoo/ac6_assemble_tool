@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from '$app/paths'
   import Navbar from '$lib/view/index/layout/Navbar.svelte'
 
   import type { AboutSection } from './types'
@@ -8,11 +9,13 @@
   export let heroLead: string
   export let backLinkLabel: string
   export let homeHref: string = '/'
-  export let languageSwitcher: readonly {
+  type LanguageSwitcherItem = {
     readonly label: string
     readonly href: string
     readonly active: boolean
-  }[] = []
+  }
+
+  export let languageSwitcher: readonly LanguageSwitcherItem[] = []
   export let tocNavigationLabel: string = 'Page navigation'
   export let tocHeadingLabel: string = 'Sections'
 
@@ -20,18 +23,28 @@
     id: section.id,
     title: section.title,
   }))
+
+  $: resolvedHomeHref = resolve(homeHref)
+  $: resolvedLanguageSwitcher = languageSwitcher.map((locale) => ({
+    ...locale,
+    resolvedHref: resolve(locale.href),
+  }))
 </script>
 
 <div class="bg-dark text-light min-vh-100">
   <Navbar>
-    <a class="nav-link text-light" href={homeHref} data-testid="nav-home-link">
+    <a
+      class="nav-link text-light"
+      href={resolvedHomeHref}
+      data-testid="nav-home-link"
+    >
       {backLinkLabel}
     </a>
-    {#if languageSwitcher.length > 0}
-      {#each languageSwitcher as locale}
+    {#if resolvedLanguageSwitcher.length > 0}
+      {#each resolvedLanguageSwitcher as locale (locale.href)}
         <a
           class={`nav-link ms-3 ${locale.active ? 'fw-bold text-primary' : 'text-light'}`}
-          href={locale.href}
+          href={locale.resolvedHref}
           aria-current={locale.active ? 'page' : undefined}
         >
           {locale.label}
@@ -62,7 +75,7 @@
                 {tocHeadingLabel}
               </h2>
               <ul class="list-unstyled m-0">
-                {#each tocItems as item}
+                {#each tocItems as item (item.id)}
                   <li class="mb-2">
                     <a
                       class="link-light link-underline-opacity-0 link-underline-opacity-75-hover"

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { appUrl } from '$lib/app-url'
-  import About from '$lib/view/about/About.svelte'
   import { aboutSections } from '$lib/i18n/locales/en/pages/about/content.en'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
+  import About from '$lib/view/about/About.svelte'
 
   import { onMount } from 'svelte'
 
