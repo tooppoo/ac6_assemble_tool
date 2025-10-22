@@ -2,7 +2,9 @@
   import { appUrl } from '$lib/app-url'
   import About from '$lib/view/about/About.svelte'
   import { aboutSections } from '$lib/i18n/locales/ja/pages/about/content.ja'
-  import { page } from '$app/stores'
+  import { useWithEnableState } from '$lib/ssg/safety-reference'
+
+  import { onMount } from 'svelte'
 
 
   const heroTitle = 'AC6 ASSEMBLE TOOL /about'
@@ -34,16 +36,28 @@
   let jaQuery: string = ''
   let enQuery: string = ''
   let homeHref: string = '/'
-  let languageSwitcher: readonly LanguageLink[] = []
+  let languageSwitcher: readonly LanguageLink[] = [
+    { label: '日本語', href: '/about/ja', active: true },
+    { label: 'English', href: '/about/en', active: false },
+  ]
 
-  $: currentSearch = $page.url.search
-  $: jaQuery = withLanguage(currentSearch, 'ja')
-  $: enQuery = withLanguage(currentSearch, 'en')
-  $: homeHref = jaQuery ? `/${jaQuery}` : '/'
-  $: languageSwitcher = [
-    { label: '日本語', href: `/about/ja${jaQuery}`, active: true },
-    { label: 'English', href: `/about/en${enQuery}`, active: false },
-  ] satisfies readonly LanguageLink[]
+  const syncQueries = () => {
+    currentSearch = window.location.search
+    jaQuery = withLanguage(currentSearch, 'ja')
+    enQuery = withLanguage(currentSearch, 'en')
+    homeHref = jaQuery ? `/${jaQuery}` : '/'
+    languageSwitcher = [
+      { label: '日本語', href: `/about/ja${jaQuery}`, active: true },
+      { label: 'English', href: `/about/en${enQuery}`, active: false },
+    ]
+  }
+
+  const syncQueriesWithEnable = useWithEnableState(syncQueries)
+
+  onMount(() => {
+    syncQueriesWithEnable.enable()
+    syncQueriesWithEnable.run()
+  })
 </script>
 
 <svelte:head>
