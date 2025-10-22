@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { resolve } from '$app/paths'
   import Navbar from '$lib/view/index/layout/Navbar.svelte'
 
   import type { AboutSection } from './types'
@@ -24,10 +23,10 @@
     title: section.title,
   }))
 
-  $: resolvedHomeHref = resolve(homeHref)
+  $: resolvedHomeHref = homeHref
   $: resolvedLanguageSwitcher = languageSwitcher.map((locale) => ({
     ...locale,
-    resolvedHref: resolve(locale.href),
+    resolvedHref: locale.href,
   }))
 </script>
 

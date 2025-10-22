@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { resolve } from '$app/paths'
   import TextButton from '$lib/components/button/TextButton.svelte'
 
   import { createEventDispatcher } from 'svelte'
@@ -23,7 +22,7 @@
 {#if href}
   <a
     {id}
-    href={resolve(href)}
+    href={href}
     rel={rel}
     target={target}
     aria-label={title}
