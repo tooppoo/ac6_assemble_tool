@@ -26,8 +26,8 @@ export class FavoritesDatabase extends Dexie {
     super('AC6FavoritesDB')
 
     this.version(1).stores({
-      // インデックス定義: &id (主キー), &[slot+partsId] (一意複合インデックス), slot, partsId, createdAt
-      favorites: '&id, &[slot+partsId], slot, partsId, createdAt',
+      // インデックス定義: &id (主キー), &[slot+partsId] (一意複合インデックス), createdAt
+      favorites: '&id, &[slot+partsId], createdAt',
     })
   }
 }
@@ -47,6 +47,12 @@ export class FavoriteStore {
 
   constructor() {
     this.db = new FavoritesDatabase()
+  }
+
+  private favoritesBySlot(slot: CandidatesKey) {
+    return this.db.favorites
+      .where('[slot+partsId]')
+      .between([slot, Dexie.minKey], [slot, Dexie.maxKey])
   }
 
   /**
@@ -132,10 +138,7 @@ export class FavoriteStore {
     slot: CandidatesKey,
   ): Promise<Result.Result<Set<string>, FavoriteError>> {
     try {
-      const favorites = await this.db.favorites
-        .where('slot')
-        .equals(slot)
-        .toArray()
+      const favorites = await this.favoritesBySlot(slot).toArray()
 
       const partsIds = new Set(favorites.map((f) => f.partsId))
 
@@ -188,7 +191,7 @@ export class FavoriteStore {
     slot: CandidatesKey,
   ): Promise<Result.Result<void, FavoriteError>> {
     try {
-      await this.db.favorites.where('slot').equals(slot).delete()
+      await this.favoritesBySlot(slot).delete()
 
       logger.info('Favorites cleared', { slot })
 
