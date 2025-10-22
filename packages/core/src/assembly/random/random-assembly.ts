@@ -94,7 +94,6 @@ export class RandomAssembly {
 
             return Result.succeed(this.assemble(candidates, option))
           }),
-          Result.andThrough((assembly) => Result.succeed(assembly)),
         ),
       )
     } finally {
