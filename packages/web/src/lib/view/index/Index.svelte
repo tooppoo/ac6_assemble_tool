@@ -96,7 +96,7 @@
   $: {
     const basePath = $i18n.language === 'en' ? '/about/en' : '/about/ja'
     const suffix = currentSearch || ''
-    aboutHref = `${basePath}${suffix}`
+    aboutHref = `${basePath}?${suffix}`
   }
 
   const tryLimit = 3000
