@@ -82,6 +82,23 @@
     rel: 'external noopener noreferrer',
   } as const
 
+  let aboutHref: string = '/about/ja'
+  let currentSearch: string = ''
+
+  const updateCurrentSearch = () => {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    currentSearch = window.location.search
+  }
+
+  $: {
+    const basePath = $i18n.language === 'en' ? '/about/en' : '/about/ja'
+    const suffix = currentSearch || ''
+    aboutHref = `${basePath}?${suffix}`
+  }
+
   const tryLimit = 3000
 
   // state
@@ -106,7 +123,10 @@
   let orderParts: OrderParts = defineOrder(orders)
 
   let assembly: Assembly = initializeAssembly(candidates)
-  let serializeAssembly = useWithEnableState(serializeAssemblyAsQuery)
+  let serializeAssembly = useWithEnableState(() => {
+    serializeAssemblyAsQuery()
+    updateCurrentSearch()
+  })
 
   onMount(() => {
     initialize()
@@ -117,11 +137,16 @@
   $: {
     if (initialCandidates && filter && assembly && lockedParts) {
       try {
-        logger.debug('update candidates', filter, lockedParts)
+        logger.debug('update candidates', { filter, lockedParts })
 
         updateCandidates()
-      } catch (e) {
-        logger.error(e)
+      } catch (e: unknown) {
+        const errorContext =
+          e instanceof Error
+            ? { errorMessage: e.message, errorStack: e.stack }
+            : { error: `${e}` }
+
+        logger.error('update candidates failed', errorContext)
 
         errorMessage = filterApplyErrorMessage(
           e instanceof UsableItemNotFoundError ? e : new Error(`${e}`),
@@ -132,7 +157,9 @@
   }
   $: {
     if (assembly && initialCandidates && !browserBacking) {
-      logger.debug('replace state', assemblyToSearchV2(assembly).toString())
+      logger.debug('replace state', {
+        query: assemblyToSearchV2(assembly).toString(),
+      })
 
       serializeAssembly.run()
     }
@@ -300,12 +327,24 @@
   </NavButton>
   <NavButton
     id="open-assembly-store"
+    class="me-3"
     title={$i18n.t('command.store.description', { ns: 'page/index' })}
     on:click={() => (openAssemblyStore = true)}
   >
     <i slot="icon" class="bi bi-database"></i>
     <span class="d-none d-md-inline">
       {$i18n.t('command.store.label', { ns: 'page/index' })}
+    </span>
+  </NavButton>
+  <NavButton
+    id="open-about-page"
+    title={$i18n.t('command.about.description', { ns: 'page/index' })}
+    href={aboutHref}
+    class="ms-md-2"
+  >
+    <i slot="icon" class="bi bi-info-circle"></i>
+    <span class="d-none d-md-inline">
+      {$i18n.t('command.about.label', { ns: 'page/index' })}
     </span>
   </NavButton>
 </Navbar>
@@ -319,7 +358,7 @@
     for Regulation {version}
   </h2>
   <div>
-    <LanguageForm />
+    <LanguageForm onUpdate={(search) => (currentSearch = search)} />
   </div>
 </header>
 

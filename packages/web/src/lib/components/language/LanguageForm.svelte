@@ -3,11 +3,14 @@
   import { useWithEnableState } from '$lib/ssg/safety-reference'
 
   import { getContext, onMount } from 'svelte'
+  import { SvelteURL } from 'svelte/reactivity'
 
   const i18n = getContext<I18NextStore>('i18n')
 
   const defaultLanguage: string = 'ja'
   const languageQuery: string = 'lng'
+
+  export let onUpdate: ((search: string) => void) | undefined
 
   // state
   let language: string = defaultLanguage
@@ -50,13 +53,14 @@
     language = url.searchParams.get(languageQuery) || defaultLanguage
   }
   function setLanguageQuery() {
-    const url = new URL(location.href)
+    const url = new SvelteURL(location.href)
     const query = url.searchParams
 
     query.set(languageQuery, language)
     url.search = query.toString()
 
     history.pushState({}, '', url)
+    onUpdate?.(url.search)
   }
 </script>
 

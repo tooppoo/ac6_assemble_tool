@@ -5,20 +5,40 @@
 
   export let id: string = ''
   export let title: string
-
-  const onClick = () => {
-    dispatch('click')
-  }
+  export let href: string | null = null
+  export let rel: string | undefined = undefined
+  export let target: string | undefined = undefined
 
   const dispatch = createEventDispatcher<{ click: null }>()
+
+  const onClick = () => {
+    if (href) {
+      return
+    }
+    dispatch('click')
+  }
 </script>
 
-<TextButton
-  {id}
-  class={`${$$props.class || ''}`}
-  aria-label={title}
-  on:click={onClick}
->
-  <slot name="icon"></slot>
-  <slot></slot>
-</TextButton>
+{#if href}
+  <a
+    {id}
+    {href}
+    {rel}
+    {target}
+    aria-label={title}
+    class={`${$$props.class || ''} btn btn-secondary bg-dark-subtle`}
+  >
+    <slot name="icon"></slot>
+    <slot></slot>
+  </a>
+{:else}
+  <TextButton
+    {id}
+    class={`${$$props.class || ''}`}
+    aria-label={title}
+    on:click={onClick}
+  >
+    <slot name="icon"></slot>
+    <slot></slot>
+  </TextButton>
+{/if}

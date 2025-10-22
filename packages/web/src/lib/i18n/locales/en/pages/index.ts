@@ -33,6 +33,10 @@ export const enPageIndex = {
       label: 'Store',
       description: 'Store Assembly and Apply',
     },
+    about: {
+      label: 'About',
+      description: 'Open about page',
+    },
   },
   report: {
     bug: 'Report Bug',

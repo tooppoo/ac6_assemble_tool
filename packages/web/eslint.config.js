@@ -44,9 +44,9 @@ export default [
   }),
   {
     rules: {
-      // TODO: Re-enable after migrating to Svelte 5 runes
-      // Temporarily disable as legacy reactive syntax is still in use
-      'svelte/prefer-svelte-reactivity': 'off',
+      'svelte/prefer-svelte-reactivity': 'error',
+      // クエリやハッシュを伴う伴うリンクに対応できないので、無効化
+      'svelte/no-navigation-without-resolve': 'off',
     },
   },
 ]

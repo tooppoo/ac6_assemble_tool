@@ -38,7 +38,7 @@ export default defineConfig({
     port: 4173,
   },
   plugins: [
-    ...(isVitest ? [] : [sveltekit()]),
+    sveltekit(),
     svelteTesting(),
     (() => {
       console.log(`ANALYZE_MODE=${process.env.ANALYZE_MODE}`)

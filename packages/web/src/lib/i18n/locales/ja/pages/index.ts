@@ -32,6 +32,10 @@ export const jaPageIndex = {
       label: 'アセン保存',
       description: 'アセンデータを<br/>保存・適用する',
     },
+    about: {
+      label: 'ツール概要',
+      description: 'About ページを開く',
+    },
   },
   report: {
     bug: '不具合を報告する',
