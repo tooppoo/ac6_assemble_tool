@@ -3,9 +3,9 @@
   import { aboutSections } from '$lib/i18n/locales/ja/pages/about/content.ja'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
   import About from '$lib/view/about/About.svelte'
+  import { withLanguage } from '$lib/view/about/language-state'
 
   import { onMount } from 'svelte'
-  import { SvelteURLSearchParams } from 'svelte/reactivity'
 
   const heroTitle = 'AC6 ASSEMBLE TOOL /about'
   const heroLead =
@@ -15,21 +15,6 @@
     readonly label: string
     readonly href: string
     readonly active: boolean
-  }
-
-  function withLanguage(search: string, language: 'ja' | 'en'): string {
-    const raw = search.startsWith('?') ? search.slice(1) : search
-    const params = new SvelteURLSearchParams(raw)
-
-    if (language === 'ja') {
-      params.delete('lng')
-    } else {
-      params.set('lng', language)
-    }
-
-    const query = params.toString()
-
-    return query ? `?${query}` : ''
   }
 
   let currentSearch: string = ''
