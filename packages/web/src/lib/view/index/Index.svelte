@@ -83,8 +83,21 @@
   } as const
 
   let aboutHref: string = '/about/ja'
+  let currentSearch: string = ''
 
-  $: aboutHref = $i18n.language === 'en' ? '/about/en' : '/about/ja'
+  const updateCurrentSearch = () => {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    currentSearch = window.location.search
+  }
+
+  $: {
+    const basePath = $i18n.language === 'en' ? '/about/en' : '/about/ja'
+    const suffix = currentSearch || ''
+    aboutHref = `${basePath}${suffix}`
+  }
 
   const tryLimit = 3000
 
@@ -110,7 +123,10 @@
   let orderParts: OrderParts = defineOrder(orders)
 
   let assembly: Assembly = initializeAssembly(candidates)
-  let serializeAssembly = useWithEnableState(serializeAssemblyAsQuery)
+  let serializeAssembly = useWithEnableState(() => {
+    serializeAssemblyAsQuery()
+    updateCurrentSearch()
+  })
 
   onMount(() => {
     initialize()
@@ -335,7 +351,7 @@
     for Regulation {version}
   </h2>
   <div>
-    <LanguageForm />
+    <LanguageForm onUpdate={(search) => (currentSearch = search)} />
   </div>
 </header>
 

@@ -9,6 +9,8 @@
   const defaultLanguage: string = 'ja'
   const languageQuery: string = 'lng'
 
+  export let onUpdate: ((search: string) => void) | undefined
+
   // state
   let language: string = defaultLanguage
   let serializeLanguage = useWithEnableState(setLanguageQuery)
@@ -57,6 +59,7 @@
     url.search = query.toString()
 
     history.pushState({}, '', url)
+    onUpdate?.(url.search)
   }
 </script>
 
