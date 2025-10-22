@@ -22,9 +22,9 @@
 {#if href}
   <a
     {id}
-    href={href}
-    rel={rel}
-    target={target}
+    {href}
+    {rel}
+    {target}
     aria-label={title}
     class={`${$$props.class || ''} btn btn-secondary bg-dark-subtle`}
   >

@@ -67,10 +67,7 @@
   <link rel="canonical" href={appUrl('about', 'en')} />
   <meta property="og:url" content={appUrl('about', 'en')} />
   <title>AC6 ASSEMBLE TOOL | About (English)</title>
-  <meta
-    property="og:title"
-    content="AC6 ASSEMBLE TOOL | About (English)"
-  />
+  <meta property="og:title" content="AC6 ASSEMBLE TOOL | About (English)" />
   <meta
     name="description"
     content="Learn what AC6 ASSEMBLE TOOL offers, the problems it solves, and the roadmap ahead in the English about page."
@@ -82,8 +79,8 @@
 </svelte:head>
 
 <About
-  heroTitle={heroTitle}
-  heroLead={heroLead}
+  {heroTitle}
+  {heroLead}
   backLinkLabel="Back to home"
   {homeHref}
   {languageSwitcher}

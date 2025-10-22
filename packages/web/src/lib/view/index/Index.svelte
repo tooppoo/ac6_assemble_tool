@@ -157,7 +157,9 @@
   }
   $: {
     if (assembly && initialCandidates && !browserBacking) {
-      logger.debug('replace state', { query: assemblyToSearchV2(assembly).toString() })
+      logger.debug('replace state', {
+        query: assemblyToSearchV2(assembly).toString(),
+      })
 
       serializeAssembly.run()
     }

@@ -67,10 +67,7 @@
   <link rel="canonical" href={appUrl('about', 'ja')} />
   <meta property="og:url" content={appUrl('about', 'ja')} />
   <title>AC6 ASSEMBLE TOOL | About (日本語)</title>
-  <meta
-    property="og:title"
-    content="AC6 ASSEMBLE TOOL | About (日本語)"
-  />
+  <meta property="og:title" content="AC6 ASSEMBLE TOOL | About (日本語)" />
   <meta
     name="description"
     content="AC6 ASSEMBLE TOOL の概要、開発背景、主要機能、今後のロードマップなどを紹介する日本語版 about ページ。"
@@ -82,8 +79,8 @@
 </svelte:head>
 
 <About
-  heroTitle={heroTitle}
-  heroLead={heroLead}
+  {heroTitle}
+  {heroLead}
   backLinkLabel="ホームに戻る"
   {homeHref}
   {languageSwitcher}
