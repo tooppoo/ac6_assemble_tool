@@ -80,6 +80,9 @@ export const importRules = ({ pathGroups, ignoreUnresolved }) => [
           ignore: ['^@ac6_assemble_tool', ...(ignoreUnresolved || [])],
         },
       ],
+      // svelte/reactive など、subpathを使ったimportに対応していないため無効化
+      // https://github.com/import-js/eslint-plugin-import/issues/3076
+      'import/no-duplicates': 'off',
     },
   },
 ]
