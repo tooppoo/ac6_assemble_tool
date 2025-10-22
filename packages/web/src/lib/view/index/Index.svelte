@@ -141,7 +141,12 @@
 
         updateCandidates()
       } catch (e: unknown) {
-        logger.error(`${e}`)
+        const errorContext =
+          e instanceof Error
+            ? { errorMessage: e.message, errorStack: e.stack }
+            : { error: `${e}` }
+
+        logger.error('update candidates failed', errorContext)
 
         errorMessage = filterApplyErrorMessage(
           e instanceof UsableItemNotFoundError ? e : new Error(`${e}`),

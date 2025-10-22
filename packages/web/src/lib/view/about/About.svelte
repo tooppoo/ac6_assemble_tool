@@ -13,6 +13,8 @@
     readonly href: string
     readonly active: boolean
   }[] = []
+  export let tocNavigationLabel: string = 'Page navigation'
+  export let tocHeadingLabel: string = 'Sections'
 
   const tocItems = sections.map((section) => ({
     id: section.id,
@@ -52,12 +54,12 @@
       <aside class="col-lg-3 mb-4">
         <nav
           class="position-sticky top-0 pt-lg-3"
-          aria-label="ページ内ナビゲーション"
+          aria-label={tocNavigationLabel}
         >
           <div class="card bg-secondary-subtle border-0">
             <div class="card-body">
               <h2 class="h6 text-uppercase fw-semibold mb-3">
-                セクション一覧
+                {tocHeadingLabel}
               </h2>
               <ul class="list-unstyled m-0">
                 {#each tocItems as item}

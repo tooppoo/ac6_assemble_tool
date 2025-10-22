@@ -41,6 +41,10 @@
   ]
 
   const syncQueries = () => {
+    if (typeof window === 'undefined') {
+      return
+    }
+
     currentSearch = window.location.search
     jaQuery = withLanguage(currentSearch, 'ja')
     enQuery = withLanguage(currentSearch, 'en')
@@ -83,5 +87,7 @@
   backLinkLabel="Back to home"
   {homeHref}
   {languageSwitcher}
+  tocNavigationLabel="Page navigation"
+  tocHeadingLabel="Sections"
   sections={aboutSections}
 />

@@ -42,6 +42,10 @@
   ]
 
   const syncQueries = () => {
+    if (typeof window === 'undefined') {
+      return
+    }
+
     currentSearch = window.location.search
     jaQuery = withLanguage(currentSearch, 'ja')
     enQuery = withLanguage(currentSearch, 'en')
@@ -84,5 +88,7 @@
   backLinkLabel="ホームに戻る"
   {homeHref}
   {languageSwitcher}
+  tocNavigationLabel="ページ内ナビゲーション"
+  tocHeadingLabel="セクション一覧"
   sections={aboutSections}
 />
