@@ -65,23 +65,34 @@ describe('PartsListView コンポーネント', () => {
   })
 
   describe('スロット選択', () => {
-    it('スロット選択時に状態が更新されること', () => {
-      const { component } = render(PartsListView, {
+    it('SlotSelectorコンポーネントが表示されること', () => {
+      render(PartsListView, {
         props: {
           regulation,
         },
       })
 
-      // スロット変更イベントをシミュレート
-      // 実際の実装では、子コンポーネントからのイベントを処理
-      // @ts-expect-error - Accessing internal methods for testing
-      if (component.handleSlotChange) {
-        // @ts-expect-error - Accessing internal methods for testing
-        component.handleSlotChange({ detail: { slot: 'arms' } })
-      }
+      // SlotSelectorが表示され、すべてのスロットボタンが存在することを確認
+      const buttons = screen.getAllByRole('button')
+      expect(buttons.length).toBeGreaterThanOrEqual(12)
+    })
 
-      // 状態が更新されることを確認
-      // 実際のテストは実装後に追加
+    it('スロット選択時に表示が更新されること', async () => {
+      const { getByText } = render(PartsListView, {
+        props: {
+          regulation,
+        },
+      })
+
+      // 初期状態（rightArmUnit）
+      expect(getByText(/現在のスロット: (RIGHT ARM UNIT|右腕武器)/i)).toBeInTheDocument()
+
+      // headスロットをクリック
+      const headButton = getByText(/^HEAD$|^頭部$/)
+      await headButton.click()
+
+      // 表示が更新されることを確認
+      expect(getByText(/現在のスロット: (HEAD|頭部)/i)).toBeInTheDocument()
     })
   })
 

@@ -21,6 +21,7 @@
   import { browser } from '$app/environment'
   import { replaceState } from '$app/navigation'
   import i18n from '$lib/i18n/define'
+  import SlotSelector from './SlotSelector.svelte'
 
   // Props
   interface Props {
@@ -88,7 +89,7 @@
   })
 
   // イベントハンドラ
-  export function handleSlotChange(event: CustomEvent<{ slot: CandidatesKey }>) {
+  function handleSlotChange(event: CustomEvent<{ slot: CandidatesKey }>) {
     currentSlot = event.detail.slot
   }
 
@@ -109,6 +110,8 @@
 <div class="parts-list-view">
   <h2>パーツ一覧</h2>
 
+  <SlotSelector currentSlot={currentSlot} onslotchange={handleSlotChange} />
+
   <p class="text-muted">
     現在のスロット: {$i18n.t(`assembly:${currentSlot}`)}
   </p>
@@ -121,9 +124,9 @@
     パーツ数: {filteredParts.length}
   </p>
 
-  <!-- 今後実装予定: スロット選択UI、フィルタパネル、並び替えUI、パーツグリッド -->
+  <!-- 今後実装予定: フィルタパネル、並び替えUI、パーツグリッド -->
   <div class="alert alert-info" role="alert">
-    子コンポーネント（スロット選択、フィルタ、並び替え、パーツ一覧）はタスク3以降で実装されます。
+    子コンポーネント（フィルタ、並び替え、パーツ一覧）はタスク4以降で実装されます。
   </div>
 </div>
 
