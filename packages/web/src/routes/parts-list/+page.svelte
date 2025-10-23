@@ -6,11 +6,19 @@
    */
 
   import type { PageData } from './+page'
+  import PartsListView from '$lib/view/parts-list/PartsListView.svelte'
+  import { browser } from '$app/environment'
 
   // ページデータ
   export let data: PageData
 
   const { regulation } = data
+
+  // URLSearchParamsを取得
+  let searchParams: URLSearchParams | undefined = undefined
+  if (browser) {
+    searchParams = new URLSearchParams(window.location.search)
+  }
 </script>
 
 <svelte:head>
@@ -26,10 +34,7 @@
       パッチバージョン: {regulation.version}
     </p>
 
-    <!-- 今後実装予定: スロット選択、フィルタパネル、パーツグリッド -->
-    <div class="alert alert-info" role="alert">
-      パーツ一覧ページを構築中です。今後、スロット選択、フィルタリング、並び替え機能が追加されます。
-    </div>
+    <PartsListView {regulation} initialSearchParams={searchParams} />
   </div>
 </main>
 
