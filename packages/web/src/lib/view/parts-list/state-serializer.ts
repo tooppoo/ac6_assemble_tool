@@ -100,7 +100,7 @@ export function deserializeFromURL(
   try {
     // スロット
     const slotParam = params.get('slot')
-    let slot: CandidatesKey = 'head' // デフォルト
+    let slot: CandidatesKey = 'rightArmUnit' // デフォルト
 
     if (slotParam) {
       if (!VALID_SLOTS.has(slotParam as CandidatesKey)) {

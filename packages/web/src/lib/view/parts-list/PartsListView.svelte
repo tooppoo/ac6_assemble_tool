@@ -20,6 +20,7 @@
   import { Result } from '@praha/byethrow'
   import { browser } from '$app/environment'
   import { replaceState } from '$app/navigation'
+  import i18n from '$lib/i18n/define'
 
   // Props
   interface Props {
@@ -40,7 +41,7 @@
   }
 
   // 状態管理（Svelte 5 runes）
-  let currentSlot = $state<CandidatesKey>(initialState?.slot ?? 'head')
+  let currentSlot = $state<CandidatesKey>(initialState?.slot ?? 'rightArmUnit')
   let filters = $state<Filter[]>(initialState?.filters ?? [])
   let sortKey = $state<string | null>(initialState?.sortKey ?? null)
   let sortOrder = $state<'asc' | 'desc' | null>(initialState?.sortOrder ?? null)
@@ -109,7 +110,7 @@
   <h2>パーツ一覧</h2>
 
   <p class="text-muted">
-    現在のスロット: {currentSlot}
+    現在のスロット: {$i18n.t(`assembly:${currentSlot}`)}
   </p>
 
   <p class="text-muted">

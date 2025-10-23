@@ -40,15 +40,15 @@ describe('PartsListView コンポーネント', () => {
       expect(screen.getByRole('heading', { name: /パーツ一覧/i })).toBeInTheDocument()
     })
 
-    it('デフォルトでheadスロットが選択されていること', () => {
+    it('デフォルトでrightArmUnitスロットが選択されていること', () => {
       render(PartsListView, {
         props: {
           regulation,
         },
       })
 
-      // デフォルトでheadスロットが選択されていることを確認
-      expect(screen.getByText(/現在のスロット: head/i)).toBeInTheDocument()
+      // デフォルトでrightArmUnitスロットが選択されていることを確認（翻訳後）
+      expect(screen.getByText(/現在のスロット: (RIGHT ARM UNIT|右腕武器)/i)).toBeInTheDocument()
     })
 
     it('デフォルトでgrid表示モードが選択されていること', () => {

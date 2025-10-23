@@ -142,14 +142,14 @@ describe('StateSerializer', () => {
       }
     })
 
-    it('スロットパラメータが存在しない場合、デフォルト値(head)を使用すること', () => {
+    it('スロットパラメータが存在しない場合、デフォルト値(rightArmUnit)を使用すること', () => {
       const params = new URLSearchParams('')
 
       const result = deserializeFromURL(params)
 
       expect(Result.isSuccess(result)).toBe(true)
       if (result.type === 'Success') {
-        expect(result.value.slot).toBe('head')
+        expect(result.value.slot).toBe('rightArmUnit')
       }
     })
 
