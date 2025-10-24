@@ -13,12 +13,11 @@
     deserializeFromURL,
     saveViewMode,
     loadViewMode,
-    splitFiltersBySlot,
-    applyFilters,
     type ViewMode,
     type SharedState,
     type Filter,
   } from './state-serializer'
+  import { splitFiltersBySlot, applyFilters } from './filters'
   import { Result } from '@praha/byethrow'
   import { browser } from '$app/environment'
   import { replaceState } from '$app/navigation'
