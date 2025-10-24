@@ -132,26 +132,26 @@
 </script>
 
 <div class="parts-list-view">
-  <p class="py-1">
+  <div class="py-1">
     <SlotSelector {currentSlot} onslotchange={handleSlotChange} />
-  </p>
+  </div>
 
-  <p class="py-1">
+  <div class="py-1">
     <FilterPanel
       slot={currentSlot}
       {filters}
       {invalidatedFilters}
       onclearfilters={handleClearFilters}
     />
-  </p>
+  </div>
 
-  <p class="py-1">
+  <div class="py-1">
     表示モード: {viewMode}
-  </p>
+  </div>
 
-  <p class="py-1">
+  <div class="py-1">
     パーツ数: {filteredParts.length}
-  </p>
+  </div>
 
   <!-- 今後実装予定: 並び替えUI、パーツグリッド -->
   <div class="alert alert-info" role="alert">
