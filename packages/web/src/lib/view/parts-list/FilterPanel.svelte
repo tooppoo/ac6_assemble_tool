@@ -6,13 +6,14 @@
    */
 
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
+  import { Alert, Collapse } from '@sveltestrap/sveltestrap'
+
   import type { Filter } from './filters'
   import {
     FILTERABLE_PROPERTIES,
     PROPERTY_LABELS,
     isNumericProperty,
   } from './filters'
-  import { Alert, Collapse } from '@sveltestrap/sveltestrap'
 
   // Props
   interface Props {
@@ -86,6 +87,11 @@
   function toggleCollapse() {
     isOpen = !isOpen
   }
+
+  /** {@link Filter} からeach用のkeyを生成する*/
+  function fKey(f: Filter): string {
+    return `${f.property}${f.operator}${f.value}`
+  }
 </script>
 
 <div class="card filter-panel-card">
@@ -119,7 +125,7 @@
         <Alert color="warning" class="mb-3">
           <div>
             <strong>無効化された条件:</strong>
-            {#each invalidatedFilters as filter, i}
+            {#each invalidatedFilters as filter, i (fKey(filter))}
               {filter.property}
               {operatorLabels[filter.operator]}
               {filter.value}{i < invalidatedFilters.length - 1 ? ', ' : ''}
@@ -140,7 +146,7 @@
               class="form-select"
               bind:value={selectedProperty}
             >
-              {#each FILTERABLE_PROPERTIES as property}
+              {#each FILTERABLE_PROPERTIES as property (property)}
                 <option value={property}>{PROPERTY_LABELS[property]}</option>
               {/each}
             </select>
@@ -157,8 +163,8 @@
             >
               <option value="lte">≤ 以下</option>
               <option value="gte">≥ 以上</option>
-              <option value="lt">{'<'} 未満</option>
-              <option value="gt">{'>'} 超過</option>
+              <option value="lt">&lt; 未満</option>
+              <option value="gt">&gt; 超過</option>
               <option value="eq">= 等しい</option>
               <option value="ne">≠ 等しくない</option>
             </select>
@@ -193,7 +199,7 @@
       <!-- 現在のフィルタ一覧 -->
       {#if filters.length > 0}
         <div class="list-group">
-          {#each filters as filter, index}
+          {#each filters as filter, index (fKey(filter))}
             <div
               class="list-group-item filter-list-item d-flex justify-content-between align-items-center"
             >

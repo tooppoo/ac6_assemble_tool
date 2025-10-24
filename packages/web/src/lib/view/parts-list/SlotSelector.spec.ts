@@ -8,10 +8,11 @@
  * - i18nでスロット名が翻訳されること
  */
 
-import { describe, it, expect } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/svelte'
-import SlotSelector from './SlotSelector.svelte'
 import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
+import { render, screen, fireEvent } from '@testing-library/svelte'
+import { describe, it, expect } from 'vitest'
+
+import SlotSelector from './SlotSelector.svelte'
 
 describe('SlotSelector コンポーネント', () => {
   describe('スロット表示', () => {

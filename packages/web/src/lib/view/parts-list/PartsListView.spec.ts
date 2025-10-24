@@ -8,10 +8,12 @@
  * - フィルタ済みパーツリストの計算テスト
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { render, screen } from '@testing-library/svelte'
-import PartsListView from './PartsListView.svelte'
 import { latest as regulation } from '$lib/regulation'
+
+import { render, screen } from '@testing-library/svelte'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+
+import PartsListView from './PartsListView.svelte'
 
 describe('PartsListView コンポーネント', () => {
   // LocalStorageをクリア

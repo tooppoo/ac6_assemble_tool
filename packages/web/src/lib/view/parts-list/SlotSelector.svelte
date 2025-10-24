@@ -6,9 +6,10 @@
    * スロット切替イベントを親コンポーネントに通知します。
    */
 
+  import i18n from '$lib/i18n/define'
+
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
   import { CANDIDATES_KEYS } from '@ac6_assemble_tool/parts/types/candidates'
-  import i18n from '$lib/i18n/define'
   import { Button, Collapse } from '@sveltestrap/sveltestrap'
 
   // Props
@@ -66,9 +67,9 @@
 
   <Collapse {isOpen}>
     <div class="card-body">
-      {#each selectorGroups as row}
+      {#each selectorGroups as row (row.join('.'))}
         <div class="d-flex flex-wrap gap-2 py-2">
-          {#each row as slot}
+          {#each row as slot (slot)}
             <Button
               color={currentSlot === slot ? 'primary' : 'outline-secondary'}
               size="lg"

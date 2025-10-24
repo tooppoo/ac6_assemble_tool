@@ -5,8 +5,10 @@
    * スロット選択による文脈確立、フィルタリング、並び替え、お気に入り管理を提供する探索的UIページ
    */
 
-  import type { PageData } from './+page'
   import PartsListView from '$lib/view/parts-list/PartsListView.svelte'
+
+  import type { PageData } from './+page'
+
   import { browser } from '$app/environment'
 
   // ページデータ

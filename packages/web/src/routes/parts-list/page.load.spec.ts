@@ -8,6 +8,7 @@
  */
 
 import { describe, it, expect } from 'vitest'
+
 import { load } from './+page'
 
 describe('パーツ一覧ページのルート (+page.ts)', () => {

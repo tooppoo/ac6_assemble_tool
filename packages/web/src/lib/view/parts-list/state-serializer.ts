@@ -4,6 +4,7 @@ import {
 } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
+
 import { type Filter, isValidFilterProperty } from './filters'
 
 /**

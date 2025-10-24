@@ -6,8 +6,13 @@
    * URLパラメータ/LocalStorageと同期します。
    */
 
-  import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
+  import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
+  import { Result } from '@praha/byethrow'
+
+  import FilterPanel from './FilterPanel.svelte'
+  import { splitFiltersBySlot, applyFilters } from './filters'
+  import SlotSelector from './SlotSelector.svelte'
   import {
     serializeToURL,
     deserializeFromURL,
@@ -17,12 +22,9 @@
     type SharedState,
     type Filter,
   } from './state-serializer'
-  import { splitFiltersBySlot, applyFilters } from './filters'
-  import { Result } from '@praha/byethrow'
+
   import { browser } from '$app/environment'
   import { replaceState } from '$app/navigation'
-  import SlotSelector from './SlotSelector.svelte'
-  import FilterPanel from './FilterPanel.svelte'
 
   // Props
   interface Props {
@@ -81,7 +83,7 @@
     const newUrl = `${window.location.pathname}?${params.toString()}`
     try {
       replaceState(newUrl, {})
-    } catch (error) {
+    } catch {
       // テスト環境ではルーターが初期化されていないため、エラーをキャッチ
       // 本番環境では正常に動作する
     }
