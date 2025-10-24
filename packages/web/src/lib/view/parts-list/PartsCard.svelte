@@ -29,9 +29,7 @@
 
   // i18n
   const i18n = getContext<I18NextStore>('i18n')
-  const translatedClassification = $derived(
-    $i18n.t(parts.classification, { ns: 'classification' }),
-  )
+
   const translatedCategory = $derived(
     $i18n.t(parts.category, { ns: 'category' }),
   )
@@ -47,7 +45,7 @@
 <Card class="parts-card h-100">
   <CardBody class="d-flex flex-column">
     <div class="d-flex justify-content-between align-items-start mb-2">
-      <CardTitle tag="h6" class="mb-0 flex-grow-1">
+      <CardTitle class="mb-0 flex-grow-1">
         {parts.name}
       </CardTitle>
       <Button
@@ -62,10 +60,6 @@
     </div>
 
     <CardText class="flex-grow-1">
-      <small class="text-muted d-block mb-1">
-        <strong>分類:</strong>
-        {translatedClassification}
-      </small>
       <small class="text-muted d-block mb-1">
         <strong>メーカー:</strong>
         {translatedManufacture}
