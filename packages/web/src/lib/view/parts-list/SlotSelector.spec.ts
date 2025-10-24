@@ -49,9 +49,10 @@ describe('SlotSelector コンポーネント', () => {
         },
       })
 
-      // 選択中のスロット（rightArmUnit）にactiveクラスが付いていることを確認
+      // 選択中のスロット（rightArmUnit）がprimaryカラーで表示されることを確認
       const rightArmButton = screen.getByText(/RIGHT ARM UNIT|右腕武器/i)
-      expect(rightArmButton.classList.contains('active')).toBe(true)
+      // Bootstrap 5のButtonコンポーネントでは btn-primary クラスが付く
+      expect(rightArmButton.classList.contains('btn-primary')).toBe(true)
     })
 
     it('選択されていないスロットがactive状態でないこと', () => {
@@ -61,9 +62,10 @@ describe('SlotSelector コンポーネント', () => {
         },
       })
 
-      // 選択されていないスロット（head）にactiveクラスが付いていないことを確認
+      // 選択されていないスロット（head）がoutline-secondaryカラーで表示されることを確認
       const headButton = screen.getByText(/^HEAD$|頭部/)
-      expect(headButton.classList.contains('active')).toBe(false)
+      // Bootstrap 5のButtonコンポーネントでは btn-outline-secondary クラスが付く
+      expect(headButton.classList.contains('btn-outline-secondary')).toBe(true)
     })
   })
 
