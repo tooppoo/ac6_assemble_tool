@@ -27,6 +27,8 @@
     name="description"
     content="AC6のパーツを一覧表示、フィルタリング、並び替えできる探索的UIページ"
   />
+  <!-- 開発中の暫定措置: 検索インデックスに登録されないようにする -->
+  <meta name="robots" content="noindex" />
 </svelte:head>
 
 <main class="parts-list-page py-4">
