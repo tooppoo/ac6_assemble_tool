@@ -5,19 +5,15 @@ import {
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 
+import { type Filter, isValidFilterProperty } from './filters'
+
 /**
  * 表示モード（grid/list）
  */
 export type ViewMode = 'grid' | 'list'
 
-/**
- * フィルタ条件
- */
-export interface Filter {
-  property: string
-  operator: 'lt' | 'lte' | 'gt' | 'gte' | 'eq' | 'ne'
-  value: number | string
-}
+// Filterは filters.ts からエクスポート
+export type { Filter } from './filters'
 
 /**
  * 並び替え順序
@@ -53,20 +49,6 @@ const VIEW_MODE_KEY = 'ac6-parts-list-view-mode'
 const VALID_SLOTS: ReadonlySet<CandidatesKey> = new Set(CANDIDATES_KEYS)
 
 /**
- * 有効なフィルタプロパティ一覧
- * 全パーツ共通の基本プロパティのみを許可
- */
-const VALID_FILTER_PROPERTIES: ReadonlySet<string> = new Set([
-  'price',
-  'weight',
-  'en_load',
-  'name',
-  'classification',
-  'manufacture',
-  'category',
-])
-
-/**
  * URLパラメータへのシリアライズ（共有用）
  */
 export function serializeToURL(state: SharedState): URLSearchParams {
@@ -100,7 +82,7 @@ export function deserializeFromURL(
   try {
     // スロット
     const slotParam = params.get('slot')
-    let slot: CandidatesKey = 'head' // デフォルト
+    let slot: CandidatesKey = 'rightArmUnit' // デフォルト
 
     if (slotParam) {
       if (!VALID_SLOTS.has(slotParam as CandidatesKey)) {
@@ -202,7 +184,7 @@ function parseFilter(filterParam: string): Filter | null {
   const [property, operator, valueStr] = parts
 
   // propertyの検証: 無効なプロパティはスキップ
-  if (!VALID_FILTER_PROPERTIES.has(property)) {
+  if (!isValidFilterProperty(property)) {
     return null
   }
 
