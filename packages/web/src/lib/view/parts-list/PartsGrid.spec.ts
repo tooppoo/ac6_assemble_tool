@@ -2,7 +2,7 @@ import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 import { render, screen } from '@testing-library/svelte'
 import { describe, it, expect, vi } from 'vitest'
 
-import PartsGrid from './PartsGrid.svelte'
+import PartsGridTestWrapper from './PartsGrid.test-wrapper.svelte'
 
 describe('PartsGrid', () => {
   const mockParts: ACParts[] = [
@@ -30,7 +30,7 @@ describe('PartsGrid', () => {
 
   describe('基本レンダリング', () => {
     it('パーツが表示されること', () => {
-      render(PartsGrid, {
+      render(PartsGridTestWrapper, {
         props: {
           parts: mockParts,
           slot: 'rightArmUnit',
@@ -43,7 +43,7 @@ describe('PartsGrid', () => {
     })
 
     it('パーツ件数が表示されること', () => {
-      render(PartsGrid, {
+      render(PartsGridTestWrapper, {
         props: {
           parts: mockParts,
           slot: 'rightArmUnit',
@@ -55,7 +55,7 @@ describe('PartsGrid', () => {
     })
 
     it('グリッドレイアウトが適用されること', () => {
-      const { container } = render(PartsGrid, {
+      const { container } = render(PartsGridTestWrapper, {
         props: {
           parts: mockParts,
           slot: 'rightArmUnit',
@@ -70,7 +70,7 @@ describe('PartsGrid', () => {
 
   describe('0件時の表示', () => {
     it('パーツが0件の場合EmptyStateが表示されること', () => {
-      render(PartsGrid, {
+      render(PartsGridTestWrapper, {
         props: {
           parts: [],
           slot: 'rightArmUnit',
@@ -84,7 +84,7 @@ describe('PartsGrid', () => {
     })
 
     it('パーツが0件の場合パーツ件数は表示されないこと', () => {
-      render(PartsGrid, {
+      render(PartsGridTestWrapper, {
         props: {
           parts: [],
           slot: 'rightArmUnit',
@@ -100,7 +100,7 @@ describe('PartsGrid', () => {
     it('お気に入りパーツが正しくマークされること', () => {
       const favorites = new Set(['TEST-001'])
 
-      render(PartsGrid, {
+      render(PartsGridTestWrapper, {
         props: {
           parts: mockParts,
           slot: 'rightArmUnit',
@@ -117,7 +117,7 @@ describe('PartsGrid', () => {
     it('お気に入りトグルイベントが発火すること', async () => {
       const handleToggle = vi.fn()
 
-      render(PartsGrid, {
+      render(PartsGridTestWrapper, {
         props: {
           parts: mockParts,
           slot: 'rightArmUnit',

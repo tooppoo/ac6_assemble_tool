@@ -1,0 +1,15 @@
+export const enClassification = {
+  'arm-unit': 'Arm Unit',
+  'left-arm-unit': 'Left Arm Unit',
+  'back-unit': 'Back Unit',
+  'left-back-unit': 'Left Back Unit',
+  head: 'Head',
+  arms: 'Arms',
+  core: 'Core',
+  legs: 'Legs',
+  booster: 'Booster',
+  fcs: 'FCS',
+  generator: 'Generator',
+  expansion: 'Expansion',
+  'not-equipped': 'Not Equipped',
+} as const

@@ -1,6 +1,8 @@
 import { enAssembly } from './locales/en/assembly'
 import { enAssemblyStore } from './locales/en/assemblyStore'
 import { enAttackType } from './locales/en/attackType'
+import { enCategory } from './locales/en/category'
+import { enClassification } from './locales/en/classification'
 import { enError } from './locales/en/error'
 import { enFilter } from './locales/en/filter'
 import { enLock } from './locales/en/lock'
@@ -11,6 +13,8 @@ import { enShare } from './locales/en/share'
 import { jaAssembly } from './locales/ja/assembly'
 import { jaAssemblyStore } from './locales/ja/assemblyStore'
 import { jaAttackType } from './locales/ja/attackType'
+import { jaCategory } from './locales/ja/category'
+import { jaClassification } from './locales/ja/classification'
 import { jaError } from './locales/ja/error'
 import { jaFilter } from './locales/ja/filter'
 import { jaLock } from './locales/ja/lock'
@@ -29,6 +33,8 @@ export const resources = {
     filter: jaFilter,
     lock: jaLock,
     manufacture: jaManufactures,
+    classification: jaClassification,
+    category: jaCategory,
     attack_type: jaAttackType,
     'page/index': jaPageIndex,
     error: jaError,
@@ -44,6 +50,8 @@ export const resources = {
     filter: enFilter,
     lock: enLock,
     manufacture: enManufactures,
+    classification: enClassification,
+    category: enCategory,
     attack_type: enAttackType,
     'page/index': enPageIndex,
     error: enError,

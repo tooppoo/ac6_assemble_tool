@@ -6,6 +6,8 @@
    * カード形式で表示し、お気に入りボタンを提供します。
    */
 
+  import type { I18NextStore } from '$lib/i18n/define'
+
   import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
   import {
     Card,
@@ -14,6 +16,7 @@
     CardText,
     Button,
   } from '@sveltestrap/sveltestrap'
+  import { getContext } from 'svelte'
 
   // Props
   interface Props {
@@ -23,6 +26,15 @@
   }
 
   let { parts, isFavorite = false, ontogglefavorite }: Props = $props()
+
+  // i18n
+  const i18n = getContext<I18NextStore>('i18n')
+  const translatedClassification = $derived(
+    $i18n.t(parts.classification, { ns: 'classification' }),
+  )
+  const translatedCategory = $derived(
+    $i18n.t(parts.category, { ns: 'category' }),
+  )
 
   function handleToggleFavorite() {
     ontogglefavorite?.()
@@ -49,7 +61,7 @@
     <CardText class="flex-grow-1">
       <small class="text-muted d-block mb-1">
         <strong>分類:</strong>
-        {parts.classification}
+        {translatedClassification}
       </small>
       <small class="text-muted d-block mb-1">
         <strong>メーカー:</strong>
@@ -57,7 +69,7 @@
       </small>
       <small class="text-muted d-block mb-1">
         <strong>カテゴリ:</strong>
-        {parts.category}
+        {translatedCategory}
       </small>
     </CardText>
 

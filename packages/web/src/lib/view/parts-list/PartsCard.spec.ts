@@ -2,15 +2,15 @@ import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 import { render, screen } from '@testing-library/svelte'
 import { describe, it, expect, vi } from 'vitest'
 
-import PartsCard from './PartsCard.svelte'
+import PartsCardTestWrapper from './PartsCard.test-wrapper.svelte'
 
 describe('PartsCard', () => {
   const mockParts: ACParts = {
     id: 'TEST-001',
     name: 'テストパーツ',
-    classification: 'テスト分類',
-    manufacture: 'テストメーカー',
-    category: 'テストカテゴリ',
+    classification: 'head',
+    manufacture: 'BAWS',
+    category: 'head',
     price: 100000,
     weight: 5000,
     en_load: 300,
@@ -18,19 +18,20 @@ describe('PartsCard', () => {
 
   describe('基本レンダリング', () => {
     it('パーツ情報が正しく表示されること', () => {
-      render(PartsCard, { props: { parts: mockParts } })
+      render(PartsCardTestWrapper, { props: { parts: mockParts } })
 
       expect(screen.getByText('テストパーツ')).toBeTruthy()
-      expect(screen.getByText('テスト分類')).toBeTruthy()
-      expect(screen.getByText('テストメーカー')).toBeTruthy()
-      expect(screen.getByText('テストカテゴリ')).toBeTruthy()
+      // i18nモックはキーをそのまま返すので、分類とカテゴリに"head"が表示される
+      const headTexts = screen.getAllByText('head')
+      expect(headTexts.length).toBe(2) // 分類とカテゴリの両方
+      expect(screen.getByText('BAWS')).toBeTruthy()
       expect(screen.getByText('100,000')).toBeTruthy()
       expect(screen.getByText('5,000')).toBeTruthy()
       expect(screen.getByText('300')).toBeTruthy()
     })
 
     it('お気に入りボタンが表示されること', () => {
-      render(PartsCard, { props: { parts: mockParts } })
+      render(PartsCardTestWrapper, { props: { parts: mockParts } })
 
       const favoriteButton = screen.getByRole('button', {
         name: /お気に入り/,
@@ -41,7 +42,9 @@ describe('PartsCard', () => {
 
   describe('お気に入り状態', () => {
     it('お気に入りでない場合は☆が表示されること', () => {
-      render(PartsCard, { props: { parts: mockParts, isFavorite: false } })
+      render(PartsCardTestWrapper, {
+        props: { parts: mockParts, isFavorite: false },
+      })
 
       const button = screen.getByRole('button', {
         name: 'お気に入りに追加',
@@ -50,7 +53,9 @@ describe('PartsCard', () => {
     })
 
     it('お気に入りの場合は★が表示されること', () => {
-      render(PartsCard, { props: { parts: mockParts, isFavorite: true } })
+      render(PartsCardTestWrapper, {
+        props: { parts: mockParts, isFavorite: true },
+      })
 
       const button = screen.getByRole('button', {
         name: 'お気に入りから削除',
@@ -62,7 +67,7 @@ describe('PartsCard', () => {
   describe('イベント', () => {
     it('お気に入りボタンをクリックするとイベントが発火すること', async () => {
       const handleToggle = vi.fn()
-      render(PartsCard, {
+      render(PartsCardTestWrapper, {
         props: {
           parts: mockParts,
           ontogglefavorite: handleToggle,
