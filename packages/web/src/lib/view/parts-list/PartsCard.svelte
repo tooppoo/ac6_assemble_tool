@@ -35,6 +35,9 @@
   const translatedCategory = $derived(
     $i18n.t(parts.category, { ns: 'category' }),
   )
+  const translatedManufacture = $derived(
+    $i18n.t(parts.manufacture, { ns: 'manufacture' }),
+  )
 
   function handleToggleFavorite() {
     ontogglefavorite?.()
@@ -65,7 +68,7 @@
       </small>
       <small class="text-muted d-block mb-1">
         <strong>メーカー:</strong>
-        {parts.manufacture}
+        {translatedManufacture}
       </small>
       <small class="text-muted d-block mb-1">
         <strong>カテゴリ:</strong>
