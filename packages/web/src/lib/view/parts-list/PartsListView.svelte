@@ -98,6 +98,8 @@
   // イベントハンドラ
   function handleSlotChange(event: CustomEvent<{ slot: CandidatesKey }>) {
     const newSlot = event.detail.slot
+    // 同じスロットが選択された場合は何もしない
+    if (newSlot === currentSlot) return
 
     // スロット切替時にフィルタ条件を分割
     const { valid, invalidated } = splitFiltersBySlot(filters, newSlot)

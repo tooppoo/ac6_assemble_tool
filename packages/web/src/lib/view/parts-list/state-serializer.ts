@@ -232,10 +232,3 @@ function parseSort(
 
   return { key, order }
 }
-
-// フィルタリング関連の機能は filters.ts から再エクスポート
-export {
-  type FilterSplitResult,
-  splitFiltersBySlot,
-  applyFilters,
-} from './filters'

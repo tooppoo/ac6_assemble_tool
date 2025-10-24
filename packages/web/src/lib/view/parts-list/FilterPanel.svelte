@@ -125,7 +125,7 @@
         <Alert color="warning" class="mb-3">
           <div>
             <strong>無効化された条件:</strong>
-            {#each invalidatedFilters as filter, i (fKey(filter))}
+            {#each invalidatedFilters as filter, i (fKey(filter) + i)}
               {filter.property}
               {operatorLabels[filter.operator]}
               {filter.value}{i < invalidatedFilters.length - 1 ? ', ' : ''}
@@ -199,7 +199,7 @@
       <!-- 現在のフィルタ一覧 -->
       {#if filters.length > 0}
         <div class="list-group">
-          {#each filters as filter, index (fKey(filter))}
+          {#each filters as filter, index (fKey(filter) + index)}
             <div
               class="list-group-item filter-list-item d-flex justify-content-between align-items-center"
             >
