@@ -7,9 +7,7 @@ import {
   saveViewMode,
   loadViewMode,
   type SharedState,
-  type Filter,
 } from './state-serializer'
-import { splitFiltersBySlot, applyFilters } from './filters'
 
 describe('StateSerializer', () => {
   beforeEach(() => {

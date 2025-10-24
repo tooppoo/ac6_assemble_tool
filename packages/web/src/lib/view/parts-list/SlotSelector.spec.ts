@@ -43,7 +43,7 @@ describe('SlotSelector コンポーネント', () => {
     })
 
     it('選択中のスロットがactive状態で表示されること', () => {
-      const { container } = render(SlotSelector, {
+      render(SlotSelector, {
         props: {
           currentSlot: 'rightArmUnit' as CandidatesKey,
         },

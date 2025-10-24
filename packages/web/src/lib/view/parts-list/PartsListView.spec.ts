@@ -8,10 +8,9 @@
  * - フィルタ済みパーツリストの計算テスト
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/svelte'
 import PartsListView from './PartsListView.svelte'
-import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
 import { latest as regulation } from '$lib/regulation'
 
 describe('PartsListView コンポーネント', () => {
@@ -145,15 +144,13 @@ describe('PartsListView コンポーネント', () => {
       })
 
       // 表示モード変更イベントをシミュレート
-      // @ts-expect-error - Accessing internal methods for testing
       if (component.handleViewModeChange) {
-        // @ts-expect-error - Accessing internal methods for testing
         component.handleViewModeChange('list')
       }
 
       // LocalStorageが更新されることを確認
       const saved = localStorage.getItem('ac6-parts-list-view-mode')
-      // 実際のテストは実装後に追加
+      expect(saved).toBe('list')
     })
   })
 
