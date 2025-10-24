@@ -22,6 +22,7 @@
   import { browser } from '$app/environment'
   import { replaceState } from '$app/navigation'
   import SlotSelector from './SlotSelector.svelte'
+  import FilterPanel from './FilterPanel.svelte'
 
   // Props
   interface Props {
@@ -117,6 +118,10 @@
     filters = newFilters
   }
 
+  export function handleClearFilters() {
+    filters = []
+  }
+
   export function handleSortChange(
     newSortKey: string | null,
     newSortOrder: 'asc' | 'desc' | null,
@@ -132,6 +137,15 @@
   </p>
 
   <p class="py-1">
+    <FilterPanel
+      slot={currentSlot}
+      {filters}
+      {invalidatedFilters}
+      onclearfilters={handleClearFilters}
+    />
+  </p>
+
+  <p class="py-1">
     表示モード: {viewMode}
   </p>
 
@@ -139,8 +153,8 @@
     パーツ数: {filteredParts.length}
   </p>
 
-  <!-- 今後実装予定: フィルタパネル、並び替えUI、パーツグリッド -->
+  <!-- 今後実装予定: 並び替えUI、パーツグリッド -->
   <div class="alert alert-info" role="alert">
-    子コンポーネント（フィルタ、並び替え、パーツ一覧）はタスク4以降で実装されます。
+    子コンポーネント（並び替え、パーツ一覧）はタスク5以降で実装されます。
   </div>
 </div>
