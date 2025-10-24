@@ -72,9 +72,9 @@
   }
 </script>
 
-<div class="filter-panel">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h5 class="mb-0">フィルタ ({filters.length}件)</h5>
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h6 class="mb-0">フィルタ ({filters.length}件)</h6>
     <button
       type="button"
       class="btn btn-sm btn-outline-secondary"
@@ -85,117 +85,103 @@
     </button>
   </div>
 
-  {#if invalidatedFilters.length > 0}
-    <Alert color="warning" class="py-2 mb-3">
-      <small>
-        <strong>無効化された条件:</strong>
-        {#each invalidatedFilters as filter, i}
-          {filter.property}
-          {operatorLabels[filter.operator]}
-          {filter.value}{i < invalidatedFilters.length - 1 ? ', ' : ''}
-        {/each}
-      </small>
-    </Alert>
-  {/if}
-
-  <!-- フィルタ追加フォーム -->
-  <div class="filter-add-form mb-3 p-3 border rounded">
-    <div class="row g-2">
-      <div class="col-12 col-md-4">
-        <label for="filter-property" class="form-label small mb-1">属性</label>
-        <select
-          id="filter-property"
-          class="form-select form-select-sm"
-          bind:value={selectedProperty}
-        >
-          {#each FILTERABLE_PROPERTIES as property}
-            <option value={property}>{PROPERTY_LABELS[property]}</option>
+  <div class="card-body">
+    {#if invalidatedFilters.length > 0}
+      <Alert color="warning" class="py-2 mb-3">
+        <small>
+          <strong>無効化された条件:</strong>
+          {#each invalidatedFilters as filter, i}
+            {filter.property}
+            {operatorLabels[filter.operator]}
+            {filter.value}{i < invalidatedFilters.length - 1 ? ', ' : ''}
           {/each}
-        </select>
-      </div>
+        </small>
+      </Alert>
+    {/if}
 
-      <div class="col-12 col-md-3">
-        <label for="filter-operator" class="form-label small mb-1">条件</label>
-        <select
-          id="filter-operator"
-          class="form-select form-select-sm"
-          bind:value={selectedOperator}
-        >
-          <option value="lte">≤ 以下</option>
-          <option value="gte">≥ 以上</option>
-          <option value="lt">{'<'} 未満</option>
-          <option value="gt">{'>'} 超過</option>
-          <option value="eq">= 等しい</option>
-          <option value="ne">≠ 等しくない</option>
-        </select>
-      </div>
+    <!-- フィルタ追加フォーム -->
+    <div class="bg-light p-3 rounded mb-3">
+      <div class="row g-2">
+        <div class="col-12 col-md-4">
+          <label for="filter-property" class="form-label small mb-1">属性</label>
+          <select
+            id="filter-property"
+            class="form-select form-select-sm"
+            bind:value={selectedProperty}
+          >
+            {#each FILTERABLE_PROPERTIES as property}
+              <option value={property}>{PROPERTY_LABELS[property]}</option>
+            {/each}
+          </select>
+        </div>
 
-      <div class="col-12 col-md-3">
-        <label for="filter-value" class="form-label small mb-1">値</label>
-        <input
-          id="filter-value"
-          type={isNumericProperty(selectedProperty) ? 'number' : 'text'}
-          class="form-control form-control-sm"
-          bind:value={inputValue}
-          placeholder="値を入力"
-        />
-      </div>
+        <div class="col-12 col-md-3">
+          <label for="filter-operator" class="form-label small mb-1">条件</label>
+          <select
+            id="filter-operator"
+            class="form-select form-select-sm"
+            bind:value={selectedOperator}
+          >
+            <option value="lte">≤ 以下</option>
+            <option value="gte">≥ 以上</option>
+            <option value="lt">{'<'} 未満</option>
+            <option value="gt">{'>'} 超過</option>
+            <option value="eq">= 等しい</option>
+            <option value="ne">≠ 等しくない</option>
+          </select>
+        </div>
 
-      <div class="col-12 col-md-2 d-flex align-items-end">
-        <button
-          type="button"
-          class="btn btn-sm btn-primary w-100"
-          disabled={isAddButtonDisabled}
-          onclick={handleAddFilter}
-        >
-          追加
-        </button>
-      </div>
-    </div>
-  </div>
+        <div class="col-12 col-md-3">
+          <label for="filter-value" class="form-label small mb-1">値</label>
+          <input
+            id="filter-value"
+            type={isNumericProperty(selectedProperty) ? 'number' : 'text'}
+            class="form-control form-control-sm"
+            bind:value={inputValue}
+            placeholder="値を入力"
+          />
+        </div>
 
-  <!-- 現在のフィルタ一覧 -->
-  {#if filters.length > 0}
-    <div class="filters-list">
-      {#each filters as filter, index}
-        <div class="filter-item mb-2 p-2 border rounded d-flex justify-content-between align-items-center">
-          <small>
-            <strong>{PROPERTY_LABELS[filter.property] || filter.property}</strong>
-            <span class="mx-1">{operatorLabels[filter.operator]}</span>
-            <span>{filter.value}</span>
-          </small>
+        <div class="col-12 col-md-2 d-flex align-items-end">
           <button
             type="button"
-            class="btn btn-sm btn-outline-danger"
-            onclick={() => handleRemoveFilter(index)}
-            aria-label="削除"
+            class="btn btn-sm btn-primary w-100"
+            disabled={isAddButtonDisabled}
+            onclick={handleAddFilter}
           >
-            ×
+            追加
           </button>
         </div>
-      {/each}
+      </div>
     </div>
-  {:else}
-    <p class="text-muted small mb-0">フィルタが設定されていません</p>
-  {/if}
+
+    <!-- 現在のフィルタ一覧 -->
+    {#if filters.length > 0}
+      <div class="list-group">
+        {#each filters as filter, index}
+          <div class="list-group-item d-flex justify-content-between align-items-center">
+            <small>
+              <span class="badge bg-secondary">{PROPERTY_LABELS[filter.property] || filter.property}</span>
+              <span class="mx-1">{operatorLabels[filter.operator]}</span>
+              <strong>{filter.value}</strong>
+            </small>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger"
+              onclick={() => handleRemoveFilter(index)}
+              aria-label="削除"
+            >
+              ×
+            </button>
+          </div>
+        {/each}
+      </div>
+    {:else}
+      <p class="text-muted small mb-0">フィルタが設定されていません</p>
+    {/if}
+  </div>
 </div>
 
 <style>
-  .filter-panel {
-    padding: 1rem;
-    background-color: #f8f9fa;
-    border-radius: 0.25rem;
-  }
-
-  .filter-add-form {
-    background-color: white;
-  }
-
-  .filter-item {
-    background-color: white;
-  }
-
-  .form-label {
-    font-weight: 500;
-  }
+  /* Bootstrap標準のスタイルを使用するため、カスタムCSSは最小限に */
 </style>

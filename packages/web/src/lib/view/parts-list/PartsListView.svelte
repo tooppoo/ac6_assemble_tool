@@ -142,6 +142,7 @@
       {filters}
       {invalidatedFilters}
       onclearfilters={handleClearFilters}
+      onfilterchange={handleFilterChange}
     />
   </div>
 
