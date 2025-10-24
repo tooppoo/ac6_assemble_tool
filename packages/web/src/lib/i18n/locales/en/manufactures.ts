@@ -8,6 +8,7 @@ import {
   elcano,
   furlong,
   melinite,
+  noneManufacture,
   rad,
   rubicon_research_institute,
   schneider,
@@ -30,4 +31,5 @@ export const enManufactures = {
   [takigawa]: 'Takigawa Harmonics',
   [furlong]: 'Furlong Dynamics',
   [allmind]: 'Allmind',
+  [noneManufacture]: '-',
 }

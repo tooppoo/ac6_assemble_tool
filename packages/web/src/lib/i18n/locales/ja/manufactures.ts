@@ -8,6 +8,7 @@ import {
   elcano,
   furlong,
   melinite,
+  noneManufacture,
   rad,
   rubicon_research_institute,
   schneider,
@@ -30,4 +31,5 @@ export const jaManufactures = {
   [takigawa]: 'タキガワ・ハーモニクス',
   [furlong]: 'ファーロン・ダイナミクス',
   [allmind]: 'オールマインド',
+  [noneManufacture]: '-',
 }

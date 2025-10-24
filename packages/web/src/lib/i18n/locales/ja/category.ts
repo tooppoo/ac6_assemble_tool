@@ -112,4 +112,5 @@ export const jaCategory = {
   fcs: 'FCS',
   generator: 'ジェネレータ',
   expansion: 'コア拡張',
+  'not-equipped': '未装備',
 } as const

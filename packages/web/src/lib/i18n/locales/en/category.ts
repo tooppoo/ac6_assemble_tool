@@ -112,4 +112,5 @@ export const enCategory = {
   fcs: 'FCS',
   generator: 'Generator',
   expansion: 'Expansion',
+  'not-equipped': 'Not Equipped',
 } as const
