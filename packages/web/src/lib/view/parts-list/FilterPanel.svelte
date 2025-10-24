@@ -7,7 +7,11 @@
 
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Filter } from './filters'
-  import { FILTERABLE_PROPERTIES, PROPERTY_LABELS, isNumericProperty } from './filters'
+  import {
+    FILTERABLE_PROPERTIES,
+    PROPERTY_LABELS,
+    isNumericProperty,
+  } from './filters'
   import { Alert } from '@sveltestrap/sveltestrap'
 
   // Props
@@ -19,7 +23,12 @@
     onfilterchange?: (filters: Filter[]) => void
   }
 
-  let { slot, filters, invalidatedFilters = [], onclearfilters, onfilterchange }: Props = $props()
+  let {
+    filters,
+    invalidatedFilters = [],
+    onclearfilters,
+    onfilterchange,
+  }: Props = $props()
 
   // フィルタ追加フォームの状態
   let selectedProperty = $state('price')
@@ -73,7 +82,9 @@
 </script>
 
 <div class="card filter-panel-card">
-  <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+  <div
+    class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
+  >
     <h5 class="mb-0">フィルタ ({filters.length}件)</h5>
     <button
       type="button"
@@ -103,7 +114,9 @@
     <div class="filter-add-form bg-secondary bg-opacity-25 p-3 rounded mb-3">
       <div class="row g-2">
         <div class="col-12 col-md-4">
-          <label for="filter-property" class="form-label mb-1 text-white">属性</label>
+          <label for="filter-property" class="form-label mb-1 text-white"
+            >属性</label
+          >
           <select
             id="filter-property"
             class="form-select"
@@ -116,7 +129,9 @@
         </div>
 
         <div class="col-12 col-md-3">
-          <label for="filter-operator" class="form-label mb-1 text-white">条件</label>
+          <label for="filter-operator" class="form-label mb-1 text-white"
+            >条件</label
+          >
           <select
             id="filter-operator"
             class="form-select"
@@ -132,7 +147,8 @@
         </div>
 
         <div class="col-12 col-md-3">
-          <label for="filter-value" class="form-label mb-1 text-white">値</label>
+          <label for="filter-value" class="form-label mb-1 text-white">値</label
+          >
           <input
             id="filter-value"
             type={isNumericProperty(selectedProperty) ? 'number' : 'text'}
@@ -159,11 +175,15 @@
     {#if filters.length > 0}
       <div class="list-group">
         {#each filters as filter, index}
-          <div class="list-group-item filter-list-item d-flex justify-content-between align-items-center">
+          <div
+            class="list-group-item filter-list-item d-flex justify-content-between align-items-center"
+          >
             <div>
-              <span class="badge bg-primary fs-6 me-2">{PROPERTY_LABELS[filter.property] || filter.property}</span>
-              <span class="me-1 fs-6">{operatorLabels[filter.operator]}</span>
-              <strong class="fs-6">{filter.value}</strong>
+              <span class="fs-5 me-2"
+                >{PROPERTY_LABELS[filter.property] || filter.property}</span
+              >
+              <span class="me-1 fs-5">{operatorLabels[filter.operator]}</span>
+              <strong class="fs-5">{filter.value}</strong>
             </div>
             <button
               type="button"
@@ -183,15 +203,4 @@
 </div>
 
 <style>
-  .filter-panel-card {
-    background-color: rgba(255, 255, 255, 0.85);
-  }
-
-  .filter-panel-card .card-body {
-    background-color: rgba(255, 255, 255, 0.7);
-  }
-
-  .filter-list-item {
-    background-color: rgba(248, 249, 250, 0.8) !important;
-  }
 </style>
