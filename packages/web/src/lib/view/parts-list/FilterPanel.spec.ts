@@ -346,4 +346,76 @@ describe('FilterPanel', () => {
       })
     })
   })
+
+  describe('お気に入りフィルタトグル', () => {
+    it('お気に入りフィルタトグルボタンが表示されること', () => {
+      render(FilterPanel, {
+        props: {
+          slot: 'rightArmUnit',
+          filters: [],
+        },
+      })
+
+      // お気に入りボタンが表示されることを確認
+      const favoriteButton = screen.getByRole('button', {
+        name: /お気に入りのみ表示/i,
+      })
+      expect(favoriteButton).toBeInTheDocument()
+    })
+
+    it('デフォルトではお気に入りフィルタがオフであること', () => {
+      render(FilterPanel, {
+        props: {
+          slot: 'rightArmUnit',
+          filters: [],
+          showFavoritesOnly: false,
+        },
+      })
+
+      const favoriteButton = screen.getByRole('button', {
+        name: /お気に入りのみ表示/i,
+      })
+      // ☆（白星）が表示されることを確認
+      expect(favoriteButton.textContent).toContain('☆')
+    })
+
+    it('お気に入りフィルタがオンの場合、ボタンがハイライト表示されること', () => {
+      render(FilterPanel, {
+        props: {
+          slot: 'rightArmUnit',
+          filters: [],
+          showFavoritesOnly: true,
+        },
+      })
+
+      const favoriteButton = screen.getByRole('button', {
+        name: /お気に入りのみ表示/i,
+      })
+      // ★（黒星）が表示されることを確認
+      expect(favoriteButton.textContent).toContain('★')
+      // btn-warningクラスが適用されることを確認
+      expect(favoriteButton.classList.contains('btn-warning')).toBe(true)
+    })
+
+    it('お気に入りフィルタボタンをクリックすると、ontogglefavoritesコールバックが呼ばれること', async () => {
+      let callbackFired = false
+
+      render(FilterPanel, {
+        props: {
+          slot: 'rightArmUnit',
+          filters: [],
+          ontogglefavorites: () => {
+            callbackFired = true
+          },
+        },
+      })
+
+      const favoriteButton = screen.getByRole('button', {
+        name: /お気に入りのみ表示/i,
+      })
+      await fireEvent.click(favoriteButton)
+
+      expect(callbackFired).toBe(true)
+    })
+  })
 })

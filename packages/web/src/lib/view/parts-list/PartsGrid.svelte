@@ -14,7 +14,7 @@
 
   // Props
   interface Props {
-    parts: ACParts[]
+    parts: readonly ACParts[]
     slot: CandidatesKey
     favorites: Set<string>
     ontogglefavorite?: (partsId: string) => void

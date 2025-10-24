@@ -253,4 +253,41 @@ describe('PartsListView コンポーネント', () => {
       // 実際のテストは実装後に追加
     })
   })
+
+  describe('お気に入りフィルタ機能', () => {
+    it('お気に入りフィルタトグルボタンが表示されること', () => {
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      // お気に入りボタンが表示されることを確認
+      const favoriteButton = screen.getByRole('button', {
+        name: /お気に入りのみ表示/i,
+      })
+      expect(favoriteButton).toBeInTheDocument()
+    })
+
+    it('お気に入りフィルタトグルをクリックすると、表示が切り替わること', async () => {
+      const { getByRole } = render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      const favoriteButton = getByRole('button', {
+        name: /お気に入りのみ表示/i,
+      })
+
+      // 初期状態では☆が表示されている
+      expect(favoriteButton.textContent).toContain('☆')
+
+      // クリック
+      await favoriteButton.click()
+
+      // ★に変わることを確認
+      expect(favoriteButton.textContent).toContain('★')
+    })
+  })
 })

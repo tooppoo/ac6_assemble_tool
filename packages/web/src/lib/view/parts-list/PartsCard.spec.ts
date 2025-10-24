@@ -21,9 +21,10 @@ describe('PartsCard', () => {
       render(PartsCardTestWrapper, { props: { parts: mockParts } })
 
       expect(screen.getByText('テストパーツ')).toBeTruthy()
-      // i18nモックはキーをそのまま返すので、分類とカテゴリに"head"が表示される
+      // i18nモックはキーをそのまま返すので、カテゴリに"head"が表示される
+      // 分類表示は削除されたため、headは1回のみ表示される
       const headTexts = screen.getAllByText('head')
-      expect(headTexts.length).toBe(2) // 分類とカテゴリの両方
+      expect(headTexts.length).toBe(1) // カテゴリのみ
       expect(screen.getByText('BAWS')).toBeTruthy()
       expect(screen.getByText('100,000')).toBeTruthy()
       expect(screen.getByText('5,000')).toBeTruthy()

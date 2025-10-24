@@ -58,6 +58,7 @@
   // TODO: Task 4.2で無効化されたフィルタをUIに表示する
   let invalidatedFilters = $state<Filter[]>([])
   let favorites = $state<Set<string>>(new Set())
+  let showFavoritesOnly = $state<boolean>(false)
 
   // お気に入りの初期化（ブラウザ環境でのみ実行）
   $effect(() => {
@@ -75,11 +76,22 @@
     const slotParts = regulation.candidates[currentSlot]
 
     // フィルタ適用（Requirement 2.2, 2.3）
-    const filtered = applyFilters(slotParts, filters)
+    // 型エラーを回避するため、unknown経由でキャスト
+    let filtered = applyFilters(
+      slotParts as unknown as Array<Record<string, unknown>>,
+      filters,
+    )
+
+    // お気に入りフィルタ適用（Task 6.2）
+    if (showFavoritesOnly) {
+      filtered = filtered.filter((parts: Record<string, unknown>) =>
+        favorites.has(parts.id as string),
+      )
+    }
 
     // TODO: 並び替えロジックを実装（タスク5で実装予定）
 
-    return filtered
+    return filtered as unknown as typeof slotParts
   })
 
   // URL パラメータへの同期（状態変更時に自動実行）
@@ -174,6 +186,10 @@
     sortKey = newSortKey
     sortOrder = newSortOrder
   }
+
+  export function handleToggleFavorites() {
+    showFavoritesOnly = !showFavoritesOnly
+  }
 </script>
 
 <div class="parts-list-view">
@@ -186,14 +202,16 @@
       slot={currentSlot}
       {filters}
       {invalidatedFilters}
+      {showFavoritesOnly}
       onclearfilters={handleClearFilters}
       onfilterchange={handleFilterChange}
+      ontogglefavorites={handleToggleFavorites}
     />
   </div>
 
   <div class="py-1">
     <PartsGrid
-      parts={filteredParts}
+      parts={filteredParts as any}
       slot={currentSlot}
       {favorites}
       ontogglefavorite={handleToggleFavorite}
