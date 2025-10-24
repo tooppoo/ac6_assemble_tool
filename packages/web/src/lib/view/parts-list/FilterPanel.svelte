@@ -100,10 +100,10 @@
     {/if}
 
     <!-- フィルタ追加フォーム -->
-    <div class="bg-dark bg-opacity-10 p-3 rounded mb-3">
+    <div class="filter-add-form bg-secondary bg-opacity-25 p-3 rounded mb-3">
       <div class="row g-2">
         <div class="col-12 col-md-4">
-          <label for="filter-property" class="form-label mb-1">属性</label>
+          <label for="filter-property" class="form-label mb-1 text-white">属性</label>
           <select
             id="filter-property"
             class="form-select"
@@ -116,7 +116,7 @@
         </div>
 
         <div class="col-12 col-md-3">
-          <label for="filter-operator" class="form-label mb-1">条件</label>
+          <label for="filter-operator" class="form-label mb-1 text-white">条件</label>
           <select
             id="filter-operator"
             class="form-select"
@@ -132,7 +132,7 @@
         </div>
 
         <div class="col-12 col-md-3">
-          <label for="filter-value" class="form-label mb-1">値</label>
+          <label for="filter-value" class="form-label mb-1 text-white">値</label>
           <input
             id="filter-value"
             type={isNumericProperty(selectedProperty) ? 'number' : 'text'}
@@ -159,7 +159,7 @@
     {#if filters.length > 0}
       <div class="list-group">
         {#each filters as filter, index}
-          <div class="list-group-item d-flex justify-content-between align-items-center">
+          <div class="list-group-item filter-list-item d-flex justify-content-between align-items-center">
             <div>
               <span class="badge bg-primary fs-6 me-2">{PROPERTY_LABELS[filter.property] || filter.property}</span>
               <span class="me-1 fs-6">{operatorLabels[filter.operator]}</span>
@@ -184,10 +184,14 @@
 
 <style>
   .filter-panel-card {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.85);
   }
 
   .filter-panel-card .card-body {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+
+  .filter-list-item {
+    background-color: rgba(248, 249, 250, 0.8) !important;
   }
 </style>
