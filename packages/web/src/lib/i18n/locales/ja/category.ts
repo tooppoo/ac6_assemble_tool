@@ -1,17 +1,17 @@
 export const jaCategory = {
   // Melee Weapons (近接武器)
   pile_bunker: 'パイルバンカー',
-  explosive_thrower: '爆発スローワー',
+  explosive_thrower: '炸裂弾投射機',
   chainsaw: 'チェーンソー',
   stun_baton: 'スタンバトン',
   laser_dagger: 'レーザーダガー',
   laser_blade: 'レーザーブレード',
   laser_slicer: 'レーザースライサー',
   laser_lance: 'レーザーランス',
-  plasma_thrower: 'プラズマスローワー',
+  plasma_thrower: 'プラズマ投射機',
   pulse_blade: 'パルスブレード',
   light_wave_blade: '光波ブレード',
-  coral_oscillator: 'コーラル振動子',
+  coral_oscillator: 'コーラル発振装置',
 
   // Rifles (ライフル)
   burst_rifle: 'バーストライフル',
@@ -21,7 +21,7 @@ export const jaCategory = {
   laser_rifle: 'レーザーライフル',
   plasma_rifle: 'プラズマライフル',
   coral_rifle: 'コーラルライフル',
-  multi_energy_rifle: '多エネルギーライフル',
+  multi_energy_rifle: 'マルチENライフル',
 
   // Machine Guns (マシンガン)
   machine_gun: 'マシンガン',
@@ -43,11 +43,11 @@ export const jaCategory = {
 
   // Bazookas & Launchers (バズーカ・ランチャー)
   bazooka: 'バズーカ',
-  detonating_bazooka: '爆発バズーカ',
+  detonating_bazooka: '特殊バズーカ',
   grenade: 'グレネード',
-  napalm_bomb_launcher: 'ナパーム爆弾ランチャー',
-  jamming_bomb_launcher: 'ジャミング爆弾ランチャー',
-  stun_bomb_launcher: 'スタン爆弾ランチャー',
+  napalm_bomb_launcher: 'ナパームランチャー',
+  jamming_bomb_launcher: 'ジャミングランチャー',
+  stun_bomb_launcher: 'スタンランチャー',
 
   // Flamethrower (火炎放射器)
   flamethrower: '火炎放射器',
@@ -55,13 +55,13 @@ export const jaCategory = {
   // Hand Missiles (ハンドミサイル)
   hand_missile: 'ハンドミサイル',
   split_hand_missile: '分裂ハンドミサイル',
-  siege_hand_missile: '包囲ハンドミサイル',
+  siege_hand_missile: '包囲型ハンドミサイル',
   pulse_hand_missile: 'パルスハンドミサイル',
 
   // Shields (シールド)
   pulse_shield: 'パルスシールド',
   pulse_buckler: 'パルスバックラー',
-  pulse_scutum: 'パルススクタム',
+  pulse_scutum: 'パルススクトゥム',
   coral_shield: 'コーラルシールド',
 
   // Cannons (キャノン)
@@ -81,11 +81,11 @@ export const jaCategory = {
   split_missile: '分裂ミサイル',
   dual_missile: 'デュアルミサイル',
   vertical_missile: '垂直ミサイル',
-  active_homing_missile: 'アクティブホーミングミサイル',
+  active_homing_missile: '高機動ミサイル',
   container_missile: 'コンテナミサイル',
   cluster_missile: 'クラスターミサイル',
-  scatter_missile: 'スキャターミサイル',
-  detonating_missile: '爆発ミサイル',
+  scatter_missile: '散布型ミサイル',
+  detonating_missile: '特殊ミサイル',
   needle_missile: 'ニードルミサイル',
   plasma_missile: 'プラズマミサイル',
   coral_missile: 'コーラルミサイル',
@@ -111,5 +111,5 @@ export const jaCategory = {
   booster: 'ブースター',
   fcs: 'FCS',
   generator: 'ジェネレータ',
-  expansion: '拡張機能',
+  expansion: 'コア拡張',
 } as const

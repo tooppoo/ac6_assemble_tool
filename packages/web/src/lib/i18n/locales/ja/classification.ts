@@ -10,6 +10,6 @@ export const jaClassification = {
   booster: 'ブースター',
   fcs: 'FCS',
   generator: 'ジェネレータ',
-  expansion: '拡張機能',
+  expansion: 'コア拡張',
   'not-equipped': '未装備',
 } as const
