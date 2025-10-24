@@ -37,8 +37,8 @@ describe('PartsListView コンポーネント', () => {
         },
       })
 
-      // コンポーネントがレンダリングされることを確認（表示モードが表示されている）
-      expect(screen.getByText(/表示モード:/i)).toBeInTheDocument()
+      // コンポーネントがレンダリングされることを確認（パーツ件数が表示されている）
+      expect(screen.getByText(/件のパーツを表示中/i)).toBeInTheDocument()
     })
 
     it('デフォルトでrightArmUnitスロットが選択されていること', () => {
@@ -215,8 +215,8 @@ describe('PartsListView コンポーネント', () => {
 
       // 初期状態のパーツ数を確認
       const initialPartsCount = regulation.candidates.rightArmUnit.length
-      expect(getByText(/パーツ数: \d+/)).toHaveTextContent(
-        `パーツ数: ${initialPartsCount}`,
+      expect(getByText(/全 \d+ 件のパーツを表示中/)).toHaveTextContent(
+        `全 ${initialPartsCount} 件のパーツを表示中`,
       )
 
       // headスロットに切り替え
@@ -225,8 +225,8 @@ describe('PartsListView コンポーネント', () => {
 
       // パーツ数が更新されることを確認
       const newPartsCount = regulation.candidates.head.length
-      expect(getByText(/パーツ数: \d+/)).toHaveTextContent(
-        `パーツ数: ${newPartsCount}`,
+      expect(getByText(/全 \d+ 件のパーツを表示中/)).toHaveTextContent(
+        `全 ${newPartsCount} 件のパーツを表示中`,
       )
     })
   })
