@@ -302,3 +302,54 @@ export function splitFiltersBySlot(
 
   return { valid, invalidated }
 }
+
+/**
+ * パーツにフィルタを適用する
+ *
+ * @param parts パーツ配列
+ * @param filters フィルタ条件配列（AND条件で適用される）
+ * @returns フィルタ済みパーツ配列
+ *
+ * 各フィルタ条件をAND条件で適用します。
+ * 属性未定義のパーツは条件を満たさないものとして除外されます。
+ */
+export function applyFilters<T extends Record<string, any>>(
+  parts: readonly T[],
+  filters: Filter[],
+): T[] {
+  // フィルタがない場合はそのまま返す
+  if (filters.length === 0) {
+    return [...parts]
+  }
+
+  return parts.filter((part) => {
+    // 全てのフィルタ条件を満たす必要がある（AND条件）
+    return filters.every((filter) => {
+      const value = part[filter.property]
+
+      // 属性未定義の場合は除外（Requirement 2.3）
+      if (value === undefined || value === null) {
+        return false
+      }
+
+      // フィルタ条件を適用
+      switch (filter.operator) {
+        case 'lt':
+          return value < filter.value
+        case 'lte':
+          return value <= filter.value
+        case 'gt':
+          return value > filter.value
+        case 'gte':
+          return value >= filter.value
+        case 'eq':
+          return value === filter.value
+        case 'ne':
+          return value !== filter.value
+        default:
+          logger.warn('Unknown filter operator', { filter })
+          return false
+      }
+    })
+  })
+}

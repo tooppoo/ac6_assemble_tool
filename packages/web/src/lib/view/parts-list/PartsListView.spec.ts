@@ -36,8 +36,8 @@ describe('PartsListView コンポーネント', () => {
         },
       })
 
-      // コンポーネントがレンダリングされることを確認
-      expect(screen.getByRole('heading', { name: /パーツ一覧/i })).toBeInTheDocument()
+      // コンポーネントがレンダリングされることを確認（表示モードが表示されている）
+      expect(screen.getByText(/表示モード:/i)).toBeInTheDocument()
     })
 
     it('デフォルトでrightArmUnitスロットが選択されていること', () => {
@@ -47,8 +47,9 @@ describe('PartsListView コンポーネント', () => {
         },
       })
 
-      // デフォルトでrightArmUnitスロットが選択されていることを確認（翻訳後）
-      expect(screen.getByText(/現在のスロット: (RIGHT ARM UNIT|右腕武器)/i)).toBeInTheDocument()
+      // デフォルトでrightArmUnitスロットが選択されていることを確認
+      const rightArmButton = screen.getByText(/RIGHT ARM UNIT|右腕武器/i)
+      expect(rightArmButton.classList.contains('btn-primary')).toBe(true)
     })
 
     it('デフォルトでgrid表示モードが選択されていること', () => {
@@ -84,15 +85,18 @@ describe('PartsListView コンポーネント', () => {
         },
       })
 
-      // 初期状態（rightArmUnit）
-      expect(getByText(/現在のスロット: (RIGHT ARM UNIT|右腕武器)/i)).toBeInTheDocument()
+      // 初期状態（rightArmUnit）が選択されていることを確認
+      const rightArmButton = getByText(/RIGHT ARM UNIT|右腕武器/i)
+      expect(rightArmButton.classList.contains('btn-primary')).toBe(true)
 
       // headスロットをクリック
       const headButton = getByText(/^HEAD$|^頭部$/)
       await headButton.click()
 
-      // 表示が更新されることを確認
-      expect(getByText(/現在のスロット: (HEAD|頭部)/i)).toBeInTheDocument()
+      // headボタンが選択状態になることを確認
+      expect(headButton.classList.contains('btn-primary')).toBe(true)
+      // rightArmボタンは選択状態でなくなることを確認
+      expect(rightArmButton.classList.contains('btn-outline-secondary')).toBe(true)
     })
   })
 
@@ -167,16 +171,19 @@ describe('PartsListView コンポーネント', () => {
         },
       })
 
-      // 初期状態（rightArmUnit）で2つのフィルタ条件が適用されている
-      expect(getByText(/現在のスロット: (RIGHT ARM UNIT|右腕武器)/i)).toBeInTheDocument()
+      // 初期状態（rightArmUnit）が選択されていることを確認
+      const rightArmButton = getByText(/RIGHT ARM UNIT|右腕武器/i)
+      expect(rightArmButton.classList.contains('btn-primary')).toBe(true)
 
       // headスロットに切り替え
       const headButton = getByText(/^HEAD$|^頭部$/)
       await headButton.click()
 
+      // headボタンが選択状態になることを確認
+      expect(headButton.classList.contains('btn-primary')).toBe(true)
+
       // フィルタ条件が引き継がれる（weight, priceは全スロット共通）
-      // URLパラメータにフィルタ条件が残っていることを確認
-      // 実際の確認は実装後に追加
+      // 実際のフィルタ適用結果の確認はTask 4.2で実装
     })
 
     it('スロット切替時に無効化された条件が記録されること', async () => {

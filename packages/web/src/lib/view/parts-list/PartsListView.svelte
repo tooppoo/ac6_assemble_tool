@@ -14,6 +14,7 @@
     saveViewMode,
     loadViewMode,
     splitFiltersBySlot,
+    applyFilters,
     type ViewMode,
     type SharedState,
     type Filter,
@@ -47,6 +48,7 @@
   let sortKey = $state<string | null>(initialState?.sortKey ?? null)
   let sortOrder = $state<'asc' | 'desc' | null>(initialState?.sortOrder ?? null)
   let viewMode = $state<ViewMode>(loadViewMode())
+  // TODO: Task 4.2で無効化されたフィルタをUIに表示する
   let invalidatedFilters = $state<Filter[]>([])
 
   // フィルタ済みパーツリストの計算（$derivedで自動計算）
@@ -54,10 +56,12 @@
     // 選択中のスロットに対応するパーツを取得
     const slotParts = regulation.candidates[currentSlot]
 
-    // TODO: フィルタ適用ロジックを実装（タスク4で実装予定）
+    // フィルタ適用（Requirement 2.2, 2.3）
+    const filtered = applyFilters(slotParts, filters)
+
     // TODO: 並び替えロジックを実装（タスク5で実装予定）
 
-    return slotParts
+    return filtered
   })
 
   // URL パラメータへの同期（状態変更時に自動実行）
