@@ -1,5 +1,12 @@
 # @ac6_assemble_tool/web
 
+## 2.2.0
+### Minor Changes
+
+
+
+- [#877](https://github.com/tooppoo/ac6_assemble_tool/pull/877) [`ac28a59`](https://github.com/tooppoo/ac6_assemble_tool/commit/ac28a5964ae1380734bd87c043bd5347dfe7e479) Thanks [@tooppoo](https://github.com/tooppoo)! - スロット選択・フィルタ選択UIを追加
+
 ## 2.1.0
 
 ### Minor Changes
