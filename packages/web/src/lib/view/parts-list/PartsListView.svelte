@@ -210,7 +210,7 @@
 
   <div class="py-1">
     <PartsGrid
-      {filteredParts}
+      parts={filteredParts}
       slot={currentSlot}
       {favorites}
       ontogglefavorite={handleToggleFavorite}
