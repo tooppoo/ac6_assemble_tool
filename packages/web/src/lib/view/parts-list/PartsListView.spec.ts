@@ -97,7 +97,9 @@ describe('PartsListView コンポーネント', () => {
       // headボタンが選択状態になることを確認
       expect(headButton.classList.contains('btn-primary')).toBe(true)
       // rightArmボタンは選択状態でなくなることを確認
-      expect(rightArmButton.classList.contains('btn-outline-secondary')).toBe(true)
+      expect(rightArmButton.classList.contains('btn-outline-secondary')).toBe(
+        true,
+      )
     })
   })
 
@@ -213,7 +215,9 @@ describe('PartsListView コンポーネント', () => {
 
       // 初期状態のパーツ数を確認
       const initialPartsCount = regulation.candidates.rightArmUnit.length
-      expect(getByText(/パーツ数: \d+/)).toHaveTextContent(`パーツ数: ${initialPartsCount}`)
+      expect(getByText(/パーツ数: \d+/)).toHaveTextContent(
+        `パーツ数: ${initialPartsCount}`,
+      )
 
       // headスロットに切り替え
       const headButton = getByText(/^HEAD$|^頭部$/)
@@ -221,7 +225,9 @@ describe('PartsListView コンポーネント', () => {
 
       // パーツ数が更新されることを確認
       const newPartsCount = regulation.candidates.head.length
-      expect(getByText(/パーツ数: \d+/)).toHaveTextContent(`パーツ数: ${newPartsCount}`)
+      expect(getByText(/パーツ数: \d+/)).toHaveTextContent(
+        `パーツ数: ${newPartsCount}`,
+      )
     })
   })
 

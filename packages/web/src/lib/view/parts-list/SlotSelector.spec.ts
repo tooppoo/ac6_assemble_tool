@@ -29,10 +29,16 @@ describe('SlotSelector コンポーネント', () => {
       expect(buttons.length).toBe(13)
 
       // 各スロット名が含まれていることを確認（正確なテキストマッチ）
-      expect(screen.getByText(/^RIGHT ARM UNIT$|^右腕武器$/)).toBeInTheDocument()
+      expect(
+        screen.getByText(/^RIGHT ARM UNIT$|^右腕武器$/),
+      ).toBeInTheDocument()
       expect(screen.getByText(/^LEFT ARM UNIT$|^左腕武器$/)).toBeInTheDocument()
-      expect(screen.getByText(/^RIGHT BACK UNIT$|^右背中武器$/)).toBeInTheDocument()
-      expect(screen.getByText(/^LEFT BACK UNIT$|^左背中武器$/)).toBeInTheDocument()
+      expect(
+        screen.getByText(/^RIGHT BACK UNIT$|^右背中武器$/),
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText(/^LEFT BACK UNIT$|^左背中武器$/),
+      ).toBeInTheDocument()
       expect(screen.getByText(/^HEAD$|^頭部$/)).toBeInTheDocument()
       expect(screen.getByText(/^CORE$|^コア$/)).toBeInTheDocument()
       expect(screen.getByText(/^ARMS$|^腕部$/)).toBeInTheDocument()

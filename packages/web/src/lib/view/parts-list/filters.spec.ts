@@ -4,11 +4,7 @@
 
 import { describe, it, expect } from 'vitest'
 
-import {
-  splitFiltersBySlot,
-  applyFilters,
-  type Filter,
-} from './filters'
+import { splitFiltersBySlot, applyFilters, type Filter } from './filters'
 
 describe('Filters', () => {
   describe('splitFiltersBySlot', () => {
@@ -71,7 +67,9 @@ describe('Filters', () => {
     })
 
     it('単一フィルタ（lte）が正しく適用されること', () => {
-      const filters: Filter[] = [{ property: 'weight', operator: 'lte', value: 2000 }]
+      const filters: Filter[] = [
+        { property: 'weight', operator: 'lte', value: 2000 },
+      ]
 
       const result = applyFilters(testParts, filters)
 
@@ -81,7 +79,9 @@ describe('Filters', () => {
     })
 
     it('単一フィルタ（gte）が正しく適用されること', () => {
-      const filters: Filter[] = [{ property: 'price', operator: 'gte', value: 75000 }]
+      const filters: Filter[] = [
+        { property: 'price', operator: 'gte', value: 75000 },
+      ]
 
       const result = applyFilters(testParts, filters)
 
@@ -104,7 +104,9 @@ describe('Filters', () => {
     })
 
     it('属性未定義のパーツが除外されること', () => {
-      const filters: Filter[] = [{ property: 'en_load', operator: 'gte', value: 100 }]
+      const filters: Filter[] = [
+        { property: 'en_load', operator: 'gte', value: 100 },
+      ]
 
       const result = applyFilters(testParts, filters)
 
@@ -114,7 +116,9 @@ describe('Filters', () => {
     })
 
     it('等価フィルタ（eq）が正しく適用されること', () => {
-      const filters: Filter[] = [{ property: 'weight', operator: 'eq', value: 2000 }]
+      const filters: Filter[] = [
+        { property: 'weight', operator: 'eq', value: 2000 },
+      ]
 
       const result = applyFilters(testParts, filters)
 
@@ -124,7 +128,9 @@ describe('Filters', () => {
     })
 
     it('不等価フィルタ（ne）が正しく適用されること', () => {
-      const filters: Filter[] = [{ property: 'name', operator: 'ne', value: 'Part A' }]
+      const filters: Filter[] = [
+        { property: 'name', operator: 'ne', value: 'Part A' },
+      ]
 
       const result = applyFilters(testParts, filters)
 
@@ -144,7 +150,9 @@ describe('Filters', () => {
     })
 
     it('lt演算子が正しく機能すること', () => {
-      const filters: Filter[] = [{ property: 'price', operator: 'lt', value: 60000 }]
+      const filters: Filter[] = [
+        { property: 'price', operator: 'lt', value: 60000 },
+      ]
 
       const result = applyFilters(testParts, filters)
 
@@ -154,7 +162,9 @@ describe('Filters', () => {
     })
 
     it('gt演算子が正しく機能すること', () => {
-      const filters: Filter[] = [{ property: 'en_load', operator: 'gt', value: 150 }]
+      const filters: Filter[] = [
+        { property: 'en_load', operator: 'gt', value: 150 },
+      ]
 
       const result = applyFilters(testParts, filters)
 

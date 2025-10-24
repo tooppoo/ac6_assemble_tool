@@ -18,7 +18,9 @@ describe('FilterPanel', () => {
         },
       })
 
-      expect(screen.getByRole('heading', { name: /フィルタ.*0.*件/i })).toBeInTheDocument()
+      expect(
+        screen.getByRole('heading', { name: /フィルタ.*0.*件/i }),
+      ).toBeInTheDocument()
     })
 
     it('フィルタが空の場合、フィルタ数0を表示すること', () => {
@@ -62,7 +64,9 @@ describe('FilterPanel', () => {
         },
       })
 
-      expect(screen.getByRole('button', { name: /クリア/i })).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: /クリア/i }),
+      ).toBeInTheDocument()
     })
 
     it('クリアボタンをクリックすると、onclearfiltersコールバックが呼ばれること', async () => {
