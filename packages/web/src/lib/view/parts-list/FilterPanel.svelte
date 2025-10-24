@@ -72,12 +72,12 @@
   }
 </script>
 
-<div class="card">
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <h6 class="mb-0">フィルタ ({filters.length}件)</h6>
+<div class="card filter-panel-card">
+  <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">フィルタ ({filters.length}件)</h5>
     <button
       type="button"
-      class="btn btn-sm btn-outline-secondary"
+      class="btn btn-sm btn-outline-light"
       disabled={filters.length === 0}
       onclick={handleClearFilters}
     >
@@ -87,26 +87,26 @@
 
   <div class="card-body">
     {#if invalidatedFilters.length > 0}
-      <Alert color="warning" class="py-2 mb-3">
-        <small>
+      <Alert color="warning" class="mb-3">
+        <div>
           <strong>無効化された条件:</strong>
           {#each invalidatedFilters as filter, i}
             {filter.property}
             {operatorLabels[filter.operator]}
             {filter.value}{i < invalidatedFilters.length - 1 ? ', ' : ''}
           {/each}
-        </small>
+        </div>
       </Alert>
     {/if}
 
     <!-- フィルタ追加フォーム -->
-    <div class="bg-light p-3 rounded mb-3">
+    <div class="bg-dark bg-opacity-10 p-3 rounded mb-3">
       <div class="row g-2">
         <div class="col-12 col-md-4">
-          <label for="filter-property" class="form-label small mb-1">属性</label>
+          <label for="filter-property" class="form-label mb-1">属性</label>
           <select
             id="filter-property"
-            class="form-select form-select-sm"
+            class="form-select"
             bind:value={selectedProperty}
           >
             {#each FILTERABLE_PROPERTIES as property}
@@ -116,10 +116,10 @@
         </div>
 
         <div class="col-12 col-md-3">
-          <label for="filter-operator" class="form-label small mb-1">条件</label>
+          <label for="filter-operator" class="form-label mb-1">条件</label>
           <select
             id="filter-operator"
-            class="form-select form-select-sm"
+            class="form-select"
             bind:value={selectedOperator}
           >
             <option value="lte">≤ 以下</option>
@@ -132,11 +132,11 @@
         </div>
 
         <div class="col-12 col-md-3">
-          <label for="filter-value" class="form-label small mb-1">値</label>
+          <label for="filter-value" class="form-label mb-1">値</label>
           <input
             id="filter-value"
             type={isNumericProperty(selectedProperty) ? 'number' : 'text'}
-            class="form-control form-control-sm"
+            class="form-control"
             bind:value={inputValue}
             placeholder="値を入力"
           />
@@ -145,7 +145,7 @@
         <div class="col-12 col-md-2 d-flex align-items-end">
           <button
             type="button"
-            class="btn btn-sm btn-primary w-100"
+            class="btn btn-primary w-100"
             disabled={isAddButtonDisabled}
             onclick={handleAddFilter}
           >
@@ -160,11 +160,11 @@
       <div class="list-group">
         {#each filters as filter, index}
           <div class="list-group-item d-flex justify-content-between align-items-center">
-            <small>
-              <span class="badge bg-secondary">{PROPERTY_LABELS[filter.property] || filter.property}</span>
-              <span class="mx-1">{operatorLabels[filter.operator]}</span>
-              <strong>{filter.value}</strong>
-            </small>
+            <div>
+              <span class="badge bg-primary fs-6 me-2">{PROPERTY_LABELS[filter.property] || filter.property}</span>
+              <span class="me-1 fs-6">{operatorLabels[filter.operator]}</span>
+              <strong class="fs-6">{filter.value}</strong>
+            </div>
             <button
               type="button"
               class="btn btn-sm btn-outline-danger"
@@ -177,11 +177,17 @@
         {/each}
       </div>
     {:else}
-      <p class="text-muted small mb-0">フィルタが設定されていません</p>
+      <p class="text-muted mb-0">フィルタが設定されていません</p>
     {/if}
   </div>
 </div>
 
 <style>
-  /* Bootstrap標準のスタイルを使用するため、カスタムCSSは最小限に */
+  .filter-panel-card {
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+
+  .filter-panel-card .card-body {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
 </style>
