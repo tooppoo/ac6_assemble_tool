@@ -6,6 +6,7 @@
    * URLパラメータ/LocalStorageと同期します。
    */
 
+  import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import { Result } from '@praha/byethrow'
@@ -25,11 +26,14 @@
   } from './state-serializer'
   import { FavoriteStore } from './stores/favorite-store'
 
-  // お気に入りストアのインスタンスを作成
-  const favoriteStore = new FavoriteStore()
-
   import { browser } from '$app/environment'
   import { replaceState } from '$app/navigation'
+
+  let favoriteStore: FavoriteStore | null = null
+
+  if (browser) {
+    favoriteStore = new FavoriteStore()
+  }
 
   // Props
   interface Props {
@@ -62,7 +66,7 @@
 
   // お気に入りの初期化（ブラウザ環境でのみ実行）
   $effect(() => {
-    if (!browser) return
+    if (!browser || !favoriteStore) return
     favoriteStore.getFavorites(currentSlot).then((result) => {
       if (Result.isSuccess(result)) {
         favorites = result.value
@@ -71,27 +75,21 @@
   })
 
   // フィルタ済みパーツリストの計算（$derivedで自動計算）
-  let filteredParts = $derived.by(() => {
+  let filteredParts = $derived.by<readonly ACParts[]>(() => {
     // 選択中のスロットに対応するパーツを取得
-    const slotParts = regulation.candidates[currentSlot]
+    const slotParts: readonly ACParts[] = regulation.candidates[currentSlot]
 
     // フィルタ適用（Requirement 2.2, 2.3）
-    // 型エラーを回避するため、unknown経由でキャスト
-    let filtered = applyFilters(
-      slotParts as unknown as Array<Record<string, unknown>>,
-      filters,
-    )
+    let filtered = applyFilters(slotParts, filters)
 
     // お気に入りフィルタ適用（Task 6.2）
     if (showFavoritesOnly) {
-      filtered = filtered.filter((parts: Record<string, unknown>) =>
-        favorites.has(parts.id as string),
-      )
+      filtered = filtered.filter((parts) => favorites.has(parts.id))
     }
 
     // TODO: 並び替えロジックを実装（タスク5で実装予定）
 
-    return filtered as unknown as typeof slotParts
+    return filtered
   })
 
   // URL パラメータへの同期（状態変更時に自動実行）
@@ -142,7 +140,7 @@
     currentSlot = newSlot
 
     // 新しいスロットのお気に入りを読み込み
-    if (browser) {
+    if (browser && favoriteStore) {
       favoriteStore.getFavorites(newSlot).then((result) => {
         if (Result.isSuccess(result)) {
           favorites = result.value
@@ -152,6 +150,7 @@
   }
 
   async function handleToggleFavorite(partsId: string) {
+    if (!favoriteStore) return
     const isFavorite = favorites.has(partsId)
 
     if (isFavorite) {
@@ -211,7 +210,7 @@
 
   <div class="py-1">
     <PartsGrid
-      parts={filteredParts as any}
+      {filteredParts}
       slot={currentSlot}
       {favorites}
       ontogglefavorite={handleToggleFavorite}
