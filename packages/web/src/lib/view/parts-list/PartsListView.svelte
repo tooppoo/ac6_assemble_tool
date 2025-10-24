@@ -21,7 +21,6 @@
   import { Result } from '@praha/byethrow'
   import { browser } from '$app/environment'
   import { replaceState } from '$app/navigation'
-  import i18n from '$lib/i18n/define'
   import SlotSelector from './SlotSelector.svelte'
 
   // Props
@@ -115,26 +114,25 @@
     filters = newFilters
   }
 
-  export function handleSortChange(newSortKey: string | null, newSortOrder: 'asc' | 'desc' | null) {
+  export function handleSortChange(
+    newSortKey: string | null,
+    newSortOrder: 'asc' | 'desc' | null,
+  ) {
     sortKey = newSortKey
     sortOrder = newSortOrder
   }
 </script>
 
 <div class="parts-list-view">
-  <h2>パーツ一覧</h2>
-
-  <SlotSelector currentSlot={currentSlot} onslotchange={handleSlotChange} />
-
-  <p class="text-muted">
-    現在のスロット: {$i18n.t(`assembly:${currentSlot}`)}
+  <p class="py-1">
+    <SlotSelector {currentSlot} onslotchange={handleSlotChange} />
   </p>
 
-  <p class="text-muted">
+  <p class="py-1">
     表示モード: {viewMode}
   </p>
 
-  <p class="text-muted">
+  <p class="py-1">
     パーツ数: {filteredParts.length}
   </p>
 
@@ -143,21 +141,3 @@
     子コンポーネント（フィルタ、並び替え、パーツ一覧）はタスク4以降で実装されます。
   </div>
 </div>
-
-<style>
-  .parts-list-view {
-    padding: 1rem;
-  }
-
-  h2 {
-    margin-bottom: 1rem;
-  }
-
-  .text-muted {
-    margin-bottom: 0.5rem;
-  }
-
-  .alert {
-    margin-top: 1rem;
-  }
-</style>

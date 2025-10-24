@@ -23,31 +23,20 @@
 
 <svelte:head>
   <title>パーツ一覧 - AC6 Assemble Tool</title>
-  <meta name="description" content="AC6のパーツを一覧表示、フィルタリング、並び替えできる探索的UIページ" />
+  <meta
+    name="description"
+    content="AC6のパーツを一覧表示、フィルタリング、並び替えできる探索的UIページ"
+  />
 </svelte:head>
 
-<main class="parts-list-page">
+<main class="parts-list-page py-4">
   <div class="container">
-    <h1>パーツ一覧</h1>
+    <h1 class="py-2">PARTS LIST</h1>
 
-    <p class="text-muted">
-      パッチバージョン: {regulation.version}
-    </p>
+    <h2 class="py-2">
+      Regulation for {regulation.version}
+    </h2>
 
     <PartsListView {regulation} initialSearchParams={searchParams} />
   </div>
 </main>
-
-<style>
-  .parts-list-page {
-    padding: 2rem 0;
-  }
-
-  h1 {
-    margin-bottom: 1rem;
-  }
-
-  .text-muted {
-    margin-bottom: 2rem;
-  }
-</style>

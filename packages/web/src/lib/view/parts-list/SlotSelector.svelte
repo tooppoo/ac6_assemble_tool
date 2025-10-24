@@ -19,6 +19,18 @@
 
   let { currentSlot, onslotchange }: Props = $props()
 
+  // arm-unit/shoulder-/frame/inner/expansion でグルーピング
+  const selectorGroups = [
+    [0, 1],
+    [2, 3],
+    [4, 5, 6, 7],
+    [8, 9, 10],
+    [11],
+  ].reduce(
+    (groups, columns) => [...groups, columns.map((i) => CANDIDATES_KEYS[i])],
+    [] as CandidatesKey[][],
+  )
+
   // スロット選択ハンドラ
   function handleSlotClick(slot: CandidatesKey) {
     // カスタムイベントを作成して、onslotchange コールバックを呼び出す
@@ -30,36 +42,21 @@
 </script>
 
 <div class="slot-selector">
-  <div class="d-flex flex-wrap gap-2">
-    {#each CANDIDATES_KEYS as slot}
-      <Button
-        color={currentSlot === slot ? 'primary' : 'outline-secondary'}
-        size="sm"
-        onclick={() => handleSlotClick(slot)}
-        class="slot-button"
-      >
-        {$i18n.t(`assembly:${slot}`)}
-      </Button>
-    {/each}
-  </div>
+  {#each selectorGroups as row}
+    <div class="d-flex flex-wrap gap-2 py-2">
+      {#each row as slot}
+        <Button
+          color={currentSlot === slot ? 'primary' : 'outline-secondary'}
+          size="lg"
+          onclick={() => handleSlotClick(slot)}
+          class="slot-button px-2"
+        >
+          {$i18n.t(`assembly:${slot}`)}
+        </Button>
+      {/each}
+    </div>
+  {/each}
 </div>
 
-<style>
-  .slot-selector {
-    padding: 1rem 0;
-  }
-
-  :global(.slot-button) {
-    min-width: 120px;
-    white-space: nowrap;
-    font-size: 0.875rem;
-  }
-
-  /* モバイル対応 */
-  @media (max-width: 768px) {
-    :global(.slot-button) {
-      min-width: 100px;
-      font-size: 0.8125rem;
-    }
-  }
+<style lang="scss">
 </style>
