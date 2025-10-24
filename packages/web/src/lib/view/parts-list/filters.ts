@@ -32,6 +32,41 @@ const VALID_FILTER_PROPERTIES: ReadonlySet<string> = new Set([
 ])
 
 /**
+ * 数値型のフィルタプロパティ一覧
+ */
+const NUMERIC_FILTER_PROPERTIES: ReadonlySet<string> = new Set([
+  'price',
+  'weight',
+  'en_load',
+])
+
+/**
+ * プロパティの表示名マップ（日本語）
+ */
+export const PROPERTY_LABELS: Record<string, string> = {
+  price: '価格',
+  weight: '重量',
+  en_load: 'EN負荷',
+  name: '名前',
+  classification: '分類',
+  manufacture: 'メーカー',
+  category: 'カテゴリ',
+}
+
+/**
+ * フィルタ可能なプロパティのリスト（UI表示用）
+ */
+export const FILTERABLE_PROPERTIES = [
+  'price',
+  'weight',
+  'en_load',
+  'name',
+  'classification',
+  'manufacture',
+  'category',
+] as const
+
+/**
  * スロットごとに有効なフィルタプロパティのマップ
  * 現時点では全スロット共通（将来のスロット固有属性追加に備えて用意）
  */
@@ -139,4 +174,11 @@ export function applyFilters<T extends Record<string, any>>(
  */
 export function isValidFilterProperty(property: string): boolean {
   return VALID_FILTER_PROPERTIES.has(property)
+}
+
+/**
+ * プロパティが数値型かどうかを判定
+ */
+export function isNumericProperty(property: string): boolean {
+  return NUMERIC_FILTER_PROPERTIES.has(property)
 }

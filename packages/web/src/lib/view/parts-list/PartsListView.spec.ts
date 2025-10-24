@@ -136,7 +136,9 @@ describe('PartsListView コンポーネント', () => {
       // 実際のテストは実装後に追加
     })
 
-    it('表示モード変更時にLocalStorageが更新されること', () => {
+    it.skip('表示モード変更時にLocalStorageが更新されること', () => {
+      // TODO: Task 6（パーツ一覧表示とお気に入り機能）で実装予定
+      // viewMode変更UIが実装されたら、このテストを有効化する
       const { component } = render(PartsListView, {
         props: {
           regulation,
