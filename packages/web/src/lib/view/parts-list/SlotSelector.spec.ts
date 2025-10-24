@@ -23,9 +23,9 @@ describe('SlotSelector コンポーネント', () => {
       })
 
       // 12種類のスロットが存在することを確認
-      // すべてのボタンが表示されていることを確認
+      // すべてのボタンが表示されていることを確認（スロット選択12個 + 折りたたみ1個 = 13個）
       const buttons = screen.getAllByRole('button')
-      expect(buttons.length).toBe(12)
+      expect(buttons.length).toBe(13)
 
       // 各スロット名が含まれていることを確認（正確なテキストマッチ）
       expect(screen.getByText(/^RIGHT ARM UNIT$|^右腕武器$/)).toBeInTheDocument()
@@ -119,9 +119,9 @@ describe('SlotSelector コンポーネント', () => {
         },
       })
 
-      // すべてのスロットボタンがbutton要素であることを確認
+      // すべてのスロットボタンがbutton要素であることを確認（スロット選択12個 + 折りたたみ1個 = 13個）
       const buttons = screen.getAllByRole('button')
-      expect(buttons.length).toBe(12)
+      expect(buttons.length).toBe(13)
 
       for (const button of buttons) {
         expect(button.tagName).toBe('BUTTON')

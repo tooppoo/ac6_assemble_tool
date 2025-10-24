@@ -9,7 +9,7 @@
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
   import { CANDIDATES_KEYS } from '@ac6_assemble_tool/parts/types/candidates'
   import i18n from '$lib/i18n/define'
-  import { Button } from '@sveltestrap/sveltestrap'
+  import { Button, Collapse } from '@sveltestrap/sveltestrap'
 
   // Props
   interface Props {
@@ -18,6 +18,9 @@
   }
 
   let { currentSlot, onslotchange }: Props = $props()
+
+  // 折りたたみ状態
+  let isOpen = $state(true)
 
   // arm-unit/shoulder-/frame/inner/expansion でグルーピング
   const selectorGroups = [
@@ -39,24 +42,44 @@
     })
     onslotchange?.(event)
   }
+
+  // 折りたたみトグル
+  function toggleCollapse() {
+    isOpen = !isOpen
+  }
 </script>
 
-<div class="slot-selector">
-  {#each selectorGroups as row}
-    <div class="d-flex flex-wrap gap-2 py-2">
-      {#each row as slot}
-        <Button
-          color={currentSlot === slot ? 'primary' : 'outline-secondary'}
-          size="lg"
-          onclick={() => handleSlotClick(slot)}
-          class="slot-button px-2"
-        >
-          {$i18n.t(`assembly:${slot}`)}
-        </Button>
+<div class="card slot-selector-card">
+  <div
+    class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
+  >
+    <h5 class="mb-0">スロット選択</h5>
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-light"
+      onclick={toggleCollapse}
+      aria-label={isOpen ? '折りたたむ' : '展開'}
+    >
+      {isOpen ? '▲' : '▼'}
+    </button>
+  </div>
+
+  <Collapse {isOpen}>
+    <div class="card-body">
+      {#each selectorGroups as row}
+        <div class="d-flex flex-wrap gap-2 py-2">
+          {#each row as slot}
+            <Button
+              color={currentSlot === slot ? 'primary' : 'outline-secondary'}
+              size="lg"
+              onclick={() => handleSlotClick(slot)}
+              class="slot-button px-2"
+            >
+              {$i18n.t(`assembly:${slot}`)}
+            </Button>
+          {/each}
+        </div>
       {/each}
     </div>
-  {/each}
+  </Collapse>
 </div>
-
-<style lang="scss">
-</style>

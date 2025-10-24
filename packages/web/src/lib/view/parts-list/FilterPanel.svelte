@@ -12,7 +12,7 @@
     PROPERTY_LABELS,
     isNumericProperty,
   } from './filters'
-  import { Alert } from '@sveltestrap/sveltestrap'
+  import { Alert, Collapse } from '@sveltestrap/sveltestrap'
 
   // Props
   interface Props {
@@ -34,6 +34,9 @@
   let selectedProperty = $state('price')
   let selectedOperator = $state<Filter['operator']>('lte')
   let inputValue = $state('')
+
+  // 折りたたみ状態
+  let isOpen = $state(true)
 
   // 演算子の表示マップ
   const operatorLabels: Record<Filter['operator'], string> = {
@@ -79,6 +82,10 @@
     const updatedFilters = filters.filter((_, i) => i !== index)
     onfilterchange?.(updatedFilters)
   }
+
+  function toggleCollapse() {
+    isOpen = !isOpen
+  }
 </script>
 
 <div class="card filter-panel-card">
@@ -86,121 +93,131 @@
     class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
   >
     <h5 class="mb-0">フィルタ ({filters.length}件)</h5>
-    <button
-      type="button"
-      class="btn btn-sm btn-outline-light"
-      disabled={filters.length === 0}
-      onclick={handleClearFilters}
-    >
-      クリア
-    </button>
+    <div class="d-flex gap-2">
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-light"
+        disabled={filters.length === 0}
+        onclick={handleClearFilters}
+      >
+        クリア
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-light"
+        onclick={toggleCollapse}
+        aria-label={isOpen ? '折りたたむ' : '展開'}
+      >
+        {isOpen ? '▲' : '▼'}
+      </button>
+    </div>
   </div>
 
-  <div class="card-body">
-    {#if invalidatedFilters.length > 0}
-      <Alert color="warning" class="mb-3">
-        <div>
-          <strong>無効化された条件:</strong>
-          {#each invalidatedFilters as filter, i}
-            {filter.property}
-            {operatorLabels[filter.operator]}
-            {filter.value}{i < invalidatedFilters.length - 1 ? ', ' : ''}
-          {/each}
-        </div>
-      </Alert>
-    {/if}
-
-    <!-- フィルタ追加フォーム -->
-    <div class="filter-add-form bg-secondary bg-opacity-25 p-3 rounded mb-3">
-      <div class="row g-2">
-        <div class="col-12 col-md-4">
-          <label for="filter-property" class="form-label mb-1 text-white"
-            >属性</label
-          >
-          <select
-            id="filter-property"
-            class="form-select"
-            bind:value={selectedProperty}
-          >
-            {#each FILTERABLE_PROPERTIES as property}
-              <option value={property}>{PROPERTY_LABELS[property]}</option>
+  <Collapse {isOpen}>
+    <div class="card-body">
+      {#if invalidatedFilters.length > 0}
+        <Alert color="warning" class="mb-3">
+          <div>
+            <strong>無効化された条件:</strong>
+            {#each invalidatedFilters as filter, i}
+              {filter.property}
+              {operatorLabels[filter.operator]}
+              {filter.value}{i < invalidatedFilters.length - 1 ? ', ' : ''}
             {/each}
-          </select>
-        </div>
+          </div>
+        </Alert>
+      {/if}
 
-        <div class="col-12 col-md-3">
-          <label for="filter-operator" class="form-label mb-1 text-white"
-            >条件</label
-          >
-          <select
-            id="filter-operator"
-            class="form-select"
-            bind:value={selectedOperator}
-          >
-            <option value="lte">≤ 以下</option>
-            <option value="gte">≥ 以上</option>
-            <option value="lt">{'<'} 未満</option>
-            <option value="gt">{'>'} 超過</option>
-            <option value="eq">= 等しい</option>
-            <option value="ne">≠ 等しくない</option>
-          </select>
-        </div>
+      <!-- フィルタ追加フォーム -->
+      <div class="filter-add-form bg-secondary bg-opacity-25 p-3 rounded mb-3">
+        <div class="row g-2">
+          <div class="col-12 col-md-4">
+            <label for="filter-property" class="form-label mb-1 text-white"
+              >属性</label
+            >
+            <select
+              id="filter-property"
+              class="form-select"
+              bind:value={selectedProperty}
+            >
+              {#each FILTERABLE_PROPERTIES as property}
+                <option value={property}>{PROPERTY_LABELS[property]}</option>
+              {/each}
+            </select>
+          </div>
 
-        <div class="col-12 col-md-3">
-          <label for="filter-value" class="form-label mb-1 text-white">値</label
-          >
-          <input
-            id="filter-value"
-            type={isNumericProperty(selectedProperty) ? 'number' : 'text'}
-            class="form-control"
-            bind:value={inputValue}
-            placeholder="値を入力"
-          />
-        </div>
+          <div class="col-12 col-md-3">
+            <label for="filter-operator" class="form-label mb-1 text-white"
+              >条件</label
+            >
+            <select
+              id="filter-operator"
+              class="form-select"
+              bind:value={selectedOperator}
+            >
+              <option value="lte">≤ 以下</option>
+              <option value="gte">≥ 以上</option>
+              <option value="lt">{'<'} 未満</option>
+              <option value="gt">{'>'} 超過</option>
+              <option value="eq">= 等しい</option>
+              <option value="ne">≠ 等しくない</option>
+            </select>
+          </div>
 
-        <div class="col-12 col-md-2 d-flex align-items-end">
-          <button
-            type="button"
-            class="btn btn-primary w-100"
-            disabled={isAddButtonDisabled}
-            onclick={handleAddFilter}
-          >
-            追加
-          </button>
-        </div>
-      </div>
-    </div>
+          <div class="col-12 col-md-3">
+            <label for="filter-value" class="form-label mb-1 text-white"
+              >値</label
+            >
+            <input
+              id="filter-value"
+              type={isNumericProperty(selectedProperty) ? 'number' : 'text'}
+              class="form-control"
+              bind:value={inputValue}
+              placeholder="値を入力"
+            />
+          </div>
 
-    <!-- 現在のフィルタ一覧 -->
-    {#if filters.length > 0}
-      <div class="list-group">
-        {#each filters as filter, index}
-          <div
-            class="list-group-item filter-list-item d-flex justify-content-between align-items-center"
-          >
-            <div>
-              <span class="fs-5 me-2"
-                >{PROPERTY_LABELS[filter.property] || filter.property}</span
-              >
-              <span class="me-1 fs-5">{operatorLabels[filter.operator]}</span>
-              <strong class="fs-5">{filter.value}</strong>
-            </div>
+          <div class="col-12 col-md-2 d-flex align-items-end">
             <button
               type="button"
-              class="btn btn-sm btn-outline-danger"
-              onclick={() => handleRemoveFilter(index)}
-              aria-label="削除"
+              class="btn btn-primary w-100"
+              disabled={isAddButtonDisabled}
+              onclick={handleAddFilter}
             >
-              ×
+              追加
             </button>
           </div>
-        {/each}
+        </div>
       </div>
-    {:else}
-      <p class="text-muted mb-0">フィルタが設定されていません</p>
-    {/if}
-  </div>
-</div>
 
-<style>
-</style>
+      <!-- 現在のフィルタ一覧 -->
+      {#if filters.length > 0}
+        <div class="list-group">
+          {#each filters as filter, index}
+            <div
+              class="list-group-item filter-list-item d-flex justify-content-between align-items-center"
+            >
+              <div>
+                <span class="fs-5 me-2"
+                  >{PROPERTY_LABELS[filter.property] || filter.property}</span
+                >
+                <span class="me-1 fs-5">{operatorLabels[filter.operator]}</span>
+                <strong class="fs-5">{filter.value}</strong>
+              </div>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                onclick={() => handleRemoveFilter(index)}
+                aria-label="削除"
+              >
+                ×
+              </button>
+            </div>
+          {/each}
+        </div>
+      {:else}
+        <p class="text-muted mb-0">フィルタが設定されていません</p>
+      {/if}
+    </div>
+  </Collapse>
+</div>
