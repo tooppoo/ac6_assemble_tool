@@ -128,7 +128,7 @@ export function splitFiltersBySlot(
  * 各フィルタ条件をAND条件で適用します。
  * 属性未定義のパーツは条件を満たさないものとして除外されます。
  */
-export function applyFilters<T extends Record<string, any>>(
+export function applyFilters<T extends Record<string, unknown>>(
   parts: readonly T[],
   filters: Filter[],
 ): T[] {
