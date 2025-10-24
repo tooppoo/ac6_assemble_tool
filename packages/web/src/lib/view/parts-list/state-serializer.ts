@@ -67,6 +67,25 @@ const VALID_FILTER_PROPERTIES: ReadonlySet<string> = new Set([
 ])
 
 /**
+ * スロットごとに有効なフィルタプロパティのマップ
+ * 現時点では全スロット共通（将来のスロット固有属性追加に備えて用意）
+ */
+const SLOT_SPECIFIC_PROPERTIES: Record<CandidatesKey, ReadonlySet<string>> = {
+  rightArmUnit: VALID_FILTER_PROPERTIES,
+  leftArmUnit: VALID_FILTER_PROPERTIES,
+  rightBackUnit: VALID_FILTER_PROPERTIES,
+  leftBackUnit: VALID_FILTER_PROPERTIES,
+  head: VALID_FILTER_PROPERTIES,
+  core: VALID_FILTER_PROPERTIES,
+  arms: VALID_FILTER_PROPERTIES,
+  legs: VALID_FILTER_PROPERTIES,
+  booster: VALID_FILTER_PROPERTIES,
+  fcs: VALID_FILTER_PROPERTIES,
+  generator: VALID_FILTER_PROPERTIES,
+  expansion: VALID_FILTER_PROPERTIES,
+}
+
+/**
  * URLパラメータへのシリアライズ（共有用）
  */
 export function serializeToURL(state: SharedState): URLSearchParams {
@@ -249,4 +268,37 @@ function parseSort(
   }
 
   return { key, order }
+}
+
+/**
+ * スロット切替時のフィルタ条件分割結果
+ */
+export interface FilterSplitResult {
+  valid: Filter[]
+  invalidated: Filter[]
+}
+
+/**
+ * スロット切替時にフィルタ条件を有効なものと無効なものに分割
+ * 現時点では全属性が共通なので、全て有効として返す
+ * 将来のスロット固有属性追加時に、この関数を拡張する
+ */
+export function splitFiltersBySlot(
+  filters: Filter[],
+  slot: CandidatesKey,
+): FilterSplitResult {
+  const validProperties = SLOT_SPECIFIC_PROPERTIES[slot]
+
+  const valid: Filter[] = []
+  const invalidated: Filter[] = []
+
+  for (const filter of filters) {
+    if (validProperties.has(filter.property)) {
+      valid.push(filter)
+    } else {
+      invalidated.push(filter)
+    }
+  }
+
+  return { valid, invalidated }
 }

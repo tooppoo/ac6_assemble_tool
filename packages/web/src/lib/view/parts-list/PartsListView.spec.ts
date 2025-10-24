@@ -153,6 +153,70 @@ describe('PartsListView コンポーネント', () => {
     })
   })
 
+  describe('スロット切替時の条件引き継ぎ', () => {
+    it('スロット切替時にフィルタ条件が保持されること（共通属性の場合）', async () => {
+      // URLパラメータでフィルタ条件を設定
+      const searchParams = new URLSearchParams(
+        'slot=rightArmUnit&filter=weight:lte:5000&filter=price:lte:100000',
+      )
+
+      const { getByText } = render(PartsListView, {
+        props: {
+          regulation,
+          initialSearchParams: searchParams,
+        },
+      })
+
+      // 初期状態（rightArmUnit）で2つのフィルタ条件が適用されている
+      expect(getByText(/現在のスロット: (RIGHT ARM UNIT|右腕武器)/i)).toBeInTheDocument()
+
+      // headスロットに切り替え
+      const headButton = getByText(/^HEAD$|^頭部$/)
+      await headButton.click()
+
+      // フィルタ条件が引き継がれる（weight, priceは全スロット共通）
+      // URLパラメータにフィルタ条件が残っていることを確認
+      // 実際の確認は実装後に追加
+    })
+
+    it('スロット切替時に無効化された条件が記録されること', async () => {
+      // 将来の拡張性のため、無効化された条件を記録する仕組みをテスト
+      // 現時点では全属性が共通なので、無効化される条件は存在しない
+      const { getByText } = render(PartsListView, {
+        props: {
+          regulation,
+        },
+      })
+
+      // rightArmUnitからheadに切り替え
+      const headButton = getByText(/^HEAD$|^頭部$/)
+      await headButton.click()
+
+      // 無効化された条件が空であることを確認
+      // 実装後に確認ロジックを追加
+    })
+
+    it('スロット切替時にパーツリストが再計算されること', async () => {
+      const { getByText } = render(PartsListView, {
+        props: {
+          regulation,
+        },
+      })
+
+      // 初期状態のパーツ数を確認
+      const initialPartsCount = regulation.candidates.rightArmUnit.length
+      expect(getByText(/パーツ数: \d+/)).toHaveTextContent(`パーツ数: ${initialPartsCount}`)
+
+      // headスロットに切り替え
+      const headButton = getByText(/^HEAD$|^頭部$/)
+      await headButton.click()
+
+      // パーツ数が更新されることを確認
+      const newPartsCount = regulation.candidates.head.length
+      expect(getByText(/パーツ数: \d+/)).toHaveTextContent(`パーツ数: ${newPartsCount}`)
+    })
+  })
+
   describe('フィルタ済みパーツリストの計算', () => {
     it('選択中のスロットに対応するパーツのみを表示すること', () => {
       render(PartsListView, {

@@ -13,6 +13,7 @@
     deserializeFromURL,
     saveViewMode,
     loadViewMode,
+    splitFiltersBySlot,
     type ViewMode,
     type SharedState,
     type Filter,
@@ -47,6 +48,7 @@
   let sortKey = $state<string | null>(initialState?.sortKey ?? null)
   let sortOrder = $state<'asc' | 'desc' | null>(initialState?.sortOrder ?? null)
   let viewMode = $state<ViewMode>(loadViewMode())
+  let invalidatedFilters = $state<Filter[]>([])
 
   // フィルタ済みパーツリストの計算（$derivedで自動計算）
   let filteredParts = $derived.by(() => {
@@ -90,7 +92,19 @@
 
   // イベントハンドラ
   function handleSlotChange(event: CustomEvent<{ slot: CandidatesKey }>) {
-    currentSlot = event.detail.slot
+    const newSlot = event.detail.slot
+
+    // スロット切替時にフィルタ条件を分割
+    const { valid, invalidated } = splitFiltersBySlot(filters, newSlot)
+
+    // 有効なフィルタのみを保持
+    filters = valid
+
+    // 無効化されたフィルタを記録（将来のUI表示のため）
+    invalidatedFilters = invalidated
+
+    // スロットを更新
+    currentSlot = newSlot
   }
 
   export function handleViewModeChange(newViewMode: ViewMode) {

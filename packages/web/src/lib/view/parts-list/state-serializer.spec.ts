@@ -6,7 +6,9 @@ import {
   deserializeFromURL,
   saveViewMode,
   loadViewMode,
+  splitFiltersBySlot,
   type SharedState,
+  type Filter,
 } from './state-serializer'
 
 describe('StateSerializer', () => {
@@ -249,6 +251,49 @@ describe('StateSerializer', () => {
       const viewMode = loadViewMode()
 
       expect(viewMode).toBe('grid')
+    })
+  })
+
+  describe('splitFiltersBySlot', () => {
+    it('全スロット共通の属性は全て有効として返すこと', () => {
+      const filters: Filter[] = [
+        { property: 'weight', operator: 'lte', value: 5000 },
+        { property: 'price', operator: 'lte', value: 100000 },
+        { property: 'en_load', operator: 'gte', value: 500 },
+      ]
+
+      const result = splitFiltersBySlot(filters, 'rightArmUnit')
+
+      expect(result.valid).toHaveLength(3)
+      expect(result.invalidated).toHaveLength(0)
+    })
+
+    it('スロット切替時に共通属性が引き継がれること', () => {
+      const filters: Filter[] = [
+        { property: 'weight', operator: 'lte', value: 5000 },
+        { property: 'price', operator: 'lte', value: 100000 },
+      ]
+
+      // rightArmUnit -> head
+      const result = splitFiltersBySlot(filters, 'head')
+
+      expect(result.valid).toHaveLength(2)
+      expect(result.invalidated).toHaveLength(0)
+      expect(result.valid.map((f) => f.property)).toEqual(['weight', 'price'])
+    })
+
+    it('将来のスロット固有属性に対応できる構造であること', () => {
+      // 現時点では全属性が共通なので、無効化される条件は存在しない
+      // しかし、将来スロット固有属性が追加された際に、この関数が対応できることを確認
+      const filters: Filter[] = [
+        { property: 'weight', operator: 'lte', value: 5000 },
+      ]
+
+      const result = splitFiltersBySlot(filters, 'legs')
+
+      // 現時点では全て有効
+      expect(result.valid).toHaveLength(1)
+      expect(result.invalidated).toHaveLength(0)
     })
   })
 })
