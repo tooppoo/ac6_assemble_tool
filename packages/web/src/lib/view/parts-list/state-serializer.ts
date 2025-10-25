@@ -4,6 +4,7 @@ import {
 } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
+import * as LZString from 'lz-string'
 
 import { type Filter, isValidFilterProperty } from './filters'
 
@@ -19,6 +20,14 @@ export type { Filter } from './filters'
  * 並び替え順序
  */
 export type SortOrder = 'asc' | 'desc'
+
+/**
+ * スロットごとのフィルタ状態
+ * 各スロットが独立したフィルタ配列を持つ
+ */
+export type FiltersPerSlot = {
+  [K in CandidatesKey]?: Filter[]
+}
 
 /**
  * URL共有用の状態（スロット、フィルタ、並び替え）
@@ -42,6 +51,11 @@ export type DeserializeError =
  * LocalStorageに保存する表示モードのキー
  */
 const VIEW_MODE_KEY = 'ac6-parts-list-view-mode'
+
+/**
+ * LocalStorageに保存するスロットごとのフィルタ状態のキー
+ */
+const FILTERS_PER_SLOT_KEY = 'ac6-parts-list-filters-per-slot'
 
 /**
  * 有効なスロット一覧
@@ -85,6 +99,7 @@ export function serializeToURL(state: SharedState): URLSearchParams {
       default:
         // TypeScriptの exhaustive check
         const _exhaustive: never = filter
+        void _exhaustive // 明示的に値を使わないことを示す
         logger.warn('Unknown filter type in serializeToURL', { filter })
         continue
     }
@@ -341,4 +356,139 @@ function parseSort(
   }
 
   return { key, order }
+}
+
+/**
+ * スロットごとのフィルタ状態をURLパラメータにシリアライズ
+ * フィルタが設定されているスロットのみを含める（URL長を削減）
+ * LZ-string圧縮を使用してURLサイズを削減
+ */
+export function serializeFiltersPerSlotToURL(filtersPerSlot: FiltersPerSlot): string {
+  // 空のフィルタを持つスロットを除外
+  const nonEmptyFilters: FiltersPerSlot = {}
+  for (const [slot, filters] of Object.entries(filtersPerSlot)) {
+    if (filters && filters.length > 0) {
+      nonEmptyFilters[slot as CandidatesKey] = filters
+    }
+  }
+
+  // フィルタが1つもない場合は空文字列を返す
+  if (Object.keys(nonEmptyFilters).length === 0) {
+    return ''
+  }
+
+  // JSON → 圧縮 → URLパラメータ
+  const json = JSON.stringify(nonEmptyFilters)
+  const compressed = LZString.compressToEncodedURIComponent(json)
+  return compressed
+}
+
+/**
+ * URLパラメータからスロットごとのフィルタ状態を復元
+ */
+export function deserializeFiltersPerSlotFromURL(
+  compressedFilters: string,
+): Result.Result<FiltersPerSlot, DeserializeError> {
+  if (!compressedFilters) {
+    // フィルタパラメータがない場合は空のオブジェクトを返す
+    return Result.succeed({})
+  }
+
+  try {
+    const json = LZString.decompressFromEncodedURIComponent(compressedFilters)
+    if (!json) {
+      return Result.fail({
+        type: 'invalid_format',
+        message: 'Failed to decompress filters',
+      })
+    }
+
+    const parsed = JSON.parse(json)
+
+    // 基本的な型チェック
+    if (typeof parsed !== 'object' || parsed === null) {
+      return Result.fail({
+        type: 'invalid_format',
+        message: 'Parsed filters is not an object',
+      })
+    }
+
+    // 各スロットのフィルタを検証（簡易版）
+    const validated: FiltersPerSlot = {}
+    for (const [slot, filters] of Object.entries(parsed)) {
+      // スロット名の検証
+      if (!VALID_SLOTS.has(slot as CandidatesKey)) {
+        logger.warn('Invalid slot in filters per slot, skipping', { slot })
+        continue
+      }
+
+      // filtersが配列かチェック
+      if (!Array.isArray(filters)) {
+        logger.warn('Filters for slot is not an array, skipping', { slot })
+        continue
+      }
+
+      validated[slot as CandidatesKey] = filters as Filter[]
+    }
+
+    return Result.succeed(validated)
+  } catch (error) {
+    logger.error('Failed to deserialize filters per slot from URL', {
+      error: error instanceof Error ? error.message : String(error),
+    })
+
+    return Result.fail({
+      type: 'invalid_format',
+      message: error instanceof Error ? error.message : String(error),
+    })
+  }
+}
+
+/**
+ * スロットごとのフィルタ状態をLocalStorageに保存
+ */
+export function saveFiltersPerSlotToLocalStorage(filtersPerSlot: FiltersPerSlot): void {
+  try {
+    localStorage.setItem(FILTERS_PER_SLOT_KEY, JSON.stringify(filtersPerSlot))
+  } catch (error) {
+    logger.error('Failed to save filters per slot to localStorage', {
+      error: error instanceof Error ? error.message : String(error),
+    })
+  }
+}
+
+/**
+ * LocalStorageからスロットごとのフィルタ状態を復元
+ */
+export function loadFiltersPerSlotFromLocalStorage(): FiltersPerSlot | null {
+  try {
+    const saved = localStorage.getItem(FILTERS_PER_SLOT_KEY)
+    if (!saved) return null
+
+    const parsed = JSON.parse(saved)
+
+    // 基本的な型チェック
+    if (typeof parsed !== 'object' || parsed === null) {
+      logger.warn('Invalid filters per slot in localStorage')
+      return null
+    }
+
+    return parsed as FiltersPerSlot
+  } catch (error) {
+    logger.error('Failed to load filters per slot from localStorage', {
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return null
+  }
+}
+
+/**
+ * すべてのスロットに対して空のフィルタ配列を持つデフォルトの FiltersPerSlot を作成
+ */
+export function createDefaultFiltersPerSlot(): FiltersPerSlot {
+  const defaults: FiltersPerSlot = {}
+  for (const slot of CANDIDATES_KEYS) {
+    defaults[slot] = []
+  }
+  return defaults
 }
