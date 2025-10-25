@@ -37,8 +37,16 @@ jobs:
       - name: lint
         run: pnpm run format
 
-      - name: auto commit
-        uses: stefanzweifel/git-auto-commit-action@v7-next
-        with:
-          commit_message: Auto commit with fmt
-          branch: ${{ github.head_ref }}
+      - name: 変更の検出とコミット
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add .
+            git commit -m "docs: markdownファイルのフォーマット修正
+
+            CIによる自動コミット"
+            git push
+          else
+            echo "変更はありませんでした"
+          fi
