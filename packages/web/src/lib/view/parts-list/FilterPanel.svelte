@@ -20,15 +20,19 @@
     slot: CandidatesKey
     filters: Filter[]
     invalidatedFilters?: Filter[]
+    showFavoritesOnly?: boolean
     onclearfilters?: () => void
     onfilterchange?: (filters: Filter[]) => void
+    ontogglefavorites?: () => void
   }
 
   let {
     filters,
     invalidatedFilters = [],
+    showFavoritesOnly = false,
     onclearfilters,
     onfilterchange,
+    ontogglefavorites,
   }: Props = $props()
 
   // フィルタ追加フォームの状態
@@ -88,6 +92,10 @@
     isOpen = !isOpen
   }
 
+  function handleToggleFavorites() {
+    ontogglefavorites?.()
+  }
+
   /** {@link Filter} からeach用のkeyを生成する*/
   function fKey(f: Filter): string {
     return `${f.property}${f.operator}${f.value}`
@@ -100,6 +108,17 @@
   >
     <h5 class="mb-0">フィルタ ({filters.length}件)</h5>
     <div class="d-flex gap-2">
+      <button
+        type="button"
+        class="btn btn-sm {showFavoritesOnly
+          ? 'btn-warning'
+          : 'btn-outline-light'}"
+        onclick={handleToggleFavorites}
+        aria-label="お気に入りのみ表示"
+        title="お気に入りのみ表示"
+      >
+        {showFavoritesOnly ? '★' : '☆'}
+      </button>
       <button
         type="button"
         class="btn btn-sm btn-outline-light"

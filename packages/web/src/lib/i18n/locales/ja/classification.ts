@@ -1,0 +1,15 @@
+export const jaClassification = {
+  'arm-unit': '腕部武器',
+  'left-arm-unit': '左腕武器',
+  'back-unit': '背部武器',
+  'left-back-unit': '左背部武器',
+  head: '頭部',
+  arms: '腕部',
+  core: 'コア',
+  legs: '脚部',
+  booster: 'ブースター',
+  fcs: 'FCS',
+  generator: 'ジェネレータ',
+  expansion: 'コア拡張',
+  'not-equipped': '未装備',
+} as const

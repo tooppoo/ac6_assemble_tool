@@ -14,6 +14,7 @@ import { render, screen } from '@testing-library/svelte'
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
 import PartsListView from './PartsListView.svelte'
+import PartsListViewTestWrapper from './PartsListView.test-wrapper.svelte'
 
 describe('PartsListView コンポーネント', () => {
   // LocalStorageをクリア
@@ -31,18 +32,18 @@ describe('PartsListView コンポーネント', () => {
 
   describe('初期状態', () => {
     it('regulationデータを受け取り、レンダリングできること', () => {
-      render(PartsListView, {
+      render(PartsListViewTestWrapper, {
         props: {
           regulation,
         },
       })
 
-      // コンポーネントがレンダリングされることを確認（表示モードが表示されている）
-      expect(screen.getByText(/表示モード:/i)).toBeInTheDocument()
+      // コンポーネントがレンダリングされることを確認（パーツ件数が表示されている）
+      expect(screen.getByText(/件のパーツを表示中/i)).toBeInTheDocument()
     })
 
     it('デフォルトでrightArmUnitスロットが選択されていること', () => {
-      render(PartsListView, {
+      render(PartsListViewTestWrapper, {
         props: {
           regulation,
         },
@@ -54,7 +55,7 @@ describe('PartsListView コンポーネント', () => {
     })
 
     it('デフォルトでgrid表示モードが選択されていること', () => {
-      render(PartsListView, {
+      render(PartsListViewTestWrapper, {
         props: {
           regulation,
         },
@@ -68,7 +69,7 @@ describe('PartsListView コンポーネント', () => {
 
   describe('スロット選択', () => {
     it('SlotSelectorコンポーネントが表示されること', () => {
-      render(PartsListView, {
+      render(PartsListViewTestWrapper, {
         props: {
           regulation,
         },
@@ -80,7 +81,7 @@ describe('PartsListView コンポーネント', () => {
     })
 
     it('スロット選択時に表示が更新されること', async () => {
-      const { getByText } = render(PartsListView, {
+      const { getByText } = render(PartsListViewTestWrapper, {
         props: {
           regulation,
         },
@@ -108,7 +109,7 @@ describe('PartsListView コンポーネント', () => {
       // URLSearchParams をモック
       const searchParams = new URLSearchParams('slot=legs')
 
-      render(PartsListView, {
+      render(PartsListViewTestWrapper, {
         props: {
           regulation,
           initialSearchParams: searchParams,
@@ -130,7 +131,7 @@ describe('PartsListView コンポーネント', () => {
       // 事前にLocalStorageに保存
       localStorage.setItem('ac6-parts-list-view-mode', 'list')
 
-      render(PartsListView, {
+      render(PartsListViewTestWrapper, {
         props: {
           regulation,
         },
@@ -167,7 +168,7 @@ describe('PartsListView コンポーネント', () => {
         'slot=rightArmUnit&filter=weight:lte:5000&filter=price:lte:100000',
       )
 
-      const { getByText } = render(PartsListView, {
+      const { getByText } = render(PartsListViewTestWrapper, {
         props: {
           regulation,
           initialSearchParams: searchParams,
@@ -192,7 +193,7 @@ describe('PartsListView コンポーネント', () => {
     it('スロット切替時に無効化された条件が記録されること', async () => {
       // 将来の拡張性のため、無効化された条件を記録する仕組みをテスト
       // 現時点では全属性が共通なので、無効化される条件は存在しない
-      const { getByText } = render(PartsListView, {
+      const { getByText } = render(PartsListViewTestWrapper, {
         props: {
           regulation,
         },
@@ -207,7 +208,7 @@ describe('PartsListView コンポーネント', () => {
     })
 
     it('スロット切替時にパーツリストが再計算されること', async () => {
-      const { getByText } = render(PartsListView, {
+      const { getByText } = render(PartsListViewTestWrapper, {
         props: {
           regulation,
         },
@@ -215,8 +216,8 @@ describe('PartsListView コンポーネント', () => {
 
       // 初期状態のパーツ数を確認
       const initialPartsCount = regulation.candidates.rightArmUnit.length
-      expect(getByText(/パーツ数: \d+/)).toHaveTextContent(
-        `パーツ数: ${initialPartsCount}`,
+      expect(getByText(/全 \d+ 件のパーツを表示中/)).toHaveTextContent(
+        `全 ${initialPartsCount} 件のパーツを表示中`,
       )
 
       // headスロットに切り替え
@@ -225,15 +226,15 @@ describe('PartsListView コンポーネント', () => {
 
       // パーツ数が更新されることを確認
       const newPartsCount = regulation.candidates.head.length
-      expect(getByText(/パーツ数: \d+/)).toHaveTextContent(
-        `パーツ数: ${newPartsCount}`,
+      expect(getByText(/全 \d+ 件のパーツを表示中/)).toHaveTextContent(
+        `全 ${newPartsCount} 件のパーツを表示中`,
       )
     })
   })
 
   describe('フィルタ済みパーツリストの計算', () => {
     it('選択中のスロットに対応するパーツのみを表示すること', () => {
-      render(PartsListView, {
+      render(PartsListViewTestWrapper, {
         props: {
           regulation,
         },
@@ -251,6 +252,43 @@ describe('PartsListView コンポーネント', () => {
     it('並び替え設定が適用されたパーツが表示されること', () => {
       // 並び替え設定を適用してパーツが並び替えられることを確認
       // 実際のテストは実装後に追加
+    })
+  })
+
+  describe('お気に入りフィルタ機能', () => {
+    it('お気に入りフィルタトグルボタンが表示されること', () => {
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      // お気に入りボタンが表示されることを確認
+      const favoriteButton = screen.getByRole('button', {
+        name: /お気に入りのみ表示/i,
+      })
+      expect(favoriteButton).toBeInTheDocument()
+    })
+
+    it('お気に入りフィルタトグルをクリックすると、表示が切り替わること', async () => {
+      const { getByRole } = render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      const favoriteButton = getByRole('button', {
+        name: /お気に入りのみ表示/i,
+      })
+
+      // 初期状態では☆が表示されている
+      expect(favoriteButton.textContent).toContain('☆')
+
+      // クリック
+      await favoriteButton.click()
+
+      // ★に変わることを確認
+      expect(favoriteButton.textContent).toContain('★')
     })
   })
 })
