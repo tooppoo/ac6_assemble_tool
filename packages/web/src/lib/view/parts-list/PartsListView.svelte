@@ -17,6 +17,7 @@
   import SlotSelector from './SlotSelector.svelte'
   import {
     deserializeFromURL,
+    serializeToURL,
     saveViewMode,
     loadViewMode,
     serializeFiltersPerSlotToURL,

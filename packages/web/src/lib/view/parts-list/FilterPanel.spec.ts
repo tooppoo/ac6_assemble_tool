@@ -119,16 +119,9 @@ describe('FilterPanel', () => {
         },
       })
 
-      // 値が表示されていることを確認（これらは一意）
-      expect(screen.getByText('5000')).toBeInTheDocument()
-      expect(screen.getByText('50000')).toBeInTheDocument()
-
-      // フィルタ一覧にweightとpriceが含まれていることを確認（複数マッチするためgetAllByTextを使用）
-      const weightTexts = screen.getAllByText(/重量/i)
-      expect(weightTexts.length).toBeGreaterThanOrEqual(1)
-
-      const priceTexts = screen.getAllByText(/価格/i)
-      expect(priceTexts.length).toBeGreaterThanOrEqual(1)
+      // フィルタ条件全体が表示されていることを確認
+      expect(screen.getByText(/重量.*≤.*5000/)).toBeInTheDocument()
+      expect(screen.getByText(/価格.*≥.*50000/)).toBeInTheDocument()
     })
 
     it('演算子が正しく表示されること', () => {
