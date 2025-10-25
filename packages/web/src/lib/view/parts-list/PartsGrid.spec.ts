@@ -9,8 +9,8 @@ describe('PartsGrid', () => {
     {
       id: 'TEST-001',
       name: 'テストパーツ1',
-      classification: 'テスト分類',
-      manufacture: 'テストメーカー',
+      classification: 'head',
+      manufacture: 'baws',
       category: 'テストカテゴリ',
       price: 100000,
       weight: 5000,
@@ -19,8 +19,8 @@ describe('PartsGrid', () => {
     {
       id: 'TEST-002',
       name: 'テストパーツ2',
-      classification: 'テスト分類',
-      manufacture: 'テストメーカー',
+      classification: 'core',
+      manufacture: 'rad',
       category: 'テストカテゴリ',
       price: 200000,
       weight: 6000,
@@ -34,7 +34,7 @@ describe('PartsGrid', () => {
         props: {
           parts: mockParts,
           slot: 'rightArmUnit',
-          favorites: new Set(),
+          favorites: new Set<string>(),
         },
       })
 
@@ -47,7 +47,7 @@ describe('PartsGrid', () => {
         props: {
           parts: mockParts,
           slot: 'rightArmUnit',
-          favorites: new Set(),
+          favorites: new Set<string>(),
         },
       })
 
@@ -59,7 +59,7 @@ describe('PartsGrid', () => {
         props: {
           parts: mockParts,
           slot: 'rightArmUnit',
-          favorites: new Set(),
+          favorites: new Set<string>(),
         },
       })
 
@@ -74,7 +74,7 @@ describe('PartsGrid', () => {
         props: {
           parts: [],
           slot: 'rightArmUnit',
-          favorites: new Set(),
+          favorites: new Set<string>(),
         },
       })
 
@@ -88,7 +88,7 @@ describe('PartsGrid', () => {
         props: {
           parts: [],
           slot: 'rightArmUnit',
-          favorites: new Set(),
+          favorites: new Set<string>(),
         },
       })
 
@@ -121,7 +121,7 @@ describe('PartsGrid', () => {
         props: {
           parts: mockParts,
           slot: 'rightArmUnit',
-          favorites: new Set(),
+          favorites: new Set<string>(),
           ontogglefavorite: handleToggle,
         },
       })

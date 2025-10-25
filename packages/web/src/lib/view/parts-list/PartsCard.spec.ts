@@ -9,7 +9,7 @@ describe('PartsCard', () => {
     id: 'TEST-001',
     name: 'テストパーツ',
     classification: 'head',
-    manufacture: 'BAWS',
+    manufacture: 'baws',
     category: 'head',
     price: 100000,
     weight: 5000,

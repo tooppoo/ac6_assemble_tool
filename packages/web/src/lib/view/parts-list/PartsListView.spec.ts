@@ -13,6 +13,7 @@ import { latest as regulation } from '$lib/regulation'
 import { render, screen } from '@testing-library/svelte'
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
+import PartsListView from './PartsListView.svelte'
 import PartsListViewTestWrapper from './PartsListView.test-wrapper.svelte'
 
 describe('PartsListView コンポーネント', () => {
