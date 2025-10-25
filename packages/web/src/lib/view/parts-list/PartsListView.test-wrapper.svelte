@@ -1,8 +1,8 @@
 <script lang="ts">
+  import i18n from '$lib/i18n/define'
+
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import { setContext } from 'svelte'
-
-  import i18n from '$lib/i18n/define'
 
   import PartsListView from './PartsListView.svelte'
 
