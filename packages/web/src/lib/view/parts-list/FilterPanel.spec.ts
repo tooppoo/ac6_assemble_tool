@@ -36,8 +36,8 @@ describe('FilterPanel', () => {
 
     it('フィルタが設定されている場合、フィルタ数を表示すること', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-        { property: 'price', operator: 'lte', value: 100000 },
+        { type: 'property', property: 'weight', operator: 'lte', value: 5000 },
+        { type: 'property', property: 'price', operator: 'lte', value: 100000 },
       ]
 
       render(FilterPanel, {
@@ -54,7 +54,7 @@ describe('FilterPanel', () => {
   describe('フィルタクリア機能', () => {
     it('クリアボタンが表示されること', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
+        { type: 'property', property: 'weight', operator: 'lte', value: 5000 },
       ]
 
       render(FilterPanel, {
@@ -71,7 +71,7 @@ describe('FilterPanel', () => {
 
     it('クリアボタンをクリックすると、onclearfiltersコールバックが呼ばれること', async () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
+        { type: 'property', property: 'weight', operator: 'lte', value: 5000 },
       ]
 
       let callbackFired = false
@@ -108,8 +108,8 @@ describe('FilterPanel', () => {
   describe('フィルタ条件の表示', () => {
     it('設定されたフィルタ条件が表示されること', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-        { property: 'price', operator: 'gte', value: 50000 },
+        { type: 'property', property: 'weight', operator: 'lte', value: 5000 },
+        { type: 'property', property: 'price', operator: 'gte', value: 50000 },
       ]
 
       render(FilterPanel, {
@@ -133,9 +133,9 @@ describe('FilterPanel', () => {
 
     it('演算子が正しく表示されること', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-        { property: 'price', operator: 'gte', value: 50000 },
-        { property: 'en_load', operator: 'eq', value: 1000 },
+        { type: 'property', property: 'weight', operator: 'lte', value: 5000 },
+        { type: 'property', property: 'price', operator: 'gte', value: 50000 },
+        { type: 'property', property: 'en_load', operator: 'eq', value: 1000 },
       ]
 
       render(FilterPanel, {
@@ -160,10 +160,10 @@ describe('FilterPanel', () => {
   describe('無効化されたフィルタの表示', () => {
     it('無効化されたフィルタが警告として表示されること', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
+        { type: 'property', property: 'weight', operator: 'lte', value: 5000 },
       ]
       const invalidatedFilters: Filter[] = [
-        { property: 'some_invalid_prop', operator: 'gte', value: 100 },
+        { type: 'property', property: 'some_invalid_prop', operator: 'gte', value: 100 },
       ]
 
       render(FilterPanel, {
@@ -180,7 +180,7 @@ describe('FilterPanel', () => {
 
     it('無効化されたフィルタがない場合、警告が表示されないこと', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
+        { type: 'property', property: 'weight', operator: 'lte', value: 5000 },
       ]
 
       render(FilterPanel, {
@@ -246,6 +246,7 @@ describe('FilterPanel', () => {
       // コールバックが呼ばれ、正しいフィルタが追加されることを確認
       expect(updatedFilters).toHaveLength(1)
       expect(updatedFilters[0]).toEqual({
+        type: 'property',
         property: 'weight',
         operator: 'lte',
         value: 5000,
@@ -291,16 +292,19 @@ describe('FilterPanel', () => {
       await fireEvent.click(addButton)
 
       // 値が数値型として保存されることを確認
-      expect(updatedFilters[0].value).toBe(5000)
-      expect(typeof updatedFilters[0].value).toBe('number')
+      expect(updatedFilters[0]).toHaveProperty('type', 'property')
+      if (updatedFilters[0].type === 'property') {
+        expect(updatedFilters[0].value).toBe(5000)
+        expect(typeof updatedFilters[0].value).toBe('number')
+      }
     })
   })
 
   describe('個別フィルタの削除', () => {
     it('各フィルタに削除ボタンが表示されること', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-        { property: 'price', operator: 'gte', value: 50000 },
+        { type: 'property', property: 'weight', operator: 'lte', value: 5000 },
+        { type: 'property', property: 'price', operator: 'gte', value: 50000 },
       ]
 
       render(FilterPanel, {
@@ -317,8 +321,8 @@ describe('FilterPanel', () => {
 
     it('削除ボタンをクリックすると、該当フィルタが削除されること', async () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-        { property: 'price', operator: 'gte', value: 50000 },
+        { type: 'property', property: 'weight', operator: 'lte', value: 5000 },
+        { type: 'property', property: 'price', operator: 'gte', value: 50000 },
       ]
 
       let updatedFilters: Filter[] = filters
@@ -340,6 +344,7 @@ describe('FilterPanel', () => {
       // 1つ目のフィルタが削除され、2つ目のフィルタのみ残ることを確認
       expect(updatedFilters).toHaveLength(1)
       expect(updatedFilters[0]).toEqual({
+        type: 'property',
         property: 'price',
         operator: 'gte',
         value: 50000,

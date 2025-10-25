@@ -10,9 +10,9 @@ describe('Filters', () => {
   describe('splitFiltersBySlot', () => {
     it('全スロット共通の属性は全て有効として返すこと', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-        { property: 'price', operator: 'lte', value: 100000 },
-        { property: 'en_load', operator: 'gte', value: 500 },
+        { type: 'property', property: 'weight', operator: 'lte', value: 5000 },
+        { type: 'property', property: 'price', operator: 'lte', value: 100000 },
+        { type: 'property', property: 'en_load', operator: 'gte', value: 500 },
       ]
 
       const result = splitFiltersBySlot(filters, 'rightArmUnit')
@@ -23,22 +23,22 @@ describe('Filters', () => {
 
     it('スロット切替時に共通属性が引き継がれること', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-        { property: 'price', operator: 'lte', value: 100000 },
+        { type: 'property', property: 'weight', operator: 'lte', value: 5000 },
+        { type: 'property', property: 'price', operator: 'lte', value: 100000 },
       ]
 
       const result = splitFiltersBySlot(filters, 'head')
 
       expect(result.valid).toHaveLength(2)
       expect(result.invalidated).toHaveLength(0)
-      expect(result.valid.map((f) => f.property)).toEqual(['weight', 'price'])
+      expect(result.valid.map((f) => f.type === 'property' ? f.property : '')).toEqual(['weight', 'price'])
     })
 
     it('将来のスロット固有属性に対応できる構造であること', () => {
       // 現時点では全属性が共通なので、無効化される条件は存在しない
       // しかし、将来スロット固有属性が追加された際に、この関数が対応できることを確認
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
+        { type: 'property', property: 'weight', operator: 'lte', value: 5000 },
       ]
 
       const result = splitFiltersBySlot(filters, 'legs')
@@ -68,7 +68,7 @@ describe('Filters', () => {
 
     it('単一フィルタ（lte）が正しく適用されること', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 2000 },
+        { type: 'property', property: 'weight', operator: 'lte', value: 2000 },
       ]
 
       const result = applyFilters(testParts, filters)
@@ -80,7 +80,7 @@ describe('Filters', () => {
 
     it('単一フィルタ（gte）が正しく適用されること', () => {
       const filters: Filter[] = [
-        { property: 'price', operator: 'gte', value: 75000 },
+        { type: 'property', property: 'price', operator: 'gte', value: 75000 },
       ]
 
       const result = applyFilters(testParts, filters)
@@ -92,8 +92,8 @@ describe('Filters', () => {
 
     it('複数フィルタがAND条件で適用されること', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'gte', value: 1500 },
-        { property: 'price', operator: 'lte', value: 80000 },
+        { type: 'property', property: 'weight', operator: 'gte', value: 1500 },
+        { type: 'property', property: 'price', operator: 'lte', value: 80000 },
       ]
 
       const result = applyFilters(testParts, filters)
@@ -105,7 +105,7 @@ describe('Filters', () => {
 
     it('属性未定義のパーツが除外されること', () => {
       const filters: Filter[] = [
-        { property: 'en_load', operator: 'gte', value: 100 },
+        { type: 'property', property: 'en_load', operator: 'gte', value: 100 },
       ]
 
       const result = applyFilters(testParts, filters)
@@ -117,7 +117,7 @@ describe('Filters', () => {
 
     it('等価フィルタ（eq）が正しく適用されること', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'eq', value: 2000 },
+        { type: 'property', property: 'weight', operator: 'eq', value: 2000 },
       ]
 
       const result = applyFilters(testParts, filters)
@@ -129,7 +129,7 @@ describe('Filters', () => {
 
     it('不等価フィルタ（ne）が正しく適用されること', () => {
       const filters: Filter[] = [
-        { property: 'name', operator: 'ne', value: 'Part A' },
+        { type: 'property', property: 'name', operator: 'ne', value: 'Part A' },
       ]
 
       const result = applyFilters(testParts, filters)
@@ -141,7 +141,7 @@ describe('Filters', () => {
 
     it('全てのフィルタ条件を満たさない場合は空配列を返すこと', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lt', value: 500 }, // 全てのパーツが500以上
+        { type: 'property', property: 'weight', operator: 'lt', value: 500 }, // 全てのパーツが500以上
       ]
 
       const result = applyFilters(testParts, filters)
@@ -151,7 +151,7 @@ describe('Filters', () => {
 
     it('lt演算子が正しく機能すること', () => {
       const filters: Filter[] = [
-        { property: 'price', operator: 'lt', value: 60000 },
+        { type: 'property', property: 'price', operator: 'lt', value: 60000 },
       ]
 
       const result = applyFilters(testParts, filters)
@@ -163,7 +163,7 @@ describe('Filters', () => {
 
     it('gt演算子が正しく機能すること', () => {
       const filters: Filter[] = [
-        { property: 'en_load', operator: 'gt', value: 150 },
+        { type: 'property', property: 'en_load', operator: 'gt', value: 150 },
       ]
 
       const result = applyFilters(testParts, filters)
