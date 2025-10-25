@@ -559,6 +559,95 @@ interface FilterPanelEvents {
 - `filterChange` イベントが発火され、親コンポーネントがフィルタを適用する
 - 無効化されたフィルタが存在する場合、UIで明示される（エラー扱いはしない）
 
+##### フィルタ項目の実装詳細
+
+**名前フィルタ（name）**:
+
+```typescript
+interface NameFilter {
+  type: 'name'
+  mode: 'exact' | 'contains' | 'not_contains' // 検索モード
+  value: string // 検索テキスト
+}
+
+// 実装例
+function applyNameFilter(parts: ACParts[], filter: NameFilter): ACParts[] {
+  const normalizedValue = filter.value.toLowerCase()
+
+  return parts.filter(part => {
+    const normalizedName = part.name.toLowerCase()
+
+    switch (filter.mode) {
+      case 'exact':
+        return normalizedName === normalizedValue
+      case 'contains':
+        return normalizedName.includes(normalizedValue)
+      case 'not_contains':
+        return !normalizedName.includes(normalizedValue)
+    }
+  })
+}
+```
+
+**UI構成**:
+- テキスト入力フィールド（Bootstrap Input）
+- 検索モード選択ドロップダウン（Bootstrap Select）
+- デフォルトモードは「含む」（contains）
+
+**メーカーフィルタ（manufacture）**:
+
+```typescript
+interface ManufactureFilter {
+  type: 'manufacture'
+  values: string[] // 選択されたメーカーのリスト（複数可）
+}
+
+// 実装例
+function applyManufactureFilter(parts: ACParts[], filter: ManufactureFilter): ACParts[] {
+  if (filter.values.length === 0) {
+    return parts // 未選択時は全パーツを表示
+  }
+
+  return parts.filter(part => filter.values.includes(part.manufacture))
+}
+```
+
+**UI構成**:
+- チェックボックスリスト（Bootstrap Form Check）またはマルチセレクトドロップダウン
+- 選択肢は現在のスロットのパーツに存在するメーカーのみを動的に生成
+- OR条件（いずれかのメーカーに該当すれば表示）
+
+**カテゴリフィルタ（category）**:
+
+```typescript
+interface CategoryFilter {
+  type: 'category'
+  values: string[] // 選択されたカテゴリのリスト（複数可）
+}
+
+// 実装例
+function applyCategoryFilter(parts: ACParts[], filter: CategoryFilter): ACParts[] {
+  if (filter.values.length === 0) {
+    return parts // 未選択時は全パーツを表示
+  }
+
+  return parts.filter(part => filter.values.includes(part.category))
+}
+```
+
+**UI構成**:
+- チェックボックスリスト（Bootstrap Form Check）またはマルチセレクトドロップダウン
+- 選択肢は現在のスロットのパーツに存在するカテゴリのみを動的に生成
+- OR条件（いずれかのカテゴリに該当すれば表示）
+
+**分類フィルタ（classification）**:
+
+分類はスロット選択によって暗黙的に決定されるため、フィルタUIとして提供しない。
+
+**理由**:
+- スロット選択（例: arms）により分類（例: ARM UNIT）は自動的に確定する
+- 追加のフィルタは冗長であり、ユーザーを混乱させる可能性がある
+
 #### PartsGrid / PartsList
 
 ##### Responsibility & Boundaries
@@ -785,6 +874,9 @@ type Filter =
   | PropertyRangeFilter<number>
   | PropertyEqualityFilter<string>
   | EnableFilter
+  | NameFilter
+  | ManufactureFilter
+  | CategoryFilter
 
 interface PropertyRangeFilter<T> {
   type: 'range'
@@ -802,6 +894,22 @@ interface PropertyEqualityFilter<T> {
 interface EnableFilter {
   type: 'enable'
   enabled: boolean
+}
+
+interface NameFilter {
+  type: 'name'
+  mode: 'exact' | 'contains' | 'not_contains'
+  value: string
+}
+
+interface ManufactureFilter {
+  type: 'manufacture'
+  values: string[] // 選択されたメーカーのリスト（複数可）
+}
+
+interface CategoryFilter {
+  type: 'category'
+  values: string[] // 選択されたカテゴリのリスト（複数可）
 }
 ```
 
