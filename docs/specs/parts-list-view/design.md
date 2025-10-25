@@ -58,7 +58,7 @@
 
 **保持すべき統合ポイント**:
 
-- フィルタリングロジック: `PartsFilterSet` クラスと `applyFilter()` メソッドを再利用
+- ~~フィルタリングロジック: `PartsFilterSet` クラスと `applyFilter()` メソッドを再利用~~ → **更新**: Strategy Patternベースの新しいフィルタアーキテクチャ（filters-core.ts + filters-application.ts）を実装（2025-10-25）
 - パーツデータ構造: `Candidates` 型（スロットごとのパーツ配列）を踏襲
 - URL シリアライゼーション: `as-query-v2.ts` のパターンを拡張
 - IndexedDB: Dexie による永続化パターンを継承
@@ -169,42 +169,74 @@ graph TB
 
 ### Key Design Decisions
 
-#### Decision 1: フィルタロジックの再利用 vs 新規実装
+#### Decision 1: フィルタアーキテクチャのリファクタリング
 
-**Context**: 既存のアセンブリページには `PartsFilterSet` クラスによるフィルタリングロジックが実装されているが、パーツ一覧ページでは異なる表示形態が必要。
+**Context**: 既存のアセンブリページには `PartsFilterSet` クラスによるフィルタリングロジックが実装されていたが、パーツ一覧ページでは以下の要件が追加された：
+- operandの国際化対応（i18n）
+- URL serialization/deserializationの容易化
+- フィルタ条件の宣言的な記述
 
-**Alternatives**:
+**Initial Approach (設計時)**: `PartsFilterSet` を再利用し、UIのみ新規作成
 
-1. **完全新規実装**: パーツ一覧専用のフィルタロジックを新規作成
-2. **フィルタロジック再利用 + UI新規作成**: 既存の `PartsFilterSet` を再利用し、UIのみ新規作成
-3. **フィルタロジック・UI両方再利用**: 既存のフィルタUIをそのまま使用
+**Refactored Approach (2025-10-25実装 - コミット 0e51ac474fc)**:
+**Strategy Pattern + Value Object Patternによる新しいフィルタアーキテクチャ**
 
-**Selected Approach**: **フィルタロジック再利用 + UI新規作成**
+```
+packages/web/src/lib/view/parts-list/
+├── filters-core.ts         # コアロジック層（Strategy Pattern）
+├── filters-application.ts  # アプリケーション層（builder functions + i18n）
+└── state-serializer.ts     # シリアライゼーション（Filter型対応）
+```
 
-既存の `PartsFilterSet` クラスと `applyFilter()` メソッドを再利用し、パーツ一覧ページ専用のUIコンポーネントを新規作成する。
+**新しいアーキテクチャの特徴**:
+
+1. **filters-core.ts** (209行追加):
+   - `FilterOperand<T>`: 演算子をValue Objectとして定義
+   - `Filter`: operandオブジェクトを持つ統一的な構造
+   - `applyFilters()`: 複数フィルタのAND適用
+   - `numericOperands()`, `stringOperands()`, `selectAnyOperand()`: operandファクトリー
+
+2. **filters-application.ts** (115行追加):
+   - `buildPropertyFilter()`, `buildNameFilter()`, `buildManufactureFilter()`, `buildCategoryFilter()`: Filterビルダー
+   - `translateOperand()`, `translateProperty()`, `translateManufacturer()`, `translateCategory()`: i18n関数
+   - アプリケーション固有のロジックと表示用文字列生成
+
+3. **i18n対応の強化**:
+   - `en/filter/operand.ts`, `ja/filter/operand.ts`: operand表示名の国際化
+   - フィルタ種類名（`filter-type-*`）の国際化
+
+**Code Example**:
 
 ```typescript
-// 既存のフィルタロジック（再利用）
-import { PartsFilterSet } from '@ac6_assemble_tool/core/assembly/filter/filters'
+// operandの定義（filters-core.ts）
+const ltOperand = numericOperand('lt', (left, right) => left < right)
 
-// 新規のUIコンポーネント
-<FilterPanel
-  slot={selectedSlot}
-  filterSet={$filterSet}
-  on:filterChange={handleFilterChange}
-/>
+// Filterオブジェクトの構築（filters-application.ts）
+const filter = buildPropertyFilter('weight', ltOperand, 5000)
+// => { operand: {...}, property: 'weight', value: 5000, stringify: Function, serialize: Function }
+
+// フィルタ適用（filters-core.ts）
+const filtered = applyFilters(parts, [filter])
 ```
 
 **Rationale**:
 
-- **コード重複の排除**: フィルタリングロジックは既にテスト済みで安定しており、再利用することでバグリスクを低減
-- **保守性の向上**: フィルタリングルールの変更時、1箇所の修正で両ページに反映される
-- **UI柔軟性の確保**: パーツ一覧ページ特有のUI要件（スロット文脈の明示、0件時の表示など）に対応可能
+- **Strategy Pattern**: operandがフィルタリングロジックをカプセル化し、演算子追加が容易
+- **Value Object Pattern**: operandが不変オブジェクトとして振る舞い、比較可能
+- **i18n対応**: operand IDをキーに、表示名を国際化リソースから取得
+- **URL Serialization**: `Filter.serialize()` メソッドで簡単にURL化可能
+- **宣言的な記述**: builder関数でFilterオブジェクトを構築し、意図が明確
 
 **Trade-offs**:
 
-- **獲得**: コード重複の排除、テスト済みロジックの再利用、保守性の向上
-- **犠牲**: UIコンポーネントの新規作成コスト（ただし、既存パターンを参考にできるため限定的）
+- **獲得**:
+  - i18n完全対応（operand, property, manufacturer, category）
+  - URL serialization/deserializationの簡素化
+  - Strategy Patternによる拡張性向上
+  - 宣言的なフィルタ記述
+- **犠牲**:
+  - PartsFilterSetからの移行コスト（ただし、1回限りの作業）
+  - 新しいFilter型への既存テストの適応が必要
 
 #### Decision 2: お気に入りの管理方法
 
@@ -924,19 +956,19 @@ type DeserializeError =
 
 ### Domain Layer (Core Package)
 
-#### PartsFilterSet (既存コンポーネント - 再利用)
+#### Filter Architecture (2025-10-25実装 - コミット 0e51ac474fc)
 
 ##### Responsibility & Boundaries
 
-- **Primary Responsibility**: パーツのフィルタリングロジックを提供（既存のアセンブリページで使用中）
-- **Domain Boundary**: ドメイン層（`/packages/core/src/assembly/filter/`）
+- **Primary Responsibility**: パーツのフィルタリングロジックを提供（Strategy Pattern + Value Object Pattern）
+- **Domain Boundary**: プレゼンテーション層（`/packages/web/src/lib/view/parts-list/`）
 - **Data Ownership**: フィルタ条件の定義と適用ロジック
 - **Transaction Boundary**: なし（純粋関数）
 
 ##### Dependencies
 
-- **Inbound**: `PartsListView`, `FilterPanel`, アセンブリページ
-- **Outbound**: `Candidates` (from `@ac6_assemble_tool/parts`)
+- **Inbound**: `PartsListView`, `FilterPanel`
+- **Outbound**: `Candidates` (from `@ac6_assemble_tool/parts`), i18n resources
 - **External**: なし
 
 ##### Contract Definition
@@ -944,83 +976,81 @@ type DeserializeError =
 **Service Interface**:
 
 ```typescript
-// filters.ts (既存)
-class PartsFilterSet {
-  // フィルタ適用
-  applyFilter<T extends ACParts>(
-    parts: T[],
-    filters: Filter[]
-  ): T[]
-
-  // スロットで有効な属性取得
-  getValidProperties(slot: SlotType): PropertyKey[]
-
-  // フィルタ追加
-  addFilter(filter: Filter): PartsFilterSet
-
-  // フィルタ削除
-  removeFilter(filterId: string): PartsFilterSet
-
-  // フィルタクリア
-  clearFilters(): PartsFilterSet
+// filters-core.ts (Strategy Pattern + Value Object)
+// FilterOperand: 演算子のValue Object
+interface FilterOperand<T extends DataType = DataType> {
+  readonly id: string
+  readonly dataType: T
+  test(left: unknown, right: unknown): boolean
+  equals(other: FilterOperand): boolean
 }
 
-type Filter =
-  | PropertyRangeFilter<number>
-  | PropertyEqualityFilter<string>
-  | EnableFilter
-  | NameFilter
-  | ManufactureFilter
-  | CategoryFilter
-
-interface PropertyRangeFilter<T> {
-  type: 'range'
-  property: keyof ACParts
-  min?: T
-  max?: T
+// Filter: operandを持つ統一的な構造
+interface Filter {
+  readonly operand: FilterOperand
+  readonly property: keyof ACParts
+  readonly value: unknown
+  stringify(i18n: I18Next): string
+  serialize(): string
 }
 
-interface PropertyEqualityFilter<T> {
-  type: 'equality'
-  property: keyof ACParts
-  value: T
-}
+// Operandファクトリー関数
+function numericOperands(): [FilterOperand<'numeric'>, ...FilterOperand<'numeric'>[]]
+function stringOperands(): [FilterOperand<'string'>, ...FilterOperand<'string'>[]]
+function selectAnyOperand(): FilterOperand<'array'>
 
-interface EnableFilter {
-  type: 'enable'
-  enabled: boolean
-}
+// フィルタ適用関数
+function applyFilters<T extends Record<string, unknown>>(
+  items: readonly T[],
+  filters: Filter[]
+): readonly T[]
 
-interface NameFilter {
-  type: 'name'
-  mode: 'exact' | 'contains' | 'not_contains'
+// filters-application.ts (Builder functions + i18n)
+function buildPropertyFilter(
+  property: keyof ACParts,
+  operand: FilterOperand<'numeric'>,
+  value: number
+): Filter
+
+function buildNameFilter(
+  operand: FilterOperand<'string'>,
   value: string
-}
+): Filter
 
-interface ManufactureFilter {
-  type: 'manufacture'
-  values: string[] // 選択されたメーカーのリスト（複数可）
-}
+function buildManufactureFilter(
+  operand: FilterOperand<'array'>,
+  value: readonly string[]
+): Filter
 
-interface CategoryFilter {
-  type: 'category'
-  values: string[] // 選択されたカテゴリのリスト（複数可）
-}
+function buildCategoryFilter(
+  operand: FilterOperand<'array'>,
+  value: readonly string[]
+): Filter
+
+// i18n関数
+function translateOperand(operand: FilterOperand, i18n: I18Next): string
+function translateProperty(property: keyof ACParts, i18n: I18Next): string
+function translateManufacturer(manufacturer: string, i18n: I18Next): string
+function translateCategory(category: string, i18n: I18Next): string
 ```
 
 **Preconditions**:
 
-- `parts` が有効な `ACParts` 配列であること
+- `items` が有効な `ACParts` 配列であること
 - `filters` が有効な `Filter` 配列であること
+- builder関数呼び出し時、operandが適切な型（numeric/string/array）であること
 
 **Postconditions**:
 
 - フィルタ条件を満たすパーツのみが返される
 - 属性を持たないパーツはフィルタ対象外として除外される
+- Filter objectは`stringify()`と`serialize()`メソッドを持つ
 
 **Invariants**:
 
 - フィルタ適用は純粋関数であり、元の配列を変更しない
+- FilterOperandは不変オブジェクトであり、比較可能
+- operand IDは一意であり、i18nリソースのキーとして使用可能
 
 ## Data Models
 

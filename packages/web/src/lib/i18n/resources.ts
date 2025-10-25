@@ -5,6 +5,7 @@ import { enCategory } from './locales/en/category'
 import { enClassification } from './locales/en/classification'
 import { enError } from './locales/en/error'
 import { enFilter } from './locales/en/filter'
+import { enFilterOperand } from './locales/en/filter/operand'
 import { enLock } from './locales/en/lock'
 import { enManufactures } from './locales/en/manufactures'
 import { enPageIndex } from './locales/en/pages'
@@ -17,6 +18,7 @@ import { jaCategory } from './locales/ja/category'
 import { jaClassification } from './locales/ja/classification'
 import { jaError } from './locales/ja/error'
 import { jaFilter } from './locales/ja/filter'
+import { jaFilterOperand } from './locales/ja/filter/operand'
 import { jaLock } from './locales/ja/lock'
 import { jaManufactures } from './locales/ja/manufactures'
 import { jaPageIndex } from './locales/ja/pages'
@@ -37,6 +39,7 @@ export const resources = {
     category: jaCategory,
     attack_type: jaAttackType,
     'page/index': jaPageIndex,
+    'filter/operand': jaFilterOperand,
     error: jaError,
     share: jaShare,
     assembly_store: jaAssemblyStore,
@@ -54,6 +57,7 @@ export const resources = {
     category: enCategory,
     attack_type: enAttackType,
     'page/index': enPageIndex,
+    'filter/operand': enFilterOperand,
     error: enError,
     share: enShare,
     assembly_store: enAssemblyStore,

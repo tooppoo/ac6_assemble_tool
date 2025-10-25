@@ -63,6 +63,12 @@
   - フィルタ条件の追加・削除・クリア機能を実装
   - スロット切替で無効化された条件をUIで明示（エラー扱いはしない）
   - 折りたたみ機能を追加してスクロール量を調整可能に
+  - **修正完了 (2025-10-25)**: operandバインディング問題の修正
+    - Svelteの`<select>`要素でoperandオブジェクトを直接バインドできない問題に対応
+    - operand IDをバインドし、`handleAddFilter`時にIDからoperandオブジェクトを取得する方式に変更
+    - FilterPanel.svelte: `propertyOperand` → `propertyOperandId`, `nameOperand` → `nameOperandId`
+  - **修正完了 (2025-10-25)**: i18nコンテキスト問題の修正
+    - SlotSelector.svelte: `import i18n from '...'` を `getContext<I18NextStore>('i18n')` に変更
   - _Requirements: 2.1, 2.2, 9.1_
 
 - [x] 4.3 名前・メーカー・カテゴリフィルタの詳細仕様を実装
@@ -154,12 +160,14 @@
   - _Requirements: Usability.1_
 
 - [ ] 10. テストを実装
-- [ ] 10.1 ユニットテストを実装
-  - お気に入り追加・削除・取得のテスト
-  - 状態シリアライゼーション・デシリアライゼーションのテスト
-  - スロット切替時の条件引き継ぎロジックのテスト
-  - フィルタ適用ロジックのテスト
-  - 並び替えロジックのテスト
+- [x] 10.1 ユニットテストを実装
+  - [x] お気に入り追加・削除・取得のテスト（favorite-store.spec.ts）
+  - [x] 状態シリアライゼーション・デシリアライゼーションのテスト（state-serializer.spec.ts: 29/29テスト成功）
+  - [x] スロット切替時の条件引き継ぎロジックのテスト（PartsListView.spec.ts）
+  - [x] フィルタ適用ロジックのテスト（filters-core.spec.ts）
+  - [ ] 並び替えロジックのテスト（未実装）
+  - [x] **残課題**: FilterPanel.spec.tsとSlotSelector.spec.tsのi18nコンテキスト対応と新Filter型への移行
+    - **修正完了 (2025-10-26)**: 2コンポーネントのユニットテストを実装仕様に合わせて更新（i18nコンテキスト注入、新Filter型のビルダー活用）
   - _Requirements: Testing Strategy Unit Tests_
 
 - [ ] 10.2 統合テストを実装

@@ -6,11 +6,15 @@
    * スロット切替イベントを親コンポーネントに通知します。
    */
 
-  import i18n from '$lib/i18n/define'
+  import type { I18NextStore } from '$lib/i18n/define'
 
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
   import { CANDIDATES_KEYS } from '@ac6_assemble_tool/parts/types/candidates'
   import { Button, Collapse } from '@sveltestrap/sveltestrap'
+  import { getContext } from 'svelte'
+
+  // i18n
+  const i18n = getContext<I18NextStore>('i18n')
 
   // Props
   interface Props {

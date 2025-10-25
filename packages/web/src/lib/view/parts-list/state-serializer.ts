@@ -1,3 +1,4 @@
+import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 import {
   type CandidatesKey,
   CANDIDATES_KEYS,
@@ -6,7 +7,8 @@ import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 import * as LZString from 'lz-string'
 
-import { type Filter, isValidFilterProperty } from './filters'
+import { buildCategoryFilter, buildManufactureFilter, buildNameFilter, buildPropertyFilter } from './filters-application'
+import { numericOperands, selectAnyOperand, stringOperands, type Filter } from './filters-core'
 
 /**
  * 表示モード（grid/list）
@@ -14,7 +16,7 @@ import { type Filter, isValidFilterProperty } from './filters'
 export type ViewMode = 'grid' | 'list'
 
 // Filterは filters.ts からエクスポート
-export type { Filter } from './filters'
+export type { Filter } from './filters-core'
 
 /**
  * 並び替え順序
@@ -73,38 +75,7 @@ export function serializeToURL(state: SharedState): URLSearchParams {
 
   // フィルタ条件（新しい型に対応）
   for (const filter of state.filters) {
-    let filterStr: string
-
-    switch (filter.type) {
-      case 'property':
-        // Format: property:propertyName:operator:value
-        filterStr = `property:${filter.property}:${filter.operator}:${filter.value}`
-        break
-
-      case 'name':
-        // Format: name:mode:value
-        filterStr = `name:${filter.mode}:${filter.value}`
-        break
-
-      case 'manufacture':
-        // Format: manufacture:value1,value2,value3
-        filterStr = `manufacture:${filter.values.join(',')}`
-        break
-
-      case 'category':
-        // Format: category:value1,value2,value3
-        filterStr = `category:${filter.values.join(',')}`
-        break
-
-      default:
-        // TypeScriptの exhaustive check
-        const _exhaustive: never = filter
-        void _exhaustive // 明示的に値を使わないことを示す
-        logger.warn('Unknown filter type in serializeToURL', { filter })
-        continue
-    }
-
-    params.append('filter', filterStr)
+    params.append('filter', filter.serialize())
   }
 
   // 並び替え
@@ -219,19 +190,15 @@ export function loadViewMode(): ViewMode {
 function parseFilter(filterParam: string): Filter | null {
   const parts = filterParam.split(':')
 
-  if (parts.length < 2) {
+  // Format: dataType:propertyName:operator:value
+  if (parts.length !== 4) {
     return null
   }
 
-  const filterType = parts[0]
+  const dataType = parts[0]
 
-  switch (filterType) {
-    case 'property': {
-      // Format: property:propertyName:operator:value
-      if (parts.length !== 4) {
-        return null
-      }
-
+  switch (dataType) {
+    case 'numeric': {
       const [, property, operator, valueStr] = parts
 
       // propertyの検証: 無効なプロパティはスキップ
@@ -240,34 +207,38 @@ function parseFilter(filterParam: string): Filter | null {
       }
 
       // operatorの検証
-      const validOperators = ['lt', 'lte', 'gt', 'gte', 'eq', 'ne'] as const
-      if (!validOperators.includes(operator as (typeof validOperators)[number])) {
+      const validOperators = ['lt', 'lte', 'gt', 'gte', 'eq', 'ne']
+      if (!validOperators.includes(operator)) {
+        return null
+      }
+      const operand = numericOperands().find((op) => op.id === operator)
+      if (!operand) {
         return null
       }
 
-      // 数値変換を試みる
+      // valueの検証
       const numValue = Number(valueStr)
-      const value = Number.isNaN(numValue) ? valueStr : numValue
-
-      return {
-        type: 'property',
-        property,
-        operator: operator as (typeof validOperators)[number],
-        value,
+      if (isNaN(numValue)) {
+        return null
       }
+
+      return buildPropertyFilter(
+        property as keyof ACParts,
+        operand,
+        numValue,
+      )
     }
 
-    case 'name': {
-      // Format: name:mode:value
-      if (parts.length !== 3) {
+    case 'string': {
+      const [, , operator, value] = parts
+
+      // operatorの検証
+      const validOperators = ['exact', 'contain', 'not_contain']
+      if (!validOperators.includes(operator)) {
         return null
       }
-
-      const [, mode, value] = parts
-
-      // modeの検証
-      const validModes = ['exact', 'contains', 'not_contains'] as const
-      if (!validModes.includes(mode as (typeof validModes)[number])) {
+      const operand = stringOperands().find((op) => op.id === operator)
+      if (!operand) {
         return null
       }
 
@@ -275,61 +246,40 @@ function parseFilter(filterParam: string): Filter | null {
         return null
       }
 
-      return {
-        type: 'name',
-        mode: mode as (typeof validModes)[number],
+      return buildNameFilter(
+        operand,
         value,
-      }
+      )
     }
 
-    case 'manufacture': {
-      // Format: manufacture:value1,value2,value3
-      if (parts.length !== 2) {
-        return null
-      }
+    case 'array': {
+      // Format1: array:manufacture:operand:value1,value2,value3
+      // Format2: array:category:operand:value1,value2,value3
 
-      const [, valuesStr] = parts
+      const [, property, , valuesStr] = parts
 
+      // valuesの検証
       if (!valuesStr || valuesStr.trim() === '') {
         return null
       }
-
       const values = valuesStr.split(',').filter((v) => v.trim() !== '')
-
       if (values.length === 0) {
         return null
       }
 
-      return {
-        type: 'manufacture',
-        values,
+      switch (property) {
+        case 'manufacture': {
+          return buildManufactureFilter(selectAnyOperand(), values)
+        }
+        case 'category': {
+          return buildCategoryFilter(selectAnyOperand(), values)
+        }
+        default:
+          // 未知のフィルタタイプ、またはレガシー形式
+          logger.warn('Unknown or legacy filter type', { filterParam })
+          return null
       }
     }
-
-    case 'category': {
-      // Format: category:value1,value2,value3
-      if (parts.length !== 2) {
-        return null
-      }
-
-      const [, valuesStr] = parts
-
-      if (!valuesStr || valuesStr.trim() === '') {
-        return null
-      }
-
-      const values = valuesStr.split(',').filter((v) => v.trim() !== '')
-
-      if (values.length === 0) {
-        return null
-      }
-
-      return {
-        type: 'category',
-        values,
-      }
-    }
-
     default:
       // 未知のフィルタタイプ、またはレガシー形式
       logger.warn('Unknown or legacy filter type', { filterParam })
@@ -491,4 +441,24 @@ export function createDefaultFiltersPerSlot(): FiltersPerSlot {
     defaults[slot] = []
   }
   return defaults
+}
+
+/**
+ * 有効なフィルタプロパティ一覧
+ * 全パーツ共通の基本プロパティのみを許可
+ */
+const VALID_FILTER_PROPERTIES: ReadonlySet<string> = new Set([
+  'price',
+  'weight',
+  'en_load',
+  'name',
+  'classification',
+  'manufacture',
+  'category',
+])
+/**
+ * フィルタプロパティが有効かどうかを検証
+ */
+function isValidFilterProperty(property: string): boolean {
+  return VALID_FILTER_PROPERTIES.has(property)
 }

@@ -12,7 +12,7 @@
   import { Result } from '@praha/byethrow'
 
   import FilterPanel from './FilterPanel.svelte'
-  import { applyFilters } from './filters'
+  import { applyFilters } from './filters-core'
   import PartsGrid from './PartsGrid.svelte'
   import SlotSelector from './SlotSelector.svelte'
   import {
@@ -20,8 +20,6 @@
     serializeToURL,
     saveViewMode,
     loadViewMode,
-    serializeFiltersPerSlotToURL,
-    deserializeFiltersPerSlotFromURL,
     saveFiltersPerSlotToLocalStorage,
     loadFiltersPerSlotFromLocalStorage,
     createDefaultFiltersPerSlot,
@@ -64,10 +62,13 @@
     browser ? loadFiltersPerSlotFromLocalStorage() ?? createDefaultFiltersPerSlot() : createDefaultFiltersPerSlot()
   )
 
+  const initialSlot = initialState?.slot ?? 'rightArmUnit'
+  const initialFiltersForSlot = initialState?.filters ?? filtersPerSlot[initialSlot] ?? []
+
   // 状態管理（Svelte 5 runes）
-  let currentSlot = $state<CandidatesKey>(initialState?.slot ?? 'rightArmUnit')
+  let currentSlot = $state<CandidatesKey>(initialSlot)
   // filtersは現在のスロットのフィルタ状態を反映（初期値はURL or LocalStorage）
-  let filters = $state<Filter[]>(initialState?.filters ?? filtersPerSlot[currentSlot] ?? [])
+  let filters = $state<Filter[]>(initialFiltersForSlot)
   let sortKey = $state<string | null>(initialState?.sortKey ?? null)
   let sortOrder = $state<'asc' | 'desc' | null>(initialState?.sortOrder ?? null)
   let viewMode = $state<ViewMode>(loadViewMode())

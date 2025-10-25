@@ -39,5 +39,7 @@ export const jaAssembly = {
 
   qbEnConsumption: 'QB消費EN',
 
+  price: '価格',
+
   coam: '総COAM',
 }

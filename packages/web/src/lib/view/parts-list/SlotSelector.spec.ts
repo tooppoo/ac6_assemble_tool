@@ -8,20 +8,32 @@
  * - i18nでスロット名が翻訳されること
  */
 
+import i18n from '$lib/i18n/define'
+
 import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { render, screen, fireEvent } from '@testing-library/svelte'
 import { describe, it, expect } from 'vitest'
 
 import SlotSelector from './SlotSelector.svelte'
 
+type SlotSelectorProps = {
+  currentSlot: CandidatesKey
+  onslotchange?: (event: CustomEvent<{ slot: CandidatesKey }>) => void
+}
+
+const renderSlotSelector = (props?: Partial<SlotSelectorProps>) =>
+  render(SlotSelector, {
+    props: {
+      currentSlot: props?.currentSlot ?? ('rightArmUnit' as CandidatesKey),
+      onslotchange: props?.onslotchange,
+    },
+    context: new Map([['i18n', i18n]]),
+  })
+
 describe('SlotSelector コンポーネント', () => {
   describe('スロット表示', () => {
     it('12種類のスロットボタンが表示されること', () => {
-      render(SlotSelector, {
-        props: {
-          currentSlot: 'rightArmUnit' as CandidatesKey,
-        },
-      })
+      renderSlotSelector()
 
       // 12種類のスロットが存在することを確認
       // すべてのボタンが表示されていることを確認（スロット選択12個 + 折りたたみ1個 = 13個）
@@ -50,11 +62,7 @@ describe('SlotSelector コンポーネント', () => {
     })
 
     it('選択中のスロットがactive状態で表示されること', () => {
-      render(SlotSelector, {
-        props: {
-          currentSlot: 'rightArmUnit' as CandidatesKey,
-        },
-      })
+      renderSlotSelector()
 
       // 選択中のスロット（rightArmUnit）がprimaryカラーで表示されることを確認
       const rightArmButton = screen.getByText(/RIGHT ARM UNIT|右腕武器/i)
@@ -63,11 +71,7 @@ describe('SlotSelector コンポーネント', () => {
     })
 
     it('選択されていないスロットがactive状態でないこと', () => {
-      render(SlotSelector, {
-        props: {
-          currentSlot: 'rightArmUnit' as CandidatesKey,
-        },
-      })
+      renderSlotSelector()
 
       // 選択されていないスロット（head）がoutline-secondaryカラーで表示されることを確認
       const headButton = screen.getByText(/^HEAD$|頭部/)
@@ -80,12 +84,9 @@ describe('SlotSelector コンポーネント', () => {
     it('スロットをクリックしたときにonslotchangeコールバックが呼ばれること', async () => {
       let selectedSlot: CandidatesKey | null = null
 
-      render(SlotSelector, {
-        props: {
-          currentSlot: 'rightArmUnit' as CandidatesKey,
-          onslotchange: (event: CustomEvent<{ slot: CandidatesKey }>) => {
-            selectedSlot = event.detail.slot
-          },
+      renderSlotSelector({
+        onslotchange: (event: CustomEvent<{ slot: CandidatesKey }>) => {
+          selectedSlot = event.detail.slot
         },
       })
 
@@ -100,12 +101,9 @@ describe('SlotSelector コンポーネント', () => {
     it('現在選択中のスロットをクリックしてもコールバックは呼ばれること', async () => {
       let callbackCalled = false
 
-      render(SlotSelector, {
-        props: {
-          currentSlot: 'rightArmUnit' as CandidatesKey,
-          onslotchange: () => {
-            callbackCalled = true
-          },
+      renderSlotSelector({
+        onslotchange: () => {
+          callbackCalled = true
         },
       })
 
@@ -120,11 +118,7 @@ describe('SlotSelector コンポーネント', () => {
 
   describe('モバイル対応', () => {
     it('すべてのスロットボタンにtypeがbuttonであること', () => {
-      render(SlotSelector, {
-        props: {
-          currentSlot: 'rightArmUnit' as CandidatesKey,
-        },
-      })
+      renderSlotSelector()
 
       // すべてのスロットボタンがbutton要素であることを確認（スロット選択12個 + 折りたたみ1個 = 13個）
       const buttons = screen.getAllByRole('button')
