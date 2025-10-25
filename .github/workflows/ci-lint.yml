@@ -23,7 +23,7 @@ jobs:
       # setup
       - uses: actions/checkout@master
         with:
-          ref: ${{ github.head_ref }}  # PRのソースブランチをチェックアウト
+          ref: ${{ github.head_ref }} # PRのソースブランチをチェックアウト
       - name: Setup pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
@@ -45,7 +45,7 @@ jobs:
             git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git config --local user.name "github-actions[bot]"
             git add .
-            git commit -m "docs: markdownファイルのフォーマット修正
+            git commit -m "chore: fix lint
 
             CIによる自動コミット"
             git push
