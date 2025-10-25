@@ -57,12 +57,39 @@ export function serializeToURL(state: SharedState): URLSearchParams {
   // スロット
   params.set('slot', state.slot)
 
-  // フィルタ条件
+  // フィルタ条件（新しい型に対応）
   for (const filter of state.filters) {
-    params.append(
-      'filter',
-      `${filter.property}:${filter.operator}:${filter.value}`,
-    )
+    let filterStr: string
+
+    switch (filter.type) {
+      case 'property':
+        // Format: property:propertyName:operator:value
+        filterStr = `property:${filter.property}:${filter.operator}:${filter.value}`
+        break
+
+      case 'name':
+        // Format: name:mode:value
+        filterStr = `name:${filter.mode}:${filter.value}`
+        break
+
+      case 'manufacture':
+        // Format: manufacture:value1,value2,value3
+        filterStr = `manufacture:${filter.values.join(',')}`
+        break
+
+      case 'category':
+        // Format: category:value1,value2,value3
+        filterStr = `category:${filter.values.join(',')}`
+        break
+
+      default:
+        // TypeScriptの exhaustive check
+        const _exhaustive: never = filter
+        logger.warn('Unknown filter type in serializeToURL', { filter })
+        continue
+    }
+
+    params.append('filter', filterStr)
   }
 
   // 並び替え
@@ -172,43 +199,126 @@ export function loadViewMode(): ViewMode {
 }
 
 /**
- * フィルタパラメータをパース
+ * フィルタパラメータをパース（新しい型に対応）
  */
 function parseFilter(filterParam: string): Filter | null {
   const parts = filterParam.split(':')
 
-  if (parts.length !== 3) {
+  if (parts.length < 2) {
     return null
   }
 
-  const [property, operator, valueStr] = parts
+  const filterType = parts[0]
 
-  // propertyの検証: 無効なプロパティはスキップ
-  if (!isValidFilterProperty(property)) {
-    return null
-  }
+  switch (filterType) {
+    case 'property': {
+      // Format: property:propertyName:operator:value
+      if (parts.length !== 4) {
+        return null
+      }
 
-  // operatorの検証
-  const validOperators: Filter['operator'][] = [
-    'lt',
-    'lte',
-    'gt',
-    'gte',
-    'eq',
-    'ne',
-  ]
-  if (!validOperators.includes(operator as Filter['operator'])) {
-    return null
-  }
+      const [, property, operator, valueStr] = parts
 
-  // 数値変換を試みる
-  const numValue = Number(valueStr)
-  const value = Number.isNaN(numValue) ? valueStr : numValue
+      // propertyの検証: 無効なプロパティはスキップ
+      if (!isValidFilterProperty(property)) {
+        return null
+      }
 
-  return {
-    property,
-    operator: operator as Filter['operator'],
-    value,
+      // operatorの検証
+      const validOperators = ['lt', 'lte', 'gt', 'gte', 'eq', 'ne'] as const
+      if (!validOperators.includes(operator as (typeof validOperators)[number])) {
+        return null
+      }
+
+      // 数値変換を試みる
+      const numValue = Number(valueStr)
+      const value = Number.isNaN(numValue) ? valueStr : numValue
+
+      return {
+        type: 'property',
+        property,
+        operator: operator as (typeof validOperators)[number],
+        value,
+      }
+    }
+
+    case 'name': {
+      // Format: name:mode:value
+      if (parts.length !== 3) {
+        return null
+      }
+
+      const [, mode, value] = parts
+
+      // modeの検証
+      const validModes = ['exact', 'contains', 'not_contains'] as const
+      if (!validModes.includes(mode as (typeof validModes)[number])) {
+        return null
+      }
+
+      if (!value || value.trim() === '') {
+        return null
+      }
+
+      return {
+        type: 'name',
+        mode: mode as (typeof validModes)[number],
+        value,
+      }
+    }
+
+    case 'manufacture': {
+      // Format: manufacture:value1,value2,value3
+      if (parts.length !== 2) {
+        return null
+      }
+
+      const [, valuesStr] = parts
+
+      if (!valuesStr || valuesStr.trim() === '') {
+        return null
+      }
+
+      const values = valuesStr.split(',').filter((v) => v.trim() !== '')
+
+      if (values.length === 0) {
+        return null
+      }
+
+      return {
+        type: 'manufacture',
+        values,
+      }
+    }
+
+    case 'category': {
+      // Format: category:value1,value2,value3
+      if (parts.length !== 2) {
+        return null
+      }
+
+      const [, valuesStr] = parts
+
+      if (!valuesStr || valuesStr.trim() === '') {
+        return null
+      }
+
+      const values = valuesStr.split(',').filter((v) => v.trim() !== '')
+
+      if (values.length === 0) {
+        return null
+      }
+
+      return {
+        type: 'category',
+        values,
+      }
+    }
+
+    default:
+      // 未知のフィルタタイプ、またはレガシー形式
+      logger.warn('Unknown or legacy filter type', { filterParam })
+      return null
   }
 }
 

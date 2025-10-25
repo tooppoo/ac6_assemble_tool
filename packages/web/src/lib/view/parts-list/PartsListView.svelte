@@ -200,6 +200,7 @@
     <FilterPanel
       slot={currentSlot}
       {filters}
+      availableParts={regulation.candidates[currentSlot]}
       {invalidatedFilters}
       {showFavoritesOnly}
       onclearfilters={handleClearFilters}

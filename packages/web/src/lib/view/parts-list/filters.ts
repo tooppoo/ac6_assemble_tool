@@ -9,13 +9,48 @@ import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
 
 /**
- * フィルタ条件
+ * フィルタ条件の基本型（既存の数値・文字列比較）
  */
-export interface Filter {
+export interface PropertyFilter {
+  type: 'property'
   property: string
   operator: 'lt' | 'lte' | 'gt' | 'gte' | 'eq' | 'ne'
   value: number | string
 }
+
+/**
+ * 名前フィルタ（3つの検索モード対応）
+ */
+export interface NameFilter {
+  type: 'name'
+  mode: 'exact' | 'contains' | 'not_contains'
+  value: string
+}
+
+/**
+ * メーカーフィルタ（複数選択、OR条件）
+ */
+export interface ManufactureFilter {
+  type: 'manufacture'
+  values: string[]
+}
+
+/**
+ * カテゴリフィルタ（複数選択、OR条件）
+ */
+export interface CategoryFilter {
+  type: 'category'
+  values: string[]
+}
+
+/**
+ * フィルタ条件（ユニオン型）
+ */
+export type Filter =
+  | PropertyFilter
+  | NameFilter
+  | ManufactureFilter
+  | CategoryFilter
 
 /**
  * 有効なフィルタプロパティ一覧
@@ -55,13 +90,13 @@ export const PROPERTY_LABELS: Record<string, string> = {
 
 /**
  * フィルタ可能なプロパティのリスト（UI表示用）
+ * 注: 'classification' はスロット選択と重複するため除外
  */
 export const FILTERABLE_PROPERTIES = [
   'price',
   'weight',
   'en_load',
   'name',
-  'classification',
   'manufacture',
   'category',
 ] as const
@@ -108,10 +143,29 @@ export function splitFiltersBySlot(
   const invalidated: Filter[] = []
 
   for (const filter of filters) {
-    if (validProperties.has(filter.property)) {
-      valid.push(filter)
-    } else {
-      invalidated.push(filter)
+    // フィルタタイプによって処理を分岐
+    switch (filter.type) {
+      case 'property':
+        // PropertyFilterの場合、プロパティが有効かチェック
+        if (validProperties.has(filter.property)) {
+          valid.push(filter)
+        } else {
+          invalidated.push(filter)
+        }
+        break
+
+      case 'name':
+      case 'manufacture':
+      case 'category':
+        // name, manufacture, category は全スロット共通なので常に有効
+        valid.push(filter)
+        break
+
+      default:
+        // 未知のフィルタタイプは無効として扱う
+        logger.warn('Unknown filter type in splitFiltersBySlot', { filter })
+        invalidated.push(filter)
+        break
     }
   }
 
@@ -140,29 +194,99 @@ export function applyFilters<T extends Record<string, unknown>>(
   return parts.filter((part) => {
     // 全てのフィルタ条件を満たす必要がある（AND条件）
     return filters.every((filter) => {
-      const value = part[filter.property]
+      // フィルタタイプによって処理を分岐
+      switch (filter.type) {
+        case 'property': {
+          const value = part[filter.property]
 
-      // 属性未定義の場合は除外（Requirement 2.3）
-      if (value === undefined || value === null) {
-        return false
-      }
+          // 属性未定義の場合は除外（Requirement 2.3）
+          if (value === undefined || value === null) {
+            return false
+          }
 
-      // フィルタ条件を適用
-      switch (filter.operator) {
-        case 'lt':
-          return value < filter.value
-        case 'lte':
-          return value <= filter.value
-        case 'gt':
-          return value > filter.value
-        case 'gte':
-          return value >= filter.value
-        case 'eq':
-          return value === filter.value
-        case 'ne':
-          return value !== filter.value
+          // フィルタ条件を適用
+          switch (filter.operator) {
+            case 'lt':
+              return value < filter.value
+            case 'lte':
+              return value <= filter.value
+            case 'gt':
+              return value > filter.value
+            case 'gte':
+              return value >= filter.value
+            case 'eq':
+              return value === filter.value
+            case 'ne':
+              return value !== filter.value
+            default:
+              logger.warn('Unknown filter operator', { filter })
+              return false
+          }
+        }
+
+        case 'name': {
+          const name = part.name
+
+          // 名前属性未定義の場合は除外
+          if (
+            typeof name !== 'string' ||
+            name === undefined ||
+            name === null
+          ) {
+            return false
+          }
+
+          // 大文字小文字を区別しない検索
+          const normalizedName = name.toLowerCase()
+          const normalizedValue = filter.value.toLowerCase()
+
+          switch (filter.mode) {
+            case 'exact':
+              return normalizedName === normalizedValue
+            case 'contains':
+              return normalizedName.includes(normalizedValue)
+            case 'not_contains':
+              return !normalizedName.includes(normalizedValue)
+            default:
+              logger.warn('Unknown name filter mode', { filter })
+              return false
+          }
+        }
+
+        case 'manufacture': {
+          const manufacture = part.manufacture
+
+          // メーカー属性未定義の場合は除外
+          if (
+            typeof manufacture !== 'string' ||
+            manufacture === undefined ||
+            manufacture === null
+          ) {
+            return false
+          }
+
+          // OR条件: いずれかのメーカーに該当すれば表示
+          return filter.values.length === 0 || filter.values.includes(manufacture)
+        }
+
+        case 'category': {
+          const category = part.category
+
+          // カテゴリ属性未定義の場合は除外
+          if (
+            typeof category !== 'string' ||
+            category === undefined ||
+            category === null
+          ) {
+            return false
+          }
+
+          // OR条件: いずれかのカテゴリに該当すれば表示
+          return filter.values.length === 0 || filter.values.includes(category)
+        }
+
         default:
-          logger.warn('Unknown filter operator', { filter })
+          logger.warn('Unknown filter type', { filter })
           return false
       }
     })
@@ -181,4 +305,36 @@ export function isValidFilterProperty(property: string): boolean {
  */
 export function isNumericProperty(property: string): boolean {
   return NUMERIC_FILTER_PROPERTIES.has(property)
+}
+
+/**
+ * パーツ配列から利用可能なメーカーのリストを取得
+ */
+export function extractManufacturers<T extends Record<string, unknown>>(
+  parts: readonly T[],
+): string[] {
+  const manufacturers = new Set<string>()
+  for (const part of parts) {
+    const manufacture = part.manufacture
+    if (typeof manufacture === 'string' && manufacture) {
+      manufacturers.add(manufacture)
+    }
+  }
+  return Array.from(manufacturers).sort()
+}
+
+/**
+ * パーツ配列から利用可能なカテゴリのリストを取得
+ */
+export function extractCategories<T extends Record<string, unknown>>(
+  parts: readonly T[],
+): string[] {
+  const categories = new Set<string>()
+  for (const part of parts) {
+    const category = part.category
+    if (typeof category === 'string' && category) {
+      categories.add(category)
+    }
+  }
+  return Array.from(categories).sort()
 }
