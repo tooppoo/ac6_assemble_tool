@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import { setContext } from 'svelte'
-  import { writable } from 'svelte/store'
+
+  import i18n from '$lib/i18n/define'
 
   import PartsListView from './PartsListView.svelte'
 
@@ -12,11 +13,8 @@
 
   let { regulation, initialSearchParams }: Props = $props()
 
-  // i18nモックを提供
-  const mockI18n = writable({
-    t: (key: string) => key, // キーをそのまま返す
-  })
-  setContext('i18n', mockI18n)
+  // 実際のi18nインスタンスを提供
+  setContext('i18n', i18n)
 </script>
 
 <PartsListView {regulation} {initialSearchParams} />
