@@ -609,6 +609,41 @@ interface FilterPanelEvents {
 
 ##### フィルタ項目の実装詳細
 
+**属性値フィルタ（property）**:
+
+```typescript
+interface PropertyFilter {
+  type: 'property'
+  property: 'price' | 'weight' | 'en_load' // 対象属性
+  operator: 'lt' | 'lte' | 'gt' | 'gte' | 'eq' | 'ne' // 比較演算子
+  value: number // 比較値
+}
+
+// 実装例
+function applyPropertyFilter(parts: ACParts[], filter: PropertyFilter): ACParts[] {
+  return parts.filter(part => {
+    const value = part[filter.property]
+    if (value === undefined || value === null) return false
+
+    switch (filter.operator) {
+      case 'lt': return value < filter.value
+      case 'lte': return value <= filter.value
+      case 'gt': return value > filter.value
+      case 'gte': return value >= filter.value
+      case 'eq': return value === filter.value
+      case 'ne': return value !== filter.value
+      default: return false
+    }
+  })
+}
+```
+
+**UI構成**:
+- 属性選択ドロップダウン（price, weight, en_load）
+- 演算子選択ドロップダウン（≤, ≥, <, >, =, ≠）
+- 数値入力フィールド
+- **UI表示名**: 「属性値検索」
+
 **名前フィルタ（name）**:
 
 ```typescript
@@ -664,6 +699,12 @@ function applyManufactureFilter(parts: ACParts[], filter: ManufactureFilter): AC
 - チェックボックスリスト（Bootstrap Form Check）またはマルチセレクトドロップダウン
 - 選択肢は現在のスロットのパーツに存在するメーカーのみを動的に生成
 - OR条件（いずれかのメーカーに該当すれば表示）
+- **UI表示名**: 「メーカー検索」
+- **i18n対応**: メーカー名は `i18next` の `manufacture` ネームスペースを使用して翻訳される
+  ```typescript
+  const i18n = getContext<I18NextStore>('i18n')
+  const translatedName = $i18n.t(manufacturer, { ns: 'manufacture' })
+  ```
 
 **カテゴリフィルタ（category）**:
 
@@ -687,6 +728,12 @@ function applyCategoryFilter(parts: ACParts[], filter: CategoryFilter): ACParts[
 - チェックボックスリスト（Bootstrap Form Check）またはマルチセレクトドロップダウン
 - 選択肢は現在のスロットのパーツに存在するカテゴリのみを動的に生成
 - OR条件（いずれかのカテゴリに該当すれば表示）
+- **UI表示名**: 「カテゴリ検索」
+- **i18n対応**: カテゴリ名は `i18next` の `category` ネームスペースを使用して翻訳される
+  ```typescript
+  const i18n = getContext<I18NextStore>('i18n')
+  const translatedName = $i18n.t(category, { ns: 'category' })
+  ```
 
 **分類フィルタ（classification）**:
 
