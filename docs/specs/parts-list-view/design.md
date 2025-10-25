@@ -249,49 +249,93 @@ interface Favorite {
 - **獲得**: スケーラビリティ、型安全性、クエリ効率、既存パターンとの整合性
 - **犠牲**: LocalStorageより実装が複雑（ただし、Dexieの抽象化により許容範囲）
 
-#### Decision 3: スロット切替時の状態引き継ぎ戦略
+#### Decision 3: スロットごとの独立フィルタ管理
 
-**Context**: スロットを切り替えた際、前スロットのフィルタ条件のうち、新スロットで有効なものだけを引き継ぐ必要がある。
+**Context**: プレイヤーがスロットごとに異なるフィルタ条件で探索できるようにする必要がある。スロットを切り替えても、各スロットのフィルタ状態が保持されるべき。
 
 **Alternatives**:
 
-1. **全条件クリア**: スロット切替時にすべてのフィルタ条件をリセット
-2. **選択的引き継ぎ**: 新スロットで有効な条件のみを引き継ぎ、無効な条件は削除
-3. **無効条件の保持**: 無効な条件も保持し、UIで明示するが適用はしない
+1. **グローバルフィルタ**: すべてのスロットで共通のフィルタ条件を使用
+2. **選択的引き継ぎ**: スロット切替時に有効な条件のみを引き継ぐ
+3. **スロットごとの独立管理**: 各スロットが独自のフィルタ状態を持ち、スロット切替時に復元される
 
-**Selected Approach**: **選択的引き継ぎ + 無効条件の明示**
+**Selected Approach**: **スロットごとの独立管理**
 
-新スロットで有効な条件のみを引き継ぎ、無効化された条件はUIで明示する（エラー扱いはしない）。
+各スロット（12種類）ごとに独立したフィルタ状態を保持し、スロット切替時に該当スロットのフィルタ状態を復元する。
 
 ```typescript
-function switchSlot(newSlot: SlotType, currentFilters: FilterSet): FilterSet {
-  const validFilters = currentFilters.filter(f =>
-    isValidForSlot(f.property, newSlot)
-  )
+// スロットごとのフィルタ状態を管理
+interface FiltersPerSlot {
+  [key: CandidatesKey]: Filter[]
+}
 
-  const invalidFilters = currentFilters.filter(f =>
-    !isValidForSlot(f.property, newSlot)
-  )
+let filtersPerSlot = $state<FiltersPerSlot>({
+  rightArmUnit: [],
+  leftArmUnit: [],
+  rightBackUnit: [],
+  leftBackUnit: [],
+  head: [],
+  core: [],
+  arms: [],
+  legs: [],
+  booster: [],
+  fcs: [],
+  generator: [],
+  expansion: [],
+})
 
-  // UIで無効化された条件を表示
-  if (invalidFilters.length > 0) {
-    showInvalidFiltersNotification(invalidFilters)
+// スロット切替時の処理
+function handleSlotChange(newSlot: CandidatesKey) {
+  // 現在のスロットのフィルタは既にfiltersPerSlotに保存されている
+  // 新しいスロットのフィルタを復元
+  currentSlot = newSlot
+  currentFilters = filtersPerSlot[newSlot]
+}
+
+// フィルタ変更時の処理
+function handleFilterChange(newFilters: Filter[]) {
+  filtersPerSlot[currentSlot] = newFilters
+  currentFilters = newFilters
+}
+```
+
+**Persistence Strategy**:
+
+- **LocalStorage**: スロットごとのフィルタ状態をLocalStorageに保存し、ページリロード時に復元
+- **URL Parameters**: URL共有時は現在選択中のスロットのフィルタのみをシリアライズ（全スロットのフィルタをURLに含めるとURLが長大になるため）
+
+```typescript
+// LocalStorageへの保存
+function saveFiltersToLocalStorage(filtersPerSlot: FiltersPerSlot) {
+  localStorage.setItem('ac6-parts-list-filters-per-slot', JSON.stringify(filtersPerSlot))
+}
+
+// LocalStorageからの復元
+function loadFiltersFromLocalStorage(): FiltersPerSlot | null {
+  const saved = localStorage.getItem('ac6-parts-list-filters-per-slot')
+  if (!saved) return null
+  try {
+    return JSON.parse(saved)
+  } catch {
+    return null
   }
-
-  return validFilters
 }
 ```
 
 **Rationale**:
 
-- **探索文脈の維持**: 共通属性（例: weight, price）は引き継がれ、探索の連続性を保つ
-- **ユーザー理解の促進**: 無効化された条件を明示することで、スロット切替の影響を理解できる
-- **エラーなし探索**: エラーではなく情報提供として扱い、探索を継続可能にする
+- **柔軟な探索**: スロットごとに異なる探索条件を設定でき、効率的な比較検討が可能
+- **文脈の保持**: スロットを切り替えても各スロットの探索文脈が失われない
+- **ユーザー体験の向上**: 「headは軽量重視」「coreは高出力重視」など、スロットごとに異なる探索方針を並行して実行できる
 
 **Trade-offs**:
 
-- **獲得**: 探索文脈の維持、ユーザー理解の促進、エラーなし探索体験
-- **犠牲**: スロットごとの有効属性管理の実装コスト（ただし、型定義により自動化可能）
+- **獲得**: 柔軟な探索、文脈の保持、ユーザー体験の向上
+- **犠牲**: 状態管理の複雑化、LocalStorage使用量の増加（ただし、フィルタ条件は小サイズなので問題なし）
+
+**Migration Note**:
+
+この設計は、以前の「選択的引き継ぎ」戦略（Requirement 2, Acceptance Criteria 5）を置き換えます。既存の実装から移行する場合、`splitFiltersBySlot`関数は不要になり、代わりにスロットごとのフィルタマップを管理します。
 
 ## System Flows
 
