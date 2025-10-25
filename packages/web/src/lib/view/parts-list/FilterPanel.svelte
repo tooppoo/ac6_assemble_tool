@@ -271,10 +271,10 @@
               class="form-select"
               bind:value={selectedFilterType}
             >
-              <option value="property">数値・文字列属性</option>
+              <option value="property">属性値検索</option>
               <option value="name">名前検索</option>
-              <option value="manufacture">メーカー</option>
-              <option value="category">カテゴリ</option>
+              <option value="manufacture">メーカー検索</option>
+              <option value="category">カテゴリ検索</option>
             </select>
           </div>
         </div>
