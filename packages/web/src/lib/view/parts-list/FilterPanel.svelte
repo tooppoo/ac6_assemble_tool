@@ -5,8 +5,11 @@
    * スロット対応の属性フィルタUIを提供し、フィルタ条件の変更イベントを発火します。
    */
 
+  import type { I18NextStore } from '$lib/i18n/define'
+
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
   import { Alert, Collapse } from '@sveltestrap/sveltestrap'
+  import { getContext } from 'svelte'
 
   import type { Filter, PropertyFilter, NameFilter, ManufactureFilter, CategoryFilter } from './filters'
   import {
@@ -15,6 +18,9 @@
     extractManufacturers,
     extractCategories,
   } from './filters'
+
+  // i18n
+  const i18n = getContext<I18NextStore>('i18n')
 
   // Props
   interface Props {
@@ -63,6 +69,15 @@
   // 利用可能なメーカーとカテゴリを計算
   const availableManufacturers = $derived(extractManufacturers(availableParts))
   const availableCategories = $derived(extractCategories(availableParts))
+
+  // メーカーとカテゴリの翻訳ヘルパー関数
+  function translateManufacturer(manufacturer: string): string {
+    return $i18n.t(manufacturer, { ns: 'manufacture' })
+  }
+
+  function translateCategory(category: string): string {
+    return $i18n.t(category, { ns: 'category' })
+  }
 
   // 演算子の表示マップ
   const operatorLabels: Record<PropertyFilter['operator'], string> = {
@@ -202,9 +217,9 @@
         return `名前: ${modeLabels[f.mode]} "${f.value}"`
       }
       case 'manufacture':
-        return `メーカー: ${f.values.join(', ')}`
+        return `メーカー: ${f.values.map(translateManufacturer).join(', ')}`
       case 'category':
-        return `カテゴリ: ${f.values.join(', ')}`
+        return `カテゴリ: ${f.values.map(translateCategory).join(', ')}`
       default:
         return '不明なフィルタ'
     }
@@ -391,7 +406,7 @@
                       bind:group={selectedManufacturers}
                     />
                     <label class="form-check-label text-white" for="manu-{manufacturer}">
-                      {manufacturer}
+                      {translateManufacturer(manufacturer)}
                     </label>
                   </div>
                 {/each}
@@ -427,7 +442,7 @@
                       bind:group={selectedCategories}
                     />
                     <label class="form-check-label text-white" for="cat-{category}">
-                      {category}
+                      {translateCategory(category)}
                     </label>
                   </div>
                 {/each}
