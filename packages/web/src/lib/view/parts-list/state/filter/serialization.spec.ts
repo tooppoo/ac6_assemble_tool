@@ -99,7 +99,9 @@ describe('filter serialization utilities', () => {
     it('空文字列は空オブジェクトを返すこと', () => {
       const result = deserializeFiltersPerSlotFromURL('')
       expect(result.type).toBe('Success')
-      expect(result.type === 'Success' && Object.keys(result.value)).toHaveLength(0)
+      expect(
+        result.type === 'Success' && Object.keys(result.value),
+      ).toHaveLength(0)
     })
 
     it('不正なJSONの場合は失敗を返すこと', () => {
