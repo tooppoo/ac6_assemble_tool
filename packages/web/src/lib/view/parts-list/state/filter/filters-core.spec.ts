@@ -1,6 +1,5 @@
-import { describe, it, expect } from 'vitest'
-
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
+import { describe, it, expect } from 'vitest'
 
 import {
   applyFilters,
