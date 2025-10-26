@@ -55,12 +55,12 @@ export function applyFilters(
 //// numeric
 export function numericOperands(): [FilterOperand<'numeric'>, ...FilterOperand<'numeric'>[]] {
   return [
-    numericOperand('eq', (left, right) => left === right),
-    numericOperand('ne', (left, right) => left !== right),
-    numericOperand('gt', (left, right) => left > right),
-    numericOperand('lt', (left, right) => left < right),
-    numericOperand('gte', (left, right) => left >= right),
     numericOperand('lte', (left, right) => left <= right),
+    numericOperand('gte', (left, right) => left >= right),
+    numericOperand('lt', (left, right) => left < right),
+    numericOperand('gt', (left, right) => left > right),
+    numericOperand('ne', (left, right) => left !== right),
+    numericOperand('eq', (left, right) => left === right),
   ]
 }
 function numericOperand(
@@ -85,9 +85,9 @@ function isNumeric(value: unknown): value is number {
 //// string
 export function stringOperands(): [FilterOperand<'string'>, ...FilterOperand<'string'>[]] {
   return [
-    stringOperand('exact', (left, right) => left === right),
     stringOperand('contain', (left, right) => left.includes(right)),
     stringOperand('not_contain', (left, right) => !left.includes(right)),
+    stringOperand('exact', (left, right) => left === right),
   ]
 }
 function stringOperand(
