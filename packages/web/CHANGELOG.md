@@ -1,5 +1,12 @@
 # @ac6_assemble_tool/web
 
+## 2.4.0
+### Minor Changes
+
+
+
+- [#881](https://github.com/tooppoo/ac6_assemble_tool/pull/881) [`561b012`](https://github.com/tooppoo/ac6_assemble_tool/commit/561b012da3f8ee6affd3c25b367b54543584d430) Thanks [@tooppoo](https://github.com/tooppoo)! - 内部構造リファクタ
+
 ## 2.3.0
 ### Minor Changes
 
