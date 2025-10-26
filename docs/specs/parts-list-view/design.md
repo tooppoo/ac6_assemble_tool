@@ -172,6 +172,7 @@ graph TB
 #### Decision 1: フィルタアーキテクチャのリファクタリング
 
 **Context**: 既存のアセンブリページには `PartsFilterSet` クラスによるフィルタリングロジックが実装されていたが、パーツ一覧ページでは以下の要件が追加された：
+
 - operandの国際化対応（i18n）
 - URL serialization/deserializationの容易化
 - フィルタ条件の宣言的な記述
@@ -671,6 +672,7 @@ function applyPropertyFilter(parts: ACParts[], filter: PropertyFilter): ACParts[
 ```
 
 **UI構成**:
+
 - 属性選択ドロップダウン（price, weight, en_load）
 - 演算子選択ドロップダウン（≤, ≥, <, >, =, ≠）
 - 数値入力フィールド
@@ -705,6 +707,7 @@ function applyNameFilter(parts: ACParts[], filter: NameFilter): ACParts[] {
 ```
 
 **UI構成**:
+
 - テキスト入力フィールド（Bootstrap Input）
 - 検索モード選択ドロップダウン（Bootstrap Select）
 - デフォルトモードは「含む」（contains）
@@ -728,11 +731,13 @@ function applyManufactureFilter(parts: ACParts[], filter: ManufactureFilter): AC
 ```
 
 **UI構成**:
+
 - チェックボックスリスト（Bootstrap Form Check）またはマルチセレクトドロップダウン
 - 選択肢は現在のスロットのパーツに存在するメーカーのみを動的に生成
 - OR条件（いずれかのメーカーに該当すれば表示）
 - **UI表示名**: 「メーカー検索」
 - **i18n対応**: メーカー名は `i18next` の `manufacture` ネームスペースを使用して翻訳される
+
   ```typescript
   const i18n = getContext<I18NextStore>('i18n')
   const translatedName = $i18n.t(manufacturer, { ns: 'manufacture' })
@@ -757,11 +762,13 @@ function applyCategoryFilter(parts: ACParts[], filter: CategoryFilter): ACParts[
 ```
 
 **UI構成**:
+
 - チェックボックスリスト（Bootstrap Form Check）またはマルチセレクトドロップダウン
 - 選択肢は現在のスロットのパーツに存在するカテゴリのみを動的に生成
 - OR条件（いずれかのカテゴリに該当すれば表示）
 - **UI表示名**: 「カテゴリ検索」
 - **i18n対応**: カテゴリ名は `i18next` の `category` ネームスペースを使用して翻訳される
+
   ```typescript
   const i18n = getContext<I18NextStore>('i18n')
   const translatedName = $i18n.t(category, { ns: 'category' })
@@ -772,6 +779,7 @@ function applyCategoryFilter(parts: ACParts[], filter: CategoryFilter): ACParts[
 分類はスロット選択によって暗黙的に決定されるため、フィルタUIとして提供しない。
 
 **理由**:
+
 - スロット選択（例: arms）により分類（例: ARM UNIT）は自動的に確定する
 - 追加のフィルタは冗長であり、ユーザーを混乱させる可能性がある
 
