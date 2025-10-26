@@ -9,7 +9,7 @@ import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { render, screen, fireEvent } from '@testing-library/svelte'
 import { describe, it, expect, beforeEach } from 'vitest'
 
-import FilterPanel from './FilterPanel.svelte'
+import FilterPanel from '../FilterPanel.svelte'
 import { buildPropertyFilter } from './filters-application'
 import { numericOperands, type Filter } from './filters-core'
 

@@ -1,8 +1,8 @@
 import { Result } from '@praha/byethrow'
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
-import { buildPropertyFilter, buildNameFilter, buildManufactureFilter, buildCategoryFilter } from './filters-application'
-import { numericOperands, stringOperands, selectAnyOperand } from './filters-core'
+import { buildPropertyFilter, buildNameFilter, buildManufactureFilter, buildCategoryFilter } from './filter/filters-application'
+import { numericOperands, stringOperands, selectAnyOperand } from './filter/filters-core'
 import {
   serializeToURL,
   deserializeFromURL,

@@ -7,8 +7,8 @@ import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 import * as LZString from 'lz-string'
 
-import { buildCategoryFilter, buildManufactureFilter, buildNameFilter, buildPropertyFilter } from './filters-application'
-import { numericOperands, selectAnyOperand, stringOperands, type Filter } from './filters-core'
+import { buildCategoryFilter, buildManufactureFilter, buildNameFilter, buildPropertyFilter } from './filter/filters-application'
+import { numericOperands, selectAnyOperand, stringOperands, type Filter } from './filter/filters-core'
 
 /**
  * 表示モード（grid/list）
@@ -16,7 +16,7 @@ import { numericOperands, selectAnyOperand, stringOperands, type Filter } from '
 export type ViewMode = 'grid' | 'list'
 
 // Filterは filters.ts からエクスポート
-export type { Filter } from './filters-core'
+export type { Filter } from './filter/filters-core'
 
 /**
  * 並び替え順序
