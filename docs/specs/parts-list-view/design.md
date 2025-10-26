@@ -181,7 +181,7 @@ graph TB
 **Refactored Approach (2025-10-25実装 - コミット 0e51ac474fc)**:
 **Strategy Pattern + Value Object Patternによる新しいフィルタアーキテクチャ**
 
-```
+```txt
 packages/web/src/lib/view/parts-list/
 ├── filters-core.ts         # コアロジック層（Strategy Pattern）
 ├── filters-application.ts  # アプリケーション層（builder functions + i18n）
