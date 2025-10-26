@@ -1,8 +1,11 @@
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 
 import { loadViewMode, saveViewMode } from './view-mode'
 
 describe('state/view-mode', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
   describe('saveViewMode', () => {
     it('表示モードをLocalStorageに保存できること', () => {
       saveViewMode('list')
