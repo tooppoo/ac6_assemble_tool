@@ -1,4 +1,3 @@
-
 export const enFilterOperand = {
   // numeric
   eq: '=',
@@ -15,4 +14,4 @@ export const enFilterOperand = {
 
   // array
   in_any: 'contain any',
-};
+}

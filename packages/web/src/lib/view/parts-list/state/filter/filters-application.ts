@@ -6,10 +6,14 @@ import { jaManufactures } from '$lib/i18n/locales/ja/manufactures'
 
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 
-import { defineExtractor, type Filter, type FilterOperand } from './filters-core'
+import {
+  defineExtractor,
+  type Filter,
+  type FilterOperand,
+} from './filters-core'
 
 const PROPERTY_FILTER_KEYS = ['price', 'weight', 'en_load'] as const
-export type PropertyFilterKey = typeof PROPERTY_FILTER_KEYS[number]
+export type PropertyFilterKey = (typeof PROPERTY_FILTER_KEYS)[number]
 
 type AssemblyTranslationKey = keyof typeof jaAssembly
 type ManufactureTranslationKey = keyof typeof jaManufactures
@@ -58,7 +62,7 @@ export function buildPropertyFilter(
       return [
         translateProperty(property, i18n) + ':',
         translateOperand(this.operand, i18n),
-        value.toString()
+        value.toString(),
       ].join(' ')
     },
     serialize() {
@@ -66,7 +70,10 @@ export function buildPropertyFilter(
     },
   }
 }
-export function translateProperty(property: PropertyFilterKey, i18n: I18Next): string {
+export function translateProperty(
+  property: PropertyFilterKey,
+  i18n: I18Next,
+): string {
   return i18n.t(propertyI18nMap[property], { ns: 'assembly' })
 }
 
@@ -107,7 +114,10 @@ export function buildManufactureFilter(
     },
   }
 }
-export function translateManufacturer(manufacturer: string, i18n: I18Next): string {
+export function translateManufacturer(
+  manufacturer: string,
+  i18n: I18Next,
+): string {
   if (!isManufactureTranslationKey(manufacturer)) {
     return manufacturer
   }
@@ -121,7 +131,7 @@ export function buildCategoryFilter(
 ): Filter {
   return {
     operand,
-    property: ('category' as keyof ACParts),
+    property: 'category' as keyof ACParts,
     extractor: defineExtractor('category'),
     value,
     stringify(i18n: I18Next) {
@@ -140,7 +150,10 @@ export function translateCategory(category: string, i18n: I18Next): string {
 }
 
 // util
-export function translateOperand(operand: FilterOperand, i18n: I18Next): string {
+export function translateOperand(
+  operand: FilterOperand,
+  i18n: I18Next,
+): string {
   if (!isOperandTranslationKey(operand.id)) {
     return operand.id
   }

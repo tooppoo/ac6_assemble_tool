@@ -12,14 +12,6 @@
   import { getContext } from 'svelte'
 
   import {
-    numericOperands,
-    selectAnyOperand,
-    stringOperands,
-    type Filter,
-    extractManufacturers,
-    extractCategories,
-  } from './state/filter/filters-core'
-  import {
     buildCategoryFilter,
     buildManufactureFilter,
     buildNameFilter,
@@ -30,6 +22,14 @@
     translateProperty,
     type PropertyFilterKey,
   } from './state/filter/filters-application'
+  import {
+    numericOperands,
+    selectAnyOperand,
+    stringOperands,
+    type Filter,
+    extractManufacturers,
+    extractCategories,
+  } from './state/filter/filters-core'
 
   // i18n
   const i18n = getContext<I18NextStore>('i18n')
@@ -120,14 +120,12 @@
         const value = parseInt(valueStr, 10)
 
         // IDから対応するoperandを見つける
-        const operand = availableFilters.property.find((op) => op.id === propertyOperandId)
+        const operand = availableFilters.property.find(
+          (op) => op.id === propertyOperandId,
+        )
         if (!operand) return
 
-        newFilter = buildPropertyFilter(
-          property,
-          operand,
-          value,
-        )
+        newFilter = buildPropertyFilter(property, operand, value)
         propertyInputValue = ''
         break
       }
@@ -137,7 +135,9 @@
         if (valueStr === '') return
 
         // IDから対応するoperandを見つける
-        const operand = availableFilters.name.find((op) => op.id === nameOperandId)
+        const operand = availableFilters.name.find(
+          (op) => op.id === nameOperandId,
+        )
         if (!operand) return
 
         newFilter = buildNameFilter(operand, valueStr)
@@ -148,10 +148,9 @@
       case 'manufacture': {
         if (selectedManufacturers.length === 0) return
 
-        newFilter = buildManufactureFilter(
-          availableFilters.manufacture,
-          [...selectedManufacturers],
-        )
+        newFilter = buildManufactureFilter(availableFilters.manufacture, [
+          ...selectedManufacturers,
+        ])
         selectedManufacturers = []
         break
       }
@@ -159,10 +158,9 @@
       case 'category': {
         if (selectedCategories.length === 0) return
 
-        newFilter = buildCategoryFilter(
-          availableFilters.category,
-          [...selectedCategories],
-        )
+        newFilter = buildCategoryFilter(availableFilters.category, [
+          ...selectedCategories,
+        ])
         selectedCategories = []
         break
       }
@@ -232,7 +230,9 @@
         <!-- フィルタタイプ選択 -->
         <div class="row g-2 mb-2">
           <div class="col-12">
-            <label for="filter-type" class="form-label mb-1 text-white">フィルタ種類</label>
+            <label for="filter-type" class="form-label mb-1 text-white"
+              >フィルタ種類</label
+            >
             <select
               id="filter-type"
               class="form-select"
@@ -250,20 +250,30 @@
         {#if selectedFilterType === 'property'}
           <div class="row g-2">
             <div class="col-12 col-md-4">
-              <label for="filter-property" class="form-label mb-1 text-white">属性</label>
+              <label for="filter-property" class="form-label mb-1 text-white"
+                >属性</label
+              >
               <select
                 id="filter-property"
                 class="form-select"
                 bind:value={selectedProperty}
               >
-                <option value="price">{translateProperty('price', $i18n)}</option>
-                <option value="weight">{translateProperty('weight', $i18n)}</option>
-                <option value="en_load">{translateProperty('en_load', $i18n)}</option>
+                <option value="price"
+                  >{translateProperty('price', $i18n)}</option
+                >
+                <option value="weight"
+                  >{translateProperty('weight', $i18n)}</option
+                >
+                <option value="en_load"
+                  >{translateProperty('en_load', $i18n)}</option
+                >
               </select>
             </div>
 
             <div class="col-12 col-md-3">
-              <label for="filter-operator" class="form-label mb-1 text-white">条件</label>
+              <label for="filter-operator" class="form-label mb-1 text-white"
+                >条件</label
+              >
               <select
                 id="filter-operator"
                 class="form-select"
@@ -278,10 +288,12 @@
             </div>
 
             <div class="col-12 col-md-3">
-              <label for="filter-value" class="form-label mb-1 text-white">値</label>
+              <label for="filter-value" class="form-label mb-1 text-white"
+                >値</label
+              >
               <input
                 id="filter-value"
-                type='number'
+                type="number"
                 class="form-control"
                 bind:value={propertyInputValue}
                 placeholder="値を入力"
@@ -305,7 +317,9 @@
         {#if selectedFilterType === 'name'}
           <div class="row g-2">
             <div class="col-12 col-md-6">
-              <label for="name-value" class="form-label mb-1 text-white">名前</label>
+              <label for="name-value" class="form-label mb-1 text-white"
+                >名前</label
+              >
               <input
                 id="name-value"
                 type="text"
@@ -316,7 +330,9 @@
             </div>
 
             <div class="col-12 col-md-4">
-              <label for="name-mode" class="form-label mb-1 text-white">検索モード</label>
+              <label for="name-mode" class="form-label mb-1 text-white"
+                >検索モード</label
+              >
               <select
                 id="name-mode"
                 class="form-select"
@@ -348,7 +364,10 @@
           <div class="row g-2">
             <div class="col-12 col-md-10">
               <p class="form-label mb-1 text-white">メーカー（複数選択可）</p>
-              <div class="manufacture-checkboxes p-2 bg-dark bg-opacity-50 rounded" style="max-height: 200px; overflow-y: auto;">
+              <div
+                class="manufacture-checkboxes p-2 bg-dark bg-opacity-50 rounded"
+                style="max-height: 200px; overflow-y: auto;"
+              >
                 {#each availableManufacturers as manufacturer (manufacturer)}
                   <div class="form-check">
                     <input
@@ -358,7 +377,10 @@
                       value={manufacturer}
                       bind:group={selectedManufacturers}
                     />
-                    <label class="form-check-label text-white" for="manu-{manufacturer}">
+                    <label
+                      class="form-check-label text-white"
+                      for="manu-{manufacturer}"
+                    >
                       {translateManufacturer(manufacturer, $i18n)}
                     </label>
                   </div>
@@ -384,7 +406,10 @@
           <div class="row g-2">
             <div class="col-12 col-md-10">
               <p class="form-label mb-1 text-white">カテゴリ（複数選択可）</p>
-              <div class="category-checkboxes p-2 bg-dark bg-opacity-50 rounded" style="max-height: 200px; overflow-y: auto;">
+              <div
+                class="category-checkboxes p-2 bg-dark bg-opacity-50 rounded"
+                style="max-height: 200px; overflow-y: auto;"
+              >
                 {#each availableCategories as category (category)}
                   <div class="form-check">
                     <input
@@ -394,7 +419,10 @@
                       value={category}
                       bind:group={selectedCategories}
                     />
-                    <label class="form-check-label text-white" for="cat-{category}">
+                    <label
+                      class="form-check-label text-white"
+                      for="cat-{category}"
+                    >
                       {translateCategory(category, $i18n)}
                     </label>
                   </div>

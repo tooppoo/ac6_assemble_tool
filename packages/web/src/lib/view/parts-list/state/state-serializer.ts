@@ -2,10 +2,10 @@ import { type CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 
-import { VALID_SLOTS, type DeserializeError } from './shared'
 import { type Filter } from './filter/filters-core'
 import { parseFilter } from './filter/serialization'
-import type { SortOrder } from './sort';
+import { VALID_SLOTS, type DeserializeError } from './shared'
+import type { SortOrder } from './sort'
 import { parseSort } from './sort'
 
 // Filterは filters.ts からエクスポート

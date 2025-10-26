@@ -1,4 +1,7 @@
-import { CANDIDATES_KEYS, type CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates';
+import {
+  CANDIDATES_KEYS,
+  type CandidatesKey,
+} from '@ac6_assemble_tool/parts/types/candidates'
 
 /**
  * 有効なスロット一覧

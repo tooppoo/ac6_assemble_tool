@@ -2,7 +2,11 @@ import { describe, it, expect } from 'vitest'
 
 import { buildNameFilter, buildPropertyFilter } from './filters-application'
 import { numericOperands, stringOperands } from './filters-core'
-import { loadFiltersPerSlotFromLocalStorage, saveFiltersPerSlotToLocalStorage, type FiltersPerSlot } from './serialization'
+import {
+  loadFiltersPerSlotFromLocalStorage,
+  saveFiltersPerSlotToLocalStorage,
+  type FiltersPerSlot,
+} from './serialization'
 
 describe('FiltersPerSlot persistence', () => {
   it('LocalStorageに保存したフィルタが関数ごと復元できること', () => {

@@ -1,4 +1,4 @@
-import { type I18Next } from '$lib/i18n/define';
+import { type I18Next } from '$lib/i18n/define'
 
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 
@@ -10,34 +10,34 @@ import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 // filter
 export type Filter = Readonly<
   | {
-    operand: FilterOperand<'numeric'>
-    property: keyof ACParts
-    extractor: Extractor
-    value: number
-    stringify(i18n: I18Next): string
-    serialize(): string
-  }
+      operand: FilterOperand<'numeric'>
+      property: keyof ACParts
+      extractor: Extractor
+      value: number
+      stringify(i18n: I18Next): string
+      serialize(): string
+    }
   | {
-    operand: FilterOperand<'string'>
-    property: keyof ACParts
-    extractor: Extractor
-    value: string
-    stringify(i18n: I18Next): string
-    serialize(): string
-  }
+      operand: FilterOperand<'string'>
+      property: keyof ACParts
+      extractor: Extractor
+      value: string
+      stringify(i18n: I18Next): string
+      serialize(): string
+    }
   | {
-    operand: FilterOperand<'array'>
-    property: keyof ACParts
-    extractor: Extractor
-    value: readonly unknown[]
-    stringify(i18n: I18Next): string
-    serialize(): string
-  }
+      operand: FilterOperand<'array'>
+      property: keyof ACParts
+      extractor: Extractor
+      value: readonly unknown[]
+      stringify(i18n: I18Next): string
+      serialize(): string
+    }
 >
 
 export function applyFilters(
   parts: readonly ACParts[],
-  filters: readonly Filter[]
+  filters: readonly Filter[],
 ): ACParts[] {
   return parts.filter((part) => {
     for (const filter of filters) {
@@ -53,7 +53,10 @@ export function applyFilters(
 
 // operand
 //// numeric
-export function numericOperands(): [FilterOperand<'numeric'>, ...FilterOperand<'numeric'>[]] {
+export function numericOperands(): [
+  FilterOperand<'numeric'>,
+  ...FilterOperand<'numeric'>[],
+] {
   return [
     numericOperand('lte', (left, right) => left <= right),
     numericOperand('gte', (left, right) => left >= right),
@@ -67,23 +70,22 @@ function numericOperand(
   key: string,
   expression: (left: number, right: number) => boolean,
 ): FilterOperand<'numeric'> {
-  return new InnerFilterOperand(
-    key,
-    'numeric',
-    (left, right) => {
-      if (!isNumeric(left) || !isNumeric(right)) {
-        return false
-      }
-      return expression(left, right)
-    },
-  )
+  return new InnerFilterOperand(key, 'numeric', (left, right) => {
+    if (!isNumeric(left) || !isNumeric(right)) {
+      return false
+    }
+    return expression(left, right)
+  })
 }
 function isNumeric(value: unknown): value is number {
   return typeof value === 'number'
 }
 
 //// string
-export function stringOperands(): [FilterOperand<'string'>, ...FilterOperand<'string'>[]] {
+export function stringOperands(): [
+  FilterOperand<'string'>,
+  ...FilterOperand<'string'>[],
+] {
   return [
     stringOperand('contain', (left, right) => left.includes(right)),
     stringOperand('not_contain', (left, right) => !left.includes(right)),
@@ -94,16 +96,12 @@ function stringOperand(
   key: string,
   expression: (left: string, right: string) => boolean,
 ): FilterOperand<'string'> {
-  return new InnerFilterOperand(
-    key,
-    'string',
-    (left, right) => {
-      if (!isString(left) || !isString(right)) {
-        return false
-      }
-      return expression(left, right)
-    },
-  )
+  return new InnerFilterOperand(key, 'string', (left, right) => {
+    if (!isString(left) || !isString(right)) {
+      return false
+    }
+    return expression(left, right)
+  })
 }
 function isString(value: unknown): value is string {
   return typeof value === 'string'
@@ -111,30 +109,25 @@ function isString(value: unknown): value is string {
 
 //// array
 export function selectAnyOperand(): FilterOperand<'array'> {
-  return arrayOperand(
-    'in_any',
-    (left, right) => right.includes(left),
-  )
+  return arrayOperand('in_any', (left, right) => right.includes(left))
 }
 function arrayOperand(
   key: string,
   expression: (left: unknown, right: readonly unknown[]) => boolean,
 ): FilterOperand<'array'> {
-  return new InnerFilterOperand(
-    key,
-    'array',
-    (left, right) => {
-      if (!Array.isArray(right)) {
-        return false
-      }
-      return expression(left, right)
-    },
-  )
+  return new InnerFilterOperand(key, 'array', (left, right) => {
+    if (!Array.isArray(right)) {
+      return false
+    }
+    return expression(left, right)
+  })
 }
 
 type FilterOperandDataType = 'numeric' | 'string' | 'array'
 // 外部には型だけ公開
-export type FilterOperand<D extends FilterOperandDataType = FilterOperandDataType> = InnerFilterOperand<D>
+export type FilterOperand<
+  D extends FilterOperandDataType = FilterOperandDataType,
+> = InnerFilterOperand<D>
 
 class InnerFilterOperand<D extends FilterOperandDataType> {
   constructor(
@@ -144,8 +137,7 @@ class InnerFilterOperand<D extends FilterOperandDataType> {
     public readonly dataType: D,
     /** オペランドの適用関数 */
     private readonly expression: (left: unknown, right: unknown) => boolean,
-  ) {
-  }
+  ) {}
 
   /** オペランドを適用する */
   public apply(left: unknown, right: unknown): boolean {
@@ -158,17 +150,14 @@ class InnerFilterOperand<D extends FilterOperandDataType> {
 }
 
 // extractor
-export function defineExtractor(
-  propertyKey: keyof ACParts,
-): Extractor {
+export function defineExtractor(propertyKey: keyof ACParts): Extractor {
   return new Extractor(propertyKey)
 }
 class Extractor {
   constructor(
     /** 抽出対象のプロパティキー */
     public readonly propertyKey: keyof ACParts,
-  ) {
-  }
+  ) {}
 
   extract(parts: ACParts): unknown {
     return parts[this.propertyKey]

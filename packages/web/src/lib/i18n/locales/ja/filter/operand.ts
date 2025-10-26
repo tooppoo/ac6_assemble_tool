@@ -1,4 +1,3 @@
-
 export const jaFilterOperand = {
   // numeric
   eq: '=',
@@ -15,4 +14,4 @@ export const jaFilterOperand = {
 
   // array
   in_any: 'いずれかを含む',
-};
+}

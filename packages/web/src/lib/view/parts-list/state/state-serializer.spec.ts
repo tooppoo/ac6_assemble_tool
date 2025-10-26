@@ -1,9 +1,22 @@
 import { Result } from '@praha/byethrow'
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
-import { buildPropertyFilter, buildNameFilter, buildManufactureFilter, buildCategoryFilter } from './filter/filters-application'
-import { numericOperands, stringOperands, selectAnyOperand } from './filter/filters-core'
-import { deserializeFromURL, serializeToURL, type SharedState } from './state-serializer'
+import {
+  buildPropertyFilter,
+  buildNameFilter,
+  buildManufactureFilter,
+  buildCategoryFilter,
+} from './filter/filters-application'
+import {
+  numericOperands,
+  stringOperands,
+  selectAnyOperand,
+} from './filter/filters-core'
+import {
+  deserializeFromURL,
+  serializeToURL,
+  type SharedState,
+} from './state-serializer'
 
 describe('StateSerializer', () => {
   beforeEach(() => {
@@ -84,7 +97,11 @@ describe('StateSerializer', () => {
       const state: SharedState = {
         slot: 'core',
         filters: [
-          buildManufactureFilter(selectAnyOperand(), ['BALAM', 'FURLONG', 'ARQUEBUS']),
+          buildManufactureFilter(selectAnyOperand(), [
+            'BALAM',
+            'FURLONG',
+            'ARQUEBUS',
+          ]),
         ],
         sortKey: null,
         sortOrder: null,
@@ -94,7 +111,9 @@ describe('StateSerializer', () => {
 
       const filterParams = params.getAll('filter')
       expect(filterParams).toHaveLength(1)
-      expect(filterParams[0]).toBe('array:manufacture:in_any:BALAM,FURLONG,ARQUEBUS')
+      expect(filterParams[0]).toBe(
+        'array:manufacture:in_any:BALAM,FURLONG,ARQUEBUS',
+      )
     })
 
     it('CategoryFilterをURLパラメータに変換できること', () => {
@@ -231,7 +250,11 @@ describe('StateSerializer', () => {
       if (result.type === 'Success') {
         expect(result.value.filters).toHaveLength(1)
         expect(result.value.filters[0].property).toBe('manufacture')
-        expect(result.value.filters[0].value).toEqual(['BALAM', 'FURLONG', 'ARQUEBUS'])
+        expect(result.value.filters[0].value).toEqual([
+          'BALAM',
+          'FURLONG',
+          'ARQUEBUS',
+        ])
         expect(result.value.filters[0].operand.id).toBe('in_any')
       }
     })
@@ -362,9 +385,11 @@ describe('StateSerializer', () => {
       expect(Result.isSuccess(result)).toBe(true)
       if (result.type === 'Success') {
         expect(result.value.filters).toHaveLength(3)
-        expect(
-          result.value.filters.map((f) => f.property),
-        ).toEqual(['weight', 'price', 'en_load'])
+        expect(result.value.filters.map((f) => f.property)).toEqual([
+          'weight',
+          'price',
+          'en_load',
+        ])
       }
     })
 
@@ -410,5 +435,4 @@ describe('StateSerializer', () => {
       }
     })
   })
-
 })

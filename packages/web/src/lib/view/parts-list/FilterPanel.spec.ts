@@ -10,7 +10,10 @@ import { render, screen, fireEvent } from '@testing-library/svelte'
 import { describe, it, expect } from 'vitest'
 
 import FilterPanel from './FilterPanel.svelte'
-import { buildPropertyFilter, type PropertyFilterKey } from './state/filter/filters-application'
+import {
+  buildPropertyFilter,
+  type PropertyFilterKey,
+} from './state/filter/filters-application'
 import { numericOperands, type Filter } from './state/filter/filters-core'
 
 type FilterPanelProps = {

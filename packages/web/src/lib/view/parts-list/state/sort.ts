@@ -3,8 +3,8 @@
  */
 
 export function parseSort(
-  sortParam: string
-): { key: string; order: SortOrder}  | null {
+  sortParam: string,
+): { key: string; order: SortOrder } | null {
   const parts = sortParam.split(':')
 
   if (parts.length !== 2) {
@@ -18,9 +18,8 @@ export function parseSort(
   }
 
   return { key, order }
-}/**
+} /**
  * 並び替え順序
  */
 
 export type SortOrder = 'asc' | 'desc'
-

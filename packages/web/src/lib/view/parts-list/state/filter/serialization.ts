@@ -1,4 +1,7 @@
-import { CANDIDATES_KEYS, type CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
+import {
+  CANDIDATES_KEYS,
+  type CandidatesKey,
+} from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 import {
@@ -85,10 +88,7 @@ export function parseFilter(filterParam: string): Filter | null {
         return null
       }
 
-      return buildNameFilter(
-        operand,
-        value,
-      )
+      return buildNameFilter(operand, value)
     }
 
     case 'array': {
@@ -131,7 +131,9 @@ export function parseFilter(filterParam: string): Filter | null {
  * フィルタが設定されているスロットのみを含める（URL長を削減）
  * LZ-string圧縮を使用してURLサイズを削減
  */
-export function serializeFiltersPerSlotToURL(filtersPerSlot: FiltersPerSlot): string {
+export function serializeFiltersPerSlotToURL(
+  filtersPerSlot: FiltersPerSlot,
+): string {
   // 空のフィルタを持つスロットを除外
   const nonEmptyFilters: FiltersPerSlot = {}
   for (const [slot, filters] of Object.entries(filtersPerSlot)) {
@@ -215,14 +217,15 @@ export function deserializeFiltersPerSlotFromURL(
 /**
  * スロットごとのフィルタ状態をLocalStorageに保存
  */
-export function saveFiltersPerSlotToLocalStorage(filtersPerSlot: FiltersPerSlot): void {
+export function saveFiltersPerSlotToLocalStorage(
+  filtersPerSlot: FiltersPerSlot,
+): void {
   try {
     const serializable = Object.entries(filtersPerSlot).reduce(
       (acc, [key, value]) => ({
         ...acc,
         [key]: value.map((f) => f.serialize()),
-      })
-      ,
+      }),
       {} as Record<string, string[]>,
     )
 
@@ -249,34 +252,37 @@ export function loadFiltersPerSlotFromLocalStorage(): FiltersPerSlot | null {
       return null
     }
 
-    return Object.entries(parsed).reduce(
-      (acc, [slot, serializedFilters]) => {
-        // スロット名の検証
-        if (!VALID_SLOTS.has(slot as CandidatesKey)) {
-          logger.warn('Invalid slot in filters per slot from localStorage, skipping', { slot })
-          return acc
+    return Object.entries(parsed).reduce((acc, [slot, serializedFilters]) => {
+      // スロット名の検証
+      if (!VALID_SLOTS.has(slot as CandidatesKey)) {
+        logger.warn(
+          'Invalid slot in filters per slot from localStorage, skipping',
+          { slot },
+        )
+        return acc
+      }
+
+      // serializedFiltersが配列かチェック
+      if (!Array.isArray(serializedFilters)) {
+        logger.warn(
+          'Filters for slot from localStorage is not an array, skipping',
+          { slot },
+        )
+        return acc
+      }
+      const filters: Filter[] = []
+      for (const serializedFilter of serializedFilters) {
+        const parsedFilter = parseFilter(serializedFilter)
+        if (parsedFilter) {
+          filters.push(parsedFilter)
         }
-        
-        // serializedFiltersが配列かチェック
-        if (!Array.isArray(serializedFilters)) {
-          logger.warn('Filters for slot from localStorage is not an array, skipping', { slot })
-          return acc
-        }
-        const filters: Filter[] = []
-        for (const serializedFilter of serializedFilters) {
-          const parsedFilter = parseFilter(serializedFilter)
-          if (parsedFilter) {
-            filters.push(parsedFilter)
-          }
-        }
-        
-        return {
-          ...acc,
-          [slot as CandidatesKey]: filters,
-        }
-      },
-      {} as FiltersPerSlot,
-    )
+      }
+
+      return {
+        ...acc,
+        [slot as CandidatesKey]: filters,
+      }
+    }, {} as FiltersPerSlot)
   } catch (error) {
     logger.error('Failed to load filters per slot from localStorage', {
       error: error instanceof Error ? error.message : String(error),

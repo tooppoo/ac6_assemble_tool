@@ -12,21 +12,22 @@
   import { Result } from '@praha/byethrow'
 
   import FilterPanel from './FilterPanel.svelte'
-  import { applyFilters } from './state/filter/filters-core'
   import PartsGrid from './PartsGrid.svelte'
   import SlotSelector from './SlotSelector.svelte'
+  import { applyFilters } from './state/filter/filters-core'
+  import {
+    createDefaultFiltersPerSlot,
+    loadFiltersPerSlotFromLocalStorage,
+    saveFiltersPerSlotToLocalStorage,
+    type FiltersPerSlot,
+  } from './state/filter/serialization'
   import {
     deserializeFromURL,
     serializeToURL,
     type SharedState,
     type Filter,
   } from './state/state-serializer'
-  import { createDefaultFiltersPerSlot, loadFiltersPerSlotFromLocalStorage, saveFiltersPerSlotToLocalStorage, type FiltersPerSlot } from './state/filter/serialization'
-  import {
-    saveViewMode,
-    loadViewMode,
-    type ViewMode,
-  } from './state/view-mode'
+  import { saveViewMode, loadViewMode, type ViewMode } from './state/view-mode'
   import { FavoriteStore } from './stores/favorite-store'
 
   import { browser } from '$app/environment'
@@ -58,11 +59,14 @@
 
   // スロットごとの独立フィルタ管理（Requirement 2.5）
   let filtersPerSlot = $state<FiltersPerSlot>(
-    browser ? loadFiltersPerSlotFromLocalStorage() ?? createDefaultFiltersPerSlot() : createDefaultFiltersPerSlot()
+    browser
+      ? (loadFiltersPerSlotFromLocalStorage() ?? createDefaultFiltersPerSlot())
+      : createDefaultFiltersPerSlot(),
   )
 
   const initialSlot = initialState?.slot ?? 'rightArmUnit'
-  const initialFiltersForSlot = initialState?.filters ?? filtersPerSlot[initialSlot] ?? []
+  const initialFiltersForSlot =
+    initialState?.filters ?? filtersPerSlot[initialSlot] ?? []
 
   // 状態管理（Svelte 5 runes）
   let currentSlot = $state<CandidatesKey>(initialSlot)
