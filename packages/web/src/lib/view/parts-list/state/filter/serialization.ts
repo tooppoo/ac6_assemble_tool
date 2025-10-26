@@ -1,4 +1,3 @@
-import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 import { CANDIDATES_KEYS, type CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
@@ -14,6 +13,7 @@ import {
   buildNameFilter,
   buildManufactureFilter,
   buildCategoryFilter,
+  isPropertyFilterKey,
 } from './filters-application'
 import {
   type Filter,
@@ -45,7 +45,7 @@ export function parseFilter(filterParam: string): Filter | null {
       const [, property, operator, valueStr] = parts
 
       // propertyの検証: 無効なプロパティはスキップ
-      if (!isValidFilterProperty(property)) {
+      if (!isPropertyFilterKey(property)) {
         return null
       }
 
@@ -65,11 +65,7 @@ export function parseFilter(filterParam: string): Filter | null {
         return null
       }
 
-      return buildPropertyFilter(
-        property as keyof ACParts,
-        operand,
-        numValue,
-      )
+      return buildPropertyFilter(property, operand, numValue)
     }
 
     case 'string': {
@@ -301,24 +297,6 @@ export function createDefaultFiltersPerSlot(): FiltersPerSlot {
 }
 
 /**
- * 有効なフィルタプロパティ一覧
- * 全パーツ共通の基本プロパティのみを許可
- */
-const VALID_FILTER_PROPERTIES: ReadonlySet<string> = new Set([
-  'price',
-  'weight',
-  'en_load',
-  'name',
-  'classification',
-  'manufacture',
-  'category',
-])
-/**
- * フィルタプロパティが有効かどうかを検証
- */
-function isValidFilterProperty(property: string): boolean {
-  return VALID_FILTER_PROPERTIES.has(property)
-}/**
  * スロットごとのフィルタ状態
  * 各スロットが独立したフィルタ配列を持つ
  */
@@ -326,4 +304,3 @@ function isValidFilterProperty(property: string): boolean {
 export type FiltersPerSlot = {
   [K in CandidatesKey]?: Filter[]
 }
-

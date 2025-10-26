@@ -15,10 +15,22 @@
     numericOperands,
     selectAnyOperand,
     stringOperands,
-    type Filter, extractManufacturers,
-    extractCategories, } from './filters-core'
+    type Filter,
+    extractManufacturers,
+    extractCategories,
+  } from './filters-core'
   import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
-  import { buildCategoryFilter, buildManufactureFilter, buildNameFilter, buildPropertyFilter, translateCategory, translateManufacturer, translateOperand, translateProperty } from './filters-application'
+  import {
+    buildCategoryFilter,
+    buildManufactureFilter,
+    buildNameFilter,
+    buildPropertyFilter,
+    translateCategory,
+    translateManufacturer,
+    translateOperand,
+    translateProperty,
+    type PropertyFilterKey,
+  } from './state/filter/filters-application'
 
   // i18n
   const i18n = getContext<I18NextStore>('i18n')
@@ -54,7 +66,7 @@
   }
 
   // PropertyFilter用の状態
-  let selectedProperty = $state<keyof ACParts>('price')
+  let selectedProperty = $state<PropertyFilterKey>('price')
   let propertyOperandId = $state(availableFilters.property[0].id)
   let propertyInputValue = $state('')
 

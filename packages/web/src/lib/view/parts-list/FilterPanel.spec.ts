@@ -10,7 +10,7 @@ import { render, screen, fireEvent } from '@testing-library/svelte'
 import { describe, it, expect } from 'vitest'
 
 import FilterPanel from './FilterPanel.svelte'
-import { buildPropertyFilter } from './state/filter/filters-application'
+import { buildPropertyFilter, type PropertyFilterKey } from './state/filter/filters-application'
 import { numericOperands, type Filter } from './state/filter/filters-core'
 
 type FilterPanelProps = {
@@ -49,7 +49,7 @@ const getNumericOperand = (id: string) => {
 }
 
 const createPropertyFilter = (
-  property: keyof ACParts,
+  property: PropertyFilterKey,
   operandId: string,
   value: number,
 ): Filter => buildPropertyFilter(property, getNumericOperand(operandId), value)
