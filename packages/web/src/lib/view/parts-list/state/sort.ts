@@ -18,7 +18,9 @@ export function parseSort(
   }
 
   return { key, order }
-} /**
+}
+
+/**
  * 並び替え順序
  */
 

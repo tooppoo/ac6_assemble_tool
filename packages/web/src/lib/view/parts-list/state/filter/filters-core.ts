@@ -127,7 +127,7 @@ type FilterOperandDataType = 'numeric' | 'string' | 'array'
 // 外部には型だけ公開
 export type FilterOperand<
   D extends FilterOperandDataType = FilterOperandDataType,
-> = InnerFilterOperand<D>
+> = Omit<InnerFilterOperand<D>, 'expression'>
 
 class InnerFilterOperand<D extends FilterOperandDataType> {
   constructor(
