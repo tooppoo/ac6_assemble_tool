@@ -12,18 +12,22 @@
   import { Result } from '@praha/byethrow'
 
   import FilterPanel from './FilterPanel.svelte'
-  import { splitFiltersBySlot, applyFilters } from './filters'
   import PartsGrid from './PartsGrid.svelte'
   import SlotSelector from './SlotSelector.svelte'
+  import { applyFilters } from './state/filter/filters-core'
   import {
-    serializeToURL,
+    createDefaultFiltersPerSlot,
+    loadFiltersPerSlotFromLocalStorage,
+    saveFiltersPerSlotToLocalStorage,
+    type FiltersPerSlot,
+  } from './state/filter/serialization'
+  import {
     deserializeFromURL,
-    saveViewMode,
-    loadViewMode,
-    type ViewMode,
+    serializeToURL,
     type SharedState,
     type Filter,
-  } from './state-serializer'
+  } from './state/state-serializer'
+  import { saveViewMode, loadViewMode, type ViewMode } from './state/view-mode'
   import { FavoriteStore } from './stores/favorite-store'
 
   import { browser } from '$app/environment'
@@ -53,14 +57,24 @@
     }
   }
 
+  // スロットごとの独立フィルタ管理（Requirement 2.5）
+  let filtersPerSlot = $state<FiltersPerSlot>(
+    browser
+      ? (loadFiltersPerSlotFromLocalStorage() ?? createDefaultFiltersPerSlot())
+      : createDefaultFiltersPerSlot(),
+  )
+
+  const initialSlot = initialState?.slot ?? 'rightArmUnit'
+  const initialFiltersForSlot =
+    initialState?.filters ?? filtersPerSlot[initialSlot] ?? []
+
   // 状態管理（Svelte 5 runes）
-  let currentSlot = $state<CandidatesKey>(initialState?.slot ?? 'rightArmUnit')
-  let filters = $state<Filter[]>(initialState?.filters ?? [])
+  let currentSlot = $state<CandidatesKey>(initialSlot)
+  // filtersは現在のスロットのフィルタ状態を反映（初期値はURL or LocalStorage）
+  let filters = $state<Filter[]>(initialFiltersForSlot)
   let sortKey = $state<string | null>(initialState?.sortKey ?? null)
   let sortOrder = $state<'asc' | 'desc' | null>(initialState?.sortOrder ?? null)
   let viewMode = $state<ViewMode>(loadViewMode())
-  // TODO: Task 4.2で無効化されたフィルタをUIに表示する
-  let invalidatedFilters = $state<Filter[]>([])
   let favorites = $state<Set<string>>(new Set())
   let showFavoritesOnly = $state<boolean>(false)
 
@@ -92,7 +106,14 @@
     return filtered
   })
 
+  // スロットごとのフィルタ状態をLocalStorageに同期（Requirement 2.5.5）
+  $effect(() => {
+    if (!browser) return
+    saveFiltersPerSlotToLocalStorage(filtersPerSlot)
+  })
+
   // URL パラメータへの同期（状態変更時に自動実行）
+  // URL共有時は現在選択中のスロットのフィルタのみをシリアライズ（Requirement 2.5 Design Notes）
   $effect(() => {
     if (!browser) return
 
@@ -127,14 +148,12 @@
     // 同じスロットが選択された場合は何もしない
     if (newSlot === currentSlot) return
 
-    // スロット切替時にフィルタ条件を分割
-    const { valid, invalidated } = splitFiltersBySlot(filters, newSlot)
+    // スロットごとの独立フィルタ管理（Requirement 2.5）
+    // 現在のスロットのフィルタを保存（Requirement 2.5.1）
+    filtersPerSlot[currentSlot] = filters
 
-    // 有効なフィルタのみを保持
-    filters = valid
-
-    // 無効化されたフィルタを記録（将来のUI表示のため）
-    invalidatedFilters = invalidated
+    // 新しいスロットのフィルタを復元（Requirement 2.5.2, 2.5.3）
+    filters = filtersPerSlot[newSlot] ?? []
 
     // スロットを更新
     currentSlot = newSlot
@@ -172,10 +191,14 @@
 
   export function handleFilterChange(newFilters: Filter[]) {
     filters = newFilters
+    // フィルタ変更時に現在のスロットのフィルタ状態を更新（Requirement 2.5.1）
+    filtersPerSlot[currentSlot] = newFilters
   }
 
   export function handleClearFilters() {
     filters = []
+    // フィルタクリア時も現在のスロットのフィルタ状態を更新（Requirement 2.5.1）
+    filtersPerSlot[currentSlot] = []
   }
 
   export function handleSortChange(
@@ -200,7 +223,7 @@
     <FilterPanel
       slot={currentSlot}
       {filters}
-      {invalidatedFilters}
+      availableParts={regulation.candidates[currentSlot]}
       {showFavoritesOnly}
       onclearfilters={handleClearFilters}
       onfilterchange={handleFilterChange}

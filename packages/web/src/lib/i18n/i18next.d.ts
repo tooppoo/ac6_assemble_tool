@@ -5,6 +5,7 @@ import type { jaCategory } from './locales/ja/category'
 import type { jaClassification } from './locales/ja/classification'
 import type { jaError } from './locales/ja/error'
 import type { jaFilter } from './locales/ja/filter'
+import type { jaFilterOperand } from './locales/ja/filter/operand'
 import type { jaLock } from './locales/ja/lock'
 import type { jaManufactures } from './locales/ja/manufactures'
 import type { jaPageIndex } from './locales/ja/pages/index'
@@ -15,6 +16,7 @@ declare module 'i18next' {
       assembly: typeof jaAssembly
       lock: typeof jaLock
       filter: typeof jaFilter
+      'filter/operand': typeof jaFilterOperand
       manufacture: typeof jaManufactures
       classification: typeof jaClassification
       category: typeof jaCategory

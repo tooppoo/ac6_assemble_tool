@@ -39,5 +39,7 @@ export const enAssembly = {
 
   qbEnConsumption: 'QB EN CONSUMPTION',
 
+  price: 'PRICE',
+
   coam: 'COAM',
 }

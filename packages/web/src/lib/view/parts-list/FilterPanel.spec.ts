@@ -2,21 +2,82 @@
  * FilterPanel コンポーネントのテスト
  */
 
+import i18n from '$lib/i18n/define'
+
+import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
+import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { render, screen, fireEvent } from '@testing-library/svelte'
 import { describe, it, expect } from 'vitest'
 
 import FilterPanel from './FilterPanel.svelte'
-import type { Filter } from './filters'
+import {
+  buildPropertyFilter,
+  type PropertyFilterKey,
+} from './state/filter/filters-application'
+import { numericOperands, type Filter } from './state/filter/filters-core'
+
+type FilterPanelProps = {
+  slot: CandidatesKey
+  filters: Filter[]
+  availableParts: readonly ACParts[]
+  showFavoritesOnly?: boolean
+  onclearfilters?: () => void
+  onfilterchange?: (filters: Filter[]) => void
+  ontogglefavorites?: () => void
+}
+
+const defaultAvailableParts: readonly ACParts[] = [
+  {
+    id: 'sample-part',
+    name: 'Sample Part',
+    classification: 'arm-unit',
+    manufacture: 'balam',
+    category: 'bazooka',
+    price: 1000,
+    weight: 500,
+    en_load: 120,
+  },
+]
+
+const numericOperandMap = new Map(
+  numericOperands().map((operand) => [operand.id, operand]),
+)
+
+const getNumericOperand = (id: string) => {
+  const operand = numericOperandMap.get(id)
+  if (!operand) {
+    throw new Error(`Unknown operand id: ${id}`)
+  }
+  return operand
+}
+
+const createPropertyFilter = (
+  property: PropertyFilterKey,
+  operandId: string,
+  value: number,
+): Filter => buildPropertyFilter(property, getNumericOperand(operandId), value)
+
+const renderFilterPanel = (props?: Partial<FilterPanelProps>) => {
+  const mergedProps: FilterPanelProps = {
+    slot: props?.slot ?? 'rightArmUnit',
+    filters: props?.filters ?? [],
+    availableParts: props?.availableParts ?? defaultAvailableParts,
+    showFavoritesOnly: props?.showFavoritesOnly ?? false,
+    onclearfilters: props?.onclearfilters,
+    onfilterchange: props?.onfilterchange,
+    ontogglefavorites: props?.ontogglefavorites,
+  }
+
+  return render(FilterPanel, {
+    props: mergedProps,
+    context: new Map([['i18n', i18n]]),
+  })
+}
 
 describe('FilterPanel', () => {
   describe('基本レンダリング', () => {
     it('コンポーネントが正しくレンダリングされること', () => {
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters: [],
-        },
-      })
+      renderFilterPanel()
 
       expect(
         screen.getByRole('heading', { name: /フィルタ.*0.*件/i }),
@@ -24,28 +85,18 @@ describe('FilterPanel', () => {
     })
 
     it('フィルタが空の場合、フィルタ数0を表示すること', () => {
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters: [],
-        },
-      })
+      renderFilterPanel()
 
       expect(screen.getByText(/0.*件/i)).toBeInTheDocument()
     })
 
     it('フィルタが設定されている場合、フィルタ数を表示すること', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-        { property: 'price', operator: 'lte', value: 100000 },
+        createPropertyFilter('weight', 'lte', 5000),
+        createPropertyFilter('price', 'lte', 100000),
       ]
 
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters,
-        },
-      })
+      renderFilterPanel({ filters })
 
       expect(screen.getByText(/2.*件/i)).toBeInTheDocument()
     })
@@ -53,16 +104,9 @@ describe('FilterPanel', () => {
 
   describe('フィルタクリア機能', () => {
     it('クリアボタンが表示されること', () => {
-      const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-      ]
+      const filters: Filter[] = [createPropertyFilter('weight', 'lte', 5000)]
 
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters,
-        },
-      })
+      renderFilterPanel({ filters })
 
       expect(
         screen.getByRole('button', { name: /クリア/i }),
@@ -70,19 +114,14 @@ describe('FilterPanel', () => {
     })
 
     it('クリアボタンをクリックすると、onclearfiltersコールバックが呼ばれること', async () => {
-      const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-      ]
+      const filters: Filter[] = [createPropertyFilter('weight', 'lte', 5000)]
 
       let callbackFired = false
 
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters,
-          onclearfilters: () => {
-            callbackFired = true
-          },
+      renderFilterPanel({
+        filters,
+        onclearfilters: () => {
+          callbackFired = true
         },
       })
 
@@ -93,12 +132,7 @@ describe('FilterPanel', () => {
     })
 
     it('フィルタが空の場合、クリアボタンが無効化されること', () => {
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters: [],
-        },
-      })
+      renderFilterPanel()
 
       const clearButton = screen.getByRole('button', { name: /クリア/i })
       expect(clearButton).toBeDisabled()
@@ -108,48 +142,31 @@ describe('FilterPanel', () => {
   describe('フィルタ条件の表示', () => {
     it('設定されたフィルタ条件が表示されること', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-        { property: 'price', operator: 'gte', value: 50000 },
+        createPropertyFilter('weight', 'lte', 5000),
+        createPropertyFilter('price', 'gte', 50000),
       ]
 
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters,
-        },
-      })
+      renderFilterPanel({ filters })
 
-      // 値が表示されていることを確認（これらは一意）
-      expect(screen.getByText('5000')).toBeInTheDocument()
-      expect(screen.getByText('50000')).toBeInTheDocument()
-
-      // フィルタ一覧にweightとpriceが含まれていることを確認（複数マッチするためgetAllByTextを使用）
-      const weightTexts = screen.getAllByText(/重量/i)
-      expect(weightTexts.length).toBeGreaterThanOrEqual(1)
-
-      const priceTexts = screen.getAllByText(/価格/i)
-      expect(priceTexts.length).toBeGreaterThanOrEqual(1)
+      // フィルタ条件全体が表示されていることを確認
+      expect(screen.getByText(/総重量: ≤ 5000/)).toBeInTheDocument()
+      expect(screen.getByText(/価格: ≧ 50000/)).toBeInTheDocument()
     })
 
     it('演算子が正しく表示されること', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-        { property: 'price', operator: 'gte', value: 50000 },
-        { property: 'en_load', operator: 'eq', value: 1000 },
+        createPropertyFilter('weight', 'lte', 5000),
+        createPropertyFilter('price', 'gte', 50000),
+        createPropertyFilter('en_load', 'eq', 1000),
       ]
 
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters,
-        },
-      })
+      renderFilterPanel({ filters })
 
       // 演算子が表示されていることを確認（複数マッチする可能性があるためgetAllByTextを使用）
       const lteOperators = screen.getAllByText(/≤/)
       expect(lteOperators.length).toBeGreaterThanOrEqual(1)
 
-      const gteOperators = screen.getAllByText(/≥/)
+      const gteOperators = screen.getAllByText(/≧/)
       expect(gteOperators.length).toBeGreaterThanOrEqual(1)
 
       const eqOperators = screen.getAllByText(/=/)
@@ -157,52 +174,29 @@ describe('FilterPanel', () => {
     })
   })
 
-  describe('無効化されたフィルタの表示', () => {
-    it('無効化されたフィルタが警告として表示されること', () => {
-      const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-      ]
-      const invalidatedFilters: Filter[] = [
-        { property: 'some_invalid_prop', operator: 'gte', value: 100 },
-      ]
+  describe('フィルタ一覧の状態表示', () => {
+    it('フィルタが設定されていない場合はメッセージを表示すること', () => {
+      renderFilterPanel({ filters: [] })
 
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters,
-          invalidatedFilters,
-        },
-      })
-
-      expect(screen.getByText(/無効/i)).toBeInTheDocument()
-      expect(screen.getByText(/some_invalid_prop/i)).toBeInTheDocument()
+      expect(
+        screen.getByText('フィルタが設定されていません'),
+      ).toBeInTheDocument()
     })
 
-    it('無効化されたフィルタがない場合、警告が表示されないこと', () => {
-      const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-      ]
+    it('フィルタがある場合はメッセージを表示しないこと', () => {
+      const filters: Filter[] = [createPropertyFilter('weight', 'lte', 5000)]
 
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters,
-          invalidatedFilters: [],
-        },
-      })
+      renderFilterPanel({ filters })
 
-      expect(screen.queryByText(/無効/i)).not.toBeInTheDocument()
+      expect(
+        screen.queryByText('フィルタが設定されていません'),
+      ).not.toBeInTheDocument()
     })
   })
 
   describe('フィルタ追加UI', () => {
     it('フィルタ追加フォームが表示されること', () => {
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters: [],
-        },
-      })
+      renderFilterPanel()
 
       // プロパティ選択
       expect(screen.getByLabelText(/属性/i)).toBeInTheDocument()
@@ -217,13 +211,10 @@ describe('FilterPanel', () => {
     it('フィルタ追加時にonfilterchangeコールバックが呼ばれること', async () => {
       let updatedFilters: Filter[] = []
 
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters: [],
-          onfilterchange: (filters: Filter[]) => {
-            updatedFilters = filters
-          },
+      renderFilterPanel({
+        filters: [],
+        onfilterchange: (filters: Filter[]) => {
+          updatedFilters = filters
         },
       })
 
@@ -245,20 +236,13 @@ describe('FilterPanel', () => {
 
       // コールバックが呼ばれ、正しいフィルタが追加されることを確認
       expect(updatedFilters).toHaveLength(1)
-      expect(updatedFilters[0]).toEqual({
-        property: 'weight',
-        operator: 'lte',
-        value: 5000,
-      })
+      expect(updatedFilters[0]?.property).toBe('weight')
+      expect(updatedFilters[0]?.value).toBe(5000)
+      expect(updatedFilters[0]?.operand.id).toBe('lte')
     })
 
     it('値が入力されていない場合、追加ボタンが無効化されること', () => {
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters: [],
-        },
-      })
+      renderFilterPanel()
 
       const addButton = screen.getByRole('button', { name: /追加/i })
       expect(addButton).toBeDisabled()
@@ -267,13 +251,10 @@ describe('FilterPanel', () => {
     it('数値プロパティの場合、値が数値に変換されること', async () => {
       let updatedFilters: Filter[] = []
 
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters: [],
-          onfilterchange: (filters: Filter[]) => {
-            updatedFilters = filters
-          },
+      renderFilterPanel({
+        filters: [],
+        onfilterchange: (filters: Filter[]) => {
+          updatedFilters = filters
         },
       })
 
@@ -291,24 +272,19 @@ describe('FilterPanel', () => {
       await fireEvent.click(addButton)
 
       // 値が数値型として保存されることを確認
-      expect(updatedFilters[0].value).toBe(5000)
-      expect(typeof updatedFilters[0].value).toBe('number')
+      expect(updatedFilters[0]?.value).toBe(5000)
+      expect(typeof updatedFilters[0]?.value).toBe('number')
     })
   })
 
   describe('個別フィルタの削除', () => {
     it('各フィルタに削除ボタンが表示されること', () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-        { property: 'price', operator: 'gte', value: 50000 },
+        createPropertyFilter('weight', 'lte', 5000),
+        createPropertyFilter('price', 'gte', 50000),
       ]
 
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters,
-        },
-      })
+      renderFilterPanel({ filters })
 
       // 削除ボタンが2つ表示されることを確認
       const deleteButtons = screen.getAllByRole('button', { name: /削除/i })
@@ -317,19 +293,16 @@ describe('FilterPanel', () => {
 
     it('削除ボタンをクリックすると、該当フィルタが削除されること', async () => {
       const filters: Filter[] = [
-        { property: 'weight', operator: 'lte', value: 5000 },
-        { property: 'price', operator: 'gte', value: 50000 },
+        createPropertyFilter('weight', 'lte', 5000),
+        createPropertyFilter('price', 'gte', 50000),
       ]
 
       let updatedFilters: Filter[] = filters
 
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters,
-          onfilterchange: (filters: Filter[]) => {
-            updatedFilters = filters
-          },
+      renderFilterPanel({
+        filters,
+        onfilterchange: (nextFilters: Filter[]) => {
+          updatedFilters = nextFilters
         },
       })
 
@@ -339,22 +312,14 @@ describe('FilterPanel', () => {
 
       // 1つ目のフィルタが削除され、2つ目のフィルタのみ残ることを確認
       expect(updatedFilters).toHaveLength(1)
-      expect(updatedFilters[0]).toEqual({
-        property: 'price',
-        operator: 'gte',
-        value: 50000,
-      })
+      expect(updatedFilters[0]?.property).toBe('price')
+      expect(updatedFilters[0]?.value).toBe(50000)
     })
   })
 
   describe('お気に入りフィルタトグル', () => {
     it('お気に入りフィルタトグルボタンが表示されること', () => {
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters: [],
-        },
-      })
+      renderFilterPanel()
 
       // お気に入りボタンが表示されることを確認
       const favoriteButton = screen.getByRole('button', {
@@ -364,13 +329,7 @@ describe('FilterPanel', () => {
     })
 
     it('デフォルトではお気に入りフィルタがオフであること', () => {
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters: [],
-          showFavoritesOnly: false,
-        },
-      })
+      renderFilterPanel({ showFavoritesOnly: false })
 
       const favoriteButton = screen.getByRole('button', {
         name: /お気に入りのみ表示/i,
@@ -380,13 +339,7 @@ describe('FilterPanel', () => {
     })
 
     it('お気に入りフィルタがオンの場合、ボタンがハイライト表示されること', () => {
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters: [],
-          showFavoritesOnly: true,
-        },
-      })
+      renderFilterPanel({ showFavoritesOnly: true })
 
       const favoriteButton = screen.getByRole('button', {
         name: /お気に入りのみ表示/i,
@@ -400,13 +353,9 @@ describe('FilterPanel', () => {
     it('お気に入りフィルタボタンをクリックすると、ontogglefavoritesコールバックが呼ばれること', async () => {
       let callbackFired = false
 
-      render(FilterPanel, {
-        props: {
-          slot: 'rightArmUnit',
-          filters: [],
-          ontogglefavorites: () => {
-            callbackFired = true
-          },
+      renderFilterPanel({
+        ontogglefavorites: () => {
+          callbackFired = true
         },
       })
 

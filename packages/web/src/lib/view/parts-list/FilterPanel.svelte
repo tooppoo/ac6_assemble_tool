@@ -5,21 +5,39 @@
    * スロット対応の属性フィルタUIを提供し、フィルタ条件の変更イベントを発火します。
    */
 
+  import type { I18NextStore } from '$lib/i18n/define'
+
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
-  import { Alert, Collapse } from '@sveltestrap/sveltestrap'
+  import { Collapse } from '@sveltestrap/sveltestrap'
+  import { getContext } from 'svelte'
 
-  import type { Filter } from './filters'
   import {
-    FILTERABLE_PROPERTIES,
-    PROPERTY_LABELS,
-    isNumericProperty,
-  } from './filters'
+    buildCategoryFilter,
+    buildManufactureFilter,
+    buildNameFilter,
+    buildPropertyFilter,
+    translateCategory,
+    translateManufacturer,
+    translateOperand,
+    translateProperty,
+    type PropertyFilterKey,
+  } from './state/filter/filters-application'
+  import {
+    numericOperands,
+    selectAnyOperand,
+    stringOperands,
+    type Filter,
+    extractManufacturers,
+    extractCategories,
+  } from './state/filter/filters-core'
 
+  // i18n
+  const i18n = getContext<I18NextStore>('i18n')
   // Props
   interface Props {
     slot: CandidatesKey
     filters: Filter[]
-    invalidatedFilters?: Filter[]
+    availableParts: readonly Record<string, unknown>[]
     showFavoritesOnly?: boolean
     onclearfilters?: () => void
     onfilterchange?: (filters: Filter[]) => void
@@ -28,7 +46,7 @@
 
   let {
     filters,
-    invalidatedFilters = [],
+    availableParts,
     showFavoritesOnly = false,
     onclearfilters,
     onfilterchange,
@@ -36,25 +54,53 @@
   }: Props = $props()
 
   // フィルタ追加フォームの状態
-  let selectedProperty = $state('price')
-  let selectedOperator = $state<Filter['operator']>('lte')
-  let inputValue = $state('')
+  type FilterType = 'property' | 'name' | 'manufacture' | 'category'
+  let selectedFilterType = $state<FilterType>('property')
+
+  const availableFilters = {
+    property: numericOperands(),
+    name: stringOperands(),
+    manufacture: selectAnyOperand(),
+    category: selectAnyOperand(),
+  }
+
+  // PropertyFilter用の状態
+  let selectedProperty = $state<PropertyFilterKey>('price')
+  let propertyOperandId = $state(availableFilters.property[0].id)
+  let propertyInputValue = $state('')
+
+  // NameFilter用の状態
+  let nameOperandId = $state(availableFilters.name[0].id)
+  let nameInputValue = $state('')
+
+  // ManufactureFilter用の状態
+  let selectedManufacturers = $state<string[]>([])
+
+  // CategoryFilter用の状態
+  let selectedCategories = $state<string[]>([])
 
   // 折りたたみ状態
   let isOpen = $state(true)
 
-  // 演算子の表示マップ
-  const operatorLabels: Record<Filter['operator'], string> = {
-    lt: '<',
-    lte: '≤',
-    gt: '>',
-    gte: '≥',
-    eq: '=',
-    ne: '≠',
-  }
+  // 利用可能なメーカーとカテゴリを計算
+  const availableManufacturers = $derived(extractManufacturers(availableParts))
+  const availableCategories = $derived(extractCategories(availableParts))
 
-  // 追加ボタンの有効/無効判定（inputValueが数値に変換される可能性があるため、String()でキャスト）
-  const isAddButtonDisabled = $derived(String(inputValue).trim() === '')
+  // 追加ボタンの有効/無効判定
+  const isAddButtonDisabled = $derived(() => {
+    switch (selectedFilterType) {
+      case 'property':
+        return String(propertyInputValue).trim() === ''
+      case 'name':
+        return String(nameInputValue).trim() === ''
+      case 'manufacture':
+        return selectedManufacturers.length === 0
+      case 'category':
+        return selectedCategories.length === 0
+      default:
+        return true
+    }
+  })
 
   // フィルタクリアハンドラ
   function handleClearFilters() {
@@ -63,23 +109,67 @@
 
   // フィルタ追加ハンドラ
   function handleAddFilter() {
-    const valueStr = String(inputValue).trim()
-    if (valueStr === '') return
+    let newFilter: Filter | null = null
 
-    const newFilter: Filter = {
-      property: selectedProperty,
-      operator: selectedOperator,
-      value: isNumericProperty(selectedProperty)
-        ? parseFloat(valueStr)
-        : valueStr,
+    switch (selectedFilterType) {
+      case 'property': {
+        const valueStr = String(propertyInputValue).trim()
+        if (valueStr === '') return
+
+        const property = selectedProperty
+        const value = parseInt(valueStr, 10)
+
+        // IDから対応するoperandを見つける
+        const operand = availableFilters.property.find(
+          (op) => op.id === propertyOperandId,
+        )
+        if (!operand) return
+
+        newFilter = buildPropertyFilter(property, operand, value)
+        propertyInputValue = ''
+        break
+      }
+
+      case 'name': {
+        const valueStr = String(nameInputValue).trim()
+        if (valueStr === '') return
+
+        // IDから対応するoperandを見つける
+        const operand = availableFilters.name.find(
+          (op) => op.id === nameOperandId,
+        )
+        if (!operand) return
+
+        newFilter = buildNameFilter(operand, valueStr)
+        nameInputValue = ''
+        break
+      }
+
+      case 'manufacture': {
+        if (selectedManufacturers.length === 0) return
+
+        newFilter = buildManufactureFilter(availableFilters.manufacture, [
+          ...selectedManufacturers,
+        ])
+        selectedManufacturers = []
+        break
+      }
+
+      case 'category': {
+        if (selectedCategories.length === 0) return
+
+        newFilter = buildCategoryFilter(availableFilters.category, [
+          ...selectedCategories,
+        ])
+        selectedCategories = []
+        break
+      }
     }
 
-    // 既存のフィルタに新しいフィルタを追加
-    const updatedFilters = [...filters, newFilter]
-    onfilterchange?.(updatedFilters)
-
-    // フォームをリセット
-    inputValue = ''
+    if (newFilter) {
+      const updatedFilters = [...filters, newFilter]
+      onfilterchange?.(updatedFilters)
+    }
   }
 
   // 個別フィルタ削除ハンドラ
@@ -94,11 +184,6 @@
 
   function handleToggleFavorites() {
     ontogglefavorites?.()
-  }
-
-  /** {@link Filter} からeach用のkeyを生成する*/
-  function fKey(f: Filter): string {
-    return `${f.property}${f.operator}${f.value}`
   }
 </script>
 
@@ -140,94 +225,234 @@
 
   <Collapse {isOpen}>
     <div class="card-body">
-      {#if invalidatedFilters.length > 0}
-        <Alert color="warning" class="mb-3">
-          <div>
-            <strong>無効化された条件:</strong>
-            {#each invalidatedFilters as filter, i (fKey(filter) + i)}
-              {filter.property}
-              {operatorLabels[filter.operator]}
-              {filter.value}{i < invalidatedFilters.length - 1 ? ', ' : ''}
-            {/each}
-          </div>
-        </Alert>
-      {/if}
-
       <!-- フィルタ追加フォーム -->
       <div class="filter-add-form bg-secondary bg-opacity-25 p-3 rounded mb-3">
-        <div class="row g-2">
-          <div class="col-12 col-md-4">
-            <label for="filter-property" class="form-label mb-1 text-white"
-              >属性</label
+        <!-- フィルタタイプ選択 -->
+        <div class="row g-2 mb-2">
+          <div class="col-12">
+            <label for="filter-type" class="form-label mb-1 text-white"
+              >フィルタ種類</label
             >
             <select
-              id="filter-property"
+              id="filter-type"
               class="form-select"
-              bind:value={selectedProperty}
+              bind:value={selectedFilterType}
             >
-              {#each FILTERABLE_PROPERTIES as property (property)}
-                <option value={property}>{PROPERTY_LABELS[property]}</option>
-              {/each}
+              <option value="property">属性値検索</option>
+              <option value="name">名前検索</option>
+              <option value="manufacture">メーカー検索</option>
+              <option value="category">カテゴリ検索</option>
             </select>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label for="filter-operator" class="form-label mb-1 text-white"
-              >条件</label
-            >
-            <select
-              id="filter-operator"
-              class="form-select"
-              bind:value={selectedOperator}
-            >
-              <option value="lte">≤ 以下</option>
-              <option value="gte">≥ 以上</option>
-              <option value="lt">&lt; 未満</option>
-              <option value="gt">&gt; 超過</option>
-              <option value="eq">= 等しい</option>
-              <option value="ne">≠ 等しくない</option>
-            </select>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label for="filter-value" class="form-label mb-1 text-white"
-              >値</label
-            >
-            <input
-              id="filter-value"
-              type={isNumericProperty(selectedProperty) ? 'number' : 'text'}
-              class="form-control"
-              bind:value={inputValue}
-              placeholder="値を入力"
-            />
-          </div>
-
-          <div class="col-12 col-md-2 d-flex align-items-end">
-            <button
-              type="button"
-              class="btn btn-primary w-100"
-              disabled={isAddButtonDisabled}
-              onclick={handleAddFilter}
-            >
-              追加
-            </button>
           </div>
         </div>
+
+        <!-- PropertyFilter用UI -->
+        {#if selectedFilterType === 'property'}
+          <div class="row g-2">
+            <div class="col-12 col-md-4">
+              <label for="filter-property" class="form-label mb-1 text-white"
+                >属性</label
+              >
+              <select
+                id="filter-property"
+                class="form-select"
+                bind:value={selectedProperty}
+              >
+                <option value="price"
+                  >{translateProperty('price', $i18n)}</option
+                >
+                <option value="weight"
+                  >{translateProperty('weight', $i18n)}</option
+                >
+                <option value="en_load"
+                  >{translateProperty('en_load', $i18n)}</option
+                >
+              </select>
+            </div>
+
+            <div class="col-12 col-md-3">
+              <label for="filter-operator" class="form-label mb-1 text-white"
+                >条件</label
+              >
+              <select
+                id="filter-operator"
+                class="form-select"
+                bind:value={propertyOperandId}
+              >
+                {#each availableFilters.property as operand (operand.id)}
+                  <option value={operand.id}>
+                    {translateOperand(operand, $i18n)}
+                  </option>
+                {/each}
+              </select>
+            </div>
+
+            <div class="col-12 col-md-3">
+              <label for="filter-value" class="form-label mb-1 text-white"
+                >値</label
+              >
+              <input
+                id="filter-value"
+                type="number"
+                class="form-control"
+                bind:value={propertyInputValue}
+                placeholder="値を入力"
+              />
+            </div>
+
+            <div class="col-12 col-md-2 d-flex align-items-end">
+              <button
+                type="button"
+                class="btn btn-primary w-100"
+                disabled={isAddButtonDisabled()}
+                onclick={handleAddFilter}
+              >
+                追加
+              </button>
+            </div>
+          </div>
+        {/if}
+
+        <!-- NameFilter用UI -->
+        {#if selectedFilterType === 'name'}
+          <div class="row g-2">
+            <div class="col-12 col-md-6">
+              <label for="name-value" class="form-label mb-1 text-white"
+                >名前</label
+              >
+              <input
+                id="name-value"
+                type="text"
+                class="form-control"
+                bind:value={nameInputValue}
+                placeholder="パーツ名を入力"
+              />
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label for="name-mode" class="form-label mb-1 text-white"
+                >検索モード</label
+              >
+              <select
+                id="name-mode"
+                class="form-select"
+                bind:value={nameOperandId}
+              >
+                {#each availableFilters.name as operand (operand.id)}
+                  <option value={operand.id}>
+                    {translateOperand(operand, $i18n)}
+                  </option>
+                {/each}
+              </select>
+            </div>
+
+            <div class="col-12 col-md-2 d-flex align-items-end">
+              <button
+                type="button"
+                class="btn btn-primary w-100"
+                disabled={isAddButtonDisabled()}
+                onclick={handleAddFilter}
+              >
+                追加
+              </button>
+            </div>
+          </div>
+        {/if}
+
+        <!-- ManufactureFilter用UI -->
+        {#if selectedFilterType === 'manufacture'}
+          <div class="row g-2">
+            <div class="col-12 col-md-10">
+              <p class="form-label mb-1 text-white">メーカー（複数選択可）</p>
+              <div
+                class="manufacture-checkboxes p-2 bg-dark bg-opacity-50 rounded"
+                style="max-height: 200px; overflow-y: auto;"
+              >
+                {#each availableManufacturers as manufacturer (manufacturer)}
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="manu-{manufacturer}"
+                      value={manufacturer}
+                      bind:group={selectedManufacturers}
+                    />
+                    <label
+                      class="form-check-label text-white"
+                      for="manu-{manufacturer}"
+                    >
+                      {translateManufacturer(manufacturer, $i18n)}
+                    </label>
+                  </div>
+                {/each}
+              </div>
+            </div>
+
+            <div class="col-12 col-md-2 d-flex align-items-end">
+              <button
+                type="button"
+                class="btn btn-primary w-100"
+                disabled={isAddButtonDisabled()}
+                onclick={handleAddFilter}
+              >
+                追加
+              </button>
+            </div>
+          </div>
+        {/if}
+
+        <!-- CategoryFilter用UI -->
+        {#if selectedFilterType === 'category'}
+          <div class="row g-2">
+            <div class="col-12 col-md-10">
+              <p class="form-label mb-1 text-white">カテゴリ（複数選択可）</p>
+              <div
+                class="category-checkboxes p-2 bg-dark bg-opacity-50 rounded"
+                style="max-height: 200px; overflow-y: auto;"
+              >
+                {#each availableCategories as category (category)}
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="cat-{category}"
+                      value={category}
+                      bind:group={selectedCategories}
+                    />
+                    <label
+                      class="form-check-label text-white"
+                      for="cat-{category}"
+                    >
+                      {translateCategory(category, $i18n)}
+                    </label>
+                  </div>
+                {/each}
+              </div>
+            </div>
+
+            <div class="col-12 col-md-2 d-flex align-items-end">
+              <button
+                type="button"
+                class="btn btn-primary w-100"
+                disabled={isAddButtonDisabled()}
+                onclick={handleAddFilter}
+              >
+                追加
+              </button>
+            </div>
+          </div>
+        {/if}
       </div>
 
       <!-- 現在のフィルタ一覧 -->
       {#if filters.length > 0}
         <div class="list-group">
-          {#each filters as filter, index (fKey(filter) + index)}
+          {#each filters as filter, index (filter.stringify($i18n) + index)}
             <div
               class="list-group-item filter-list-item d-flex justify-content-between align-items-center"
             >
               <div>
-                <span class="fs-5 me-2"
-                  >{PROPERTY_LABELS[filter.property] || filter.property}</span
-                >
-                <span class="me-1 fs-5">{operatorLabels[filter.operator]}</span>
-                <strong class="fs-5">{filter.value}</strong>
+                <span class="fs-5">{filter.stringify($i18n)}</span>
               </div>
               <button
                 type="button"
