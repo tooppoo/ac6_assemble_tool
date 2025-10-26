@@ -1,6 +1,6 @@
-import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
+import { type I18Next } from '$lib/i18n/define';
 
-import { type I18Next } from '../../../i18n/define';
+import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 
 /**
  * Filterのコアロジック

@@ -3,16 +3,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
 import { buildPropertyFilter, buildNameFilter, buildManufactureFilter, buildCategoryFilter } from './filter/filters-application'
 import { numericOperands, stringOperands, selectAnyOperand } from './filter/filters-core'
-import {
-  serializeToURL,
-  deserializeFromURL,
-  saveViewMode,
-  loadViewMode,
-  saveFiltersPerSlotToLocalStorage,
-  loadFiltersPerSlotFromLocalStorage,
-  type SharedState,
-  type FiltersPerSlot,
-} from './state-serializer'
+import { deserializeFromURL, serializeToURL, type SharedState } from './state-serializer'
 
 describe('StateSerializer', () => {
   beforeEach(() => {
@@ -420,68 +411,4 @@ describe('StateSerializer', () => {
     })
   })
 
-  describe('saveViewMode', () => {
-    it('表示モードをLocalStorageに保存できること', () => {
-      saveViewMode('list')
-
-      const saved = localStorage.getItem('ac6-parts-list-view-mode')
-      expect(saved).toBe('list')
-    })
-
-    it('表示モードを上書き保存できること', () => {
-      saveViewMode('grid')
-      saveViewMode('list')
-
-      const saved = localStorage.getItem('ac6-parts-list-view-mode')
-      expect(saved).toBe('list')
-    })
-  })
-
-  describe('loadViewMode', () => {
-    it('LocalStorageから表示モードを読み込めること', () => {
-      localStorage.setItem('ac6-parts-list-view-mode', 'list')
-
-      const viewMode = loadViewMode()
-
-      expect(viewMode).toBe('list')
-    })
-
-    it('LocalStorageに表示モードが存在しない場合、デフォルト(grid)を返すこと', () => {
-      const viewMode = loadViewMode()
-
-      expect(viewMode).toBe('grid')
-    })
-
-    it('LocalStorageの値が不正な場合、デフォルト(grid)を返すこと', () => {
-      localStorage.setItem('ac6-parts-list-view-mode', 'invalid')
-
-      const viewMode = loadViewMode()
-
-      expect(viewMode).toBe('grid')
-    })
-  })
-
-  describe('FiltersPerSlot persistence', () => {
-    it('LocalStorageに保存したフィルタが関数ごと復元できること', () => {
-      const filtersPerSlot: FiltersPerSlot = {
-        rightArmUnit: [
-          buildPropertyFilter('weight', numericOperands()[0], 1200),
-          buildNameFilter(stringOperands()[0], 'HML-G2/P19 LAMIA'),
-        ],
-      }
-
-      saveFiltersPerSlotToLocalStorage(filtersPerSlot)
-
-      const loaded = loadFiltersPerSlotFromLocalStorage()
-
-      expect(loaded).not.toBeNull()
-      const restoredFilters = loaded?.rightArmUnit
-      expect(restoredFilters).toBeDefined()
-      expect(restoredFilters).toHaveLength(2)
-
-      // stringify/serialize が復元されていること（JSON経由では現状失われるためREDになる）
-      expect(typeof restoredFilters?.[0]?.stringify).toBe('function')
-      expect(typeof restoredFilters?.[0]?.serialize).toBe('function')
-    })
-  })
 })

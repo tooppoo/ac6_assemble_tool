@@ -1,58 +1,26 @@
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
-import {
-  type CandidatesKey,
-  CANDIDATES_KEYS,
-} from '@ac6_assemble_tool/parts/types/candidates'
+import { CANDIDATES_KEYS, type CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
-import * as LZString from 'lz-string'
+import {
+  compressToEncodedURIComponent,
+  decompressFromEncodedURIComponent,
+} from 'lz-string'
 
-import { buildCategoryFilter, buildManufactureFilter, buildNameFilter, buildPropertyFilter } from './filter/filters-application'
-import { numericOperands, selectAnyOperand, stringOperands, type Filter } from './filter/filters-core'
+import { VALID_SLOTS, type DeserializeError } from '../shared'
 
-/**
- * 表示モード（grid/list）
- */
-export type ViewMode = 'grid' | 'list'
-
-// Filterは filters.ts からエクスポート
-export type { Filter } from './filter/filters-core'
-
-/**
- * 並び替え順序
- */
-export type SortOrder = 'asc' | 'desc'
-
-/**
- * スロットごとのフィルタ状態
- * 各スロットが独立したフィルタ配列を持つ
- */
-export type FiltersPerSlot = {
-  [K in CandidatesKey]?: Filter[]
-}
-
-/**
- * URL共有用の状態（スロット、フィルタ、並び替え）
- */
-export interface SharedState {
-  slot: CandidatesKey
-  filters: Filter[]
-  sortKey: string | null
-  sortOrder: SortOrder | null
-}
-
-/**
- * デシリアライズエラー
- */
-export type DeserializeError =
-  | { type: 'invalid_format'; message: string }
-  | { type: 'invalid_slot'; slot: string }
-  | { type: 'invalid_filter'; filter: string }
-
-/**
- * LocalStorageに保存する表示モードのキー
- */
-const VIEW_MODE_KEY = 'ac6-parts-list-view-mode'
+import {
+  buildPropertyFilter,
+  buildNameFilter,
+  buildManufactureFilter,
+  buildCategoryFilter,
+} from './filters-application'
+import {
+  type Filter,
+  numericOperands,
+  selectAnyOperand,
+  stringOperands,
+} from './filters-core'
 
 /**
  * LocalStorageに保存するスロットごとのフィルタ状態のキー
@@ -60,134 +28,9 @@ const VIEW_MODE_KEY = 'ac6-parts-list-view-mode'
 const FILTERS_PER_SLOT_KEY = 'ac6-parts-list-filters-per-slot'
 
 /**
- * 有効なスロット一覧
+ * フィルタパラメータをパース
  */
-const VALID_SLOTS: ReadonlySet<CandidatesKey> = new Set(CANDIDATES_KEYS)
-
-/**
- * URLパラメータへのシリアライズ（共有用）
- */
-export function serializeToURL(state: SharedState): URLSearchParams {
-  const params = new URLSearchParams()
-
-  // スロット
-  params.set('slot', state.slot)
-
-  // フィルタ条件（新しい型に対応）
-  for (const filter of state.filters) {
-    params.append('filter', filter.serialize())
-  }
-
-  // 並び替え
-  if (state.sortKey && state.sortOrder) {
-    params.set('sort', `${state.sortKey}:${state.sortOrder}`)
-  }
-
-  return params
-}
-
-/**
- * URLパラメータからのデシリアライズ
- */
-export function deserializeFromURL(
-  params: URLSearchParams,
-): Result.Result<SharedState, DeserializeError> {
-  try {
-    // スロット
-    const slotParam = params.get('slot')
-    let slot: CandidatesKey = 'rightArmUnit' // デフォルト
-
-    if (slotParam) {
-      if (!VALID_SLOTS.has(slotParam as CandidatesKey)) {
-        return Result.fail({ type: 'invalid_slot', slot: slotParam })
-      }
-      slot = slotParam as CandidatesKey
-    }
-
-    // フィルタ条件
-    const filterParams = params.getAll('filter')
-    const filters: Filter[] = []
-
-    for (const filterParam of filterParams) {
-      const parsed = parseFilter(filterParam)
-      if (parsed) {
-        filters.push(parsed)
-      } else {
-        logger.warn('Invalid filter parameter skipped', {
-          filter: filterParam,
-        })
-      }
-    }
-
-    // 並び替え
-    const sortParam = params.get('sort')
-    let sortKey: string | null = null
-    let sortOrder: SortOrder | null = null
-
-    if (sortParam) {
-      const parsed = parseSort(sortParam)
-      if (parsed) {
-        sortKey = parsed.key
-        sortOrder = parsed.order
-      } else {
-        logger.warn('Invalid sort parameter, using default', {
-          sort: sortParam,
-        })
-      }
-    }
-
-    return Result.succeed({ slot, filters, sortKey, sortOrder })
-  } catch (error) {
-    logger.error('Failed to deserialize state from URL', {
-      error: error instanceof Error ? error.message : String(error),
-    })
-
-    return Result.fail({
-      type: 'invalid_format',
-      message: error instanceof Error ? error.message : String(error),
-    })
-  }
-}
-
-/**
- * LocalStorageへの表示モード保存（プライベート設定）
- */
-export function saveViewMode(viewMode: ViewMode): void {
-  try {
-    localStorage.setItem(VIEW_MODE_KEY, viewMode)
-  } catch (error) {
-    logger.error('Failed to save view mode', {
-      viewMode,
-      error: error instanceof Error ? error.message : String(error),
-    })
-  }
-}
-
-/**
- * LocalStorageからの表示モード読み込み
- */
-export function loadViewMode(): ViewMode {
-  try {
-    const saved = localStorage.getItem(VIEW_MODE_KEY)
-
-    if (saved === 'grid' || saved === 'list') {
-      return saved
-    }
-
-    return 'grid' // デフォルト
-  } catch (error) {
-    logger.error('Failed to load view mode', {
-      error: error instanceof Error ? error.message : String(error),
-    })
-
-    return 'grid' // デフォルト
-  }
-}
-
-/**
- * フィルタパラメータをパース（新しい型に対応）
- */
-function parseFilter(filterParam: string): Filter | null {
+export function parseFilter(filterParam: string): Filter | null {
   const parts = filterParam.split(':')
 
   // Format: dataType:propertyName:operator:value
@@ -288,27 +131,6 @@ function parseFilter(filterParam: string): Filter | null {
 }
 
 /**
- * 並び替えパラメータをパース
- */
-function parseSort(
-  sortParam: string,
-): { key: string; order: SortOrder } | null {
-  const parts = sortParam.split(':')
-
-  if (parts.length !== 2) {
-    return null
-  }
-
-  const [key, order] = parts
-
-  if (order !== 'asc' && order !== 'desc') {
-    return null
-  }
-
-  return { key, order }
-}
-
-/**
  * スロットごとのフィルタ状態をURLパラメータにシリアライズ
  * フィルタが設定されているスロットのみを含める（URL長を削減）
  * LZ-string圧縮を使用してURLサイズを削減
@@ -329,7 +151,7 @@ export function serializeFiltersPerSlotToURL(filtersPerSlot: FiltersPerSlot): st
 
   // JSON → 圧縮 → URLパラメータ
   const json = JSON.stringify(nonEmptyFilters)
-  const compressed = LZString.compressToEncodedURIComponent(json)
+  const compressed = compressToEncodedURIComponent(json)
   return compressed
 }
 
@@ -345,7 +167,7 @@ export function deserializeFiltersPerSlotFromURL(
   }
 
   try {
-    const json = LZString.decompressFromEncodedURIComponent(compressedFilters)
+    const json = decompressFromEncodedURIComponent(compressedFilters)
     if (!json) {
       return Result.fail({
         type: 'invalid_format',
@@ -496,4 +318,12 @@ const VALID_FILTER_PROPERTIES: ReadonlySet<string> = new Set([
  */
 function isValidFilterProperty(property: string): boolean {
   return VALID_FILTER_PROPERTIES.has(property)
+}/**
+ * スロットごとのフィルタ状態
+ * 各スロットが独立したフィルタ配列を持つ
+ */
+
+export type FiltersPerSlot = {
+  [K in CandidatesKey]?: Filter[]
 }
+

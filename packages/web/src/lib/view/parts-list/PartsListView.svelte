@@ -18,16 +18,18 @@
   import {
     deserializeFromURL,
     serializeToURL,
-    saveViewMode,
-    loadViewMode,
     saveFiltersPerSlotToLocalStorage,
     loadFiltersPerSlotFromLocalStorage,
     createDefaultFiltersPerSlot,
-    type ViewMode,
     type SharedState,
     type Filter,
-    type FiltersPerSlot,
   } from './state-serializer'
+  import { type FiltersPerSlot } from './state/filter/serialization'
+  import {
+    saveViewMode,
+    loadViewMode,
+    type ViewMode,
+  } from './state/view-mode'
   import { FavoriteStore } from './stores/favorite-store'
 
   import { browser } from '$app/environment'
