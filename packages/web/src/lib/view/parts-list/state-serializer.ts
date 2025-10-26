@@ -399,7 +399,16 @@ export function deserializeFiltersPerSlotFromURL(
  */
 export function saveFiltersPerSlotToLocalStorage(filtersPerSlot: FiltersPerSlot): void {
   try {
-    localStorage.setItem(FILTERS_PER_SLOT_KEY, JSON.stringify(filtersPerSlot))
+    const serializable = Object.entries(filtersPerSlot).reduce(
+      (acc, [key, value]) => ({
+        ...acc,
+        [key]: value.map((f) => f.serialize()),
+      })
+      ,
+      {} as Record<string, string[]>,
+    )
+
+    localStorage.setItem(FILTERS_PER_SLOT_KEY, JSON.stringify(serializable))
   } catch (error) {
     logger.error('Failed to save filters per slot to localStorage', {
       error: error instanceof Error ? error.message : String(error),
@@ -415,15 +424,41 @@ export function loadFiltersPerSlotFromLocalStorage(): FiltersPerSlot | null {
     const saved = localStorage.getItem(FILTERS_PER_SLOT_KEY)
     if (!saved) return null
 
-    const parsed = JSON.parse(saved)
-
+    const parsed = JSON.parse(saved) as Record<string, string[]>
     // 基本的な型チェック
     if (typeof parsed !== 'object' || parsed === null) {
       logger.warn('Invalid filters per slot in localStorage')
       return null
     }
 
-    return parsed as FiltersPerSlot
+    return Object.entries(parsed).reduce(
+      (acc, [slot, serializedFilters]) => {
+        // スロット名の検証
+        if (!VALID_SLOTS.has(slot as CandidatesKey)) {
+          logger.warn('Invalid slot in filters per slot from localStorage, skipping', { slot })
+          return acc
+        }
+        
+        // serializedFiltersが配列かチェック
+        if (!Array.isArray(serializedFilters)) {
+          logger.warn('Filters for slot from localStorage is not an array, skipping', { slot })
+          return acc
+        }
+        const filters: Filter[] = []
+        for (const serializedFilter of serializedFilters) {
+          const parsedFilter = parseFilter(serializedFilter)
+          if (parsedFilter) {
+            filters.push(parsedFilter)
+          }
+        }
+        
+        return {
+          ...acc,
+          [slot as CandidatesKey]: filters,
+        }
+      },
+      {} as FiltersPerSlot,
+    )
   } catch (error) {
     logger.error('Failed to load filters per slot from localStorage', {
       error: error instanceof Error ? error.message : String(error),

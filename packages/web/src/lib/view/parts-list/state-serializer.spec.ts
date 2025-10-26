@@ -1,15 +1,18 @@
 import { Result } from '@praha/byethrow'
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
+import { buildPropertyFilter, buildNameFilter, buildManufactureFilter, buildCategoryFilter } from './filters-application'
+import { numericOperands, stringOperands, selectAnyOperand } from './filters-core'
 import {
   serializeToURL,
   deserializeFromURL,
   saveViewMode,
   loadViewMode,
+  saveFiltersPerSlotToLocalStorage,
+  loadFiltersPerSlotFromLocalStorage,
   type SharedState,
+  type FiltersPerSlot,
 } from './state-serializer'
-import { buildPropertyFilter, buildNameFilter, buildManufactureFilter, buildCategoryFilter } from './filters-application'
-import { numericOperands, stringOperands, selectAnyOperand } from './filters-core'
 
 describe('StateSerializer', () => {
   beforeEach(() => {
@@ -455,6 +458,30 @@ describe('StateSerializer', () => {
       const viewMode = loadViewMode()
 
       expect(viewMode).toBe('grid')
+    })
+  })
+
+  describe('FiltersPerSlot persistence', () => {
+    it('LocalStorageに保存したフィルタが関数ごと復元できること', () => {
+      const filtersPerSlot: FiltersPerSlot = {
+        rightArmUnit: [
+          buildPropertyFilter('weight', numericOperands()[0], 1200),
+          buildNameFilter(stringOperands()[0], 'HML-G2/P19 LAMIA'),
+        ],
+      }
+
+      saveFiltersPerSlotToLocalStorage(filtersPerSlot)
+
+      const loaded = loadFiltersPerSlotFromLocalStorage()
+
+      expect(loaded).not.toBeNull()
+      const restoredFilters = loaded?.rightArmUnit
+      expect(restoredFilters).toBeDefined()
+      expect(restoredFilters).toHaveLength(2)
+
+      // stringify/serialize が復元されていること（JSON経由では現状失われるためREDになる）
+      expect(typeof restoredFilters?.[0]?.stringify).toBe('function')
+      expect(typeof restoredFilters?.[0]?.serialize).toBe('function')
     })
   })
 })
