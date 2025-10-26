@@ -18,8 +18,7 @@
     type Filter,
     extractManufacturers,
     extractCategories,
-  } from './filters-core'
-  import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
+  } from './state/filter/filters-core'
   import {
     buildCategoryFilter,
     buildManufactureFilter,

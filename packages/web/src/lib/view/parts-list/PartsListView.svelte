@@ -12,19 +12,16 @@
   import { Result } from '@praha/byethrow'
 
   import FilterPanel from './FilterPanel.svelte'
-  import { applyFilters } from './filters-core'
+  import { applyFilters } from './state/filter/filters-core'
   import PartsGrid from './PartsGrid.svelte'
   import SlotSelector from './SlotSelector.svelte'
   import {
     deserializeFromURL,
     serializeToURL,
-    saveFiltersPerSlotToLocalStorage,
-    loadFiltersPerSlotFromLocalStorage,
-    createDefaultFiltersPerSlot,
     type SharedState,
     type Filter,
-  } from './state-serializer'
-  import { type FiltersPerSlot } from './state/filter/serialization'
+  } from './state/state-serializer'
+  import { createDefaultFiltersPerSlot, loadFiltersPerSlotFromLocalStorage, saveFiltersPerSlotToLocalStorage, type FiltersPerSlot } from './state/filter/serialization'
   import {
     saveViewMode,
     loadViewMode,
