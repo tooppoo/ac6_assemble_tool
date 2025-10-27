@@ -64,7 +64,7 @@ function toBase64Url(bytes: Uint8Array): string {
   return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/u, '')
 }
 
-function fromBase64Url(value: string): Uint8Array | null {
+function fromBase64Url(value: string): Uint8Array<ArrayBuffer> | null {
   if (!value) {
     return null
   }
@@ -75,7 +75,8 @@ function fromBase64Url(value: string): Uint8Array | null {
 
   try {
     const binary = atob(padded)
-    const bytes = new Uint8Array(binary.length)
+    const buffer = new ArrayBuffer(binary.length)
+    const bytes = new Uint8Array(buffer)
     for (let i = 0; i < binary.length; i += 1) {
       bytes[i] = binary.charCodeAt(i)
     }
