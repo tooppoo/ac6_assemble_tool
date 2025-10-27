@@ -30,7 +30,6 @@
 
   import { browser } from '$app/environment'
   import { replaceState } from '$app/navigation'
-  import { untrack } from 'svelte'
 
   let favoriteStore: FavoriteStore | null = null
 
@@ -46,15 +45,7 @@
 
   let { regulation, initialSearchParams }: Props = $props()
 
-  // 初期状態の復元
-  let initialState: SharedState | null = null
-
-  if (browser && initialSearchParams) {
-    const result = deserializeFromURL(initialSearchParams)
-    if (Result.isSuccess(result)) {
-      initialState = result.value
-    }
-  }
+  const defaultSlot: CandidatesKey = 'rightArmUnit'
 
   // スロットごとの独立フィルタ管理（Requirement 2.5）
   let filtersPerSlot = $state<FiltersPerSlot>(createDefaultFiltersPerSlot())
@@ -69,25 +60,37 @@
     }
   }
 
-  const initialSlot = initialState?.slot ?? 'rightArmUnit'
-  const filtersFromStorage = untrack(() => filtersPerSlot[initialSlot])
-  const initialFiltersForSlot = initialState?.filters
-    ? [...initialState.filters]
-    : filtersFromStorage
-      ? [...filtersFromStorage]
-      : []
-
-  updateFiltersForSlot(initialSlot, initialFiltersForSlot)
+  updateFiltersForSlot(defaultSlot, [])
 
   // 状態管理（Svelte 5 runes）
-  let currentSlot = $state<CandidatesKey>(initialSlot)
-  // filtersは現在のスロットのフィルタ状態を反映（初期値はURL or LocalStorage）
-  let filters = $state<Filter[]>([...initialFiltersForSlot])
-  let sortKey = $state<string | null>(initialState?.sortKey ?? null)
-  let sortOrder = $state<'asc' | 'desc' | null>(initialState?.sortOrder ?? null)
+  let currentSlot = $state<CandidatesKey>(defaultSlot)
+  // filtersは現在のスロットのフィルタ状態を反映
+  let filters = $state<Filter[]>([])
+  let sortKey = $state<string | null>(null)
+  let sortOrder = $state<'asc' | 'desc' | null>(null)
   let viewMode = $state<ViewMode>(loadViewMode())
   let favorites = $state<Set<string>>(new Set())
   let showFavoritesOnly = $state<boolean>(false)
+
+  if (browser && initialSearchParams) {
+    void (async () => {
+      const result = await deserializeFromURL(initialSearchParams)
+      if (Result.isSuccess(result)) {
+        const defaults = createDefaultFiltersPerSlot()
+        const merged: FiltersPerSlot = {
+          ...defaults,
+          ...result.value.filtersPerSlot,
+        }
+        filtersPerSlot = merged
+        currentSlot = result.value.slot
+        const restoredFilters = merged[result.value.slot] ?? []
+        filters = [...restoredFilters]
+        updateFiltersForSlot(result.value.slot, filters)
+        sortKey = result.value.sortKey
+        sortOrder = result.value.sortOrder
+      }
+    })()
+  }
 
   // お気に入りの初期化（ブラウザ環境でのみ実行）
   $effect(() => {
@@ -118,13 +121,23 @@
   })
 
   // URL パラメータへの同期（状態変更時に自動実行）
-  // URL共有時は現在選択中のスロットのフィルタのみをシリアライズ（Requirement 2.5 Design Notes）
+  // URL共有時は全スロットのフィルタ状態を圧縮してシリアライズする
   $effect(() => {
     if (!browser) return
 
+    const filtersSnapshot = Object.entries(filtersPerSlot).reduce(
+      (acc, [slot, slotFilters]) => {
+        if (slotFilters) {
+          acc[slot as CandidatesKey] = [...slotFilters]
+        }
+        return acc
+      },
+      {} as FiltersPerSlot,
+    )
+
     const state: SharedState = {
       slot: currentSlot,
-      filters,
+      filtersPerSlot: filtersSnapshot,
       sortKey,
       sortOrder,
     }

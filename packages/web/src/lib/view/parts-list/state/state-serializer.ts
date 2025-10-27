@@ -1,10 +1,21 @@
-import { type CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
+import {
+  CANDIDATES_KEYS,
+  type CandidatesKey,
+} from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 
 import { type Filter } from './filter/filters-core'
-import { parseFilter } from './filter/serialization'
-import { VALID_SLOTS, type DeserializeError } from './shared'
+import {
+  deserializeFiltersPerSlot,
+  deserializeLegacyFiltersPerSlotFromURL,
+  normalizeSlotKey,
+  parseFilter,
+  serializeFiltersPerSlot,
+  toSlotParamKey,
+  type FiltersPerSlot,
+} from './filter/serialization'
+import { type DeserializeError } from './shared'
 import type { SortOrder } from './sort'
 import { parseSort } from './sort'
 
@@ -16,7 +27,7 @@ export type { Filter } from './filter/filters-core'
  */
 export interface SharedState {
   slot: CandidatesKey
-  filters: Filter[]
+  filtersPerSlot: FiltersPerSlot
   sortKey: string | null
   sortOrder: SortOrder | null
 }
@@ -28,11 +39,17 @@ export function serializeToURL(state: SharedState): URLSearchParams {
   const params = new URLSearchParams()
 
   // スロット
-  params.set('slot', state.slot)
+  params.set('slot', camelToSnake(state.slot))
 
-  // フィルタ条件（新しい型に対応）
-  for (const filter of state.filters) {
-    params.append('filter', filter.serialize())
+  // 既存のフィルタパラメータを一旦削除（Svelte効果内で複数回呼ばれる想定）
+  for (const slot of CANDIDATES_KEYS) {
+    params.delete(toSlotParamKey(slot))
+  }
+
+  // フィルタ条件（全スロット)
+  const serializedFilters = serializeFiltersPerSlot(state.filtersPerSlot)
+  for (const [key, value] of serializedFilters.entries()) {
+    params.set(key, value)
   }
 
   // 並び替え
@@ -45,33 +62,66 @@ export function serializeToURL(state: SharedState): URLSearchParams {
 /**
  * URLパラメータからのデシリアライズ
  */
-export function deserializeFromURL(
+export async function deserializeFromURL(
   params: URLSearchParams,
-): Result.Result<SharedState, DeserializeError> {
+): Promise<Result.Result<SharedState, DeserializeError>> {
   try {
     // スロット
     const slotParam = params.get('slot')
-    let slot: CandidatesKey = 'rightArmUnit' // デフォルト
+    let slot: CandidatesKey = 'rightArmUnit'
 
     if (slotParam) {
-      if (!VALID_SLOTS.has(slotParam as CandidatesKey)) {
+      const normalized = normalizeSlotKey(slotParam)
+      if (!normalized) {
         return Result.fail({ type: 'invalid_slot', slot: slotParam })
       }
-      slot = slotParam as CandidatesKey
+      slot = normalized
     }
 
-    // フィルタ条件
-    const filterParams = params.getAll('filter')
-    const filters: Filter[] = []
+    // フィルタ条件（スロットごと）
+    let filtersPerSlot = deserializeFiltersPerSlot(params)
 
-    for (const filterParam of filterParams) {
-      const parsed = parseFilter(filterParam)
-      if (parsed) {
-        filters.push(parsed)
-      } else {
-        logger.warn('Invalid filter parameter skipped', {
-          filter: filterParam,
-        })
+    const legacyCompressed = params.get('filters')
+    if (legacyCompressed) {
+      const legacy = await deserializeLegacyFiltersPerSlotFromURL(legacyCompressed)
+      if (legacy.type === 'Failure') {
+        return Result.fail(legacy.error)
+      }
+
+      for (const [legacySlot, legacyFilters] of Object.entries(legacy.value)) {
+        const slotKey = legacySlot as CandidatesKey
+        if (!filtersPerSlot[slotKey] || filtersPerSlot[slotKey]?.length === 0) {
+          filtersPerSlot = {
+            ...filtersPerSlot,
+            [slotKey]: legacyFilters,
+          }
+        }
+      }
+    }
+
+    // 後方互換: filterクエリパラメータ（現在スロットのみ）
+    const legacyFilterParams = params.getAll('filter')
+    if (legacyFilterParams.length > 0) {
+      const parsedLegacyFilters: Filter[] = []
+      for (const filterParam of legacyFilterParams) {
+        const parsed = parseFilter(filterParam)
+        if (parsed) {
+          parsedLegacyFilters.push(parsed)
+        } else {
+          logger.warn('Invalid filter parameter skipped', {
+            filter: filterParam,
+          })
+        }
+      }
+
+      if (parsedLegacyFilters.length > 0) {
+        const existing = filtersPerSlot[slot]
+        if (!existing || existing.length === 0) {
+          filtersPerSlot = {
+            ...filtersPerSlot,
+            [slot]: parsedLegacyFilters,
+          }
+        }
       }
     }
 
@@ -92,7 +142,7 @@ export function deserializeFromURL(
       }
     }
 
-    return Result.succeed({ slot, filters, sortKey, sortOrder })
+    return Result.succeed({ slot, filtersPerSlot, sortKey, sortOrder })
   } catch (error) {
     logger.error('Failed to deserialize state from URL', {
       error: error instanceof Error ? error.message : String(error),
@@ -103,4 +153,11 @@ export function deserializeFromURL(
       message: error instanceof Error ? error.message : String(error),
     })
   }
+}
+
+function camelToSnake(value: string): string {
+  return value
+    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+    .replace(/([A-Z])([A-Z][a-z])/g, '$1_$2')
+    .toLowerCase()
 }

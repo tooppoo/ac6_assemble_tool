@@ -17,7 +17,7 @@ import {
   serializeToURL,
   type SharedState,
 } from './state-serializer'
-
+import { compressToUrlSafeString } from './filter/compression'
 describe('StateSerializer', () => {
   beforeEach(() => {
     // LocalStorageをクリア
@@ -37,7 +37,7 @@ describe('StateSerializer', () => {
     it('スロット選択状態をURLパラメータに変換できること', () => {
       const state: SharedState = {
         slot: 'head',
-        filters: [],
+        filtersPerSlot: {},
         sortKey: null,
         sortOrder: null,
       }
@@ -45,126 +45,46 @@ describe('StateSerializer', () => {
       const params = serializeToURL(state)
 
       expect(params.get('slot')).toBe('head')
+      expect(params.get('head_filters')).toBeNull()
     })
 
-    it('PropertyFilter（数値・文字列属性）をURLパラメータに変換できること', () => {
+    it('filtersPerSlotをURLパラメータに出力すること', () => {
       const operands = numericOperands()
       const ltOperand = operands.find((op) => op.id === 'lt')!
       const lteOperand = operands.find((op) => op.id === 'lte')!
-
-      const state: SharedState = {
-        slot: 'arms',
-        filters: [
-          buildPropertyFilter('weight', ltOperand, 5000),
-          buildPropertyFilter('price', lteOperand, 100000),
-        ],
-        sortKey: null,
-        sortOrder: null,
-      }
-
-      const params = serializeToURL(state)
-
-      const filterParams = params.getAll('filter')
-      expect(filterParams).toHaveLength(2)
-      expect(filterParams).toContain('numeric:weight:lt:5000')
-      expect(filterParams).toContain('numeric:price:lte:100000')
-    })
-
-    it('NameFilterをURLパラメータに変換できること', () => {
-      const operands = stringOperands()
-      const containOperand = operands.find((op) => op.id === 'contain')!
-      const exactOperand = operands.find((op) => op.id === 'exact')!
-
-      const state: SharedState = {
-        slot: 'head',
-        filters: [
-          buildNameFilter(containOperand, 'ZIMMER'),
-          buildNameFilter(exactOperand, 'HD-011 MELANDER'),
-        ],
-        sortKey: null,
-        sortOrder: null,
-      }
-
-      const params = serializeToURL(state)
-
-      const filterParams = params.getAll('filter')
-      expect(filterParams).toHaveLength(2)
-      expect(filterParams).toContain('string:name:contain:ZIMMER')
-      expect(filterParams).toContain('string:name:exact:HD-011 MELANDER')
-    })
-
-    it('ManufactureFilterをURLパラメータに変換できること', () => {
-      const state: SharedState = {
-        slot: 'core',
-        filters: [
-          buildManufactureFilter(selectAnyOperand(), [
-            'BALAM',
-            'FURLONG',
-            'ARQUEBUS',
-          ]),
-        ],
-        sortKey: null,
-        sortOrder: null,
-      }
-
-      const params = serializeToURL(state)
-
-      const filterParams = params.getAll('filter')
-      expect(filterParams).toHaveLength(1)
-      expect(filterParams[0]).toBe(
-        'array:manufacture:in_any:BALAM,FURLONG,ARQUEBUS',
-      )
-    })
-
-    it('CategoryFilterをURLパラメータに変換できること', () => {
-      const state: SharedState = {
-        slot: 'rightArmUnit',
-        filters: [
-          buildCategoryFilter(selectAnyOperand(), ['RIFLE', 'HANDGUN']),
-        ],
-        sortKey: null,
-        sortOrder: null,
-      }
-
-      const params = serializeToURL(state)
-
-      const filterParams = params.getAll('filter')
-      expect(filterParams).toHaveLength(1)
-      expect(filterParams[0]).toBe('array:category:in_any:RIFLE,HANDGUN')
-    })
-
-    it('複数の異なるフィルタ型を同時にURLパラメータに変換できること', () => {
-      const numOps = numericOperands()
       const strOps = stringOperands()
-      const lteOperand = numOps.find((op) => op.id === 'lte')!
       const containOperand = strOps.find((op) => op.id === 'contain')!
 
       const state: SharedState = {
-        slot: 'head',
-        filters: [
-          buildPropertyFilter('weight', lteOperand, 3000),
-          buildNameFilter(containOperand, 'ZIMMER'),
-          buildManufactureFilter(selectAnyOperand(), ['BALAM', 'FURLONG']),
-          buildCategoryFilter(selectAnyOperand(), ['MEDIUM']),
-        ],
+        slot: 'arms',
+        filtersPerSlot: {
+          arms: [
+            buildPropertyFilter('weight', ltOperand, 5000),
+            buildNameFilter(containOperand, 'ZIMMER'),
+          ],
+          rightArmUnit: [
+            buildPropertyFilter('price', lteOperand, 100000),
+            buildManufactureFilter(selectAnyOperand(), ['BALAM', 'FURLONG']),
+            buildCategoryFilter(selectAnyOperand(), ['MEDIUM']),
+          ],
+        },
         sortKey: null,
         sortOrder: null,
       }
 
       const params = serializeToURL(state)
-
-      const filterParams = params.getAll('filter')
-      expect(filterParams).toHaveLength(4)
-      expect(filterParams).toContain('numeric:weight:lte:3000')
-      expect(filterParams).toContain('string:name:contain:ZIMMER')
-      expect(filterParams).toContain('array:manufacture:in_any:BALAM,FURLONG')
-      expect(filterParams).toContain('array:category:in_any:MEDIUM')
+      expect(
+        params.get('arms_filters'),
+      ).toBe('numeric:weight:lt:5000|string:name:contain:ZIMMER')
+      expect(params.get('right_arm_unit_filters')).toBe(
+        'numeric:price:lte:100000|array:manufacture:in_any:BALAM,FURLONG|array:category:in_any:MEDIUM',
+      )
     })
 
     it('並び替え設定をURLパラメータに変換できること', () => {
       const state: SharedState = {
         slot: 'legs',
-        filters: [],
+        filtersPerSlot: {},
         sortKey: 'weight',
         sortOrder: 'asc',
       }
@@ -177,7 +97,7 @@ describe('StateSerializer', () => {
     it('並び替えがnullの場合、sortパラメータを含めないこと', () => {
       const state: SharedState = {
         slot: 'core',
-        filters: [],
+        filtersPerSlot: {},
         sortKey: null,
         sortOrder: null,
       }
@@ -189,121 +109,124 @@ describe('StateSerializer', () => {
   })
 
   describe('deserializeFromURL', () => {
-    it('URLパラメータからスロット選択状態を復元できること', () => {
+    it('URLパラメータからスロット選択状態を復元できること', async () => {
       const params = new URLSearchParams('slot=head')
 
-      const result = deserializeFromURL(params)
+      const result = await deserializeFromURL(params)
 
       expect(Result.isSuccess(result)).toBe(true)
       if (result.type === 'Success') {
         expect(result.value.slot).toBe('head')
+        expect(result.value.filtersPerSlot).toEqual({})
       }
     })
 
-    it('URLパラメータからPropertyFilterを復元できること', () => {
+    it('スロット別フィルタパラメータから全スロット分のフィルタを復元できること', async () => {
       const params = new URLSearchParams(
-        'slot=arms&filter=numeric:weight:lt:5000&filter=numeric:price:lte:100000',
+        [
+          'slot=head',
+          'head_filters=string:name:contain:ZIMMER|numeric:weight:lte:3000',
+          'right_arm_unit_filters=array:category:in_any:RIFLE|array:manufacture:in_any:BALAM',
+        ].join('&'),
       )
 
-      const result = deserializeFromURL(params)
+      const result = await deserializeFromURL(params)
 
       expect(Result.isSuccess(result)).toBe(true)
       if (result.type === 'Success') {
-        expect(result.value.filters).toHaveLength(2)
-        // 復元されたフィルタのプロパティを確認
-        expect(result.value.filters[0].property).toBe('weight')
-        expect(result.value.filters[0].value).toBe(5000)
-        expect(result.value.filters[0].operand.id).toBe('lt')
-        expect(result.value.filters[1].property).toBe('price')
-        expect(result.value.filters[1].value).toBe(100000)
-        expect(result.value.filters[1].operand.id).toBe('lte')
-      }
-    })
-
-    it('URLパラメータからNameFilterを復元できること', () => {
-      const params = new URLSearchParams(
-        'slot=head&filter=string:name:contain:ZIMMER&filter=string:name:exact:HD-011 MELANDER',
-      )
-
-      const result = deserializeFromURL(params)
-
-      expect(Result.isSuccess(result)).toBe(true)
-      if (result.type === 'Success') {
-        expect(result.value.filters).toHaveLength(2)
-        expect(result.value.filters[0].property).toBe('name')
-        expect(result.value.filters[0].value).toBe('ZIMMER')
-        expect(result.value.filters[0].operand.id).toBe('contain')
-        expect(result.value.filters[1].property).toBe('name')
-        expect(result.value.filters[1].value).toBe('HD-011 MELANDER')
-        expect(result.value.filters[1].operand.id).toBe('exact')
-      }
-    })
-
-    it('URLパラメータからManufactureFilterを復元できること', () => {
-      const params = new URLSearchParams(
-        'slot=core&filter=array:manufacture:in_any:BALAM,FURLONG,ARQUEBUS',
-      )
-
-      const result = deserializeFromURL(params)
-
-      expect(Result.isSuccess(result)).toBe(true)
-      if (result.type === 'Success') {
-        expect(result.value.filters).toHaveLength(1)
-        expect(result.value.filters[0].property).toBe('manufacture')
-        expect(result.value.filters[0].value).toEqual([
-          'BALAM',
-          'FURLONG',
-          'ARQUEBUS',
+        const restoredHead = result.value.filtersPerSlot.head ?? []
+        expect(restoredHead.map((f) => f.serialize())).toEqual([
+          'string:name:contain:ZIMMER',
+          'numeric:weight:lte:3000',
         ])
-        expect(result.value.filters[0].operand.id).toBe('in_any')
+        const restoredRightArm = result.value.filtersPerSlot.rightArmUnit ?? []
+        expect(restoredRightArm.map((f) => f.serialize())).toEqual([
+          'array:category:in_any:RIFLE',
+          'array:manufacture:in_any:BALAM',
+        ])
       }
     })
 
-    it('URLパラメータからCategoryFilterを復元できること', () => {
+    it('レガシーfilterパラメータを後方互換で復元すること', async () => {
       const params = new URLSearchParams(
-        'slot=rightArmUnit&filter=array:category:in_any:RIFLE,HANDGUN',
+        'slot=arms&filter=numeric:weight:lt:5000&filter=string:name:contain:ZIMMER',
       )
 
-      const result = deserializeFromURL(params)
+      const result = await deserializeFromURL(params)
 
       expect(Result.isSuccess(result)).toBe(true)
       if (result.type === 'Success') {
-        expect(result.value.filters).toHaveLength(1)
-        expect(result.value.filters[0].property).toBe('category')
-        expect(result.value.filters[0].value).toEqual(['RIFLE', 'HANDGUN'])
-        expect(result.value.filters[0].operand.id).toBe('in_any')
+        const restored = result.value.filtersPerSlot.arms ?? []
+        expect(restored.map((f) => f.serialize())).toEqual([
+          'numeric:weight:lt:5000',
+          'string:name:contain:ZIMMER',
+        ])
       }
     })
 
-    it('URLパラメータから複数の異なるフィルタ型を復元できること', () => {
+    it('レガシーfilterパラメータの不正値はスキップすること', async () => {
       const params = new URLSearchParams(
-        'slot=head&filter=numeric:weight:lte:3000&filter=string:name:contain:ZIMMER&filter=array:manufacture:in_any:BALAM,FURLONG&filter=array:category:in_any:MEDIUM',
+        'slot=head&filter=numeric:weight:lt:5000&filter=invalid',
       )
 
-      const result = deserializeFromURL(params)
+      const result = await deserializeFromURL(params)
 
       expect(Result.isSuccess(result)).toBe(true)
       if (result.type === 'Success') {
-        expect(result.value.filters).toHaveLength(4)
-        expect(result.value.filters[0].property).toBe('weight')
-        expect(result.value.filters[0].value).toBe(3000)
-        expect(result.value.filters[0].operand.id).toBe('lte')
-        expect(result.value.filters[1].property).toBe('name')
-        expect(result.value.filters[1].value).toBe('ZIMMER')
-        expect(result.value.filters[1].operand.id).toBe('contain')
-        expect(result.value.filters[2].property).toBe('manufacture')
-        expect(result.value.filters[2].value).toEqual(['BALAM', 'FURLONG'])
-        expect(result.value.filters[2].operand.id).toBe('in_any')
-        expect(result.value.filters[3].property).toBe('category')
-        expect(result.value.filters[3].value).toEqual(['MEDIUM'])
-        expect(result.value.filters[3].operand.id).toBe('in_any')
+        const restored = result.value.filtersPerSlot.head ?? []
+        expect(restored.map((f) => f.serialize())).toEqual([
+          'numeric:weight:lt:5000',
+        ])
       }
     })
 
-    it('URLパラメータから並び替え設定を復元できること', () => {
+    it('既存filtersパラメータがある場合、レガシーパラメータは上書きしないこと', async () => {
+      const params = new URLSearchParams(
+        [
+          'slot=head',
+          'head_filters=numeric:weight:lte:1000',
+          'filter=numeric:weight:lt:5000',
+        ].join('&'),
+      )
+
+      const result = await deserializeFromURL(params)
+
+      expect(Result.isSuccess(result)).toBe(true)
+      if (result.type === 'Success') {
+        const restored = result.value.filtersPerSlot.head ?? []
+        expect(restored.map((f) => f.serialize())).toEqual([
+          'numeric:weight:lte:1000',
+        ])
+      }
+    })
+
+    it('レガシーfiltersパラメータを復元すること', async () => {
+      const legacyPayload = {
+        rightArmUnit: ['numeric:price:lte:3200'],
+        head: ['numeric:price:lte:1500'],
+      }
+      const compressed = await compressToUrlSafeString(
+        JSON.stringify(legacyPayload),
+      )
+      const params = new URLSearchParams(`slot=head&filters=${compressed}`)
+
+      const result = await deserializeFromURL(params)
+
+      expect(Result.isSuccess(result)).toBe(true)
+      if (result.type === 'Success') {
+        expect(
+          result.value.filtersPerSlot.rightArmUnit?.map((f) => f.serialize()),
+        ).toEqual(['numeric:price:lte:3200'])
+        expect(result.value.filtersPerSlot.head?.map((f) => f.serialize())).toEqual([
+          'numeric:price:lte:1500',
+        ])
+      }
+    })
+
+    it('URLパラメータから並び替え設定を復元できること', async () => {
       const params = new URLSearchParams('slot=legs&sort=weight:asc')
 
-      const result = deserializeFromURL(params)
+      const result = await deserializeFromURL(params)
 
       expect(Result.isSuccess(result)).toBe(true)
       if (result.type === 'Success') {
@@ -312,21 +235,33 @@ describe('StateSerializer', () => {
       }
     })
 
-    it('スロットパラメータが不正な場合、エラーを返すこと', () => {
+    it('並び替えパラメータが不正な形式の場合、並び替えをnullにすること', async () => {
+      const params = new URLSearchParams('slot=head&sort=invalid')
+
+      const result = await deserializeFromURL(params)
+
+      expect(Result.isSuccess(result)).toBe(true)
+      if (result.type === 'Success') {
+        expect(result.value.sortKey).toBeNull()
+        expect(result.value.sortOrder).toBeNull()
+      }
+    })
+
+    it('スロットパラメータが不正な場合、エラーを返すこと', async () => {
       const params = new URLSearchParams('slot=invalid')
 
-      const result = deserializeFromURL(params)
+      const result = await deserializeFromURL(params)
 
-      expect(Result.isSuccess(result)).toBe(false)
+      expect(Result.isFailure(result)).toBe(true)
       if (result.type === 'Failure') {
         expect(result.error.type).toBe('invalid_slot')
       }
     })
 
-    it('スロットパラメータが存在しない場合、デフォルト値(rightArmUnit)を使用すること', () => {
+    it('スロットパラメータが存在しない場合、デフォルト値(rightArmUnit)を使用すること', async () => {
       const params = new URLSearchParams('')
 
-      const result = deserializeFromURL(params)
+      const result = await deserializeFromURL(params)
 
       expect(Result.isSuccess(result)).toBe(true)
       if (result.type === 'Success') {
@@ -334,104 +269,14 @@ describe('StateSerializer', () => {
       }
     })
 
-    it('フィルタパラメータが不正な形式の場合、該当フィルタをスキップすること', () => {
-      const params = new URLSearchParams(
-        'slot=head&filter=numeric:weight:lt:5000&filter=invalid',
-      )
+    it('スネークケースのスロットキーを正規化できること', async () => {
+      const params = new URLSearchParams('slot=right_arm_unit')
 
-      const result = deserializeFromURL(params)
+      const result = await deserializeFromURL(params)
 
       expect(Result.isSuccess(result)).toBe(true)
       if (result.type === 'Success') {
-        expect(result.value.filters).toHaveLength(1)
-        expect(result.value.filters[0].property).toBe('weight')
-      }
-    })
-
-    it('並び替えパラメータが不正な形式の場合、並び替えをnullにすること', () => {
-      const params = new URLSearchParams('slot=head&sort=invalid')
-
-      const result = deserializeFromURL(params)
-
-      expect(Result.isSuccess(result)).toBe(true)
-      if (result.type === 'Success') {
-        expect(result.value.sortKey).toBe(null)
-        expect(result.value.sortOrder).toBe(null)
-      }
-    })
-
-    it('無効なプロパティを持つPropertyFilterをスキップすること', () => {
-      const params = new URLSearchParams(
-        'slot=head&filter=numeric:weight:lt:5000&filter=numeric:invalid_property:gt:100&filter=numeric:price:lte:10000',
-      )
-
-      const result = deserializeFromURL(params)
-
-      expect(Result.isSuccess(result)).toBe(true)
-      if (result.type === 'Success') {
-        expect(result.value.filters).toHaveLength(2)
-        expect(result.value.filters[0].property).toBe('weight')
-        expect(result.value.filters[1].property).toBe('price')
-      }
-    })
-
-    it('有効なPropertyFilterプロパティのみを許可すること', () => {
-      const params = new URLSearchParams(
-        'slot=head&filter=numeric:weight:lt:5000&filter=numeric:price:lte:10000&filter=numeric:en_load:gt:500',
-      )
-
-      const result = deserializeFromURL(params)
-
-      expect(Result.isSuccess(result)).toBe(true)
-      if (result.type === 'Success') {
-        expect(result.value.filters).toHaveLength(3)
-        expect(result.value.filters.map((f) => f.property)).toEqual([
-          'weight',
-          'price',
-          'en_load',
-        ])
-      }
-    })
-
-    it('無効なNameFilterモードをスキップすること', () => {
-      const params = new URLSearchParams(
-        'slot=head&filter=string:name:contain:valid&filter=string:name:invalid_mode:test',
-      )
-
-      const result = deserializeFromURL(params)
-
-      expect(Result.isSuccess(result)).toBe(true)
-      if (result.type === 'Success') {
-        expect(result.value.filters).toHaveLength(1)
-        expect(result.value.filters[0].property).toBe('name')
-        expect(result.value.filters[0].operand.id).toBe('contain')
-        expect(result.value.filters[0].value).toBe('valid')
-      }
-    })
-
-    it('空のvaluesを持つManufactureFilterをスキップすること', () => {
-      const params = new URLSearchParams(
-        'slot=head&filter=array:manufacture:selectAny:',
-      )
-
-      const result = deserializeFromURL(params)
-
-      expect(Result.isSuccess(result)).toBe(true)
-      if (result.type === 'Success') {
-        expect(result.value.filters).toHaveLength(0)
-      }
-    })
-
-    it('空のvaluesを持つCategoryFilterをスキップすること', () => {
-      const params = new URLSearchParams(
-        'slot=head&filter=array:category:selectAny:',
-      )
-
-      const result = deserializeFromURL(params)
-
-      expect(Result.isSuccess(result)).toBe(true)
-      if (result.type === 'Success') {
-        expect(result.value.filters).toHaveLength(0)
+        expect(result.value.slot).toBe('rightArmUnit')
       }
     })
   })

@@ -11,10 +11,14 @@
 import { latest as regulation } from '$lib/regulation'
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte'
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+
+import * as navigation from '$app/navigation'
 
 import PartsListView from './PartsListView.svelte'
 import PartsListViewTestWrapper from './PartsListView.test-wrapper.svelte'
+
+const replaceStateSpy = vi.spyOn(navigation, 'replaceState')
 
 describe('PartsListView コンポーネント', () => {
   // LocalStorageをクリア
@@ -22,12 +26,14 @@ describe('PartsListView コンポーネント', () => {
     if (typeof localStorage !== 'undefined') {
       localStorage.clear()
     }
+    replaceStateSpy.mockReset()
   })
 
   afterEach(() => {
     if (typeof localStorage !== 'undefined') {
       localStorage.clear()
     }
+    replaceStateSpy.mockReset()
   })
 
   describe('初期状態', () => {
@@ -122,9 +128,47 @@ describe('PartsListView コンポーネント', () => {
       })
     })
 
-    it('スロット変更時にURLパラメータが更新されること', () => {
-      // URLSearchParams の更新をテスト
-      // 実際のテストは実装後に追加
+    it('全スロットのフィルタがURLクエリに保存されること', async () => {
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      await waitFor(() => expect(replaceStateSpy).toHaveBeenCalled())
+      replaceStateSpy.mockClear()
+
+      let valueInput = screen.getByLabelText('値')
+      await fireEvent.input(valueInput, { target: { value: '3200' } })
+      let addButton = screen.getByRole('button', { name: '追加' })
+      await fireEvent.click(addButton)
+
+      await waitFor(() => expect(replaceStateSpy).toHaveBeenCalled())
+      replaceStateSpy.mockClear()
+
+      const headButton = screen.getByText(/^HEAD$|^頭部$/)
+      await headButton.click()
+
+      valueInput = screen.getByLabelText('値')
+      await fireEvent.input(valueInput, { target: { value: '1500' } })
+      addButton = screen.getByRole('button', { name: '追加' })
+      await fireEvent.click(addButton)
+
+      await waitFor(() => expect(replaceStateSpy).toHaveBeenCalled())
+
+      const lastCall = replaceStateSpy.mock.calls.at(-1)
+      expect(lastCall).toBeTruthy()
+      const [url] = lastCall ?? []
+      expect(typeof url).toBe('string')
+
+      const params = new URL(url as string, 'https://example.test').searchParams
+      expect(params.get('slot')).toBe('head')
+
+      const rightArmParam = params.get('right_arm_unit_filters')
+      expect(rightArmParam).toBe('numeric:price:lte:3200')
+
+      const headParam = params.get('head_filters')
+      expect(headParam).toBe('numeric:price:lte:1500')
     })
   })
 
