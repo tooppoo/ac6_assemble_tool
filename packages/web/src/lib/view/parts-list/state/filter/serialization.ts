@@ -153,7 +153,7 @@ export async function serializeFiltersPerSlotToURL(
     return await compressToUrlSafeString(json)
   } catch (error) {
     logger.error('Failed to compress filters per slot for URL', {
-      error: error instanceof Error ? error.message : String(error),
+      error,
     })
     return ''
   }
