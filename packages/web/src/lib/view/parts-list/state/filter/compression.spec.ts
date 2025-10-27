@@ -40,8 +40,8 @@ describe('compression utilities', () => {
     Reflect.deleteProperty(globalThis, 'CompressionStream')
     Reflect.deleteProperty(globalThis, 'DecompressionStream')
 
-    await expect(
-      compressToUrlSafeString(SAMPLE_TEXT),
-    ).rejects.toThrowError('CompressionStream API is not available in this runtime')
+    await expect(compressToUrlSafeString(SAMPLE_TEXT)).rejects.toThrowError(
+      'CompressionStream API is not available in this runtime',
+    )
   })
 })

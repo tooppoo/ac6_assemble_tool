@@ -12,11 +12,14 @@ import '@ac6_assemble_tool/spec/lib/vitest-extend'
 import './src/lib/i18n/define'
 
 if (typeof globalThis.CompressionStream === 'undefined') {
-  Object.assign(globalThis as typeof globalThis & {
-    CompressionStream: typeof NodeCompressionStream
-    DecompressionStream: typeof NodeDecompressionStream
-  }, {
-    CompressionStream: NodeCompressionStream,
-    DecompressionStream: NodeDecompressionStream,
-  })
+  Object.assign(
+    globalThis as typeof globalThis & {
+      CompressionStream: typeof NodeCompressionStream
+      DecompressionStream: typeof NodeDecompressionStream
+    },
+    {
+      CompressionStream: NodeCompressionStream,
+      DecompressionStream: NodeDecompressionStream,
+    },
+  )
 }

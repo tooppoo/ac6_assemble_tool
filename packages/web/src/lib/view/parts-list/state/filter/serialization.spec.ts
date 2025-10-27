@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { compressToUrlSafeString } from './compression'
 import {
   buildCategoryFilter,
   buildManufactureFilter,
@@ -12,7 +13,6 @@ import {
   selectAnyOperand,
   stringOperands,
 } from './filters-core'
-import { compressToUrlSafeString } from './compression'
 import {
   deserializeFiltersPerSlotFromURL,
   loadFiltersPerSlotFromLocalStorage,
