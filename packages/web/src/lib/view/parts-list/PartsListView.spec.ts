@@ -10,7 +10,7 @@
 
 import { latest as regulation } from '$lib/regulation'
 
-import { render, screen } from '@testing-library/svelte'
+import { render, screen, fireEvent, waitFor } from '@testing-library/svelte'
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 
 import PartsListView from './PartsListView.svelte'
@@ -105,7 +105,7 @@ describe('PartsListView コンポーネント', () => {
   })
 
   describe('URL パラメータとの同期', () => {
-    it('URLパラメータから初期スロットを復元すること', () => {
+    it('URLパラメータから初期スロットを復元すること', async () => {
       // URLSearchParams をモック
       const searchParams = new URLSearchParams('slot=legs')
 
@@ -116,8 +116,10 @@ describe('PartsListView コンポーネント', () => {
         },
       })
 
-      // legsスロットが選択されていることを確認
-      // 実際のテストは実装後に追加
+      await waitFor(() => {
+        const legsButton = screen.getByText(/^LEGS$|^脚部$/i)
+        expect(legsButton.classList.contains('btn-primary')).toBe(true)
+      })
     })
 
     it('スロット変更時にURLパラメータが更新されること', () => {
@@ -126,19 +128,22 @@ describe('PartsListView コンポーネント', () => {
     })
   })
 
-  describe('LocalStorage との同期', () => {
-    it('LocalStorageから表示モードを復元すること', () => {
-      // 事前にLocalStorageに保存
-      localStorage.setItem('ac6-parts-list-view-mode', 'list')
-
+  describe('LocalStorage 非依存', () => {
+    it('LocalStorageにフィルタ状態を保存しないこと', async () => {
       render(PartsListViewTestWrapper, {
         props: {
           regulation,
         },
       })
 
-      // list表示モードが復元されることを確認
-      // 実際のテストは実装後に追加
+      const valueInput = screen.getByLabelText('値')
+      await fireEvent.input(valueInput, { target: { value: '3200' } })
+      const addButton = screen.getByRole('button', { name: '追加' })
+      await fireEvent.click(addButton)
+
+      expect(
+        localStorage.getItem('ac6-parts-list-filters-per-slot'),
+      ).toBeNull()
     })
 
     it.skip('表示モード変更時にLocalStorageが更新されること', () => {
@@ -290,5 +295,40 @@ describe('PartsListView コンポーネント', () => {
       // ★に変わることを確認
       expect(favoriteButton.textContent).toContain('★')
     })
+  })
+
+  describe('スロットごとのフィルタ状態管理', () => {
+    async function addPriceFilter(value: string) {
+      const valueInput = screen.getByLabelText('値')
+      await fireEvent.input(valueInput, { target: { value } })
+      const addButton = screen.getByRole('button', { name: '追加' })
+      await fireEvent.click(addButton)
+      await waitFor(() =>
+        expect(screen.getByText(/フィルタ\s*\(1件\)/)).toBeInTheDocument(),
+      )
+    }
+
+    it('スロット切替時にスロットごとのフィルタ状態を保持すること', async () => {
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      await addPriceFilter('4500')
+
+      const headButton = screen.getByText(/^HEAD$|^頭部$/)
+      await fireEvent.click(headButton)
+      await waitFor(() =>
+        expect(screen.getByText(/フィルタ\s*\(0件\)/)).toBeInTheDocument(),
+      )
+
+      const rightArmButton = screen.getByText(/RIGHT ARM UNIT|右腕武器/i)
+      await fireEvent.click(rightArmButton)
+      await waitFor(() =>
+        expect(screen.getByText(/フィルタ\s*\(1件\)/)).toBeInTheDocument(),
+      )
+    })
+
   })
 })

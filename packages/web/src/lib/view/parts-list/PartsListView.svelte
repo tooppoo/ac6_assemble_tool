@@ -17,8 +17,6 @@
   import { applyFilters } from './state/filter/filters-core'
   import {
     createDefaultFiltersPerSlot,
-    loadFiltersPerSlotFromLocalStorage,
-    saveFiltersPerSlotToLocalStorage,
     type FiltersPerSlot,
   } from './state/filter/serialization'
   import {
@@ -32,6 +30,7 @@
 
   import { browser } from '$app/environment'
   import { replaceState } from '$app/navigation'
+  import { untrack } from 'svelte'
 
   let favoriteStore: FavoriteStore | null = null
 
@@ -58,20 +57,32 @@
   }
 
   // スロットごとの独立フィルタ管理（Requirement 2.5）
-  let filtersPerSlot = $state<FiltersPerSlot>(
-    browser
-      ? (loadFiltersPerSlotFromLocalStorage() ?? createDefaultFiltersPerSlot())
-      : createDefaultFiltersPerSlot(),
-  )
+  let filtersPerSlot = $state<FiltersPerSlot>(createDefaultFiltersPerSlot())
+
+  function updateFiltersForSlot(
+    slot: CandidatesKey,
+    slotFilters: readonly Filter[],
+  ) {
+    filtersPerSlot = {
+      ...filtersPerSlot,
+      [slot]: [...slotFilters],
+    }
+  }
 
   const initialSlot = initialState?.slot ?? 'rightArmUnit'
-  const initialFiltersForSlot =
-    initialState?.filters ?? filtersPerSlot[initialSlot] ?? []
+  const filtersFromStorage = untrack(() => filtersPerSlot[initialSlot])
+  const initialFiltersForSlot = initialState?.filters
+    ? [...initialState.filters]
+    : filtersFromStorage
+      ? [...filtersFromStorage]
+      : []
+
+  updateFiltersForSlot(initialSlot, initialFiltersForSlot)
 
   // 状態管理（Svelte 5 runes）
   let currentSlot = $state<CandidatesKey>(initialSlot)
   // filtersは現在のスロットのフィルタ状態を反映（初期値はURL or LocalStorage）
-  let filters = $state<Filter[]>(initialFiltersForSlot)
+  let filters = $state<Filter[]>([...initialFiltersForSlot])
   let sortKey = $state<string | null>(initialState?.sortKey ?? null)
   let sortOrder = $state<'asc' | 'desc' | null>(initialState?.sortOrder ?? null)
   let viewMode = $state<ViewMode>(loadViewMode())
@@ -104,12 +115,6 @@
     // TODO: 並び替えロジックを実装（タスク5で実装予定）
 
     return filtered
-  })
-
-  // スロットごとのフィルタ状態をLocalStorageに同期（Requirement 2.5.5）
-  $effect(() => {
-    if (!browser) return
-    saveFiltersPerSlotToLocalStorage(filtersPerSlot)
   })
 
   // URL パラメータへの同期（状態変更時に自動実行）
@@ -150,13 +155,15 @@
 
     // スロットごとの独立フィルタ管理（Requirement 2.5）
     // 現在のスロットのフィルタを保存（Requirement 2.5.1）
-    filtersPerSlot[currentSlot] = filters
+    updateFiltersForSlot(currentSlot, filters)
 
     // 新しいスロットのフィルタを復元（Requirement 2.5.2, 2.5.3）
-    filters = filtersPerSlot[newSlot] ?? []
+    const nextFilters = filtersPerSlot[newSlot] ?? []
 
     // スロットを更新
     currentSlot = newSlot
+    filters = [...nextFilters]
+    updateFiltersForSlot(newSlot, filters)
 
     // 新しいスロットのお気に入りを読み込み
     if (browser && favoriteStore) {
@@ -190,15 +197,15 @@
   }
 
   export function handleFilterChange(newFilters: Filter[]) {
-    filters = newFilters
+    filters = [...newFilters]
     // フィルタ変更時に現在のスロットのフィルタ状態を更新（Requirement 2.5.1）
-    filtersPerSlot[currentSlot] = newFilters
+    updateFiltersForSlot(currentSlot, filters)
   }
 
   export function handleClearFilters() {
     filters = []
     // フィルタクリア時も現在のスロットのフィルタ状態を更新（Requirement 2.5.1）
-    filtersPerSlot[currentSlot] = []
+    updateFiltersForSlot(currentSlot, filters)
   }
 
   export function handleSortChange(
