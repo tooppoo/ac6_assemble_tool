@@ -1,9 +1,8 @@
 # @ac6_assemble_tool/web
 
 ## 2.5.0
+
 ### Minor Changes
-
-
 
 - [#883](https://github.com/tooppoo/ac6_assemble_tool/pull/883) [`54317ab`](https://github.com/tooppoo/ac6_assemble_tool/commit/54317ab6eb6eabc41dd3e6f8f083bfd93f552c8f) Thanks [@tooppoo](https://github.com/tooppoo)! - URL圧縮に標準APIを使用 + フッターを共通レイアウト化
 
