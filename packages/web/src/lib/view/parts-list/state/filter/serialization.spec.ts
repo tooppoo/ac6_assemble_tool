@@ -12,6 +12,7 @@ import {
   selectAnyOperand,
   stringOperands,
 } from './filters-core'
+import { compressToUrlSafeString } from './compression'
 import {
   deserializeFiltersPerSlotFromURL,
   loadFiltersPerSlotFromLocalStorage,
@@ -71,8 +72,8 @@ describe('filter serialization utilities', () => {
   })
 
   describe('serializeFiltersPerSlotToURL', () => {
-    it('空フィルタは空文字列になること', () => {
-      const serialized = serializeFiltersPerSlotToURL({})
+    it('空フィルタは空文字列になること', async () => {
+      const serialized = await serializeFiltersPerSlotToURL({})
       expect(serialized).toBe('')
     })
 
@@ -84,10 +85,10 @@ describe('filter serialization utilities', () => {
         ],
       }
 
-      const serialized = serializeFiltersPerSlotToURL(filtersPerSlot)
+      const serialized = await serializeFiltersPerSlotToURL(filtersPerSlot)
       expect(serialized).not.toBe('')
 
-      const restored = deserializeFiltersPerSlotFromURL(serialized)
+      const restored = await deserializeFiltersPerSlotFromURL(serialized)
       expect(restored.type).toBe('Success')
       if (restored.type === 'Success') {
         expect(restored.value.rightArmUnit).toHaveLength(2)
@@ -96,29 +97,28 @@ describe('filter serialization utilities', () => {
   })
 
   describe('deserializeFiltersPerSlotFromURL', () => {
-    it('空文字列は空オブジェクトを返すこと', () => {
-      const result = deserializeFiltersPerSlotFromURL('')
+    it('空文字列は空オブジェクトを返すこと', async () => {
+      const result = await deserializeFiltersPerSlotFromURL('')
       expect(result.type).toBe('Success')
       expect(
         result.type === 'Success' && Object.keys(result.value),
       ).toHaveLength(0)
     })
 
-    it('不正なJSONの場合は失敗を返すこと', () => {
-      const result = deserializeFiltersPerSlotFromURL('!!invalid!!')
+    it('不正なJSONの場合は失敗を返すこと', async () => {
+      const result = await deserializeFiltersPerSlotFromURL('!!invalid!!')
       expect(result.type).toBe('Failure')
     })
 
     it('不正スロットやデータ型はスキップされること', async () => {
-      const lz = await import('lz-string')
-      const compressed = lz.compressToEncodedURIComponent(
+      const compressed = await compressToUrlSafeString(
         JSON.stringify({
           rightArmUnit: [],
           invalidSlot: [],
           leftArmUnit: 'not-array',
         }),
       )
-      const result = deserializeFiltersPerSlotFromURL(compressed)
+      const result = await deserializeFiltersPerSlotFromURL(compressed)
       expect(result.type).toBe('Success')
       if (result.type === 'Success') {
         expect(result.value.rightArmUnit).toEqual([])

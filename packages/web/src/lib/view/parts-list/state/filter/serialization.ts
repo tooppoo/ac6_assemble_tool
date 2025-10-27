@@ -5,9 +5,9 @@ import {
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 import {
-  compressToEncodedURIComponent,
-  decompressFromEncodedURIComponent,
-} from 'lz-string'
+  compressToUrlSafeString,
+  decompressFromUrlSafeString,
+} from './compression'
 
 import { VALID_SLOTS, type DeserializeError } from '../shared'
 
@@ -129,11 +129,11 @@ export function parseFilter(filterParam: string): Filter | null {
 /**
  * スロットごとのフィルタ状態をURLパラメータにシリアライズ
  * フィルタが設定されているスロットのみを含める（URL長を削減）
- * LZ-string圧縮を使用してURLサイズを削減
+ * CompressionStream(Gzip)圧縮を使用してURLサイズを削減
  */
-export function serializeFiltersPerSlotToURL(
+export async function serializeFiltersPerSlotToURL(
   filtersPerSlot: FiltersPerSlot,
-): string {
+): Promise<string> {
   // 空のフィルタを持つスロットを除外
   const nonEmptyFilters: FiltersPerSlot = {}
   for (const [slot, filters] of Object.entries(filtersPerSlot)) {
@@ -149,23 +149,29 @@ export function serializeFiltersPerSlotToURL(
 
   // JSON → 圧縮 → URLパラメータ
   const json = JSON.stringify(nonEmptyFilters)
-  const compressed = compressToEncodedURIComponent(json)
-  return compressed
+  try {
+    return await compressToUrlSafeString(json)
+  } catch (error) {
+    logger.error('Failed to compress filters per slot for URL', {
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return ''
+  }
 }
 
 /**
  * URLパラメータからスロットごとのフィルタ状態を復元
  */
-export function deserializeFiltersPerSlotFromURL(
+export async function deserializeFiltersPerSlotFromURL(
   compressedFilters: string,
-): Result.Result<FiltersPerSlot, DeserializeError> {
+): Promise<Result.Result<FiltersPerSlot, DeserializeError>> {
   if (!compressedFilters) {
     // フィルタパラメータがない場合は空のオブジェクトを返す
     return Result.succeed({})
   }
 
   try {
-    const json = decompressFromEncodedURIComponent(compressedFilters)
+    const json = await decompressFromUrlSafeString(compressedFilters)
     if (!json) {
       return Result.fail({
         type: 'invalid_format',
