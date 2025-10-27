@@ -463,6 +463,19 @@
   <div>
     App Version v{appVersion}
   </div>
+  <div class="my-3">
+    <a
+      href="https://www.buymeacoffee.com/philomagi"
+      aria-label="donate to philomagi via 'Buy Me a Coffee'"
+      target="_blank"
+      rel="external noopener noreferrer"
+    >
+      <img
+        src="https://img.buymeacoffee.com/button-api/?text=Donate&emoji=☕&slug=philomagi&button_colour=5F7FFF&font_colour=ffffff&font_family=Comic&outline_colour=000000&coffee_colour=FFDD00"
+        alt="coffee icon"
+      />
+    </a>
+  </div>
 </footer>
 
 <RandomAssemblyOffCanvas
