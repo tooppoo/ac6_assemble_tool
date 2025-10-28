@@ -96,5 +96,6 @@ function isSortOrder(value: string): value is SortOrder {
 }
 
 function isSortKey(value: string): value is SortKey {
-  return (PROPERTY_FILTER_KEYS as readonly SortKey[]).includes(value as SortKey)
+  // 型安全性を保つため、`PropertyFilterKey`型にキャストして判定
+  return PROPERTY_FILTER_KEYS.includes(value as PropertyFilterKey)
 }
