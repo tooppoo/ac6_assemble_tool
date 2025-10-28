@@ -175,7 +175,9 @@ export function toSlotParamKey(slot: CandidatesKey): string {
   return `${camelToSnake(slot)}_filters`
 }
 
-export function serializeFiltersPerSlot(filtersPerSlot: FiltersPerSlot): ReadonlyMap<string, string> {
+export function serializeFiltersPerSlot(
+  filtersPerSlot: FiltersPerSlot,
+): ReadonlyMap<string, string> {
   const entries: [string, string][] = []
   for (const slot of CANDIDATES_KEYS) {
     const filters = filtersPerSlot[slot]
@@ -268,14 +270,19 @@ export async function deserializeLegacyFiltersPerSlotFromURL(
     const restored: FiltersPerSlot = {}
     for (const [slotKey, serializedFilters] of Object.entries(parsed)) {
       if (!VALID_SLOTS.has(slotKey as CandidatesKey)) {
-        logger.warn('Invalid slot in legacy filters, skipping', { slot: slotKey })
+        logger.warn('Invalid slot in legacy filters, skipping', {
+          slot: slotKey,
+        })
         continue
       }
 
       if (!Array.isArray(serializedFilters)) {
-        logger.warn('Filters for slot from legacy data is not an array, skipping', {
-          slot: slotKey,
-        })
+        logger.warn(
+          'Filters for slot from legacy data is not an array, skipping',
+          {
+            slot: slotKey,
+          },
+        )
         continue
       }
 
@@ -310,7 +317,9 @@ export async function deserializeLegacyFiltersPerSlotFromURL(
   }
 }
 
-function isSerializedFiltersRecord(value: unknown): value is SerializedFiltersPerSlot {
+function isSerializedFiltersRecord(
+  value: unknown,
+): value is SerializedFiltersPerSlot {
   if (typeof value !== 'object' || value === null) {
     return false
   }
@@ -319,6 +328,8 @@ function isSerializedFiltersRecord(value: unknown): value is SerializedFiltersPe
     if (!Array.isArray(entry)) {
       return false
     }
-    return entry.every((filter) => typeof filter === 'string' && filter.length > 0)
+    return entry.every(
+      (filter) => typeof filter === 'string' && filter.length > 0,
+    )
   })
 }

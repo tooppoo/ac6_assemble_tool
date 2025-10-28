@@ -2,6 +2,10 @@ import { Result } from '@praha/byethrow'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import {
+  compressToUrlSafeString,
+  decompressFromUrlSafeString,
+} from './filter/compression'
+import {
   buildCategoryFilter,
   buildManufactureFilter,
   buildNameFilter,
@@ -17,10 +21,6 @@ import {
   serializeToURL,
   type SharedState,
 } from './state-serializer'
-import {
-  compressToUrlSafeString,
-  decompressFromUrlSafeString,
-} from './filter/compression'
 
 describe('StateSerializer', () => {
   beforeEach(() => {
@@ -148,10 +148,7 @@ describe('StateSerializer', () => {
 
     it('圧縮filtersパラメータからフィルタを復元できること', async () => {
       const payload = {
-        arms: [
-          'numeric:weight:lt:5000',
-          'string:name:contain:ZIMMER',
-        ],
+        arms: ['numeric:weight:lt:5000', 'string:name:contain:ZIMMER'],
         rightArmUnit: [
           'numeric:price:lte:100000',
           'array:manufacture:in_any:BALAM,FURLONG',
@@ -227,9 +224,9 @@ describe('StateSerializer', () => {
 
       expect(Result.isSuccess(result)).toBe(true)
       if (result.type === 'Success') {
-        expect(result.value.filtersPerSlot.head?.map((f) => f.serialize())).toEqual([
-          'string:name:contain:ZIMMER',
-        ])
+        expect(
+          result.value.filtersPerSlot.head?.map((f) => f.serialize()),
+        ).toEqual(['string:name:contain:ZIMMER'])
         expect(result.value.filtersPerSlot.rightArmUnit).toBeUndefined()
       }
     })
@@ -237,7 +234,9 @@ describe('StateSerializer', () => {
     it('URLパラメータから並び替え設定を復元できること', async () => {
       const payload = {}
       const compressed = await compressToUrlSafeString(JSON.stringify(payload))
-      const params = new URLSearchParams(`slot=legs&filters=${compressed}&sort=weight:asc`)
+      const params = new URLSearchParams(
+        `slot=legs&filters=${compressed}&sort=weight:asc`,
+      )
 
       const result = await deserializeFromURL(params)
 

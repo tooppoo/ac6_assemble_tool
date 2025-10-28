@@ -13,14 +13,14 @@ import { latest as regulation } from '$lib/regulation'
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte'
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 
-import * as navigation from '$app/navigation'
-
 import PartsListView from './PartsListView.svelte'
 import PartsListViewTestWrapper from './PartsListView.test-wrapper.svelte'
 import {
   compressToUrlSafeString,
   decompressFromUrlSafeString,
 } from './state/filter/compression'
+
+import * as navigation from '$app/navigation'
 
 const replaceStateSpy = vi.spyOn(navigation, 'replaceState')
 
@@ -193,9 +193,7 @@ describe('PartsListView コンポーネント', () => {
       const addButton = screen.getByRole('button', { name: '追加' })
       await fireEvent.click(addButton)
 
-      expect(
-        localStorage.getItem('ac6-parts-list-filters-per-slot'),
-      ).toBeNull()
+      expect(localStorage.getItem('ac6-parts-list-filters-per-slot')).toBeNull()
     })
 
     it.skip('表示モード変更時にLocalStorageが更新されること', () => {
@@ -222,10 +220,7 @@ describe('PartsListView コンポーネント', () => {
     it('スロット切替時にフィルタ条件が保持されること（共通属性の場合）', async () => {
       // URLパラメータでフィルタ条件を設定
       const payload = {
-        rightArmUnit: [
-          'numeric:weight:lte:5000',
-          'numeric:price:lte:100000',
-        ],
+        rightArmUnit: ['numeric:weight:lte:5000', 'numeric:price:lte:100000'],
       }
       const compressed = await compressToUrlSafeString(JSON.stringify(payload))
       const searchParams = new URLSearchParams(
@@ -388,6 +383,5 @@ describe('PartsListView コンポーネント', () => {
         expect(screen.getByText(/フィルタ\s*\(1件\)/)).toBeInTheDocument(),
       )
     })
-
   })
 })

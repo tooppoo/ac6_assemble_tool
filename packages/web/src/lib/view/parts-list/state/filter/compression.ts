@@ -5,7 +5,9 @@ const textDecoder = new TextDecoder()
 
 export async function compressToUrlSafeString(input: string): Promise<string> {
   if (!hasCompressionSupport()) {
-    logger.warn('CompressionStream API is not available, using uncompressed payload')
+    logger.warn(
+      'CompressionStream API is not available, using uncompressed payload',
+    )
     return encodeWithoutCompression(input)
   }
 
@@ -16,9 +18,12 @@ export async function compressToUrlSafeString(input: string): Promise<string> {
     const compressedBuffer = await new Response(compressedStream).arrayBuffer()
     return toBase64Url(new Uint8Array(compressedBuffer))
   } catch (error) {
-    logger.warn('Failed to compress payload, falling back to uncompressed encoding', {
-      error: error instanceof Error ? error.message : String(error),
-    })
+    logger.warn(
+      'Failed to compress payload, falling back to uncompressed encoding',
+      {
+        error: error instanceof Error ? error.message : String(error),
+      },
+    )
     return encodeWithoutCompression(input)
   }
 }
@@ -35,16 +40,25 @@ export async function decompressFromUrlSafeString(
   if (hasCompressionSupport()) {
     try {
       const readable = new Blob([binaryBuffer]).stream()
-      const decompressedStream = readable.pipeThrough(new DecompressionStream('gzip'))
-      const decompressedBuffer = await new Response(decompressedStream).arrayBuffer()
+      const decompressedStream = readable.pipeThrough(
+        new DecompressionStream('gzip'),
+      )
+      const decompressedBuffer = await new Response(
+        decompressedStream,
+      ).arrayBuffer()
       return textDecoder.decode(decompressedBuffer)
     } catch (error) {
-      logger.warn('Failed to decompress payload as gzip, attempting plain decode', {
-        error: error instanceof Error ? error.message : String(error),
-      })
+      logger.warn(
+        'Failed to decompress payload as gzip, attempting plain decode',
+        {
+          error: error instanceof Error ? error.message : String(error),
+        },
+      )
     }
   } else {
-    logger.warn('DecompressionStream API is not available, attempting plain decode')
+    logger.warn(
+      'DecompressionStream API is not available, attempting plain decode',
+    )
   }
 
   return tryDecodePlain(binary)
@@ -52,7 +66,8 @@ export async function decompressFromUrlSafeString(
 
 function hasCompressionSupport(): boolean {
   return (
-    typeof CompressionStream !== 'undefined' && typeof DecompressionStream !== 'undefined'
+    typeof CompressionStream !== 'undefined' &&
+    typeof DecompressionStream !== 'undefined'
   )
 }
 

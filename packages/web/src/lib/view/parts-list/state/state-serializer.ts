@@ -5,7 +5,10 @@ import {
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 
-import { compressToUrlSafeString, decompressFromUrlSafeString } from './filter/compression'
+import {
+  compressToUrlSafeString,
+  decompressFromUrlSafeString,
+} from './filter/compression'
 import { type Filter } from './filter/filters-core'
 import {
   normalizeSlotKey,
@@ -32,7 +35,9 @@ export interface SharedState {
 /**
  * URLパラメータへのシリアライズ（共有用）
  */
-export async function serializeToURL(state: SharedState): Promise<URLSearchParams> {
+export async function serializeToURL(
+  state: SharedState,
+): Promise<URLSearchParams> {
   const params = new URLSearchParams()
 
   // スロット
@@ -66,7 +71,9 @@ async function serializeFiltersParam(
   return compressToUrlSafeString(json)
 }
 
-function buildFiltersPayload(filtersPerSlot: FiltersPerSlot): SerializedFiltersPayload | null {
+function buildFiltersPayload(
+  filtersPerSlot: FiltersPerSlot,
+): SerializedFiltersPayload | null {
   const payload: SerializedFiltersPayload = {}
   let hasFilters = false
 
@@ -117,7 +124,9 @@ async function deserializeFiltersParam(
   const restored: FiltersPerSlot = {}
   for (const [slotKey, serializedFilters] of Object.entries(parsed)) {
     if (!isValidSlotKey(slotKey)) {
-      logger.warn('Invalid slot in filters payload, skipping', { slot: slotKey })
+      logger.warn('Invalid slot in filters payload, skipping', {
+        slot: slotKey,
+      })
       continue
     }
 
@@ -142,7 +151,9 @@ async function deserializeFiltersParam(
   return Result.succeed(restored)
 }
 
-function isSerializedFiltersPayload(value: unknown): value is SerializedFiltersPayload {
+function isSerializedFiltersPayload(
+  value: unknown,
+): value is SerializedFiltersPayload {
   if (typeof value !== 'object' || value === null) {
     return false
   }

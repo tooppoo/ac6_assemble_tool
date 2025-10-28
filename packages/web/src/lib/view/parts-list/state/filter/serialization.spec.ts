@@ -116,9 +116,7 @@ describe('filter serialization utilities', () => {
           buildNameFilter(stringOp[0], 'zimmer'),
         ],
         head: [],
-        leftArmUnit: [
-          buildManufactureFilter(selectAnyOperand(), ['balam']),
-        ],
+        leftArmUnit: [buildManufactureFilter(selectAnyOperand(), ['balam'])],
       }
 
       const serialized = serializeFiltersPerSlot(filtersPerSlot)
