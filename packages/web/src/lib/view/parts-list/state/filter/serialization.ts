@@ -119,39 +119,6 @@ export function parseFilter(filterParam: string): Filter | null {
 }
 
 /**
- * スロットごとのフィルタ状態をURLパラメータにシリアライズ
- * フィルタが設定されているスロットのみを含める（URL長を削減）
- * CompressionStream(Gzip)圧縮を使用してURLサイズを削減
- */
-export function serializeFiltersForSlot(filters: readonly Filter[]): string {
-  return filters.map((filter) => filter.serialize()).join('|')
-}
-
-export function deserializeFiltersForSlot(
-  serialized: string,
-): Result.Result<Filter[], DeserializeError> {
-  if (!serialized) {
-    return Result.succeed([])
-  }
-
-  const items = serialized.split('|').filter((entry) => entry.trim().length > 0)
-  const filters: Filter[] = []
-
-  for (const entry of items) {
-    const parsed = parseFilter(entry)
-    if (!parsed) {
-      logger.warn('Invalid filter entry in filters per slot, skipping', {
-        filterParam: entry,
-      })
-      continue
-    }
-    filters.push(parsed)
-  }
-
-  return Result.succeed(filters)
-}
-
-/**
  * すべてのスロットに対して空のフィルタ配列を持つデフォルトの FiltersPerSlot を作成
  */
 export function createDefaultFiltersPerSlot(): FiltersPerSlot {
@@ -171,48 +138,6 @@ export type FiltersPerSlot = {
   [K in CandidatesKey]?: Filter[]
 }
 
-export function toSlotParamKey(slot: CandidatesKey): string {
-  return `${camelToSnake(slot)}_filters`
-}
-
-export function serializeFiltersPerSlot(
-  filtersPerSlot: FiltersPerSlot,
-): ReadonlyMap<string, string> {
-  const entries: [string, string][] = []
-  for (const slot of CANDIDATES_KEYS) {
-    const filters = filtersPerSlot[slot]
-    if (!filters || filters.length === 0) {
-      continue
-    }
-
-    const serialized = serializeFiltersForSlot(filters)
-    if (serialized.length > 0) {
-      entries.push([toSlotParamKey(slot), serialized])
-    }
-  }
-
-  return new Map(entries)
-}
-
-export function deserializeFiltersPerSlot(
-  params: URLSearchParams,
-): FiltersPerSlot {
-  const restored: FiltersPerSlot = {}
-
-  for (const slot of CANDIDATES_KEYS) {
-    const paramKey = toSlotParamKey(slot)
-    const serialized = params.get(paramKey)
-    if (!serialized) continue
-
-    const result = deserializeFiltersForSlot(serialized)
-    if (Result.isSuccess(result) && result.value.length > 0) {
-      restored[slot] = result.value
-    }
-  }
-
-  return restored
-}
-
 export function normalizeSlotKey(value: string): CandidatesKey | null {
   if (!value) {
     return null
@@ -228,13 +153,6 @@ export function normalizeSlotKey(value: string): CandidatesKey | null {
   }
 
   return null
-}
-
-function camelToSnake(value: string): string {
-  return value
-    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
-    .replace(/([A-Z])([A-Z][a-z])/g, '$1_$2')
-    .toLowerCase()
 }
 
 function snakeToCamel(value: string): string {

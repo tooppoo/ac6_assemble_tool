@@ -184,7 +184,6 @@
     // スロットを更新
     currentSlot = newSlot
     filters = [...nextFilters]
-    updateFiltersForSlot(newSlot, filters)
 
     // 新しいスロットのお気に入りを読み込み
     if (browser && favoriteStore) {
