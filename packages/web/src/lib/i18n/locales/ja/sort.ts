@@ -8,6 +8,8 @@ export const jaSort = {
   },
   apply: '適用',
   clear: 'クリア',
+  collapse: '折りたたむ',
+  expand: '展開',
   status: {
     none: '未設定',
     applied: '適用済み',

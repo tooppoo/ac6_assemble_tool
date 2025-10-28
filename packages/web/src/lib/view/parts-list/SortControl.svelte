@@ -164,7 +164,9 @@
         type="button"
         class="btn btn-sm btn-outline-light"
         onclick={toggleCollapse}
-        aria-label={isOpen ? '折りたたむ' : '展開'}
+        aria-label={isOpen
+          ? $i18n.t('collapse', { ns: 'sort' })
+          : $i18n.t('expand', { ns: 'sort' })}
       >
         {isOpen ? '▲' : '▼'}
       </button>

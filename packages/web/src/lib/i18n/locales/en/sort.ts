@@ -8,6 +8,8 @@ export const enSort = {
   },
   apply: 'Apply',
   clear: 'Clear',
+  collapse: 'Collapse',
+  expand: 'Expand',
   status: {
     none: 'Not applied',
     applied: 'Applied',
