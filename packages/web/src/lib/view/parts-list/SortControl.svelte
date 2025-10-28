@@ -37,43 +37,55 @@
     onsortclear,
   }: Props = $props()
 
-  const fallbackKey = $derived(() => properties[0] ?? null)
+  const fallbackKey = $derived(properties[0] ?? null)
+  const noneValue = '__none__'
 
-  let selectedKey = $state<SortKey | null>(sortKey ?? properties[0] ?? null)
-  let selectedOrder = $state<SortOrder>(sortOrder ?? 'asc')
+  let selectedKey: SortKey | typeof noneValue = $derived.by<
+    SortKey | typeof noneValue
+  >((): SortKey | typeof noneValue => {
+    if (sortKey === null) {
+      return noneValue
+    }
+    if (fallbackKey !== null && !properties.includes(sortKey)) {
+      return fallbackKey
+    }
 
-  const propertyFieldId = $derived(() => `sort-property-${slot}`)
-  const orderFieldId = $derived(() => `sort-order-${slot}`)
+    return sortKey
+  })
+  let selectedOrder = $derived<SortOrder>(sortOrder ?? 'asc')
 
-  const hasPendingChanges = $derived(() => {
-    if (selectedKey === null) {
+  const propertyFieldId = $derived(`sort-property-${slot}`)
+  const orderFieldId = $derived(`sort-order-${slot}`)
+
+  const selectedKeyOrNull = $derived(
+    selectedKey === noneValue ? null : selectedKey,
+  )
+
+  const hasPendingChanges = $derived.by(() => {
+    const key = selectedKeyOrNull
+    if (key === null) {
       return false
     }
 
-    const keyFallback = fallbackKey()
     const appliedKey = sortKey
     const appliedOrder = sortOrder
 
     if (appliedKey === null && appliedOrder === null) {
-      if (keyFallback === null) {
-        return false
-      }
-      return selectedKey !== keyFallback || selectedOrder !== 'asc'
+      return true
     }
 
     if (appliedKey === null || appliedOrder === null) {
       return true
     }
 
-    return selectedKey !== appliedKey || selectedOrder !== appliedOrder
+    return key !== appliedKey || selectedOrder !== appliedOrder
   })
 
   const isApplyDisabled = $derived(
-    () =>
-      properties.length === 0 || selectedKey === null || !hasPendingChanges(),
+    properties.length === 0 || selectedKeyOrNull === null || !hasPendingChanges,
   )
 
-  const appliedSummary = $derived(() => {
+  const appliedSummary = $derived.by<string | null>(() => {
     if (!sortKey || !sortOrder) {
       return null
     }
@@ -86,18 +98,17 @@
     })
   })
 
-  const statusInfo = $derived(() => {
-    if (hasPendingChanges()) {
+  const statusInfo = $derived.by(() => {
+    if (hasPendingChanges) {
       return {
         variant: 'pending' as const,
         text: $i18n.t('status.pending', { ns: 'sort' }),
       }
     }
-    const summary = appliedSummary()
-    if (summary) {
+    if (appliedSummary) {
       return {
         variant: 'applied' as const,
-        text: `${$i18n.t('status.applied', { ns: 'sort' })}: ${summary}`,
+        text: `${$i18n.t('status.applied', { ns: 'sort' })}: ${appliedSummary}`,
       }
     }
     return {
@@ -108,34 +119,15 @@
 
   let isOpen = $state(true)
 
-  $effect(() => {
-    const keyFallback = fallbackKey()
-
-    if (sortKey !== null) {
-      if (selectedKey !== sortKey) {
-        selectedKey = sortKey
-      }
-    } else if (selectedKey === null && keyFallback !== null) {
-      selectedKey = keyFallback
-    } else if (selectedKey && keyFallback !== null && !properties.includes(selectedKey)) {
-      selectedKey = keyFallback
-    }
-
-    if (sortOrder !== null) {
-      selectedOrder = sortOrder
-    }
-  })
-
   function handleApply() {
-    if (!selectedKey || !selectedOrder) return
-    onsortchange?.({ key: selectedKey, order: selectedOrder })
+    if (selectedKey === noneValue || !selectedOrder) return
+    onsortchange?.({
+      key: selectedKey as SortKey,
+      order: selectedOrder,
+    })
   }
-
   function handleClear() {
-    const keyFallback = fallbackKey() ?? selectedKey
-    if (keyFallback) {
-      selectedKey = keyFallback
-    }
+    selectedKey = noneValue
     selectedOrder = 'asc'
     onsortclear?.()
   }
@@ -156,8 +148,8 @@
     <div class="d-flex flex-column gap-1">
       <h5 class="mb-0">{$i18n.t('title', { ns: 'sort' })}</h5>
       <div class="status-indicator">
-        <span class={`status-chip ${statusInfo().variant}`}>
-          {statusInfo().text}
+        <span class={`status-chip ${statusInfo.variant}`}>
+          {statusInfo.text}
         </span>
       </div>
     </div>
@@ -185,15 +177,20 @@
     <div class="card-body">
       <div class="row g-2 align-items-end">
         <div class="col-12 col-md-6">
-          <label for={propertyFieldId()} class="form-label mb-1 text-white">
+          <label for={propertyFieldId} class="form-label mb-1 text-white">
             {$i18n.t('propertyLabel', { ns: 'sort' })}
           </label>
           <select
-            id={propertyFieldId()}
+            id={propertyFieldId}
             class="form-select"
             bind:value={selectedKey}
             disabled={properties.length === 0}
           >
+            <option value={noneValue} disabled>
+              {properties.length === 0
+                ? '-'
+                : $i18n.t('propertyLabel', { ns: 'sort' })}
+            </option>
             {#each properties as property (property)}
               <option value={property}>
                 {translatePropertyLabel(property)}
@@ -203,11 +200,11 @@
         </div>
 
         <div class="col-12 col-md-4">
-          <label for={orderFieldId()} class="form-label mb-1 text-white">
+          <label for={orderFieldId} class="form-label mb-1 text-white">
             {$i18n.t('orderLabel', { ns: 'sort' })}
           </label>
           <select
-            id={orderFieldId()}
+            id={orderFieldId}
             class="form-select"
             bind:value={selectedOrder}
             disabled={properties.length === 0}
@@ -226,7 +223,7 @@
             type="button"
             class="btn btn-primary w-100"
             onclick={handleApply}
-            disabled={isApplyDisabled()}
+            disabled={isApplyDisabled}
           >
             {$i18n.t('apply', { ns: 'sort' })}
           </button>

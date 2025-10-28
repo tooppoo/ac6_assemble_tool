@@ -340,10 +340,13 @@ describe('PartsListView コンポーネント', () => {
       })
 
       const applyButton = screen.getByRole('button', { name: '適用' })
+      const propertySelect = screen.getByLabelText('並び替え対象') as HTMLSelectElement
       const orderSelect = screen.getByLabelText('並び順')
 
       await waitFor(() => expect(extractPrices()).toEqual(initialExpected))
 
+      await fireEvent.change(propertySelect, { target: { value: 'price' } })
+      expect(applyButton).not.toBeDisabled()
       await fireEvent.click(applyButton)
 
       await waitFor(() => expect(extractPrices()).toEqual(sortedByPriceAsc))
@@ -370,6 +373,8 @@ describe('PartsListView コンポーネント', () => {
       })
 
       const applyButton = screen.getByRole('button', { name: '適用' })
+      const propertySelect = screen.getByLabelText('並び替え対象') as HTMLSelectElement
+      await fireEvent.change(propertySelect, { target: { value: 'price' } })
       await fireEvent.click(applyButton)
       const sortCard = document.querySelector('.sort-control-card')
       expect(sortCard).not.toBeNull()

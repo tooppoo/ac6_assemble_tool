@@ -17,9 +17,9 @@ describe('SortControl', () => {
     expect(screen.getByText('未設定')).toBeInTheDocument()
 
     const propertySelect = screen.getByLabelText('並び替え対象') as HTMLSelectElement
-    const propertyOptions = Array.from(propertySelect.options).map(
-      (option) => option.textContent,
-    )
+    const propertyOptions = Array.from(propertySelect.options)
+      .filter((option) => option.value !== '__none__')
+      .map((option) => option.textContent)
     expect(propertyOptions).toEqual(['価格', '総重量', 'EN負荷'])
 
     const orderSelect = screen.getByLabelText('並び順') as HTMLSelectElement
@@ -28,6 +28,7 @@ describe('SortControl', () => {
     )
     expect(orderOptions).toEqual(['昇順', '降順'])
 
+    await fireEvent.change(propertySelect, { target: { value: 'price' } })
     await fireEvent.change(orderSelect, { target: { value: 'desc' } })
     expect(screen.getByText('未適用の変更あり')).toBeInTheDocument()
   })
@@ -69,6 +70,9 @@ describe('SortControl', () => {
 
     const applyButton = screen.getByRole('button', { name: '適用' })
     expect(applyButton).toBeDisabled()
+
+    const propertySelect = screen.getByLabelText('並び替え対象') as HTMLSelectElement
+    await fireEvent.change(propertySelect, { target: { value: 'price' } })
 
     const orderSelect = screen.getByLabelText('並び順') as HTMLSelectElement
     await fireEvent.change(orderSelect, { target: { value: 'desc' } })
