@@ -10,7 +10,7 @@
 
 import { latest as regulation } from '$lib/regulation'
 
-import { render, screen, fireEvent, waitFor } from '@testing-library/svelte'
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/svelte'
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 
 import PartsListView from './PartsListView.svelte'
@@ -292,6 +292,21 @@ describe('PartsListView コンポーネント', () => {
   })
 
   describe('フィルタ済みパーツリストの計算', () => {
+    function extractPrices(): number[] {
+      const grid = document.querySelector('.parts-grid-container')
+      if (!grid) return []
+      const cards = Array.from(
+        grid.querySelectorAll<HTMLElement>('.parts-card'),
+      )
+      return cards.map((card) => {
+        const value = card
+          .querySelectorAll<HTMLStrongElement>('.mt-auto strong')
+          .item(0)
+        const text = value?.textContent ?? '0'
+        return Number(text.replaceAll(',', ''))
+      })
+    }
+
     it('選択中のスロットに対応するパーツのみを表示すること', () => {
       render(PartsListViewTestWrapper, {
         props: {
@@ -308,9 +323,66 @@ describe('PartsListView コンポーネント', () => {
       // 実際のテストは実装後に追加
     })
 
-    it('並び替え設定が適用されたパーツが表示されること', () => {
-      // 並び替え設定を適用してパーツが並び替えられることを確認
-      // 実際のテストは実装後に追加
+    it('並び替え設定が適用されたパーツが表示されること', async () => {
+      const slotParts = regulation.candidates.rightArmUnit
+      const initialExpected = slotParts.map((part) => part.price)
+      const sortedByPriceAsc = [...slotParts]
+        .sort((a, b) => a.price - b.price)
+        .map((part) => part.price)
+      const sortedByPriceDesc = [...slotParts]
+        .sort((a, b) => b.price - a.price)
+        .map((part) => part.price)
+
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      const applyButton = screen.getByRole('button', { name: '適用' })
+      const orderSelect = screen.getByLabelText('並び順')
+
+      await waitFor(() => expect(extractPrices()).toEqual(initialExpected))
+
+      await fireEvent.click(applyButton)
+
+      await waitFor(() => expect(extractPrices()).toEqual(sortedByPriceAsc))
+
+      await fireEvent.change(orderSelect, { target: { value: 'desc' } })
+      const orderSelectAfterChange = screen.getByLabelText('並び順') as HTMLSelectElement
+      expect(orderSelectAfterChange.value).toBe('desc')
+      await fireEvent.click(applyButton)
+
+      await waitFor(() => expect(extractPrices()).toEqual(sortedByPriceDesc))
+    })
+
+    it('並び替えをクリアすると初期状態に戻ること', async () => {
+      const slotParts = regulation.candidates.rightArmUnit
+      const initialExpected = slotParts.map((part) => part.price)
+      const sortedByPriceAsc = [...slotParts]
+        .sort((a, b) => a.price - b.price)
+        .map((part) => part.price)
+
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      const applyButton = screen.getByRole('button', { name: '適用' })
+      await fireEvent.click(applyButton)
+      const sortCard = document.querySelector('.sort-control-card')
+      expect(sortCard).not.toBeNull()
+      const clearButton = within(sortCard as HTMLElement).getByRole('button', {
+        name: 'クリア',
+      })
+      await waitFor(() => expect(extractPrices()).toEqual(sortedByPriceAsc))
+      await fireEvent.click(clearButton)
+
+      await waitFor(() => expect(extractPrices()).toEqual(initialExpected))
+
+      const orderSelect = screen.getByLabelText('並び順') as HTMLSelectElement
+      expect(orderSelect.value).toBe('asc')
     })
   })
 

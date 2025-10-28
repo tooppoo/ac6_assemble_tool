@@ -12,10 +12,11 @@
   import { logger } from '@ac6_assemble_tool/shared/logger'
   import { Result } from '@praha/byethrow'
 
-  import FilterPanel from './FilterPanel.svelte'
-  import PartsGrid from './PartsGrid.svelte'
-  import SlotSelector from './SlotSelector.svelte'
-  import { applyFilters } from './state/filter/filters-core'
+import FilterPanel from './FilterPanel.svelte'
+import PartsGrid from './PartsGrid.svelte'
+import SortControl from './SortControl.svelte'
+import SlotSelector from './SlotSelector.svelte'
+import { applyFilters } from './state/filter/filters-core'
   import {
     createDefaultFiltersPerSlot,
     type FiltersPerSlot,
@@ -26,6 +27,12 @@
     type SharedState,
     type Filter,
   } from './state/state-serializer'
+import {
+  getAvailableSortKeys,
+  sortPartsByKey,
+  type SortKey,
+  type SortOrder,
+} from './state/sort'
   import { saveViewMode, loadViewMode, type ViewMode } from './state/view-mode'
   import { FavoriteStore } from './stores/favorite-store'
 
@@ -67,8 +74,8 @@
   let currentSlot = $state<CandidatesKey>(defaultSlot)
   // filtersは現在のスロットのフィルタ状態を反映
   let filters = $state<Filter[]>([])
-  let sortKey = $state<string | null>(null)
-  let sortOrder = $state<'asc' | 'desc' | null>(null)
+  let sortKey = $state<SortKey | null>(null)
+  let sortOrder = $state<SortOrder | null>(null)
   let viewMode = $state<ViewMode>(loadViewMode())
   let favorites = $state<Set<string>>(new Set())
   let showFavoritesOnly = $state<boolean>(false)
@@ -87,8 +94,20 @@
         const restoredFilters = merged[result.value.slot] ?? []
         filters = [...restoredFilters]
         updateFiltersForSlot(result.value.slot, filters)
-        sortKey = result.value.sortKey
-        sortOrder = result.value.sortOrder
+        const availableKeys = getAvailableSortKeys(
+          regulation.candidates[result.value.slot],
+        )
+        if (
+          result.value.sortKey &&
+          result.value.sortOrder &&
+          availableKeys.includes(result.value.sortKey)
+        ) {
+          sortKey = result.value.sortKey
+          sortOrder = result.value.sortOrder
+        } else {
+          sortKey = null
+          sortOrder = null
+        }
       }
     })()
   }
@@ -116,10 +135,16 @@
       filtered = filtered.filter((parts) => favorites.has(parts.id))
     }
 
-    // TODO: 並び替えロジックを実装（タスク5で実装予定）
+    if (sortKey && sortOrder) {
+      filtered = sortPartsByKey(filtered, sortKey, sortOrder)
+    }
 
     return filtered
   })
+
+  const availableSortKeys = $derived.by<SortKey[]>(() =>
+    getAvailableSortKeys(regulation.candidates[currentSlot]),
+  )
 
   // URL パラメータへの同期（状態変更時に自動実行）
   // URL共有時は全スロットのフィルタ状態を圧縮してシリアライズする
@@ -185,6 +210,11 @@
     currentSlot = newSlot
     filters = [...nextFilters]
 
+    if (sortKey && !availableSortKeys.includes(sortKey)) {
+      sortKey = null
+      sortOrder = null
+    }
+
     // 新しいスロットのお気に入りを読み込み
     if (browser && favoriteStore) {
       favoriteStore.getFavorites(newSlot).then((result) => {
@@ -228,17 +258,26 @@
     updateFiltersForSlot(currentSlot, filters)
   }
 
-  export function handleSortChange(
-    newSortKey: string | null,
-    newSortOrder: 'asc' | 'desc' | null,
-  ) {
-    sortKey = newSortKey
-    sortOrder = newSortOrder
+  function handleSortApply(payload: { key: SortKey; order: SortOrder }) {
+    sortKey = payload.key
+    sortOrder = payload.order
+  }
+
+  function handleSortClear() {
+    sortKey = null
+    sortOrder = null
   }
 
   export function handleToggleFavorites() {
     showFavoritesOnly = !showFavoritesOnly
   }
+
+  $effect(() => {
+    if (sortKey && !availableSortKeys.includes(sortKey)) {
+      sortKey = null
+      sortOrder = null
+    }
+  })
 </script>
 
 <div class="parts-list-view">
@@ -255,6 +294,17 @@
       onclearfilters={handleClearFilters}
       onfilterchange={handleFilterChange}
       ontogglefavorites={handleToggleFavorites}
+    />
+  </div>
+
+  <div class="py-1">
+    <SortControl
+      slot={currentSlot}
+      properties={availableSortKeys}
+      sortKey={sortKey}
+      sortOrder={sortOrder}
+      onsortchange={handleSortApply}
+      onsortclear={handleSortClear}
     />
   </div>
 
