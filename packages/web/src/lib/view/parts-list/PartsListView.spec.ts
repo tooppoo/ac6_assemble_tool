@@ -300,7 +300,7 @@ describe('PartsListView コンポーネント', () => {
       )
       return cards.map((card) => {
         const value = card
-          .querySelectorAll<HTMLStrongElement>('.mt-auto strong')
+          .querySelectorAll<HTMLElement>('.mt-auto strong')
           .item(0)
         const text = value?.textContent ?? '0'
         return Number(text.replaceAll(',', ''))

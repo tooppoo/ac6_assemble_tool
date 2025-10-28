@@ -8,4 +8,10 @@ export const enSort = {
   },
   apply: 'Apply',
   clear: 'Clear',
+  status: {
+    none: 'Not applied',
+    applied: 'Applied',
+    pending: 'Changes pending',
+  },
+  summary: '{{property}} / {{order}}',
 }

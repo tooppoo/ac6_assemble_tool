@@ -11,8 +11,10 @@ describe('SortControl', () => {
     sortOrder: null,
   }
 
-  it('並び替え属性と並び順の選択肢を表示する', () => {
+  it('並び替え属性と並び順の選択肢を表示する', async () => {
     render(SortControlTestWrapper, { props: baseProps })
+
+    expect(screen.getByText('未設定')).toBeInTheDocument()
 
     const propertySelect = screen.getByLabelText('並び替え対象') as HTMLSelectElement
     const propertyOptions = Array.from(propertySelect.options).map(
@@ -25,6 +27,9 @@ describe('SortControl', () => {
       (option) => option.textContent,
     )
     expect(orderOptions).toEqual(['昇順', '降順'])
+
+    await fireEvent.change(orderSelect, { target: { value: 'desc' } })
+    expect(screen.getByText('未適用の変更あり')).toBeInTheDocument()
   })
 
   it('適用ボタンでonsortchangeが呼び出される', async () => {
@@ -36,11 +41,14 @@ describe('SortControl', () => {
       },
     })
 
+    const applyButton = screen.getByRole('button', { name: '適用' })
+    expect(applyButton).toBeDisabled()
+
     const propertySelect = screen.getByLabelText('並び替え対象') as HTMLSelectElement
     await fireEvent.change(propertySelect, { target: { value: 'weight' } })
     expect(propertySelect.value).toBe('weight')
+    expect(applyButton).not.toBeDisabled()
 
-    const applyButton = screen.getByRole('button', { name: '適用' })
     await fireEvent.click(applyButton)
 
     await waitFor(() => expect(handleSortChange).toHaveBeenCalled())
@@ -59,11 +67,14 @@ describe('SortControl', () => {
       },
     })
 
+    const applyButton = screen.getByRole('button', { name: '適用' })
+    expect(applyButton).toBeDisabled()
+
     const orderSelect = screen.getByLabelText('並び順') as HTMLSelectElement
     await fireEvent.change(orderSelect, { target: { value: 'desc' } })
     expect(orderSelect.value).toBe('desc')
+    expect(applyButton).not.toBeDisabled()
 
-    const applyButton = screen.getByRole('button', { name: '適用' })
     await fireEvent.click(applyButton)
 
     await waitFor(() => expect(handleSortChange).toHaveBeenCalled())
@@ -88,5 +99,17 @@ describe('SortControl', () => {
     await fireEvent.click(clearButton)
 
     expect(handleSortClear).toHaveBeenCalledOnce()
+  })
+
+  it('適用済み状態を表示する', () => {
+    render(SortControlTestWrapper, {
+      props: {
+        ...baseProps,
+        sortKey: 'weight',
+        sortOrder: 'desc',
+      },
+    })
+
+    expect(screen.getByText('適用済み: 総重量 / 降順')).toBeInTheDocument()
   })
 })

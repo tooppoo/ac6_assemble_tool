@@ -37,29 +37,88 @@
     onsortclear,
   }: Props = $props()
 
+  const fallbackKey = $derived(() => properties[0] ?? null)
+
   let selectedKey = $state<SortKey | null>(sortKey ?? properties[0] ?? null)
   let selectedOrder = $state<SortOrder>(sortOrder ?? 'asc')
 
   const propertyFieldId = $derived(() => `sort-property-${slot}`)
   const orderFieldId = $derived(() => `sort-order-${slot}`)
 
+  const hasPendingChanges = $derived(() => {
+    if (selectedKey === null) {
+      return false
+    }
+
+    const keyFallback = fallbackKey()
+    const appliedKey = sortKey
+    const appliedOrder = sortOrder
+
+    if (appliedKey === null && appliedOrder === null) {
+      if (keyFallback === null) {
+        return false
+      }
+      return selectedKey !== keyFallback || selectedOrder !== 'asc'
+    }
+
+    if (appliedKey === null || appliedOrder === null) {
+      return true
+    }
+
+    return selectedKey !== appliedKey || selectedOrder !== appliedOrder
+  })
+
   const isApplyDisabled = $derived(
-    () => properties.length === 0 || selectedKey === null,
+    () =>
+      properties.length === 0 || selectedKey === null || !hasPendingChanges(),
   )
+
+  const appliedSummary = $derived(() => {
+    if (!sortKey || !sortOrder) {
+      return null
+    }
+    const property = translateProperty(sortKey, $i18n)
+    const order = $i18n.t(`order.${sortOrder}`, { ns: 'sort' })
+    return $i18n.t('summary', {
+      ns: 'sort',
+      property,
+      order,
+    })
+  })
+
+  const statusInfo = $derived(() => {
+    if (hasPendingChanges()) {
+      return {
+        variant: 'pending' as const,
+        text: $i18n.t('status.pending', { ns: 'sort' }),
+      }
+    }
+    const summary = appliedSummary()
+    if (summary) {
+      return {
+        variant: 'applied' as const,
+        text: `${$i18n.t('status.applied', { ns: 'sort' })}: ${summary}`,
+      }
+    }
+    return {
+      variant: 'none' as const,
+      text: $i18n.t('status.none', { ns: 'sort' }),
+    }
+  })
 
   let isOpen = $state(true)
 
   $effect(() => {
-    const fallbackKey = properties[0] ?? null
+    const keyFallback = fallbackKey()
 
     if (sortKey !== null) {
       if (selectedKey !== sortKey) {
         selectedKey = sortKey
       }
-    } else if (selectedKey === null && fallbackKey !== null) {
-      selectedKey = fallbackKey
-    } else if (selectedKey && !properties.includes(selectedKey)) {
-      selectedKey = fallbackKey
+    } else if (selectedKey === null && keyFallback !== null) {
+      selectedKey = keyFallback
+    } else if (selectedKey && keyFallback !== null && !properties.includes(selectedKey)) {
+      selectedKey = keyFallback
     }
 
     if (sortOrder !== null) {
@@ -73,9 +132,9 @@
   }
 
   function handleClear() {
-    const fallbackKey = properties[0] ?? selectedKey
-    if (fallbackKey) {
-      selectedKey = fallbackKey
+    const keyFallback = fallbackKey() ?? selectedKey
+    if (keyFallback) {
+      selectedKey = keyFallback
     }
     selectedOrder = 'asc'
     onsortclear?.()
@@ -94,7 +153,14 @@
   <div
     class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
   >
-    <h5 class="mb-0">{$i18n.t('title', { ns: 'sort' })}</h5>
+    <div class="d-flex flex-column gap-1">
+      <h5 class="mb-0">{$i18n.t('title', { ns: 'sort' })}</h5>
+      <div class="status-indicator">
+        <span class={`status-chip ${statusInfo().variant}`}>
+          {statusInfo().text}
+        </span>
+      </div>
+    </div>
     <div class="d-flex gap-2">
       <button
         type="button"
@@ -169,3 +235,32 @@
     </div>
   </Collapse>
 </div>
+
+<style>
+  .status-indicator {
+    font-size: 0.75rem;
+  }
+
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.15rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid var(--bs-border-color);
+    color: var(--bs-secondary-color);
+    background-color: var(--bs-body-bg);
+  }
+
+  .status-chip.pending {
+    border-color: var(--bs-warning-border-subtle, rgba(255, 193, 7, 0.4));
+    color: var(--bs-warning-text-emphasis, #664d03);
+    background-color: var(--bs-warning-bg-subtle, rgba(255, 193, 7, 0.15));
+  }
+
+  .status-chip.applied {
+    border-color: var(--bs-secondary-border-subtle, rgba(108, 117, 125, 0.4));
+    color: var(--bs-secondary-text-emphasis, #2c3034);
+    background-color: var(--bs-secondary-bg-subtle, rgba(108, 117, 125, 0.12));
+  }
+</style>

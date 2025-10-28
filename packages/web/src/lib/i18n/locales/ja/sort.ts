@@ -8,4 +8,10 @@ export const jaSort = {
   },
   apply: '適用',
   clear: 'クリア',
+  status: {
+    none: '未設定',
+    applied: '適用済み',
+    pending: '未適用の変更あり',
+  },
+  summary: '{{property}} / {{order}}',
 }
