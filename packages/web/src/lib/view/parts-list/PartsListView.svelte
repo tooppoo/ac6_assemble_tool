@@ -116,9 +116,9 @@
   $effect(() => {
     if (!browser || !favoriteStore) return
     favoriteStore.getFavorites(currentSlot).then((result) => {
-      if (Result.isSuccess(result)) {
-        favorites = result.value
-      }
+      Result.inspect((fav) => {
+        favorites = fav
+      })(result)
     })
   })
 
@@ -271,13 +271,6 @@
   export function handleToggleFavorites() {
     showFavoritesOnly = !showFavoritesOnly
   }
-
-  $effect(() => {
-    if (sortKey && !availableSortKeys.includes(sortKey)) {
-      sortKey = null
-      sortOrder = null
-    }
-  })
 </script>
 
 <div class="parts-list-view">
