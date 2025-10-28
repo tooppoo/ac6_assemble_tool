@@ -16,7 +16,7 @@ import {
   type FiltersPerSlot,
 } from './filter/serialization'
 import { type DeserializeError, VALID_SLOTS } from './shared'
-import type { SortOrder } from './sort'
+import type { SortKey, SortOrder } from './sort'
 import { parseSort } from './sort'
 
 // Filterは filters.ts からエクスポート
@@ -28,7 +28,7 @@ export type { Filter } from './filter/filters-core'
 export interface SharedState {
   slot: CandidatesKey
   filtersPerSlot: FiltersPerSlot
-  sortKey: string | null
+  sortKey: SortKey | null
   sortOrder: SortOrder | null
 }
 
@@ -204,7 +204,7 @@ export async function deserializeFromURL(
 
     // 並び替え
     const sortParam = params.get('sort')
-    let sortKey: string | null = null
+    let sortKey: SortKey | null = null
     let sortOrder: SortOrder | null = null
 
     if (sortParam) {

@@ -1,9 +1,8 @@
 # @ac6_assemble_tool/web
 
 ## 2.6.0
+
 ### Minor Changes
-
-
 
 - [#888](https://github.com/tooppoo/ac6_assemble_tool/pull/888) [`09dc4d5`](https://github.com/tooppoo/ac6_assemble_tool/commit/09dc4d5896240d9126582b313c143f34489e0371) Thanks [@tooppoo](https://github.com/tooppoo)! - フィルタの設定状態をURLクエリとして保持
 

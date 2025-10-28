@@ -131,12 +131,12 @@
 2. WHEN プレイヤーがスロットBに切り替えた THEN パーツ一覧ページ SHALL スロットA専用のフィルタ状態を保持し、スロットB専用のフィルタ状態を復元する
 3. WHEN プレイヤーがスロットAに戻った THEN パーツ一覧ページ SHALL 以前設定したスロットA専用のフィルタ状態を復元する
 4. WHERE フィルタ管理の単位 THE パーツ一覧ページ SHALL 12種類のスロット（rightArmUnit, leftArmUnit, rightBackUnit, leftBackUnit, head, core, arms, legs, booster, fcs, generator, expansion）ごとに独立したフィルタ状態を保持する
-5. WHEN ページをリロードまたは再訪した THEN パーツ一覧ページ SHALL ローカルストレージからスロットごとのフィルタ状態を復元する
+5. WHEN ページをリロードまたは再訪した THEN パーツ一覧ページ SHALL URLクエリに含まれるスロットごとのフィルタ状態を復元し、LocalStorageは使用しない
 
 #### Design Notes
 
 - **状態管理**: スロットごとのフィルタ状態は`Record<CandidatesKey, Filter[]>`のようなマップ構造で管理する
-- **永続化**: LocalStorageを使用してスロットごとのフィルタ状態を保存する
+- **永続化**: フィルタ状態はURLクエリのみで保存・復元する（LocalStorageは禁止）
 - **URL共有**: URL共有時は現在選択中のスロットのフィルタ条件のみをシリアライズする（全スロットのフィルタをURLに含めるとURLが長大になるため）
 - **既存仕様との関係**: この要件はRequirement 2のAcceptance Criteria 5（フィルタ条件の引き継ぎ）を置き換える
 

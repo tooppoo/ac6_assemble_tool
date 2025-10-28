@@ -12,7 +12,7 @@ import {
   type FilterOperand,
 } from './filters-core'
 
-const PROPERTY_FILTER_KEYS = ['price', 'weight', 'en_load'] as const
+export const PROPERTY_FILTER_KEYS = ['price', 'weight', 'en_load'] as const
 export type PropertyFilterKey = (typeof PROPERTY_FILTER_KEYS)[number]
 
 type AssemblyTranslationKey = keyof typeof jaAssembly

@@ -11,6 +11,7 @@ import { enManufactures } from './locales/en/manufactures'
 import { enPageIndex } from './locales/en/pages'
 import { enRandom } from './locales/en/random'
 import { enShare } from './locales/en/share'
+import { enSort } from './locales/en/sort'
 import { jaAssembly } from './locales/ja/assembly'
 import { jaAssemblyStore } from './locales/ja/assemblyStore'
 import { jaAttackType } from './locales/ja/attackType'
@@ -24,6 +25,7 @@ import { jaManufactures } from './locales/ja/manufactures'
 import { jaPageIndex } from './locales/ja/pages'
 import { jaRandom } from './locales/ja/random'
 import { jaShare } from './locales/ja/share'
+import { jaSort } from './locales/ja/sort'
 
 export const resources = {
   ja: {
@@ -40,6 +42,7 @@ export const resources = {
     attack_type: jaAttackType,
     'page/index': jaPageIndex,
     'filter/operand': jaFilterOperand,
+    sort: jaSort,
     error: jaError,
     share: jaShare,
     assembly_store: jaAssemblyStore,
@@ -58,6 +61,7 @@ export const resources = {
     attack_type: enAttackType,
     'page/index': enPageIndex,
     'filter/operand': enFilterOperand,
+    sort: enSort,
     error: enError,
     share: enShare,
     assembly_store: enAssemblyStore,
