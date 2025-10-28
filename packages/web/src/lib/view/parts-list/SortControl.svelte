@@ -127,8 +127,6 @@
     })
   }
   function handleClear() {
-    selectedKey = noneValue
-    selectedOrder = 'asc'
     onsortclear?.()
   }
 
