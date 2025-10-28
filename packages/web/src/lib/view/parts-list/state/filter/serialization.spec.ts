@@ -56,5 +56,4 @@ describe('filter serialization utilities', () => {
       expect(normalizeSlotKey('invalid_slot')).toBeNull()
     })
   })
-
 })
