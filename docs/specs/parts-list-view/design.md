@@ -109,7 +109,7 @@ graph TB
     subgraph Persistence[Persistence Layer]
         FavoriteStore --> IndexedDB[(IndexedDB)]
         PartsListView --> URLParams[URL Parameters]
-        PartsListView --> LocalStorage[LocalStorage]
+        ViewModeState[ViewMode State] --> LocalStorage[LocalStorage (ViewMode)]
     end
 
     PartsListPage -.フィルタ済み母集団.-> AssemblyPage
@@ -338,24 +338,23 @@ function handleFilterChange(newFilters: Filter[]) {
 
 **Persistence Strategy**:
 
-- **LocalStorage**: スロットごとのフィルタ状態をLocalStorageに保存し、ページリロード時に復元
-- **URL Parameters**: URL共有時は現在選択中のスロットのフィルタのみをシリアライズ（全スロットのフィルタをURLに含めるとURLが長大になるため）
+- **URL Parameters**: スロットごとのフィルタ状態はURLクエリのみで保持し、ページリロードや共有時もURLから復元する（LocalStorageは使用しない）
+- **Compression**: `filters` パラメータにはURLセーフ圧縮文字列を用いて、マルチスロットの条件をまとめて格納する
 
 ```typescript
-// LocalStorageへの保存
-function saveFiltersToLocalStorage(filtersPerSlot: FiltersPerSlot) {
-  localStorage.setItem('ac6-parts-list-filters-per-slot', JSON.stringify(filtersPerSlot))
-}
+// URLへのシリアライズ
+const query = await serializeToURL({
+  slot: currentSlot,
+  filtersPerSlot,
+  sortKey,
+  sortOrder,
+})
 
-// LocalStorageからの復元
-function loadFiltersFromLocalStorage(): FiltersPerSlot | null {
-  const saved = localStorage.getItem('ac6-parts-list-filters-per-slot')
-  if (!saved) return null
-  try {
-    return JSON.parse(saved)
-  } catch {
-    return null
-  }
+// URLからの復元
+const restored = await deserializeFromURL(new URLSearchParams(location.search))
+if (Result.isSuccess(restored)) {
+  filtersPerSlot = restored.value.filtersPerSlot
+  currentSlot = restored.value.slot
 }
 ```
 
@@ -368,7 +367,7 @@ function loadFiltersFromLocalStorage(): FiltersPerSlot | null {
 **Trade-offs**:
 
 - **獲得**: 柔軟な探索、文脈の保持、ユーザー体験の向上
-- **犠牲**: 状態管理の複雑化、LocalStorage使用量の増加（ただし、フィルタ条件は小サイズなので問題なし）
+- **犠牲**: 状態管理の複雑化、URLクエリの圧縮処理による実装コスト（ただし、圧縮によりURL長は許容範囲）
 
 **Migration Note**:
 
@@ -557,7 +556,7 @@ interface PartsListViewEvents {
 
 **Postconditions**:
 
-- スロット選択状態、フィルタ、並び替えがURL/LocalStorageに保存される
+- スロット選択状態・フィルタ・並び替えがURLに保存され、表示モードのみLocalStorageに保存される
 - フィルタ済みパーツリストが正しく計算・表示される
 
 **Invariants**:
@@ -1539,7 +1538,7 @@ flowchart TD
 
     Phase1 -->|実装| P1A[パーツ一覧ページ新規作成]
     Phase1 -->|実装| P1B[フィルタ・並び替え・お気に入り]
-    Phase1 -->|実装| P1C[URL/LocalStorage状態管理]
+    Phase1 -->|実装| P1C[URL状態管理と表示モード同期]
 
     Phase2 -->|実装| P2A[URLパラメータ受け渡し実装]
     Phase2 -->|実装| P2B[母集団制限ロジック実装]
@@ -1565,14 +1564,14 @@ flowchart TD
 3. フィルタリング機能の実装（既存の `PartsFilterSet` を再利用）
 4. 並び替え機能の実装
 5. お気に入り管理機能の実装（IndexedDB）
-6. URL/LocalStorage状態管理の実装
+6. URL状態管理と表示モードLocalStorage同期の実装
 7. 0件時の表示とエラーハンドリング
 
 **検証基準**:
 
 - パーツ一覧ページが単独で正しく動作すること
 - フィルタ・並び替え・お気に入りが正しく機能すること
-- URL/LocalStorageで状態が正しく保存・復元されること
+- URLクエリでフィルタ・スロット・並び替えが保存・復元され、表示モードのみLocalStorageで維持されること
 
 **ロールバック**:
 
@@ -1676,7 +1675,7 @@ flowchart TD
 
 - [ ] パーツ一覧ページが単独で動作する
 - [ ] フィルタ・並び替え・お気に入りが正しく機能する
-- [ ] URL/LocalStorageで状態が保存・復元される
+- [ ] URLクエリで探索状態が保存・復元され、表示モードのみLocalStorageに保持される
 
 **Phase 2**:
 
