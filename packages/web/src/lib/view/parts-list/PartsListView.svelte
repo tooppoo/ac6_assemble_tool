@@ -12,27 +12,27 @@
   import { logger } from '@ac6_assemble_tool/shared/logger'
   import { Result } from '@praha/byethrow'
 
-import FilterPanel from './FilterPanel.svelte'
-import PartsGrid from './PartsGrid.svelte'
-import SortControl from './SortControl.svelte'
-import SlotSelector from './SlotSelector.svelte'
-import { applyFilters } from './state/filter/filters-core'
+  import FilterPanel from './FilterPanel.svelte'
+  import PartsGrid from './PartsGrid.svelte'
+  import SlotSelector from './SlotSelector.svelte'
+  import SortControl from './SortControl.svelte'
+  import { applyFilters } from './state/filter/filters-core'
   import {
     createDefaultFiltersPerSlot,
     type FiltersPerSlot,
   } from './state/filter/serialization'
+  import {
+    getAvailableSortKeys,
+    sortPartsByKey,
+    type SortKey,
+    type SortOrder,
+  } from './state/sort'
   import {
     deserializeFromURL,
     serializeToURL,
     type SharedState,
     type Filter,
   } from './state/state-serializer'
-import {
-  getAvailableSortKeys,
-  sortPartsByKey,
-  type SortKey,
-  type SortOrder,
-} from './state/sort'
   import { saveViewMode, loadViewMode, type ViewMode } from './state/view-mode'
   import { FavoriteStore } from './stores/favorite-store'
 
@@ -301,8 +301,8 @@ import {
     <SortControl
       slot={currentSlot}
       properties={availableSortKeys}
-      sortKey={sortKey}
-      sortOrder={sortOrder}
+      {sortKey}
+      {sortOrder}
       onsortchange={handleSortApply}
       onsortclear={handleSortClear}
     />

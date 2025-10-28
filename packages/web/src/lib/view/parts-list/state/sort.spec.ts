@@ -1,6 +1,5 @@
-import { describe, it, expect } from 'vitest'
-
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
+import { describe, it, expect } from 'vitest'
 
 import {
   getAvailableSortKeys,
@@ -9,10 +8,7 @@ import {
   type SortKey,
 } from './sort'
 
-function createPart(
-  overrides: Partial<ACParts>,
-  index: number,
-): ACParts {
+function createPart(overrides: Partial<ACParts>, index: number): ACParts {
   return {
     id: `TEST-${index}`,
     name: `テストパーツ${index}`,
@@ -96,18 +92,33 @@ describe('sortPartsByKey', () => {
   it('昇順で並び替えること', () => {
     const sorted = sortPartsByKey(parts, 'price', 'asc')
 
-    expect(sorted.map((part) => part.id)).toEqual(['TEST-2', 'TEST-3', 'TEST-1', 'TEST-4'])
+    expect(sorted.map((part) => part.id)).toEqual([
+      'TEST-2',
+      'TEST-3',
+      'TEST-1',
+      'TEST-4',
+    ])
   })
 
   it('降順で並び替えること', () => {
     const sorted = sortPartsByKey(parts, 'price', 'desc')
 
-    expect(sorted.map((part) => part.id)).toEqual(['TEST-1', 'TEST-2', 'TEST-3', 'TEST-4'])
+    expect(sorted.map((part) => part.id)).toEqual([
+      'TEST-1',
+      'TEST-2',
+      'TEST-3',
+      'TEST-4',
+    ])
   })
 
   it('値が同じ場合は元の順序を維持すること', () => {
     const sorted = sortPartsByKey(parts, 'weight', 'asc')
 
-    expect(sorted.map((part) => part.id)).toEqual(['TEST-2', 'TEST-1', 'TEST-4', 'TEST-3'])
+    expect(sorted.map((part) => part.id)).toEqual([
+      'TEST-2',
+      'TEST-1',
+      'TEST-4',
+      'TEST-3',
+    ])
   })
 })

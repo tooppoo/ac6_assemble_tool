@@ -34,6 +34,6 @@
   {properties}
   {sortKey}
   {sortOrder}
-  onsortchange={onsortchange}
-  onsortclear={onsortclear}
+  {onsortchange}
+  {onsortclear}
 />

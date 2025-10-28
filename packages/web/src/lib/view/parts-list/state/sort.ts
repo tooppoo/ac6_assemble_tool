@@ -37,9 +37,7 @@ export function parseSort(
 /**
  * 選択中スロットで利用可能な並び替えキーを取得する
  */
-export function getAvailableSortKeys(
-  parts: readonly ACParts[],
-): SortKey[] {
+export function getAvailableSortKeys(parts: readonly ACParts[]): SortKey[] {
   const keys: SortKey[] = []
 
   for (const key of PROPERTY_FILTER_KEYS) {
@@ -98,7 +96,5 @@ function isSortOrder(value: string): value is SortOrder {
 }
 
 function isSortKey(value: string): value is SortKey {
-  return (PROPERTY_FILTER_KEYS as readonly SortKey[]).includes(
-    value as SortKey,
-  )
+  return (PROPERTY_FILTER_KEYS as readonly SortKey[]).includes(value as SortKey)
 }

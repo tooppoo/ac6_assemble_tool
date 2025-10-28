@@ -10,7 +10,13 @@
 
 import { latest as regulation } from '$lib/regulation'
 
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/svelte'
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  within,
+} from '@testing-library/svelte'
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 
 import PartsListView from './PartsListView.svelte'
@@ -340,7 +346,9 @@ describe('PartsListView コンポーネント', () => {
       })
 
       const applyButton = screen.getByRole('button', { name: '適用' })
-      const propertySelect = screen.getByLabelText('並び替え対象') as HTMLSelectElement
+      const propertySelect = screen.getByLabelText(
+        '並び替え対象',
+      ) as HTMLSelectElement
       const orderSelect = screen.getByLabelText('並び順')
 
       await waitFor(() => expect(extractPrices()).toEqual(initialExpected))
@@ -352,7 +360,9 @@ describe('PartsListView コンポーネント', () => {
       await waitFor(() => expect(extractPrices()).toEqual(sortedByPriceAsc))
 
       await fireEvent.change(orderSelect, { target: { value: 'desc' } })
-      const orderSelectAfterChange = screen.getByLabelText('並び順') as HTMLSelectElement
+      const orderSelectAfterChange = screen.getByLabelText(
+        '並び順',
+      ) as HTMLSelectElement
       expect(orderSelectAfterChange.value).toBe('desc')
       await fireEvent.click(applyButton)
 
@@ -373,7 +383,9 @@ describe('PartsListView コンポーネント', () => {
       })
 
       const applyButton = screen.getByRole('button', { name: '適用' })
-      const propertySelect = screen.getByLabelText('並び替え対象') as HTMLSelectElement
+      const propertySelect = screen.getByLabelText(
+        '並び替え対象',
+      ) as HTMLSelectElement
       await fireEvent.change(propertySelect, { target: { value: 'price' } })
       await fireEvent.click(applyButton)
       const sortCard = document.querySelector('.sort-control-card')
