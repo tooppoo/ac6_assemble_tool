@@ -1,40 +1,42 @@
 import { Result } from '@praha/byethrow'
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import {
-  buildPropertyFilter,
-  buildNameFilter,
-  buildManufactureFilter,
   buildCategoryFilter,
+  buildManufactureFilter,
+  buildNameFilter,
+  buildPropertyFilter,
 } from './filter/filters-application'
 import {
   numericOperands,
-  stringOperands,
   selectAnyOperand,
+  stringOperands,
 } from './filter/filters-core'
 import {
   deserializeFromURL,
   serializeToURL,
   type SharedState,
 } from './state-serializer'
-import { compressToUrlSafeString } from './filter/compression'
+import {
+  compressToUrlSafeString,
+  decompressFromUrlSafeString,
+} from './filter/compression'
+
 describe('StateSerializer', () => {
   beforeEach(() => {
-    // LocalStorageをクリア
     if (typeof localStorage !== 'undefined') {
       localStorage.clear()
     }
   })
 
   afterEach(() => {
-    // LocalStorageをクリア
     if (typeof localStorage !== 'undefined') {
       localStorage.clear()
     }
   })
 
   describe('serializeToURL', () => {
-    it('スロット選択状態をURLパラメータに変換できること', () => {
+    it('スロット選択状態をURLパラメータに変換できること', async () => {
       const state: SharedState = {
         slot: 'head',
         filtersPerSlot: {},
@@ -42,13 +44,13 @@ describe('StateSerializer', () => {
         sortOrder: null,
       }
 
-      const params = serializeToURL(state)
+      const params = await serializeToURL(state)
 
       expect(params.get('slot')).toBe('head')
-      expect(params.get('head_filters')).toBeNull()
+      expect(params.has('filters')).toBe(false)
     })
 
-    it('filtersPerSlotをURLパラメータに出力すること', () => {
+    it('filtersPerSlotを圧縮してfiltersパラメータに格納すること', async () => {
       const operands = numericOperands()
       const ltOperand = operands.find((op) => op.id === 'lt')!
       const lteOperand = operands.find((op) => op.id === 'lte')!
@@ -72,16 +74,41 @@ describe('StateSerializer', () => {
         sortOrder: null,
       }
 
-      const params = serializeToURL(state)
-      expect(
-        params.get('arms_filters'),
-      ).toBe('numeric:weight:lt:5000|string:name:contain:ZIMMER')
-      expect(params.get('right_arm_unit_filters')).toBe(
-        'numeric:price:lte:100000|array:manufacture:in_any:BALAM,FURLONG|array:category:in_any:MEDIUM',
-      )
+      const params = await serializeToURL(state)
+      const compressed = params.get('filters')
+      expect(compressed).not.toBeNull()
+
+      const json = await decompressFromUrlSafeString(compressed!)
+      expect(json).not.toBeNull()
+      const payload = JSON.parse(json!) as Record<string, string[]>
+
+      expect(payload.arms).toEqual([
+        'numeric:weight:lt:5000',
+        'string:name:contain:ZIMMER',
+      ])
+      expect(payload.rightArmUnit).toEqual([
+        'numeric:price:lte:100000',
+        'array:manufacture:in_any:BALAM,FURLONG',
+        'array:category:in_any:MEDIUM',
+      ])
+      expect(payload.head).toBeUndefined()
     })
 
-    it('並び替え設定をURLパラメータに変換できること', () => {
+    it('filtersが空の場合はfiltersパラメータを含めないこと', async () => {
+      const state: SharedState = {
+        slot: 'arms',
+        filtersPerSlot: {
+          arms: [],
+        },
+        sortKey: null,
+        sortOrder: null,
+      }
+
+      const params = await serializeToURL(state)
+      expect(params.has('filters')).toBe(false)
+    })
+
+    it('並び替え設定をURLパラメータに変換できること', async () => {
       const state: SharedState = {
         slot: 'legs',
         filtersPerSlot: {},
@@ -89,12 +116,11 @@ describe('StateSerializer', () => {
         sortOrder: 'asc',
       }
 
-      const params = serializeToURL(state)
-
+      const params = await serializeToURL(state)
       expect(params.get('sort')).toBe('weight:asc')
     })
 
-    it('並び替えがnullの場合、sortパラメータを含めないこと', () => {
+    it('並び替えがnullの場合、sortパラメータを含めないこと', async () => {
       const state: SharedState = {
         slot: 'core',
         filtersPerSlot: {},
@@ -102,8 +128,7 @@ describe('StateSerializer', () => {
         sortOrder: null,
       }
 
-      const params = serializeToURL(state)
-
+      const params = await serializeToURL(state)
       expect(params.has('sort')).toBe(false)
     })
   })
@@ -121,110 +146,98 @@ describe('StateSerializer', () => {
       }
     })
 
-    it('スロット別フィルタパラメータから全スロット分のフィルタを復元できること', async () => {
-      const params = new URLSearchParams(
-        [
-          'slot=head',
-          'head_filters=string:name:contain:ZIMMER|numeric:weight:lte:3000',
-          'right_arm_unit_filters=array:category:in_any:RIFLE|array:manufacture:in_any:BALAM',
-        ].join('&'),
-      )
-
-      const result = await deserializeFromURL(params)
-
-      expect(Result.isSuccess(result)).toBe(true)
-      if (result.type === 'Success') {
-        const restoredHead = result.value.filtersPerSlot.head ?? []
-        expect(restoredHead.map((f) => f.serialize())).toEqual([
-          'string:name:contain:ZIMMER',
-          'numeric:weight:lte:3000',
-        ])
-        const restoredRightArm = result.value.filtersPerSlot.rightArmUnit ?? []
-        expect(restoredRightArm.map((f) => f.serialize())).toEqual([
-          'array:category:in_any:RIFLE',
-          'array:manufacture:in_any:BALAM',
-        ])
-      }
-    })
-
-    it('レガシーfilterパラメータを後方互換で復元すること', async () => {
-      const params = new URLSearchParams(
-        'slot=arms&filter=numeric:weight:lt:5000&filter=string:name:contain:ZIMMER',
-      )
-
-      const result = await deserializeFromURL(params)
-
-      expect(Result.isSuccess(result)).toBe(true)
-      if (result.type === 'Success') {
-        const restored = result.value.filtersPerSlot.arms ?? []
-        expect(restored.map((f) => f.serialize())).toEqual([
+    it('圧縮filtersパラメータからフィルタを復元できること', async () => {
+      const payload = {
+        arms: [
           'numeric:weight:lt:5000',
           'string:name:contain:ZIMMER',
-        ])
+        ],
+        rightArmUnit: [
+          'numeric:price:lte:100000',
+          'array:manufacture:in_any:BALAM,FURLONG',
+        ],
       }
-    })
-
-    it('レガシーfilterパラメータの不正値はスキップすること', async () => {
-      const params = new URLSearchParams(
-        'slot=head&filter=numeric:weight:lt:5000&filter=invalid',
-      )
+      const compressed = await compressToUrlSafeString(JSON.stringify(payload))
+      const params = new URLSearchParams(`slot=arms&filters=${compressed}`)
 
       const result = await deserializeFromURL(params)
 
       expect(Result.isSuccess(result)).toBe(true)
       if (result.type === 'Success') {
-        const restored = result.value.filtersPerSlot.head ?? []
-        expect(restored.map((f) => f.serialize())).toEqual([
-          'numeric:weight:lt:5000',
-        ])
+        expect(result.value.slot).toBe('arms')
+        expect(
+          result.value.filtersPerSlot.arms?.map((f) => f.serialize()),
+        ).toEqual(payload.arms)
+        expect(
+          result.value.filtersPerSlot.rightArmUnit?.map((f) => f.serialize()),
+        ).toEqual(payload.rightArmUnit)
       }
     })
 
-    it('既存filtersパラメータがある場合、レガシーパラメータは上書きしないこと', async () => {
-      const params = new URLSearchParams(
-        [
-          'slot=head',
-          'head_filters=numeric:weight:lte:1000',
-          'filter=numeric:weight:lt:5000',
-        ].join('&'),
-      )
+    it('filtersパラメータが不正なBase64の場合、エラーを返すこと', async () => {
+      const params = new URLSearchParams('slot=head&filters=%%%INVALID%%%')
 
       const result = await deserializeFromURL(params)
 
-      expect(Result.isSuccess(result)).toBe(true)
-      if (result.type === 'Success') {
-        const restored = result.value.filtersPerSlot.head ?? []
-        expect(restored.map((f) => f.serialize())).toEqual([
-          'numeric:weight:lte:1000',
-        ])
+      expect(Result.isFailure(result)).toBe(true)
+      if (result.type === 'Failure') {
+        expect(result.error.type).toBe('invalid_format')
       }
     })
 
-    it('レガシーfiltersパラメータを復元すること', async () => {
-      const legacyPayload = {
-        rightArmUnit: ['numeric:price:lte:3200'],
-        head: ['numeric:price:lte:1500'],
+    it('filtersパラメータが不正なJSONの場合、エラーを返すこと', async () => {
+      const compressed = await compressToUrlSafeString('"not-an-object"')
+      const params = new URLSearchParams(`slot=head&filters=${compressed}`)
+
+      const result = await deserializeFromURL(params)
+
+      expect(Result.isFailure(result)).toBe(true)
+      if (result.type === 'Failure') {
+        expect(result.error.type).toBe('invalid_format')
       }
-      const compressed = await compressToUrlSafeString(
-        JSON.stringify(legacyPayload),
-      )
+    })
+
+    it('filtersパラメータの無効なフィルタはスキップすること', async () => {
+      const payload = {
+        head: ['invalid', 'numeric:weight:lte:3000'],
+      }
+      const compressed = await compressToUrlSafeString(JSON.stringify(payload))
       const params = new URLSearchParams(`slot=head&filters=${compressed}`)
 
       const result = await deserializeFromURL(params)
 
       expect(Result.isSuccess(result)).toBe(true)
       if (result.type === 'Success') {
-        expect(
-          result.value.filtersPerSlot.rightArmUnit?.map((f) => f.serialize()),
-        ).toEqual(['numeric:price:lte:3200'])
-        expect(result.value.filtersPerSlot.head?.map((f) => f.serialize())).toEqual([
-          'numeric:price:lte:1500',
+        const restored = result.value.filtersPerSlot.head ?? []
+        expect(restored.map((f) => f.serialize())).toEqual([
+          'numeric:weight:lte:3000',
         ])
       }
     })
 
+    it('filtersパラメータに未知のスロットが含まれる場合はスキップすること', async () => {
+      const payload = {
+        unknownSlot: ['numeric:weight:lte:3000'],
+        head: ['string:name:contain:ZIMMER'],
+      } as Record<string, string[]>
+      const compressed = await compressToUrlSafeString(JSON.stringify(payload))
+      const params = new URLSearchParams(`slot=head&filters=${compressed}`)
+
+      const result = await deserializeFromURL(params)
+
+      expect(Result.isSuccess(result)).toBe(true)
+      if (result.type === 'Success') {
+        expect(result.value.filtersPerSlot.head?.map((f) => f.serialize())).toEqual([
+          'string:name:contain:ZIMMER',
+        ])
+        expect(result.value.filtersPerSlot.rightArmUnit).toBeUndefined()
+      }
+    })
+
     it('URLパラメータから並び替え設定を復元できること', async () => {
-      const params = new URLSearchParams('slot=legs&sort=weight:asc')
+      const payload = {}
+      const compressed = await compressToUrlSafeString(JSON.stringify(payload))
+      const params = new URLSearchParams(`slot=legs&filters=${compressed}&sort=weight:asc`)
 
       const result = await deserializeFromURL(params)
 

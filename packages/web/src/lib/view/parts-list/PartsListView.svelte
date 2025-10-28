@@ -9,6 +9,7 @@
   import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
+  import { logger } from '@ac6_assemble_tool/shared/logger'
   import { Result } from '@praha/byethrow'
 
   import FilterPanel from './FilterPanel.svelte'
@@ -142,16 +143,23 @@
       sortOrder,
     }
 
-    const params = serializeToURL(state)
-
-    // URLを更新（ページリロードなし）
-    const newUrl = `${window.location.pathname}?${params.toString()}`
-    try {
-      replaceState(newUrl, {})
-    } catch {
-      // テスト環境ではルーターが初期化されていないため、エラーをキャッチ
-      // 本番環境では正常に動作する
-    }
+    void (async () => {
+      try {
+        const params = await serializeToURL(state)
+        const newUrl = `${window.location.pathname}?${params.toString()}`
+        try {
+          replaceState(newUrl, {})
+        } catch {
+          logger.debug('Failed to replace state - likely in test environment')
+          // テスト環境ではルーターが初期化されていないため、エラーをキャッチ
+          // 本番環境では正常に動作する
+        }
+      } catch (error) {
+        logger.error('Failed to serialize parts list state to URL', {
+          error,
+        })
+      }
+    })()
   })
 
   // LocalStorage への同期（表示モード変更時に自動実行）

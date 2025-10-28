@@ -17,6 +17,10 @@ import * as navigation from '$app/navigation'
 
 import PartsListView from './PartsListView.svelte'
 import PartsListViewTestWrapper from './PartsListView.test-wrapper.svelte'
+import {
+  compressToUrlSafeString,
+  decompressFromUrlSafeString,
+} from './state/filter/compression'
 
 const replaceStateSpy = vi.spyOn(navigation, 'replaceState')
 
@@ -164,11 +168,15 @@ describe('PartsListView コンポーネント', () => {
       const params = new URL(url as string, 'https://example.test').searchParams
       expect(params.get('slot')).toBe('head')
 
-      const rightArmParam = params.get('right_arm_unit_filters')
-      expect(rightArmParam).toBe('numeric:price:lte:3200')
+      const filtersParam = params.get('filters')
+      expect(filtersParam).not.toBeNull()
 
-      const headParam = params.get('head_filters')
-      expect(headParam).toBe('numeric:price:lte:1500')
+      const json = await decompressFromUrlSafeString(filtersParam!)
+      expect(json).not.toBeNull()
+      const payload = JSON.parse(json!) as Record<string, string[]>
+
+      expect(payload.rightArmUnit).toEqual(['numeric:price:lte:3200'])
+      expect(payload.head).toEqual(['numeric:price:lte:1500'])
     })
   })
 
@@ -213,8 +221,15 @@ describe('PartsListView コンポーネント', () => {
   describe('スロット切替時の条件引き継ぎ', () => {
     it('スロット切替時にフィルタ条件が保持されること（共通属性の場合）', async () => {
       // URLパラメータでフィルタ条件を設定
+      const payload = {
+        rightArmUnit: [
+          'numeric:weight:lte:5000',
+          'numeric:price:lte:100000',
+        ],
+      }
+      const compressed = await compressToUrlSafeString(JSON.stringify(payload))
       const searchParams = new URLSearchParams(
-        'slot=rightArmUnit&filter=weight:lte:5000&filter=price:lte:100000',
+        `slot=rightArmUnit&filters=${compressed}`,
       )
 
       const { getByText } = render(PartsListViewTestWrapper, {

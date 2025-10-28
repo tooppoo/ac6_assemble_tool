@@ -5,17 +5,14 @@ import {
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 
+import { compressToUrlSafeString, decompressFromUrlSafeString } from './filter/compression'
 import { type Filter } from './filter/filters-core'
 import {
-  deserializeFiltersPerSlot,
-  deserializeLegacyFiltersPerSlotFromURL,
   normalizeSlotKey,
   parseFilter,
-  serializeFiltersPerSlot,
-  toSlotParamKey,
   type FiltersPerSlot,
 } from './filter/serialization'
-import { type DeserializeError } from './shared'
+import { type DeserializeError, VALID_SLOTS } from './shared'
 import type { SortOrder } from './sort'
 import { parseSort } from './sort'
 
@@ -35,21 +32,16 @@ export interface SharedState {
 /**
  * URLパラメータへのシリアライズ（共有用）
  */
-export function serializeToURL(state: SharedState): URLSearchParams {
+export async function serializeToURL(state: SharedState): Promise<URLSearchParams> {
   const params = new URLSearchParams()
 
   // スロット
   params.set('slot', camelToSnake(state.slot))
 
-  // 既存のフィルタパラメータを一旦削除（Svelte効果内で複数回呼ばれる想定）
-  for (const slot of CANDIDATES_KEYS) {
-    params.delete(toSlotParamKey(slot))
-  }
-
   // フィルタ条件（全スロット)
-  const serializedFilters = serializeFiltersPerSlot(state.filtersPerSlot)
-  for (const [key, value] of serializedFilters.entries()) {
-    params.set(key, value)
+  const compressedFilters = await serializeFiltersParam(state.filtersPerSlot)
+  if (compressedFilters) {
+    params.set('filters', compressedFilters)
   }
 
   // 並び替え
@@ -58,6 +50,115 @@ export function serializeToURL(state: SharedState): URLSearchParams {
   }
 
   return params
+}
+
+type SerializedFiltersPayload = Partial<Record<CandidatesKey, string[]>>
+
+async function serializeFiltersParam(
+  filtersPerSlot: FiltersPerSlot,
+): Promise<string | null> {
+  const payload = buildFiltersPayload(filtersPerSlot)
+  if (!payload) {
+    return null
+  }
+
+  const json = JSON.stringify(payload)
+  return compressToUrlSafeString(json)
+}
+
+function buildFiltersPayload(filtersPerSlot: FiltersPerSlot): SerializedFiltersPayload | null {
+  const payload: SerializedFiltersPayload = {}
+  let hasFilters = false
+
+  for (const slot of CANDIDATES_KEYS) {
+    const slotFilters = filtersPerSlot[slot]
+    if (!slotFilters || slotFilters.length === 0) {
+      continue
+    }
+
+    payload[slot] = slotFilters.map((filter) => filter.serialize())
+    hasFilters = true
+  }
+
+  return hasFilters ? payload : null
+}
+
+async function deserializeFiltersParam(
+  compressed: string,
+): Promise<Result.Result<FiltersPerSlot, DeserializeError>> {
+  const json = await decompressFromUrlSafeString(compressed)
+  if (!json) {
+    return Result.fail({
+      type: 'invalid_format',
+      message: 'Failed to decompress filters payload',
+    })
+  }
+
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(json) as unknown
+  } catch (error) {
+    return Result.fail({
+      type: 'invalid_format',
+      message:
+        error instanceof Error
+          ? `Failed to parse filters payload: ${error.message}`
+          : 'Failed to parse filters payload',
+    })
+  }
+
+  if (!isSerializedFiltersPayload(parsed)) {
+    return Result.fail({
+      type: 'invalid_format',
+      message: 'Invalid filters payload structure',
+    })
+  }
+
+  const restored: FiltersPerSlot = {}
+  for (const [slotKey, serializedFilters] of Object.entries(parsed)) {
+    if (!isValidSlotKey(slotKey)) {
+      logger.warn('Invalid slot in filters payload, skipping', { slot: slotKey })
+      continue
+    }
+
+    const parsedFilters: Filter[] = []
+    for (const serializedFilter of serializedFilters) {
+      const parsedFilter = parseFilter(serializedFilter)
+      if (!parsedFilter) {
+        logger.warn('Invalid filter entry skipped', {
+          slot: slotKey,
+          filter: serializedFilter,
+        })
+        continue
+      }
+      parsedFilters.push(parsedFilter)
+    }
+
+    if (parsedFilters.length > 0) {
+      restored[slotKey] = parsedFilters
+    }
+  }
+
+  return Result.succeed(restored)
+}
+
+function isSerializedFiltersPayload(value: unknown): value is SerializedFiltersPayload {
+  if (typeof value !== 'object' || value === null) {
+    return false
+  }
+
+  return Object.entries(value as Record<string, unknown>).every(
+    ([slot, serializedFilters]) =>
+      typeof slot === 'string' &&
+      Array.isArray(serializedFilters) &&
+      serializedFilters.every(
+        (entry) => typeof entry === 'string' && entry.trim().length > 0,
+      ),
+  )
+}
+
+function isValidSlotKey(value: string): value is CandidatesKey {
+  return VALID_SLOTS.has(value as CandidatesKey)
 }
 /**
  * URLパラメータからのデシリアライズ
@@ -79,50 +180,15 @@ export async function deserializeFromURL(
     }
 
     // フィルタ条件（スロットごと）
-    let filtersPerSlot = deserializeFiltersPerSlot(params)
+    let filtersPerSlot: FiltersPerSlot = {}
 
-    const legacyCompressed = params.get('filters')
-    if (legacyCompressed) {
-      const legacy = await deserializeLegacyFiltersPerSlotFromURL(legacyCompressed)
-      if (legacy.type === 'Failure') {
-        return Result.fail(legacy.error)
+    const compressedFilters = params.get('filters')
+    if (compressedFilters) {
+      const restored = await deserializeFiltersParam(compressedFilters)
+      if (restored.type === 'Failure') {
+        return Result.fail(restored.error)
       }
-
-      for (const [legacySlot, legacyFilters] of Object.entries(legacy.value)) {
-        const slotKey = legacySlot as CandidatesKey
-        if (!filtersPerSlot[slotKey] || filtersPerSlot[slotKey]?.length === 0) {
-          filtersPerSlot = {
-            ...filtersPerSlot,
-            [slotKey]: legacyFilters,
-          }
-        }
-      }
-    }
-
-    // 後方互換: filterクエリパラメータ（現在スロットのみ）
-    const legacyFilterParams = params.getAll('filter')
-    if (legacyFilterParams.length > 0) {
-      const parsedLegacyFilters: Filter[] = []
-      for (const filterParam of legacyFilterParams) {
-        const parsed = parseFilter(filterParam)
-        if (parsed) {
-          parsedLegacyFilters.push(parsed)
-        } else {
-          logger.warn('Invalid filter parameter skipped', {
-            filter: filterParam,
-          })
-        }
-      }
-
-      if (parsedLegacyFilters.length > 0) {
-        const existing = filtersPerSlot[slot]
-        if (!existing || existing.length === 0) {
-          filtersPerSlot = {
-            ...filtersPerSlot,
-            [slot]: parsedLegacyFilters,
-          }
-        }
-      }
+      filtersPerSlot = restored.value
     }
 
     // 並び替え
