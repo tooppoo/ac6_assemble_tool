@@ -36,12 +36,14 @@ describe('compression utilities', () => {
     expect(decompressed).toBeNull()
   })
 
-  it('throws when CompressionStream API is unavailable', async () => {
+  it('falls back to uncompressed payload when CompressionStream API is unavailable', async () => {
     Reflect.deleteProperty(globalThis, 'CompressionStream')
     Reflect.deleteProperty(globalThis, 'DecompressionStream')
 
-    await expect(compressToUrlSafeString(SAMPLE_TEXT)).rejects.toThrowError(
-      'CompressionStream API is not available in this runtime',
-    )
+    const compressed = await compressToUrlSafeString(SAMPLE_TEXT)
+    expect(compressed).toMatch(/^[A-Za-z0-9_-]+$/u)
+
+    const decompressed = await decompressFromUrlSafeString(compressed)
+    expect(decompressed).toBe(SAMPLE_TEXT)
   })
 })

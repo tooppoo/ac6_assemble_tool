@@ -1,57 +1,89 @@
+import { logger } from '@ac6_assemble_tool/shared/logger'
+
 const textEncoder = new TextEncoder()
 const textDecoder = new TextDecoder()
 
-/**
- * フィルタシリアライゼーションで利用するURL安全なBase64エンコード済み圧縮文字列を生成
- */
 export async function compressToUrlSafeString(input: string): Promise<string> {
-  assertCompressionSupport()
+  if (!hasCompressionSupport()) {
+    logger.warn(
+      'CompressionStream API is not available, using uncompressed payload',
+    )
+    return encodeWithoutCompression(input)
+  }
 
-  const stream = new CompressionStream('gzip')
-  const writer = stream.writable.getWriter()
-  await writer.write(textEncoder.encode(input))
-  await writer.close()
-
-  const compressed = await readableStreamToUint8Array(stream.readable)
-  return toBase64Url(compressed)
+  try {
+    const compressedStream = new Blob([input])
+      .stream()
+      .pipeThrough(new CompressionStream('gzip'))
+    const compressedBuffer = await new Response(compressedStream).arrayBuffer()
+    return toBase64Url(new Uint8Array(compressedBuffer))
+  } catch (error) {
+    logger.warn(
+      'Failed to compress payload, falling back to uncompressed encoding',
+      {
+        error: error instanceof Error ? error.message : String(error),
+      },
+    )
+    return encodeWithoutCompression(input)
+  }
 }
 
-/**
- * URL安全なBase64文字列を伸長して元の文字列に復元
- */
 export async function decompressFromUrlSafeString(
   compressed: string,
 ): Promise<string | null> {
-  assertCompressionSupport()
-
-  const binary = fromBase64Url(compressed)
-  if (!binary) {
+  const binaryBuffer = fromBase64Url(compressed)
+  if (!binaryBuffer) {
     return null
   }
+  const binary = new Uint8Array(binaryBuffer)
 
-  const stream = new DecompressionStream('gzip')
-  const writer = stream.writable.getWriter()
-  await writer.write(binary)
-  await writer.close()
-
-  const decompressed = await readableStreamToUint8Array(stream.readable)
-  return textDecoder.decode(decompressed)
-}
-
-function assertCompressionSupport(): void {
-  if (
-    typeof CompressionStream === 'undefined' ||
-    typeof DecompressionStream === 'undefined'
-  ) {
-    throw new Error('CompressionStream API is not available in this runtime')
+  if (hasCompressionSupport()) {
+    try {
+      const readable = new Blob([binaryBuffer]).stream()
+      const decompressedStream = readable.pipeThrough(
+        new DecompressionStream('gzip'),
+      )
+      const decompressedBuffer = await new Response(
+        decompressedStream,
+      ).arrayBuffer()
+      return textDecoder.decode(decompressedBuffer)
+    } catch (error) {
+      logger.warn(
+        'Failed to decompress payload as gzip, attempting plain decode',
+        {
+          error: error instanceof Error ? error.message : String(error),
+        },
+      )
+    }
+  } else {
+    logger.warn(
+      'DecompressionStream API is not available, attempting plain decode',
+    )
   }
+
+  return tryDecodePlain(binary)
 }
 
-async function readableStreamToUint8Array(
-  stream: ReadableStream<Uint8Array>,
-): Promise<Uint8Array> {
-  const buffer = await new Response(stream).arrayBuffer()
-  return new Uint8Array(buffer)
+function hasCompressionSupport(): boolean {
+  return (
+    typeof CompressionStream !== 'undefined' &&
+    typeof DecompressionStream !== 'undefined'
+  )
+}
+
+function encodeWithoutCompression(input: string): string {
+  return toBase64Url(textEncoder.encode(input))
+}
+
+function tryDecodePlain(bytes: Uint8Array): string | null {
+  try {
+    return textDecoder.decode(bytes)
+  } catch (error) {
+    logger.error('Failed to decode payload', {
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return null
+  }
 }
 
 function toBase64Url(bytes: Uint8Array): string {
@@ -64,7 +96,7 @@ function toBase64Url(bytes: Uint8Array): string {
   return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/u, '')
 }
 
-function fromBase64Url(value: string): Uint8Array<ArrayBuffer> | null {
+function fromBase64Url(value: string): ArrayBuffer | null {
   if (!value) {
     return null
   }
@@ -75,12 +107,12 @@ function fromBase64Url(value: string): Uint8Array<ArrayBuffer> | null {
 
   try {
     const binary = atob(padded)
-    const buffer = new ArrayBuffer(binary.length)
-    const bytes = new Uint8Array(buffer)
+    const arrayBuffer = new ArrayBuffer(binary.length)
+    const bytes = new Uint8Array(arrayBuffer)
     for (let i = 0; i < binary.length; i += 1) {
       bytes[i] = binary.charCodeAt(i)
     }
-    return bytes
+    return arrayBuffer
   } catch {
     return null
   }

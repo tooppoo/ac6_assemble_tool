@@ -1,10 +1,21 @@
-import { type CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
+import {
+  CANDIDATES_KEYS,
+  type CandidatesKey,
+} from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 
+import {
+  compressToUrlSafeString,
+  decompressFromUrlSafeString,
+} from './filter/compression'
 import { type Filter } from './filter/filters-core'
-import { parseFilter } from './filter/serialization'
-import { VALID_SLOTS, type DeserializeError } from './shared'
+import {
+  normalizeSlotKey,
+  parseFilter,
+  type FiltersPerSlot,
+} from './filter/serialization'
+import { type DeserializeError, VALID_SLOTS } from './shared'
 import type { SortOrder } from './sort'
 import { parseSort } from './sort'
 
@@ -16,7 +27,7 @@ export type { Filter } from './filter/filters-core'
  */
 export interface SharedState {
   slot: CandidatesKey
-  filters: Filter[]
+  filtersPerSlot: FiltersPerSlot
   sortKey: string | null
   sortOrder: SortOrder | null
 }
@@ -24,15 +35,18 @@ export interface SharedState {
 /**
  * URLパラメータへのシリアライズ（共有用）
  */
-export function serializeToURL(state: SharedState): URLSearchParams {
+export async function serializeToURL(
+  state: SharedState,
+): Promise<URLSearchParams> {
   const params = new URLSearchParams()
 
   // スロット
-  params.set('slot', state.slot)
+  params.set('slot', camelToSnake(state.slot))
 
-  // フィルタ条件（新しい型に対応）
-  for (const filter of state.filters) {
-    params.append('filter', filter.serialize())
+  // フィルタ条件（全スロット)
+  const compressedFilters = await serializeFiltersParam(state.filtersPerSlot)
+  if (compressedFilters) {
+    params.set('filters', compressedFilters)
   }
 
   // 並び替え
@@ -42,37 +56,150 @@ export function serializeToURL(state: SharedState): URLSearchParams {
 
   return params
 }
+
+type SerializedFiltersPayload = Partial<Record<CandidatesKey, string[]>>
+
+async function serializeFiltersParam(
+  filtersPerSlot: FiltersPerSlot,
+): Promise<string | null> {
+  const payload = buildFiltersPayload(filtersPerSlot)
+  if (!payload) {
+    return null
+  }
+
+  const json = JSON.stringify(payload)
+  return compressToUrlSafeString(json)
+}
+
+function buildFiltersPayload(
+  filtersPerSlot: FiltersPerSlot,
+): SerializedFiltersPayload | null {
+  const payload: SerializedFiltersPayload = {}
+  let hasFilters = false
+
+  for (const slot of CANDIDATES_KEYS) {
+    const slotFilters = filtersPerSlot[slot]
+    if (!slotFilters || slotFilters.length === 0) {
+      continue
+    }
+
+    payload[slot] = slotFilters.map((filter) => filter.serialize())
+    hasFilters = true
+  }
+
+  return hasFilters ? payload : null
+}
+
+async function deserializeFiltersParam(
+  compressed: string,
+): Promise<Result.Result<FiltersPerSlot, DeserializeError>> {
+  const json = await decompressFromUrlSafeString(compressed)
+  if (!json) {
+    return Result.fail({
+      type: 'invalid_format',
+      message: 'Failed to decompress filters payload',
+    })
+  }
+
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(json) as unknown
+  } catch (error) {
+    return Result.fail({
+      type: 'invalid_format',
+      message:
+        error instanceof Error
+          ? `Failed to parse filters payload: ${error.message}`
+          : 'Failed to parse filters payload',
+    })
+  }
+
+  if (!isSerializedFiltersPayload(parsed)) {
+    return Result.fail({
+      type: 'invalid_format',
+      message: 'Invalid filters payload structure',
+    })
+  }
+
+  const restored: FiltersPerSlot = {}
+  for (const [slotKey, serializedFilters] of Object.entries(parsed)) {
+    if (!isValidSlotKey(slotKey)) {
+      logger.warn('Invalid slot in filters payload, skipping', {
+        slot: slotKey,
+      })
+      continue
+    }
+
+    const parsedFilters: Filter[] = []
+    for (const serializedFilter of serializedFilters) {
+      const parsedFilter = parseFilter(serializedFilter)
+      if (!parsedFilter) {
+        logger.warn('Invalid filter entry skipped', {
+          slot: slotKey,
+          filter: serializedFilter,
+        })
+        continue
+      }
+      parsedFilters.push(parsedFilter)
+    }
+
+    if (parsedFilters.length > 0) {
+      restored[slotKey] = parsedFilters
+    }
+  }
+
+  return Result.succeed(restored)
+}
+
+function isSerializedFiltersPayload(
+  value: unknown,
+): value is SerializedFiltersPayload {
+  if (typeof value !== 'object' || value === null) {
+    return false
+  }
+
+  return Object.entries(value as Record<string, unknown>).every(
+    ([slot, serializedFilters]) =>
+      typeof slot === 'string' &&
+      Array.isArray(serializedFilters) &&
+      serializedFilters.every(
+        (entry) => typeof entry === 'string' && entry.trim().length > 0,
+      ),
+  )
+}
+
+function isValidSlotKey(value: string): value is CandidatesKey {
+  return VALID_SLOTS.has(value as CandidatesKey)
+}
 /**
  * URLパラメータからのデシリアライズ
  */
-export function deserializeFromURL(
+export async function deserializeFromURL(
   params: URLSearchParams,
-): Result.Result<SharedState, DeserializeError> {
+): Promise<Result.Result<SharedState, DeserializeError>> {
   try {
     // スロット
     const slotParam = params.get('slot')
-    let slot: CandidatesKey = 'rightArmUnit' // デフォルト
+    let slot: CandidatesKey = 'rightArmUnit'
 
     if (slotParam) {
-      if (!VALID_SLOTS.has(slotParam as CandidatesKey)) {
+      const normalized = normalizeSlotKey(slotParam)
+      if (!normalized) {
         return Result.fail({ type: 'invalid_slot', slot: slotParam })
       }
-      slot = slotParam as CandidatesKey
+      slot = normalized
     }
 
-    // フィルタ条件
-    const filterParams = params.getAll('filter')
-    const filters: Filter[] = []
+    // フィルタ条件（スロットごと）
+    let filtersPerSlot: FiltersPerSlot = {}
 
-    for (const filterParam of filterParams) {
-      const parsed = parseFilter(filterParam)
-      if (parsed) {
-        filters.push(parsed)
-      } else {
-        logger.warn('Invalid filter parameter skipped', {
-          filter: filterParam,
-        })
+    const compressedFilters = params.get('filters')
+    if (compressedFilters) {
+      const restored = await deserializeFiltersParam(compressedFilters)
+      if (restored.type === 'Failure') {
+        return Result.fail(restored.error)
       }
+      filtersPerSlot = restored.value
     }
 
     // 並び替え
@@ -92,7 +219,7 @@ export function deserializeFromURL(
       }
     }
 
-    return Result.succeed({ slot, filters, sortKey, sortOrder })
+    return Result.succeed({ slot, filtersPerSlot, sortKey, sortOrder })
   } catch (error) {
     logger.error('Failed to deserialize state from URL', {
       error: error instanceof Error ? error.message : String(error),
@@ -103,4 +230,11 @@ export function deserializeFromURL(
       message: error instanceof Error ? error.message : String(error),
     })
   }
+}
+
+function camelToSnake(value: string): string {
+  return value
+    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+    .replace(/([A-Z])([A-Z][a-z])/g, '$1_$2')
+    .toLowerCase()
 }

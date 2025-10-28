@@ -7,10 +7,7 @@ import { Result } from '@praha/byethrow'
 
 import { VALID_SLOTS, type DeserializeError } from '../shared'
 
-import {
-  compressToUrlSafeString,
-  decompressFromUrlSafeString,
-} from './compression'
+import { decompressFromUrlSafeString } from './compression'
 import {
   buildPropertyFilter,
   buildNameFilter,
@@ -24,11 +21,6 @@ import {
   selectAnyOperand,
   stringOperands,
 } from './filters-core'
-
-/**
- * LocalStorageに保存するスロットごとのフィルタ状態のキー
- */
-const FILTERS_PER_SLOT_KEY = 'ac6-parts-list-filters-per-slot'
 
 /**
  * フィルタパラメータをパース
@@ -127,177 +119,6 @@ export function parseFilter(filterParam: string): Filter | null {
 }
 
 /**
- * スロットごとのフィルタ状態をURLパラメータにシリアライズ
- * フィルタが設定されているスロットのみを含める（URL長を削減）
- * CompressionStream(Gzip)圧縮を使用してURLサイズを削減
- */
-export async function serializeFiltersPerSlotToURL(
-  filtersPerSlot: FiltersPerSlot,
-): Promise<string> {
-  // 空のフィルタを持つスロットを除外
-  const nonEmptyFilters: FiltersPerSlot = {}
-  for (const [slot, filters] of Object.entries(filtersPerSlot)) {
-    if (filters && filters.length > 0) {
-      nonEmptyFilters[slot as CandidatesKey] = filters
-    }
-  }
-
-  // フィルタが1つもない場合は空文字列を返す
-  if (Object.keys(nonEmptyFilters).length === 0) {
-    return ''
-  }
-
-  // JSON → 圧縮 → URLパラメータ
-  const json = JSON.stringify(nonEmptyFilters)
-  try {
-    return await compressToUrlSafeString(json)
-  } catch (error) {
-    logger.error('Failed to compress filters per slot for URL', {
-      error,
-    })
-    return ''
-  }
-}
-
-/**
- * URLパラメータからスロットごとのフィルタ状態を復元
- */
-export async function deserializeFiltersPerSlotFromURL(
-  compressedFilters: string,
-): Promise<Result.Result<FiltersPerSlot, DeserializeError>> {
-  if (!compressedFilters) {
-    // フィルタパラメータがない場合は空のオブジェクトを返す
-    return Result.succeed({})
-  }
-
-  try {
-    const json = await decompressFromUrlSafeString(compressedFilters)
-    if (!json) {
-      return Result.fail({
-        type: 'invalid_format',
-        message: 'Failed to decompress filters',
-      })
-    }
-
-    const parsed = JSON.parse(json)
-
-    // 基本的な型チェック
-    if (typeof parsed !== 'object' || parsed === null) {
-      return Result.fail({
-        type: 'invalid_format',
-        message: 'Parsed filters is not an object',
-      })
-    }
-
-    // 各スロットのフィルタを検証（簡易版）
-    const validated: FiltersPerSlot = {}
-    for (const [slot, filters] of Object.entries(parsed)) {
-      // スロット名の検証
-      if (!VALID_SLOTS.has(slot as CandidatesKey)) {
-        logger.warn('Invalid slot in filters per slot, skipping', { slot })
-        continue
-      }
-
-      // filtersが配列かチェック
-      if (!Array.isArray(filters)) {
-        logger.warn('Filters for slot is not an array, skipping', { slot })
-        continue
-      }
-
-      validated[slot as CandidatesKey] = filters as Filter[]
-    }
-
-    return Result.succeed(validated)
-  } catch (error) {
-    logger.error('Failed to deserialize filters per slot from URL', {
-      error: error instanceof Error ? error.message : String(error),
-    })
-
-    return Result.fail({
-      type: 'invalid_format',
-      message: error instanceof Error ? error.message : String(error),
-    })
-  }
-}
-
-/**
- * スロットごとのフィルタ状態をLocalStorageに保存
- */
-export function saveFiltersPerSlotToLocalStorage(
-  filtersPerSlot: FiltersPerSlot,
-): void {
-  try {
-    const serializable = Object.entries(filtersPerSlot).reduce(
-      (acc, [key, value]) => ({
-        ...acc,
-        [key]: value.map((f) => f.serialize()),
-      }),
-      {} as Record<string, string[]>,
-    )
-
-    localStorage.setItem(FILTERS_PER_SLOT_KEY, JSON.stringify(serializable))
-  } catch (error) {
-    logger.error('Failed to save filters per slot to localStorage', {
-      error: error instanceof Error ? error.message : String(error),
-    })
-  }
-}
-
-/**
- * LocalStorageからスロットごとのフィルタ状態を復元
- */
-export function loadFiltersPerSlotFromLocalStorage(): FiltersPerSlot | null {
-  try {
-    const saved = localStorage.getItem(FILTERS_PER_SLOT_KEY)
-    if (!saved) return null
-
-    const parsed = JSON.parse(saved) as Record<string, string[]>
-    // 基本的な型チェック
-    if (typeof parsed !== 'object' || parsed === null) {
-      logger.warn('Invalid filters per slot in localStorage')
-      return null
-    }
-
-    return Object.entries(parsed).reduce((acc, [slot, serializedFilters]) => {
-      // スロット名の検証
-      if (!VALID_SLOTS.has(slot as CandidatesKey)) {
-        logger.warn(
-          'Invalid slot in filters per slot from localStorage, skipping',
-          { slot },
-        )
-        return acc
-      }
-
-      // serializedFiltersが配列かチェック
-      if (!Array.isArray(serializedFilters)) {
-        logger.warn(
-          'Filters for slot from localStorage is not an array, skipping',
-          { slot },
-        )
-        return acc
-      }
-      const filters: Filter[] = []
-      for (const serializedFilter of serializedFilters) {
-        const parsedFilter = parseFilter(serializedFilter)
-        if (parsedFilter) {
-          filters.push(parsedFilter)
-        }
-      }
-
-      return {
-        ...acc,
-        [slot as CandidatesKey]: filters,
-      }
-    }, {} as FiltersPerSlot)
-  } catch (error) {
-    logger.error('Failed to load filters per slot from localStorage', {
-      error: error instanceof Error ? error.message : String(error),
-    })
-    return null
-  }
-}
-
-/**
  * すべてのスロットに対して空のフィルタ配列を持つデフォルトの FiltersPerSlot を作成
  */
 export function createDefaultFiltersPerSlot(): FiltersPerSlot {
@@ -315,4 +136,118 @@ export function createDefaultFiltersPerSlot(): FiltersPerSlot {
 
 export type FiltersPerSlot = {
   [K in CandidatesKey]?: Filter[]
+}
+
+export function normalizeSlotKey(value: string): CandidatesKey | null {
+  if (!value) {
+    return null
+  }
+
+  if (VALID_SLOTS.has(value as CandidatesKey)) {
+    return value as CandidatesKey
+  }
+
+  const camel = snakeToCamel(value)
+  if (VALID_SLOTS.has(camel as CandidatesKey)) {
+    return camel as CandidatesKey
+  }
+
+  return null
+}
+
+function snakeToCamel(value: string): string {
+  return value.replace(/_([a-z])/g, (_, char: string) => char.toUpperCase())
+}
+
+type SerializedFiltersPerSlot = Record<string, string[]>
+
+export async function deserializeLegacyFiltersPerSlotFromURL(
+  compressedFilters: string,
+): Promise<Result.Result<FiltersPerSlot, DeserializeError>> {
+  if (!compressedFilters) {
+    return Result.succeed({})
+  }
+
+  try {
+    const json = await decompressFromUrlSafeString(compressedFilters)
+    if (!json) {
+      return Result.fail({
+        type: 'invalid_format',
+        message: 'Failed to decompress filters',
+      })
+    }
+
+    const parsed = JSON.parse(json) as unknown
+    if (!isSerializedFiltersRecord(parsed)) {
+      return Result.fail({
+        type: 'invalid_format',
+        message: 'Parsed filters is not an object',
+      })
+    }
+
+    const restored: FiltersPerSlot = {}
+    for (const [slotKey, serializedFilters] of Object.entries(parsed)) {
+      if (!VALID_SLOTS.has(slotKey as CandidatesKey)) {
+        logger.warn('Invalid slot in legacy filters, skipping', {
+          slot: slotKey,
+        })
+        continue
+      }
+
+      if (!Array.isArray(serializedFilters)) {
+        logger.warn(
+          'Filters for slot from legacy data is not an array, skipping',
+          {
+            slot: slotKey,
+          },
+        )
+        continue
+      }
+
+      const filters: Filter[] = []
+      for (const serializedFilter of serializedFilters) {
+        const parsedFilter = parseFilter(serializedFilter)
+        if (!parsedFilter) {
+          logger.warn('Invalid legacy filter entry skipped', {
+            slot: slotKey,
+            serializedFilter,
+          })
+          continue
+        }
+        filters.push(parsedFilter)
+      }
+
+      if (filters.length > 0) {
+        restored[slotKey as CandidatesKey] = filters
+      }
+    }
+
+    return Result.succeed(restored)
+  } catch (error) {
+    logger.error('Failed to deserialize legacy filters per slot from URL', {
+      error: error instanceof Error ? error.message : String(error),
+    })
+
+    return Result.fail({
+      type: 'invalid_format',
+      message: error instanceof Error ? error.message : String(error),
+    })
+  }
+}
+
+function isSerializedFiltersRecord(
+  value: unknown,
+): value is SerializedFiltersPerSlot {
+  if (typeof value !== 'object' || value === null) {
+    return false
+  }
+
+  return Object.values(value as Record<string, unknown>).every((entry) => {
+    if (!Array.isArray(entry)) {
+      return false
+    }
+    return entry.every(
+      (filter) => typeof filter === 'string' && filter.length > 0,
+    )
+  })
 }

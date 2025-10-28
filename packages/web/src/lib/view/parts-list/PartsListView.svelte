@@ -9,6 +9,7 @@
   import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
+  import { logger } from '@ac6_assemble_tool/shared/logger'
   import { Result } from '@praha/byethrow'
 
   import FilterPanel from './FilterPanel.svelte'
@@ -17,8 +18,6 @@
   import { applyFilters } from './state/filter/filters-core'
   import {
     createDefaultFiltersPerSlot,
-    loadFiltersPerSlotFromLocalStorage,
-    saveFiltersPerSlotToLocalStorage,
     type FiltersPerSlot,
   } from './state/filter/serialization'
   import {
@@ -47,36 +46,52 @@
 
   let { regulation, initialSearchParams }: Props = $props()
 
-  // 初期状態の復元
-  let initialState: SharedState | null = null
+  const defaultSlot: CandidatesKey = 'rightArmUnit'
 
-  if (browser && initialSearchParams) {
-    const result = deserializeFromURL(initialSearchParams)
-    if (Result.isSuccess(result)) {
-      initialState = result.value
+  // スロットごとの独立フィルタ管理（Requirement 2.5）
+  let filtersPerSlot = $state<FiltersPerSlot>(createDefaultFiltersPerSlot())
+
+  function updateFiltersForSlot(
+    slot: CandidatesKey,
+    slotFilters: readonly Filter[],
+  ) {
+    filtersPerSlot = {
+      ...filtersPerSlot,
+      [slot]: [...slotFilters],
     }
   }
 
-  // スロットごとの独立フィルタ管理（Requirement 2.5）
-  let filtersPerSlot = $state<FiltersPerSlot>(
-    browser
-      ? (loadFiltersPerSlotFromLocalStorage() ?? createDefaultFiltersPerSlot())
-      : createDefaultFiltersPerSlot(),
-  )
-
-  const initialSlot = initialState?.slot ?? 'rightArmUnit'
-  const initialFiltersForSlot =
-    initialState?.filters ?? filtersPerSlot[initialSlot] ?? []
+  updateFiltersForSlot(defaultSlot, [])
 
   // 状態管理（Svelte 5 runes）
-  let currentSlot = $state<CandidatesKey>(initialSlot)
-  // filtersは現在のスロットのフィルタ状態を反映（初期値はURL or LocalStorage）
-  let filters = $state<Filter[]>(initialFiltersForSlot)
-  let sortKey = $state<string | null>(initialState?.sortKey ?? null)
-  let sortOrder = $state<'asc' | 'desc' | null>(initialState?.sortOrder ?? null)
+  let currentSlot = $state<CandidatesKey>(defaultSlot)
+  // filtersは現在のスロットのフィルタ状態を反映
+  let filters = $state<Filter[]>([])
+  let sortKey = $state<string | null>(null)
+  let sortOrder = $state<'asc' | 'desc' | null>(null)
   let viewMode = $state<ViewMode>(loadViewMode())
   let favorites = $state<Set<string>>(new Set())
   let showFavoritesOnly = $state<boolean>(false)
+
+  if (browser && initialSearchParams) {
+    void (async () => {
+      const result = await deserializeFromURL(initialSearchParams)
+      if (Result.isSuccess(result)) {
+        const defaults = createDefaultFiltersPerSlot()
+        const merged: FiltersPerSlot = {
+          ...defaults,
+          ...result.value.filtersPerSlot,
+        }
+        filtersPerSlot = merged
+        currentSlot = result.value.slot
+        const restoredFilters = merged[result.value.slot] ?? []
+        filters = [...restoredFilters]
+        updateFiltersForSlot(result.value.slot, filters)
+        sortKey = result.value.sortKey
+        sortOrder = result.value.sortOrder
+      }
+    })()
+  }
 
   // お気に入りの初期化（ブラウザ環境でのみ実行）
   $effect(() => {
@@ -106,34 +121,45 @@
     return filtered
   })
 
-  // スロットごとのフィルタ状態をLocalStorageに同期（Requirement 2.5.5）
-  $effect(() => {
-    if (!browser) return
-    saveFiltersPerSlotToLocalStorage(filtersPerSlot)
-  })
-
   // URL パラメータへの同期（状態変更時に自動実行）
-  // URL共有時は現在選択中のスロットのフィルタのみをシリアライズ（Requirement 2.5 Design Notes）
+  // URL共有時は全スロットのフィルタ状態を圧縮してシリアライズする
   $effect(() => {
     if (!browser) return
+
+    const filtersSnapshot = Object.entries(filtersPerSlot).reduce(
+      (acc, [slot, slotFilters]) => {
+        if (slotFilters) {
+          acc[slot as CandidatesKey] = [...slotFilters]
+        }
+        return acc
+      },
+      {} as FiltersPerSlot,
+    )
 
     const state: SharedState = {
       slot: currentSlot,
-      filters,
+      filtersPerSlot: filtersSnapshot,
       sortKey,
       sortOrder,
     }
 
-    const params = serializeToURL(state)
-
-    // URLを更新（ページリロードなし）
-    const newUrl = `${window.location.pathname}?${params.toString()}`
-    try {
-      replaceState(newUrl, {})
-    } catch {
-      // テスト環境ではルーターが初期化されていないため、エラーをキャッチ
-      // 本番環境では正常に動作する
-    }
+    void (async () => {
+      try {
+        const params = await serializeToURL(state)
+        const newUrl = `${window.location.pathname}?${params.toString()}`
+        try {
+          replaceState(newUrl, {})
+        } catch {
+          logger.debug('Failed to replace state - likely in test environment')
+          // テスト環境ではルーターが初期化されていないため、エラーをキャッチ
+          // 本番環境では正常に動作する
+        }
+      } catch (error) {
+        logger.error('Failed to serialize parts list state to URL', {
+          error,
+        })
+      }
+    })()
   })
 
   // LocalStorage への同期（表示モード変更時に自動実行）
@@ -150,13 +176,14 @@
 
     // スロットごとの独立フィルタ管理（Requirement 2.5）
     // 現在のスロットのフィルタを保存（Requirement 2.5.1）
-    filtersPerSlot[currentSlot] = filters
+    updateFiltersForSlot(currentSlot, filters)
 
     // 新しいスロットのフィルタを復元（Requirement 2.5.2, 2.5.3）
-    filters = filtersPerSlot[newSlot] ?? []
+    const nextFilters = filtersPerSlot[newSlot] ?? []
 
     // スロットを更新
     currentSlot = newSlot
+    filters = [...nextFilters]
 
     // 新しいスロットのお気に入りを読み込み
     if (browser && favoriteStore) {
@@ -190,15 +217,15 @@
   }
 
   export function handleFilterChange(newFilters: Filter[]) {
-    filters = newFilters
+    filters = [...newFilters]
     // フィルタ変更時に現在のスロットのフィルタ状態を更新（Requirement 2.5.1）
-    filtersPerSlot[currentSlot] = newFilters
+    updateFiltersForSlot(currentSlot, filters)
   }
 
   export function handleClearFilters() {
     filters = []
     // フィルタクリア時も現在のスロットのフィルタ状態を更新（Requirement 2.5.1）
-    filtersPerSlot[currentSlot] = []
+    updateFiltersForSlot(currentSlot, filters)
   }
 
   export function handleSortChange(

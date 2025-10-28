@@ -10,11 +10,19 @@
 
 import { latest as regulation } from '$lib/regulation'
 
-import { render, screen } from '@testing-library/svelte'
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { render, screen, fireEvent, waitFor } from '@testing-library/svelte'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 
 import PartsListView from './PartsListView.svelte'
 import PartsListViewTestWrapper from './PartsListView.test-wrapper.svelte'
+import {
+  compressToUrlSafeString,
+  decompressFromUrlSafeString,
+} from './state/filter/compression'
+
+import * as navigation from '$app/navigation'
+
+const replaceStateSpy = vi.spyOn(navigation, 'replaceState')
 
 describe('PartsListView コンポーネント', () => {
   // LocalStorageをクリア
@@ -22,12 +30,14 @@ describe('PartsListView コンポーネント', () => {
     if (typeof localStorage !== 'undefined') {
       localStorage.clear()
     }
+    replaceStateSpy.mockReset()
   })
 
   afterEach(() => {
     if (typeof localStorage !== 'undefined') {
       localStorage.clear()
     }
+    replaceStateSpy.mockReset()
   })
 
   describe('初期状態', () => {
@@ -105,7 +115,7 @@ describe('PartsListView コンポーネント', () => {
   })
 
   describe('URL パラメータとの同期', () => {
-    it('URLパラメータから初期スロットを復元すること', () => {
+    it('URLパラメータから初期スロットを復元すること', async () => {
       // URLSearchParams をモック
       const searchParams = new URLSearchParams('slot=legs')
 
@@ -116,29 +126,74 @@ describe('PartsListView コンポーネント', () => {
         },
       })
 
-      // legsスロットが選択されていることを確認
-      // 実際のテストは実装後に追加
+      await waitFor(() => {
+        const legsButton = screen.getByText(/^LEGS$|^脚部$/i)
+        expect(legsButton.classList.contains('btn-primary')).toBe(true)
+      })
     })
 
-    it('スロット変更時にURLパラメータが更新されること', () => {
-      // URLSearchParams の更新をテスト
-      // 実際のテストは実装後に追加
-    })
-  })
-
-  describe('LocalStorage との同期', () => {
-    it('LocalStorageから表示モードを復元すること', () => {
-      // 事前にLocalStorageに保存
-      localStorage.setItem('ac6-parts-list-view-mode', 'list')
-
+    it('全スロットのフィルタがURLクエリに保存されること', async () => {
       render(PartsListViewTestWrapper, {
         props: {
           regulation,
         },
       })
 
-      // list表示モードが復元されることを確認
-      // 実際のテストは実装後に追加
+      await waitFor(() => expect(replaceStateSpy).toHaveBeenCalled())
+      replaceStateSpy.mockClear()
+
+      let valueInput = screen.getByLabelText('値')
+      await fireEvent.input(valueInput, { target: { value: '3200' } })
+      let addButton = screen.getByRole('button', { name: '追加' })
+      await fireEvent.click(addButton)
+
+      await waitFor(() => expect(replaceStateSpy).toHaveBeenCalled())
+      replaceStateSpy.mockClear()
+
+      const headButton = screen.getByText(/^HEAD$|^頭部$/)
+      await headButton.click()
+
+      valueInput = screen.getByLabelText('値')
+      await fireEvent.input(valueInput, { target: { value: '1500' } })
+      addButton = screen.getByRole('button', { name: '追加' })
+      await fireEvent.click(addButton)
+
+      await waitFor(() => expect(replaceStateSpy).toHaveBeenCalled())
+
+      const lastCall = replaceStateSpy.mock.calls.at(-1)
+      expect(lastCall).toBeTruthy()
+      const [url] = lastCall ?? []
+      expect(typeof url).toBe('string')
+
+      const params = new URL(url as string, 'https://example.test').searchParams
+      expect(params.get('slot')).toBe('head')
+
+      const filtersParam = params.get('filters')
+      expect(filtersParam).not.toBeNull()
+
+      const json = await decompressFromUrlSafeString(filtersParam!)
+      expect(json).not.toBeNull()
+      const payload = JSON.parse(json!) as Record<string, string[]>
+
+      expect(payload.rightArmUnit).toEqual(['numeric:price:lte:3200'])
+      expect(payload.head).toEqual(['numeric:price:lte:1500'])
+    })
+  })
+
+  describe('LocalStorage 非依存', () => {
+    it('LocalStorageにフィルタ状態を保存しないこと', async () => {
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      const valueInput = screen.getByLabelText('値')
+      await fireEvent.input(valueInput, { target: { value: '3200' } })
+      const addButton = screen.getByRole('button', { name: '追加' })
+      await fireEvent.click(addButton)
+
+      expect(localStorage.getItem('ac6-parts-list-filters-per-slot')).toBeNull()
     })
 
     it.skip('表示モード変更時にLocalStorageが更新されること', () => {
@@ -164,8 +219,12 @@ describe('PartsListView コンポーネント', () => {
   describe('スロット切替時の条件引き継ぎ', () => {
     it('スロット切替時にフィルタ条件が保持されること（共通属性の場合）', async () => {
       // URLパラメータでフィルタ条件を設定
+      const payload = {
+        rightArmUnit: ['numeric:weight:lte:5000', 'numeric:price:lte:100000'],
+      }
+      const compressed = await compressToUrlSafeString(JSON.stringify(payload))
       const searchParams = new URLSearchParams(
-        'slot=rightArmUnit&filter=weight:lte:5000&filter=price:lte:100000',
+        `slot=rightArmUnit&filters=${compressed}`,
       )
 
       const { getByText } = render(PartsListViewTestWrapper, {
@@ -289,6 +348,40 @@ describe('PartsListView コンポーネント', () => {
 
       // ★に変わることを確認
       expect(favoriteButton.textContent).toContain('★')
+    })
+  })
+
+  describe('スロットごとのフィルタ状態管理', () => {
+    async function addPriceFilter(value: string) {
+      const valueInput = screen.getByLabelText('値')
+      await fireEvent.input(valueInput, { target: { value } })
+      const addButton = screen.getByRole('button', { name: '追加' })
+      await fireEvent.click(addButton)
+      await waitFor(() =>
+        expect(screen.getByText(/フィルタ\s*\(1件\)/)).toBeInTheDocument(),
+      )
+    }
+
+    it('スロット切替時にスロットごとのフィルタ状態を保持すること', async () => {
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      await addPriceFilter('4500')
+
+      const headButton = screen.getByText(/^HEAD$|^頭部$/)
+      await fireEvent.click(headButton)
+      await waitFor(() =>
+        expect(screen.getByText(/フィルタ\s*\(0件\)/)).toBeInTheDocument(),
+      )
+
+      const rightArmButton = screen.getByText(/RIGHT ARM UNIT|右腕武器/i)
+      await fireEvent.click(rightArmButton)
+      await waitFor(() =>
+        expect(screen.getByText(/フィルタ\s*\(1件\)/)).toBeInTheDocument(),
+      )
     })
   })
 })
