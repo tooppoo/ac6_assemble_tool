@@ -1,9 +1,8 @@
 # @ac6_assemble_tool/web
 
 ## 2.7.0
+
 ### Minor Changes
-
-
 
 - [#890](https://github.com/tooppoo/ac6_assemble_tool/pull/890) [`2168f42`](https://github.com/tooppoo/ac6_assemble_tool/commit/2168f42895e60b5ac6b3ca7cec032aaf038e9988) Thanks [@tooppoo](https://github.com/tooppoo)! - 並び替えUIを実装
 

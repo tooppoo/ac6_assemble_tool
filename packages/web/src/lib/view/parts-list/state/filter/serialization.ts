@@ -138,26 +138,7 @@ export type FiltersPerSlot = {
   [K in CandidatesKey]?: Filter[]
 }
 
-export function normalizeSlotKey(value: string): CandidatesKey | null {
-  if (!value) {
-    return null
-  }
-
-  if (VALID_SLOTS.has(value as CandidatesKey)) {
-    return value as CandidatesKey
-  }
-
-  const camel = snakeToCamel(value)
-  if (VALID_SLOTS.has(camel as CandidatesKey)) {
-    return camel as CandidatesKey
-  }
-
-  return null
-}
-
-function snakeToCamel(value: string): string {
-  return value.replace(/_([a-z])/g, (_, char: string) => char.toUpperCase())
-}
+export { normalizeSlotKey } from '../slot-utils'
 
 type SerializedFiltersPerSlot = Record<string, string[]>
 

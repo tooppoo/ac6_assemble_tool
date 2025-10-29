@@ -16,6 +16,7 @@ import {
   type FiltersPerSlot,
 } from './filter/serialization'
 import { type DeserializeError, VALID_SLOTS } from './shared'
+import { toSlotParamValue } from './slot-utils'
 import type { SortKey, SortOrder } from './sort'
 import { parseSort } from './sort'
 
@@ -41,7 +42,7 @@ export async function serializeToURL(
   const params = new URLSearchParams()
 
   // スロット
-  params.set('slot', camelToSnake(state.slot))
+  params.set('slot', toSlotParamValue(state.slot))
 
   // フィルタ条件（全スロット)
   const compressedFilters = await serializeFiltersParam(state.filtersPerSlot)
@@ -230,11 +231,4 @@ export async function deserializeFromURL(
       message: error instanceof Error ? error.message : String(error),
     })
   }
-}
-
-function camelToSnake(value: string): string {
-  return value
-    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
-    .replace(/([A-Z])([A-Z][a-z])/g, '$1_$2')
-    .toLowerCase()
 }

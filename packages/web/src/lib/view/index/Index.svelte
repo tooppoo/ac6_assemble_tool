@@ -55,6 +55,7 @@
   import NavButton from './layout/navbar/NavButton.svelte'
   import Navbar from './layout/Navbar.svelte'
   import ToolSection from './layout/ToolSection.svelte'
+  import type { PartsPoolRestrictions } from './parts-pool'
   import RandomAssembleButton from './random/button/RandomAssembleButton.svelte'
   import RandomAssemblyOffCanvas, {
     type AssembleRandomly,
@@ -102,12 +103,15 @@
 
   // state
   export let regulation: Regulation
+  export let partsPool: PartsPoolRestrictions
 
   const orders: Order = regulation.orders
   const version: string = regulation.version
 
-  let candidates: Candidates = regulation.candidates
-  let initialCandidates: Candidates = regulation.candidates
+  let partsPoolState: PartsPoolRestrictions = partsPool
+
+  let initialCandidates: Candidates = partsPoolState.candidates
+  let candidates: Candidates = partsPoolState.candidates
   let lockedParts: LockedParts = LockedParts.empty
   let filter: FilterState = initialFilterState(initialCandidates)
   let randomAssembly = RandomAssembly.init({ limit: tryLimit })
@@ -126,6 +130,10 @@
     serializeAssemblyAsQuery()
     updateCurrentSearch()
   })
+
+  $: if (partsPool !== partsPoolState) {
+    applyPartsPoolState(partsPool)
+  }
 
   onMount(() => {
     initialize()
@@ -167,6 +175,22 @@
   }
 
   // handler
+  function applyPartsPoolState(pool: PartsPoolRestrictions) {
+    partsPoolState = pool
+    initialCandidates = pool.candidates
+    candidates = pool.candidates
+    lockedParts = LockedParts.empty
+    filter = initialFilterState(initialCandidates)
+    randomAssembly = RandomAssembly.init({ limit: tryLimit })
+
+    if (typeof window !== 'undefined') {
+      browserBacking = true
+      buildAssemblyFromQuery()
+    } else {
+      assembly = initializeAssembly(candidates)
+    }
+  }
+
   const onChangeParts = ({ detail }: CustomEvent<ChangePartsEvent>) => {
     // @ts-expect-error TS2590
     assembly[detail.id] = detail.selected

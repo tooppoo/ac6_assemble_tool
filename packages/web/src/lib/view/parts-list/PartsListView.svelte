@@ -6,11 +6,14 @@
    * URLパラメータ/LocalStorageと同期します。
    */
 
+  import type { I18NextStore } from '$lib/i18n/define'
+
   import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import { logger } from '@ac6_assemble_tool/shared/logger'
   import { Result } from '@praha/byethrow'
+  import { getContext } from 'svelte'
 
   import FilterPanel from './FilterPanel.svelte'
   import PartsGrid from './PartsGrid.svelte'
@@ -21,6 +24,8 @@
     createDefaultFiltersPerSlot,
     type FiltersPerSlot,
   } from './state/filter/serialization'
+  import { serializeFilteredPartsPool } from './state/parts-pool-serializer'
+  import { SLOT_PARTS_SUFFIX } from './state/slot-utils'
   import {
     getAvailableSortKeys,
     sortPartsByKey,
@@ -37,7 +42,7 @@
   import { FavoriteStore } from './stores/favorite-store'
 
   import { browser } from '$app/environment'
-  import { replaceState } from '$app/navigation'
+  import { goto, replaceState } from '$app/navigation'
 
   let favoriteStore: FavoriteStore | null = null
 
@@ -52,6 +57,8 @@
   }
 
   let { regulation, initialSearchParams }: Props = $props()
+
+  const i18n = getContext<I18NextStore>('i18n')
 
   const defaultSlot: CandidatesKey = 'rightArmUnit'
 
@@ -151,15 +158,7 @@
   $effect(() => {
     if (!browser) return
 
-    const filtersSnapshot = Object.entries(filtersPerSlot).reduce(
-      (acc, [slot, slotFilters]) => {
-        if (slotFilters) {
-          acc[slot as CandidatesKey] = [...slotFilters]
-        }
-        return acc
-      },
-      {} as FiltersPerSlot,
-    )
+    const filtersSnapshot = createFiltersSnapshot()
 
     const state: SharedState = {
       slot: currentSlot,
@@ -271,6 +270,58 @@
   export function handleToggleFavorites() {
     showFavoritesOnly = !showFavoritesOnly
   }
+
+  function createFiltersSnapshot(): FiltersPerSlot {
+    return Object.entries(filtersPerSlot).reduce((acc, [slot, slotFilters]) => {
+      if (slotFilters) {
+        acc[slot as CandidatesKey] = [...slotFilters]
+      }
+      return acc
+    }, {} as FiltersPerSlot)
+  }
+
+  async function handleNavigateToAssembly() {
+    if (!browser) return
+
+    const filtersSnapshot = createFiltersSnapshot()
+
+    const state: SharedState = {
+      slot: currentSlot,
+      filtersPerSlot: filtersSnapshot,
+      sortKey,
+      sortOrder,
+    }
+
+    try {
+      const sharedParams = await serializeToURL(state)
+      const restrictedParams = serializeFilteredPartsPool({
+        candidates: regulation.candidates,
+        filtersPerSlot: filtersSnapshot,
+      })
+
+      const currentParams = new URLSearchParams(window.location.search)
+      currentParams.forEach((value, key) => {
+        if (key.endsWith(SLOT_PARTS_SUFFIX)) {
+          return
+        }
+
+        if (!sharedParams.has(key)) {
+          sharedParams.append(key, value)
+        }
+      })
+
+      restrictedParams.forEach((value, key) => {
+        sharedParams.set(key, value)
+      })
+
+      const query = sharedParams.toString()
+      await goto(`/${query ? `?${query}` : ''}`)
+    } catch (error) {
+      logger.error('アセンブリページ遷移用のURL生成に失敗しました', {
+        error: error instanceof Error ? error.message : String(error),
+      })
+    }
+  }
 </script>
 
 <div class="parts-list-view">
@@ -299,6 +350,19 @@
       onsortchange={handleSortApply}
       onsortclear={handleSortClear}
     />
+  </div>
+
+  <div class="py-1 d-flex justify-content-end">
+    <button
+      class="btn btn-primary"
+      type="button"
+      title={$i18n.t('navigation.handoff.description', {
+        ns: 'page/parts-list',
+      })}
+      onclick={handleNavigateToAssembly}
+    >
+      {$i18n.t('navigation.handoff.label', { ns: 'page/parts-list' })}
+    </button>
   </div>
 
   <div class="py-1">

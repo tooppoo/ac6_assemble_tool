@@ -5,6 +5,8 @@
   import { type PageData } from './+page'
 
   export let data: PageData
+
+  const { regulation, partsPool } = data
 </script>
 
 <svelte:head>
@@ -30,4 +32,4 @@
   />
 </svelte:head>
 
-<Index regulation={data.regulation} />
+<Index {regulation} {partsPool} />
