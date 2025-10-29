@@ -12,7 +12,7 @@
 
   const heroTitle = 'AC6 ASSEMBLE TOOL /about'
   const heroLead =
-    'This page introduces AC6 ASSEMBLE TOOL, explains why it exists, highlights the current features, and outlines what comes next so that pilots can rely on the application while planning their builds.'
+    'This page introduces AC6 ASSEMBLE TOOL, explains why it exists, highlights the current features—including the new parts exploration workspace—and outlines what comes next so that pilots can rely on the application while planning their builds.'
 
   let homeHref: string = '/'
   let languageSwitcher: readonly LanguageLink[] = [

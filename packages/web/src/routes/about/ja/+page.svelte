@@ -12,7 +12,7 @@
 
   const heroTitle = 'AC6 ASSEMBLE TOOL /about'
   const heroLead =
-    '本ページでは、AC6 ASSEMBLE TOOL の役割、提供価値、利用方法、今後の展望をまとめています。初めて触れる方も既存ユーザーも同じ情報を確認でき、安心してアセンブル検討に集中できるようにすることが目的です。'
+    '本ページでは、AC6 ASSEMBLE TOOL の役割、提供価値、利用方法、今後の展望をまとめています。アセンブリページとパーツ探索ページを往復しながらビルドを検討できる最新の体験と、その背景にある設計思想を確認できます。'
 
   let homeHref: string = '/'
   let languageSwitcher: readonly LanguageLink[] = [
