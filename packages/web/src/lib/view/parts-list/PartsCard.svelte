@@ -37,6 +37,35 @@
     $i18n.t(parts.manufacture, { ns: 'manufacture' }),
   )
 
+  const favoriteLabel = $derived.by(() =>
+    $i18n.t(
+      isFavorite ? 'partsCard.favorite.remove' : 'partsCard.favorite.add',
+      {
+        ns: 'page/parts-list',
+      },
+    ),
+  )
+
+  const manufactureLabel = $derived.by(() =>
+    $i18n.t('partsCard.manufacture', { ns: 'page/parts-list' }),
+  )
+
+  const categoryLabel = $derived.by(() =>
+    $i18n.t('partsCard.category', { ns: 'page/parts-list' }),
+  )
+
+  const priceLabel = $derived.by(() =>
+    $i18n.t('partsCard.price', { ns: 'page/parts-list' }),
+  )
+
+  const weightLabel = $derived.by(() =>
+    $i18n.t('partsCard.weight', { ns: 'page/parts-list' }),
+  )
+
+  const enLoadLabel = $derived.by(() =>
+    $i18n.t('partsCard.enLoad', { ns: 'page/parts-list' }),
+  )
+
   function handleToggleFavorite() {
     ontogglefavorite?.()
   }
@@ -53,7 +82,8 @@
         size="sm"
         class="ms-2 favorite-button"
         onclick={handleToggleFavorite}
-        aria-label={isFavorite ? 'お気に入りから削除' : 'お気に入りに追加'}
+        aria-label={favoriteLabel}
+        aria-pressed={isFavorite}
       >
         {isFavorite ? '★' : '☆'}
       </Button>
@@ -61,26 +91,26 @@
 
     <CardText class="flex-grow-1">
       <small class="text-muted d-block mb-1">
-        <strong>メーカー:</strong>
+        <strong>{manufactureLabel}:</strong>
         {translatedManufacture}
       </small>
       <small class="text-muted d-block mb-1">
-        <strong>カテゴリ:</strong>
+        <strong>{categoryLabel}:</strong>
         {translatedCategory}
       </small>
     </CardText>
 
     <div class="mt-auto">
       <div class="d-flex justify-content-between align-items-center mb-1">
-        <small class="text-muted">価格:</small>
+        <small class="text-muted">{priceLabel}:</small>
         <small><strong>{parts.price.toLocaleString()}</strong></small>
       </div>
       <div class="d-flex justify-content-between align-items-center mb-1">
-        <small class="text-muted">重量:</small>
+        <small class="text-muted">{weightLabel}:</small>
         <small><strong>{parts.weight.toLocaleString()}</strong></small>
       </div>
       <div class="d-flex justify-content-between align-items-center">
-        <small class="text-muted">EN負荷:</small>
+        <small class="text-muted">{enLoadLabel}:</small>
         <small><strong>{parts.en_load.toLocaleString()}</strong></small>
       </div>
     </div>

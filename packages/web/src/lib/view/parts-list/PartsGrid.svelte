@@ -6,11 +6,15 @@
    * お気に入り機能を提供します。0件時はEmptyStateを表示します。
    */
 
+  import type { I18NextStore } from '$lib/i18n/define'
+
   import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 
   import EmptyState from './EmptyState.svelte'
   import PartsCard from './PartsCard.svelte'
+
+  import { getContext } from 'svelte'
 
   // Props
   interface Props {
@@ -21,6 +25,15 @@
   }
 
   let { parts, slot: _slot, favorites, ontogglefavorite }: Props = $props()
+
+  const i18n = getContext<I18NextStore>('i18n')
+
+  const summary = $derived.by(() =>
+    $i18n.t('partsGrid.summary', {
+      ns: 'page/parts-list',
+      count: parts.length,
+    }),
+  )
 
   function handleToggleFavorite(partsId: string) {
     ontogglefavorite?.(partsId)
@@ -43,9 +56,9 @@
       {/each}
     </div>
 
-    <div class="mt-3 text-muted text-center">
+    <div class="mt-3 text-muted text-center" aria-live="polite" role="status">
       <small>
-        全 {parts.length} 件のパーツを表示中
+        {summary}
       </small>
     </div>
   {/if}

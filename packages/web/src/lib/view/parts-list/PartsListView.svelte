@@ -214,7 +214,21 @@
     void (async () => {
       try {
         const params = await serializeToURL(state)
-        const newUrl = `${window.location.pathname}?${params.toString()}`
+        const managedKeys = ['slot', 'filters', 'sort'] as const
+
+        const currentParams = new URLSearchParams(window.location.search)
+        for (const key of managedKeys) {
+          currentParams.delete(key)
+        }
+
+        params.forEach((value, key) => {
+          currentParams.set(key, value)
+        })
+
+        const queryString = currentParams.toString()
+        const newUrl = queryString
+          ? `${window.location.pathname}?${queryString}`
+          : window.location.pathname
         try {
           replaceState(newUrl, {})
         } catch {
@@ -398,7 +412,11 @@
 
   <div class="py-1 d-flex flex-column align-items-end gap-2">
     {#if handoffDisabledReason}
-      <p class="text-danger small mb-0 text-center">
+      <p
+        class="text-danger small mb-0 text-center"
+        role="status"
+        aria-live="polite"
+      >
         {handoffDisabledReason}
       </p>
     {/if}

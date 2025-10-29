@@ -27,6 +27,21 @@
   // 折りたたみ状態
   let isOpen = $state(true)
 
+  const heading = $derived.by(() =>
+    $i18n.t('slotSelector.title', { ns: 'page/parts-list' }),
+  )
+
+  const toggleLabel = $derived.by(() =>
+    $i18n.t(
+      isOpen ? 'slotSelector.toggle.collapse' : 'slotSelector.toggle.expand',
+      {
+        ns: 'page/parts-list',
+      },
+    ),
+  )
+
+  const collapseContentId = 'slot-selector-panel'
+
   // arm-unit/shoulder-/frame/inner/expansion でグルーピング
   const selectorGroups = [
     [0, 1],
@@ -58,19 +73,21 @@
   <div
     class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
   >
-    <h5 class="mb-0">スロット選択</h5>
+    <h5 class="mb-0">{heading}</h5>
     <button
       type="button"
       class="btn btn-sm btn-outline-light"
       onclick={toggleCollapse}
-      aria-label={isOpen ? '折りたたむ' : '展開'}
+      aria-label={toggleLabel}
+      aria-expanded={isOpen}
+      aria-controls={collapseContentId}
     >
       {isOpen ? '▲' : '▼'}
     </button>
   </div>
 
   <Collapse {isOpen}>
-    <div class="card-body">
+    <div class="card-body" id={collapseContentId}>
       {#each selectorGroups as row (row.join('.'))}
         <div class="d-flex flex-wrap gap-2 py-2">
           {#each row as slot (slot)}
@@ -79,6 +96,8 @@
               size="lg"
               onclick={() => handleSlotClick(slot)}
               class="slot-button px-2"
+              type="button"
+              aria-pressed={currentSlot === slot}
             >
               {$i18n.t(`assembly:${slot}`)}
             </Button>

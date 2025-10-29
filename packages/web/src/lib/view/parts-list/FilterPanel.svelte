@@ -45,6 +45,7 @@
   }
 
   let {
+    slot,
     filters,
     availableParts,
     showFavoritesOnly = false,
@@ -81,6 +82,43 @@
 
   // 折りたたみ状態
   let isOpen = $state(true)
+
+  const heading = $derived.by(() =>
+    $i18n.t('filterPanel.heading', {
+      ns: 'page/parts-list',
+      count: filters.length,
+    }),
+  )
+
+  const favoriteToggleLabel = $derived.by(() =>
+    $i18n.t(
+      showFavoritesOnly
+        ? 'filterPanel.favoritesToggle.active'
+        : 'filterPanel.favoritesToggle.inactive',
+      { ns: 'page/parts-list' },
+    ),
+  )
+
+  const favoriteToggleAria = $derived.by(() =>
+    $i18n.t('filterPanel.favoritesToggle.ariaLabel', {
+      ns: 'page/parts-list',
+    }),
+  )
+
+  const clearLabel = $derived.by(() =>
+    $i18n.t('filterPanel.clear', { ns: 'page/parts-list' }),
+  )
+
+  const collapseControlLabel = $derived.by(() =>
+    $i18n.t(
+      isOpen ? 'filterPanel.toggle.collapse' : 'filterPanel.toggle.expand',
+      {
+        ns: 'page/parts-list',
+      },
+    ),
+  )
+
+  const collapseContentId = $derived(`filter-panel-${slot}-body`)
 
   // 利用可能なメーカーとカテゴリを計算
   const availableManufacturers = $derived(extractManufacturers(availableParts))
@@ -191,7 +229,7 @@
   <div
     class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
   >
-    <h5 class="mb-0">フィルタ ({filters.length}件)</h5>
+    <h5 class="mb-0">{heading}</h5>
     <div class="d-flex gap-2">
       <button
         type="button"
@@ -199,8 +237,9 @@
           ? 'btn-warning'
           : 'btn-outline-light'}"
         onclick={handleToggleFavorites}
-        aria-label="お気に入りのみ表示"
-        title="お気に入りのみ表示"
+        aria-label={favoriteToggleAria}
+        title={favoriteToggleLabel}
+        aria-pressed={showFavoritesOnly}
       >
         {showFavoritesOnly ? '★' : '☆'}
       </button>
@@ -210,13 +249,15 @@
         disabled={filters.length === 0}
         onclick={handleClearFilters}
       >
-        クリア
+        {clearLabel}
       </button>
       <button
         type="button"
         class="btn btn-sm btn-outline-light"
         onclick={toggleCollapse}
-        aria-label={isOpen ? '折りたたむ' : '展開'}
+        aria-label={collapseControlLabel}
+        aria-expanded={isOpen}
+        aria-controls={collapseContentId}
       >
         {isOpen ? '▲' : '▼'}
       </button>
@@ -224,24 +265,42 @@
   </div>
 
   <Collapse {isOpen}>
-    <div class="card-body">
+    <div class="card-body" id={collapseContentId}>
       <!-- フィルタ追加フォーム -->
       <div class="filter-add-form bg-secondary bg-opacity-25 p-3 rounded mb-3">
         <!-- フィルタタイプ選択 -->
         <div class="row g-2 mb-2">
           <div class="col-12">
             <label for="filter-type" class="form-label mb-1 text-white"
-              >フィルタ種類</label
+              >{$i18n.t('filterPanel.filterTypeLabel', {
+                ns: 'page/parts-list',
+              })}</label
             >
             <select
               id="filter-type"
               class="form-select"
               bind:value={selectedFilterType}
             >
-              <option value="property">属性値検索</option>
-              <option value="name">名前検索</option>
-              <option value="manufacture">メーカー検索</option>
-              <option value="category">カテゴリ検索</option>
+              <option value="property">
+                {$i18n.t('filterPanel.filterTypes.property', {
+                  ns: 'page/parts-list',
+                })}
+              </option>
+              <option value="name">
+                {$i18n.t('filterPanel.filterTypes.name', {
+                  ns: 'page/parts-list',
+                })}
+              </option>
+              <option value="manufacture">
+                {$i18n.t('filterPanel.filterTypes.manufacture', {
+                  ns: 'page/parts-list',
+                })}
+              </option>
+              <option value="category">
+                {$i18n.t('filterPanel.filterTypes.category', {
+                  ns: 'page/parts-list',
+                })}
+              </option>
             </select>
           </div>
         </div>
@@ -251,7 +310,9 @@
           <div class="row g-2">
             <div class="col-12 col-md-4">
               <label for="filter-property" class="form-label mb-1 text-white"
-                >属性</label
+                >{$i18n.t('filterPanel.property.label', {
+                  ns: 'page/parts-list',
+                })}</label
               >
               <select
                 id="filter-property"
@@ -272,7 +333,9 @@
 
             <div class="col-12 col-md-3">
               <label for="filter-operator" class="form-label mb-1 text-white"
-                >条件</label
+                >{$i18n.t('filterPanel.property.conditionLabel', {
+                  ns: 'page/parts-list',
+                })}</label
               >
               <select
                 id="filter-operator"
@@ -289,14 +352,18 @@
 
             <div class="col-12 col-md-3">
               <label for="filter-value" class="form-label mb-1 text-white"
-                >値</label
+                >{$i18n.t('filterPanel.property.valueLabel', {
+                  ns: 'page/parts-list',
+                })}</label
               >
               <input
                 id="filter-value"
                 type="number"
                 class="form-control"
                 bind:value={propertyInputValue}
-                placeholder="値を入力"
+                placeholder={$i18n.t('filterPanel.property.valuePlaceholder', {
+                  ns: 'page/parts-list',
+                })}
               />
             </div>
 
@@ -307,7 +374,7 @@
                 disabled={isAddButtonDisabled()}
                 onclick={handleAddFilter}
               >
-                追加
+                {$i18n.t('filterPanel.add', { ns: 'page/parts-list' })}
               </button>
             </div>
           </div>
@@ -318,20 +385,26 @@
           <div class="row g-2">
             <div class="col-12 col-md-6">
               <label for="name-value" class="form-label mb-1 text-white"
-                >名前</label
+                >{$i18n.t('filterPanel.name.label', {
+                  ns: 'page/parts-list',
+                })}</label
               >
               <input
                 id="name-value"
                 type="text"
                 class="form-control"
                 bind:value={nameInputValue}
-                placeholder="パーツ名を入力"
+                placeholder={$i18n.t('filterPanel.name.placeholder', {
+                  ns: 'page/parts-list',
+                })}
               />
             </div>
 
             <div class="col-12 col-md-4">
               <label for="name-mode" class="form-label mb-1 text-white"
-                >検索モード</label
+                >{$i18n.t('filterPanel.name.modeLabel', {
+                  ns: 'page/parts-list',
+                })}</label
               >
               <select
                 id="name-mode"
@@ -353,7 +426,7 @@
                 disabled={isAddButtonDisabled()}
                 onclick={handleAddFilter}
               >
-                追加
+                {$i18n.t('filterPanel.add', { ns: 'page/parts-list' })}
               </button>
             </div>
           </div>
@@ -363,7 +436,11 @@
         {#if selectedFilterType === 'manufacture'}
           <div class="row g-2">
             <div class="col-12 col-md-10">
-              <p class="form-label mb-1 text-white">メーカー（複数選択可）</p>
+              <p class="form-label mb-1 text-white">
+                {$i18n.t('filterPanel.manufacture.label', {
+                  ns: 'page/parts-list',
+                })}
+              </p>
               <div
                 class="manufacture-checkboxes p-2 bg-dark bg-opacity-50 rounded"
                 style="max-height: 200px; overflow-y: auto;"
@@ -395,7 +472,7 @@
                 disabled={isAddButtonDisabled()}
                 onclick={handleAddFilter}
               >
-                追加
+                {$i18n.t('filterPanel.add', { ns: 'page/parts-list' })}
               </button>
             </div>
           </div>
@@ -405,7 +482,11 @@
         {#if selectedFilterType === 'category'}
           <div class="row g-2">
             <div class="col-12 col-md-10">
-              <p class="form-label mb-1 text-white">カテゴリ（複数選択可）</p>
+              <p class="form-label mb-1 text-white">
+                {$i18n.t('filterPanel.category.label', {
+                  ns: 'page/parts-list',
+                })}
+              </p>
               <div
                 class="category-checkboxes p-2 bg-dark bg-opacity-50 rounded"
                 style="max-height: 200px; overflow-y: auto;"
@@ -437,7 +518,7 @@
                 disabled={isAddButtonDisabled()}
                 onclick={handleAddFilter}
               >
-                追加
+                {$i18n.t('filterPanel.add', { ns: 'page/parts-list' })}
               </button>
             </div>
           </div>
@@ -458,7 +539,12 @@
                 type="button"
                 class="btn btn-sm btn-outline-danger"
                 onclick={() => handleRemoveFilter(index)}
-                aria-label="削除"
+                aria-label={$i18n.t('filterPanel.list.remove', {
+                  ns: 'page/parts-list',
+                })}
+                title={$i18n.t('filterPanel.list.remove', {
+                  ns: 'page/parts-list',
+                })}
               >
                 ×
               </button>
@@ -466,7 +552,9 @@
           {/each}
         </div>
       {:else}
-        <p class="text-muted mb-0">フィルタが設定されていません</p>
+        <p class="text-muted mb-0">
+          {$i18n.t('filterPanel.list.empty', { ns: 'page/parts-list' })}
+        </p>
       {/if}
     </div>
   </Collapse>

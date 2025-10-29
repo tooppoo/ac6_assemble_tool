@@ -192,6 +192,28 @@ describe('PartsListView コンポーネント', () => {
       expect(payload.rightArmUnit).toEqual(['numeric:price:lte:3200'])
       expect(payload.head).toEqual(['numeric:price:lte:1500'])
     })
+
+    it('lngパラメータを保持したままURLを更新すること', async () => {
+      window.history.replaceState({}, '', '/parts-list?lng=en')
+
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      await waitFor(() => expect(replaceStateSpy).toHaveBeenCalled())
+
+      const lastCall = replaceStateSpy.mock.calls.at(-1)
+      expect(lastCall).toBeTruthy()
+      const [url] = lastCall ?? []
+      expect(typeof url).toBe('string')
+
+      const params = new URL(url as string, 'https://example.test').searchParams
+      expect(params.get('lng')).toBe('en')
+
+      window.history.replaceState({}, '', '/parts-list')
+    })
   })
 
   describe('LocalStorage 非依存', () => {

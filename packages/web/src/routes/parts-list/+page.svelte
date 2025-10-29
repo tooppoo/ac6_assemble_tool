@@ -5,6 +5,7 @@
    * スロット選択による文脈確立、フィルタリング、並び替え、お気に入り管理を提供する探索的UIページ
    */
 
+  import LanguageForm from '$lib/components/language/LanguageForm.svelte'
   import PartsListView from '$lib/view/parts-list/PartsListView.svelte'
 
   import type { PageData } from './+page'
@@ -40,6 +41,10 @@
     <h2 class="py-2">
       Regulation for {regulation.version}
     </h2>
+
+    <div class="d-flex justify-content-end mb-4">
+      <LanguageForm />
+    </div>
 
     <PartsListView {regulation} initialSearchParams={searchParams} />
   </div>
