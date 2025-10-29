@@ -1,6 +1,9 @@
 <script lang="ts">
   import TextButton from '$lib/components/button/TextButton.svelte'
   import LanguageForm from '$lib/components/language/LanguageForm.svelte'
+  import NavButton from '$lib/components/layout/navbar/NavButton.svelte'
+  import Navbar from '$lib/components/layout/Navbar.svelte'
+  import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import ErrorModal from '$lib/components/modal/ErrorModal.svelte'
   import i18n from '$lib/i18n/define'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
@@ -36,9 +39,6 @@
   import PartsSelectForm from './form/PartsSelectForm.svelte'
   import { assemblyErrorMessage } from './interaction/error-message'
   import { initializeAssembly } from './interaction/initialize'
-  import NavButton from '$lib/components/layout/navbar/NavButton.svelte'
-  import Navbar from '$lib/components/layout/Navbar.svelte'
-  import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import {
     applyPartsPoolRestrictions,
     type PartsPoolRestrictions,

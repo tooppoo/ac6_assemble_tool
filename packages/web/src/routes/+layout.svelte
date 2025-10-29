@@ -1,14 +1,15 @@
 <script lang="ts">
   import './app.scss'
   import { publicPath } from '$lib/app-url'
+  import ToolSection from '$lib/components/layout/ToolSection.svelte'
+  import Margin from '$lib/components/spacing/Margin.svelte'
   import i18n from '$lib/i18n/define'
   import { extractChars } from '$lib/i18n/extract-chars'
   import { resources } from '$lib/i18n/resources'
   import { appVersion } from '$lib/utils/app-version'
 
   import { setContext } from 'svelte'
-  import ToolSection from '$lib/components/layout/ToolSection.svelte'
-  import Margin from '$lib/components/spacing/Margin.svelte'
+
   import {
     PUBLIC_REPORT_BUG_URL,
     PUBLIC_REPORT_REQUEST_URL,
