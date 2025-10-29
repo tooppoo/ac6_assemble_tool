@@ -7,7 +7,7 @@ export const aboutSections: readonly AboutSection[] = [
     lead: 'AC6 ASSEMBLE TOOL is an unofficial companion web application for ARMORED CORE VI FIRES OF RUBICON. It consolidates the game’s extensive parts catalogue and helps pilots reach the builds they imagine through a platform that emphasizes simplicity and repeatable results.',
     body: [
       'The project focuses on making build exploration effortless. Instead of complex dashboards or heavy simulations, the interface keeps interactions clean and responsive so that users can sketch an idea, lock a few essential components, and immediately see a playable assembly on any device, including smartphones.',
-  'Responsibilities are now split between the assembly page and a dedicated parts list. Slot-specific exploration and final build adjustments stay in sync through shared URL queries, so you can bounce between pages without losing context—even on mobile. There is still no hidden theme detection or automatic goal setting: pilots combine filters and locks intentionally, and every state can be shared verbatim through query parameters for collaborative planning.',
+      'Responsibilities are now split between the assembly page and a dedicated parts list. Slot-specific exploration and final build adjustments stay in sync through shared URL queries, so you can bounce between pages without losing context—even on mobile. There is still no hidden theme detection or automatic goal setting: pilots combine filters and locks intentionally, and every state can be shared verbatim through query parameters for collaborative planning.',
     ],
   },
   {
@@ -25,7 +25,7 @@ export const aboutSections: readonly AboutSection[] = [
     lead: 'The current feature set was shaped by observing how pilots iterate on their machines: lock core ideas, explore alternatives, validate status numbers, and share results.',
     body: [
       'Random assembly generation is primarily designed for challenge runs. Whether you limit yourself to a single manufacturer, an elemental affinity, or simply want the thrill of a surprise loadout, you can anchor the parts that matter and let the remaining slots roll. Many users also treat it as a spark for discovery, picking out the best outcomes to refine manually.',
-  'The parts list page keeps filters scoped per slot and folds everything into a single workspace: numeric ranges for weight or EN load, name search with match modes, multi-select manufacturer and category filters, sorting, and favorites. Every change is serialized back into the URL, so returning to the assembly page preserves the same candidate pool and context.',
+      'The parts list page keeps filters scoped per slot and folds everything into a single workspace: numeric ranges for weight or EN load, name search with match modes, multi-select manufacturer and category filters, sorting, and favorites. Every change is serialized back into the URL, so returning to the assembly page preserves the same candidate pool and context.',
     ],
   },
   {
@@ -69,7 +69,7 @@ export const aboutSections: readonly AboutSection[] = [
     title: 'Roadmap Highlights',
     lead: 'The immediate focus is on better discovery tools, followed by richer collaboration features that help squads plan together.',
     body: [
-  'Near-term milestones emphasize test coverage and performance. Integration and end-to-end suites will validate the round-trip between the parts list and assembly pages, while profiling data will guide memoization, virtualization, and other optimizations for filter application and slot switching.',
+      'Near-term milestones emphasize test coverage and performance. Integration and end-to-end suites will validate the round-trip between the parts list and assembly pages, while profiling data will guide memoization, virtualization, and other optimizations for filter application and slot switching.',
       'Further ahead, visual aids that map part synergies and tactical indicators are under evaluation. The long-term vision explores exposing the domain logic through an API so that community-made tools can integrate with the same dataset. Each stage of the roadmap is validated with user surveys and anonymized usage patterns to confirm that the direction still matches what pilots need.',
     ],
   },
