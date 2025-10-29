@@ -1,6 +1,6 @@
 {
   "name": "@ac6_assemble_tool/web",
-  "version": "2.7.0",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "dev": "vite dev",
@@ -43,7 +43,7 @@
     "vite-bundle-analyzer": "1.2.3"
   },
   "dependencies": {
-    "@ac6_assemble_tool/core": "workspace:1.0.0",
+    "@ac6_assemble_tool/core": "workspace:1.1.0",
     "@ac6_assemble_tool/parts": "workspace:1.8.1",
     "@ac6_assemble_tool/shared": "workspace:1.0.0",
     "@praha/byethrow": "0.6.3",
