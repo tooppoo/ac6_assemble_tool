@@ -98,6 +98,7 @@
   const version: string = regulation.version
 
   let partsPoolState: PartsPoolRestrictions = partsPool
+  let previousPartsPool: PartsPoolRestrictions = partsPool
 
   let initialCandidates: Candidates = partsPoolState.candidates
   let candidates: Candidates = partsPoolState.candidates
@@ -118,7 +119,9 @@
     updateCurrentSearch()
   })
 
-  $: if (partsPool !== partsPoolState) {
+  $: if (partsPool !== previousPartsPool) {
+    // props由来の母集団が差し替わった場合のみ再同期する
+    previousPartsPool = partsPool
     applyPartsPoolState(partsPool)
   }
 
