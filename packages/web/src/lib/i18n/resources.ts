@@ -4,7 +4,6 @@ import { enAttackType } from './locales/en/attackType'
 import { enCategory } from './locales/en/category'
 import { enClassification } from './locales/en/classification'
 import { enError } from './locales/en/error'
-import { enFilter } from './locales/en/filter'
 import { enFilterOperand } from './locales/en/filter/operand'
 import { enLock } from './locales/en/lock'
 import { enManufactures } from './locales/en/manufactures'
@@ -19,7 +18,6 @@ import { jaAttackType } from './locales/ja/attackType'
 import { jaCategory } from './locales/ja/category'
 import { jaClassification } from './locales/ja/classification'
 import { jaError } from './locales/ja/error'
-import { jaFilter } from './locales/ja/filter'
 import { jaFilterOperand } from './locales/ja/filter/operand'
 import { jaLock } from './locales/ja/lock'
 import { jaManufactures } from './locales/ja/manufactures'
@@ -36,7 +34,6 @@ export const resources = {
     },
     random: jaRandom,
     assembly: jaAssembly,
-    filter: jaFilter,
     lock: jaLock,
     manufacture: jaManufactures,
     classification: jaClassification,
@@ -56,7 +53,6 @@ export const resources = {
     },
     random: enRandom,
     assembly: enAssembly,
-    filter: enFilter,
     lock: enLock,
     manufacture: enManufactures,
     classification: enClassification,
