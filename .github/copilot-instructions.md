@@ -6,7 +6,7 @@
 
 ### MUST（必須要件）
 
-- **日本語使用**: すべてのコメント、ドキュメント、変数名は日本語を使用
+- **日本語使用**: すべてのやりとり、コメント、ドキュメントは日本語を使用
 - **セキュリティファースト**: 最小権限の原則、機微情報保護を徹底
 - **構造化ログ**: JSON形式でinfo/debug/warn/error/fatalレベルを遵守
 - **型安全性**: TypeScriptの型システムを最大限活用、Parse don't validate原則
@@ -29,7 +29,7 @@
 
 - 変数名、関数名、クラス名は日本語を使用
 - ファイル名は英語でケバブケース
-- 用語は`docs/terms.md`を参照し、専門用語は***太字斜体***で表記
+- 用語は`docs/terms.md`を参照し、専門用語は**_太字斜体_**で表記
 
 ### 構造化ログの実装
 
@@ -37,20 +37,22 @@
 // ✅ 推奨される構造化ログ
 const logger = {
   info: (message: string, context: Record<string, unknown> = {}) => {
-    console.log(JSON.stringify({
-      level: 'info',
-      timestamp: new Date().toISOString(),
-      message,
-      ...context
-    }));
-  }
+    console.log(
+      JSON.stringify({
+        level: "info",
+        timestamp: new Date().toISOString(),
+        message,
+        ...context,
+      })
+    );
+  },
 };
 
 // 使用例
-logger.info('ユーザー操作完了', {
+logger.info("ユーザー操作完了", {
   userId: user.id,
-  operation: 'profile_update',
-  duration_ms: 150
+  operation: "profile_update",
+  duration_ms: 150,
   // password: user.password // ❌ 機微情報は含めない
 });
 ```
@@ -64,7 +66,7 @@ type Result<T, E> = { success: true; data: T } | { success: false; error: E };
 // ユーザーが解決可能な問題 → Result型
 function validateInput(input: string): Result<ValidInput, ValidationError> {
   if (input.length === 0) {
-    return { success: false, error: new ValidationError('入力値が空です') };
+    return { success: false, error: new ValidationError("入力値が空です") };
   }
   return { success: true, data: new ValidInput(input) };
 }
@@ -74,7 +76,7 @@ function connectToDatabase(): Database {
   try {
     return new Database(config);
   } catch (error) {
-    throw new DatabaseConnectionError('データベース接続に失敗しました', error);
+    throw new DatabaseConnectionError("データベース接続に失敗しました", error);
   }
 }
 ```
