@@ -1,6 +1,6 @@
 {
   "name": "@ac6_assemble_tool/web",
-  "version": "2.7.0",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "dev": "vite dev",
@@ -21,9 +21,9 @@
     "test:all": "pnpm run test:integration && pnpm run test:unit"
   },
   "devDependencies": {
-    "@ac6_assemble_tool/eslint": "workspace:1.0.0",
-    "@ac6_assemble_tool/spec": "workspace:1.0.0",
-    "@ac6_assemble_tool/tsconfig": "workspace:1.0.0",
+    "@ac6_assemble_tool/eslint": "workspace:*",
+    "@ac6_assemble_tool/spec": "workspace:*",
+    "@ac6_assemble_tool/tsconfig": "workspace:*",
     "@playwright/test": "1.55.1",
     "@sveltejs/adapter-static": "3.0.10",
     "@sveltejs/kit": "2.37.1",
@@ -43,9 +43,9 @@
     "vite-bundle-analyzer": "1.2.3"
   },
   "dependencies": {
-    "@ac6_assemble_tool/core": "workspace:1.0.0",
-    "@ac6_assemble_tool/parts": "workspace:1.8.1",
-    "@ac6_assemble_tool/shared": "workspace:1.0.0",
+    "@ac6_assemble_tool/core": "workspace:*",
+    "@ac6_assemble_tool/parts": "workspace:*",
+    "@ac6_assemble_tool/shared": "workspace:*",
     "@praha/byethrow": "0.6.3",
     "bootstrap": "5.3.8",
     "bootstrap-icons": "1.13.1",
