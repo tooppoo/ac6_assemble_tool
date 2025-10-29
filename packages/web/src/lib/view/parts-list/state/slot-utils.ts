@@ -2,7 +2,7 @@ import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 
 import { VALID_SLOTS } from './shared'
 
-const SLOT_PARTS_PARAM_SUFFIX = '_parts' as const
+export const SLOT_PARTS_PARAM_SUFFIX = '_parts' as const
 
 export function toSlotParamValue(slot: CandidatesKey): string {
   return camelToSnake(slot)
@@ -37,8 +37,6 @@ export function normalizeSlotKey(value: string): CandidatesKey | null {
 
   return null
 }
-
-export const SLOT_PARTS_SUFFIX = SLOT_PARTS_PARAM_SUFFIX
 
 function camelToSnake(value: string): string {
   return value

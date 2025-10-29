@@ -33,6 +33,8 @@ export interface SharedState {
   sortOrder: SortOrder | null
 }
 
+export const MANAGED_SHARED_QUERY_KEYS = ['slot', 'filters', 'sort'] as const
+
 /**
  * URLパラメータへのシリアライズ（共有用）
  */
