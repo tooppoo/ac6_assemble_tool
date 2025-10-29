@@ -17,7 +17,8 @@
   - **パーツ一覧ページ**: パーツの探索（フィルタリング、並び替え、お気に入り）に専念
   - **アセンブリページ**: 機体の組み立て（ロック、ランダム、計算結果表示）に専念
 - アセンブリページへのパーツ選択フローが「一覧ページで絞り込み → アセンに遷移 → 母集団から選択」に変更される
-- 既存のフィルタリングロジック（`@ac6_assemble_tool/core/assembly/filter`）はパーツ一覧ページでのみ使用され、アセンブリページでは使用されなくなる
+- パーツ一覧ページ専用に再構成したフィルタリングロジック（`packages/web/src/lib/view/parts-list/state/filter`配下）はアセンブリページから切り離され、アセンブリページではフィルタ機能を提供しない
+- アセンブリページのナビゲーションバーからパーツ一覧ページ（`/parts-list`）へ遷移する導線を追加し、URLクエリ（フィルタ条件・母集団制限）を保持したままSvelteKitの`goto`で移動できるようにした（失敗時は構造化ログで検知）
 
 ### Goals
 
@@ -413,6 +414,14 @@ sequenceDiagram
     Note over AssemblyPage: フィルタUIは提供しない<br/>ロック、ランダムなど組み立て機能のみ
 ```
 
+### Process Flow: アセンブリページからフィルタUIへの遷移
+
+1. プレイヤーがアセンブリページのナビゲーションバーに追加した「パーツ探索」（英語環境では「Parts List」）ボタンを選択する。
+2. `navigateToPartsList()` が現在の`window.location.search`を取得し、フィルタ条件や母集団制限を含むクエリパラメータを保持したまま遷移先URLを組み立てる。
+3. SvelteKitの`goto('/parts-list' + search, { keepFocus: true })`を呼び出し、フォーカス状態を維持したままパーツ一覧ページへ遷移する。
+4. 遷移に失敗した場合は `logger.error` がJSON構造のログを出力し、監視下で即座に検知できるようにする。
+5. パーツ一覧ページは受け取ったクエリを`deserializeFromURL()`で復元し、フィルタUI・パーツリストを直ちに同期する。
+
 ### Process Flow: スロット切替時の条件引き継ぎ
 
 ```mermaid
@@ -492,7 +501,8 @@ flowchart LR
 | 5.1-5.4 | 並び替え機能 | SortControl | `sort(parts, key, order)` | - |
 | 6.1-6.4 | お気に入り管理 | FavoriteStore, IndexedDB | `addFavorite()`, `removeFavorite()` | Data Flow |
 | 7.1-7.4 | URL共有 | URL Serializer, PartsListView | `serializeToURL()`, `deserializeFromURL()` | Data Flow |
-| 8.1-8.3 | ローカル復元 | LocalStorage Manager | `saveViewMode()`, `loadViewMode()` | Data Flow |
+| 8.1-8.2 | ローカル復元 | LocalStorage Manager | `saveViewMode()`, `loadViewMode()` | Data Flow |
+| 8.3 | アセンブリ←→フィルタUI遷移 | Index.svelte, PartsListView | `navigateToPartsList()`, `deserializeFromURL()` | Process Flow: アセンブリページからフィルタUIへの遷移 |
 | 9.1-9.4 | スロット切替時の条件明示 | PartsListView, FilterPanel | `showInvalidFiltersNotification()` | Process Flow |
 
 ## Components and Interfaces

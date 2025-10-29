@@ -38,12 +38,6 @@ export const jaError = {
       guide: '違反頻度の多い条件を緩めて再実行してみてください',
     },
   },
-  filter: {
-    notFound: {
-      description: '指定された条件で利用可能なパーツが見つかりませんでした',
-      guide: '絞り込み条件を変更して再実行してみてください',
-    },
-  },
   unknown: {
     label: '予期しないエラー',
     description: '予期しないエラーが発生しました',

@@ -25,10 +25,13 @@ import {
   compressToUrlSafeString,
   decompressFromUrlSafeString,
 } from './state/filter/compression'
+import * as partsPoolSerializer from './state/parts-pool-serializer'
+import * as stateSerializer from './state/state-serializer'
 
 import * as navigation from '$app/navigation'
 
 const replaceStateSpy = vi.spyOn(navigation, 'replaceState')
+const gotoSpy = vi.spyOn(navigation, 'goto')
 
 describe('PartsListView コンポーネント', () => {
   // LocalStorageをクリア
@@ -37,6 +40,9 @@ describe('PartsListView コンポーネント', () => {
       localStorage.clear()
     }
     replaceStateSpy.mockReset()
+    replaceStateSpy.mockImplementation(() => undefined)
+    gotoSpy.mockReset()
+    gotoSpy.mockResolvedValue(undefined)
   })
 
   afterEach(() => {
@@ -44,6 +50,8 @@ describe('PartsListView コンポーネント', () => {
       localStorage.clear()
     }
     replaceStateSpy.mockReset()
+    replaceStateSpy.mockImplementation(() => undefined)
+    gotoSpy.mockReset()
   })
 
   describe('初期状態', () => {
@@ -183,6 +191,28 @@ describe('PartsListView コンポーネント', () => {
 
       expect(payload.rightArmUnit).toEqual(['numeric:price:lte:3200'])
       expect(payload.head).toEqual(['numeric:price:lte:1500'])
+    })
+
+    it('lngパラメータを保持したままURLを更新すること', async () => {
+      window.history.replaceState({}, '', '/parts-list?lng=en')
+
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      await waitFor(() => expect(replaceStateSpy).toHaveBeenCalled())
+
+      const lastCall = replaceStateSpy.mock.calls.at(-1)
+      expect(lastCall).toBeTruthy()
+      const [url] = lastCall ?? []
+      expect(typeof url).toBe('string')
+
+      const params = new URL(url as string, 'https://example.test').searchParams
+      expect(params.get('lng')).toBe('en')
+
+      window.history.replaceState({}, '', '/parts-list')
     })
   })
 
@@ -471,6 +501,73 @@ describe('PartsListView コンポーネント', () => {
       await waitFor(() =>
         expect(screen.getByText(/フィルタ\s*\(1件\)/)).toBeInTheDocument(),
       )
+    })
+  })
+
+  describe('アセンブリページへの遷移', () => {
+    it('現在の条件と母集団制限をURLに含めてアセンページに遷移する', async () => {
+      window.history.replaceState({}, '', '/parts-list?lng=en')
+
+      gotoSpy.mockResolvedValue(undefined)
+
+      const serializeToURLSpy = vi
+        .spyOn(stateSerializer, 'serializeToURL')
+        .mockResolvedValue(new URLSearchParams('slot=arms&sort=weight:asc'))
+      const serializePartsPoolSpy = vi
+        .spyOn(partsPoolSerializer, 'serializeFilteredPartsPool')
+        .mockReturnValue(new URLSearchParams('arms_parts=TEST-001,TEST-002'))
+
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      const handoffButton = screen.getByRole('button', {
+        name: /アセンに渡す/, // 日本語ラベル
+      })
+
+      await fireEvent.click(handoffButton)
+
+      expect(serializeToURLSpy).toHaveBeenCalled()
+      expect(serializePartsPoolSpy).toHaveBeenCalled()
+      expect(gotoSpy).toHaveBeenCalled()
+
+      const target = gotoSpy.mock.calls[0][0] as string
+      expect(target.startsWith('/?')).toBe(true)
+
+      const params = new URLSearchParams(target.split('?')[1])
+      expect(params.get('slot')).toBe('arms')
+      expect(params.get('sort')).toBe('weight:asc')
+      expect(params.get('lng')).toBe('en')
+      expect(params.get('arms_parts')).toBe('TEST-001,TEST-002')
+
+      serializeToURLSpy.mockRestore()
+      serializePartsPoolSpy.mockRestore()
+    })
+
+    it('候補が0件のスロットがある場合はボタンを無効化し理由を表示する', async () => {
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      const valueInput = screen.getByLabelText('値')
+      await fireEvent.input(valueInput, { target: { value: '-1' } })
+      const addButton = screen.getByRole('button', { name: '追加' })
+      await fireEvent.click(addButton)
+
+      const handoffButton = await screen.findByRole('button', {
+        name: /アセンに渡す/,
+      })
+
+      await waitFor(() => expect(handoffButton).toBeDisabled())
+
+      expect(screen.getByText(/候補が0件です: 右腕武器/)).toBeInTheDocument()
+
+      await fireEvent.click(handoffButton)
+      expect(gotoSpy).not.toHaveBeenCalled()
     })
   })
 })

@@ -8,9 +8,9 @@ export const enPageIndex = {
       label: 'Reset Locks',
       description: 'Reset All Locks',
     },
-    filterForWhole: {
-      label: 'Filter',
-      description: 'Set filter for whole of assembly',
+    partsList: {
+      label: 'Parts List',
+      description: 'Open filter interface',
     },
     share: {
       label: 'Share',

@@ -1,6 +1,5 @@
 import type { I18Next } from '$lib/i18n/define'
 
-import { UsableItemNotFoundError } from '@ac6_assemble_tool/core/assembly/filter/filters'
 import { OverTryLimitError } from '@ac6_assemble_tool/core/assembly/random/random-assembly'
 import {
   ValidationError,
@@ -54,21 +53,6 @@ function groupValidationErrorByValidationName(
 
     return m
   }, new Map<ValidationName | 'unknown', number>())
-}
-
-export function filterApplyErrorMessage(
-  error: Error,
-  i18n: Translator,
-): string[] {
-  if (!(error instanceof UsableItemNotFoundError)) {
-    return unknownErrorMessage(i18n)
-  }
-
-  return [
-    i18n.t('filter.notFound.description', { ns: 'error' }),
-    '',
-    i18n.t('filter.notFound.guide', { ns: 'error' }),
-  ]
 }
 
 function unknownErrorMessage(i18n: Translator): string[] {

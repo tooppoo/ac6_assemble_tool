@@ -8,9 +8,9 @@ export const jaPageIndex = {
       label: '全ロック解除',
       description: 'ロックを全て解除する',
     },
-    filterForWhole: {
-      label: '絞り込み',
-      description: 'アセンブルの<br>条件を設定する',
+    partsList: {
+      label: 'パーツ探索',
+      description: 'フィルタUIを開く',
     },
     share: {
       label: '共有',

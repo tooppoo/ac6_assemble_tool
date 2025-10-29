@@ -6,11 +6,17 @@
    * URLパラメータ/LocalStorageと同期します。
    */
 
+  import type { I18NextStore } from '$lib/i18n/define'
+
   import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
-  import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
+  import {
+    CANDIDATES_KEYS,
+    type CandidatesKey,
+  } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import { logger } from '@ac6_assemble_tool/shared/logger'
   import { Result } from '@praha/byethrow'
+  import { getContext } from 'svelte'
 
   import FilterPanel from './FilterPanel.svelte'
   import PartsGrid from './PartsGrid.svelte'
@@ -21,6 +27,8 @@
     createDefaultFiltersPerSlot,
     type FiltersPerSlot,
   } from './state/filter/serialization'
+  import { serializeFilteredPartsPool } from './state/parts-pool-serializer'
+  import { SLOT_PARTS_PARAM_SUFFIX } from './state/slot-utils'
   import {
     getAvailableSortKeys,
     sortPartsByKey,
@@ -28,6 +36,7 @@
     type SortOrder,
   } from './state/sort'
   import {
+    MANAGED_SHARED_QUERY_KEYS,
     deserializeFromURL,
     serializeToURL,
     type SharedState,
@@ -37,7 +46,7 @@
   import { FavoriteStore } from './stores/favorite-store'
 
   import { browser } from '$app/environment'
-  import { replaceState } from '$app/navigation'
+  import { goto, replaceState } from '$app/navigation'
 
   let favoriteStore: FavoriteStore | null = null
 
@@ -52,6 +61,8 @@
   }
 
   let { regulation, initialSearchParams }: Props = $props()
+
+  const i18n = getContext<I18NextStore>('i18n')
 
   const defaultSlot: CandidatesKey = 'rightArmUnit'
 
@@ -79,6 +90,47 @@
   let viewMode = $state<ViewMode>(loadViewMode())
   let favorites = $state<Set<string>>(new Set())
   let showFavoritesOnly = $state<boolean>(false)
+
+  const emptyCandidateSlots = $derived.by<CandidatesKey[]>(() => {
+    return CANDIDATES_KEYS.filter((slot) => {
+      const base = regulation.candidates[slot]
+      const slotFilters = filtersPerSlot[slot] ?? []
+
+      if (!slotFilters || slotFilters.length === 0) {
+        return base.length === 0
+      }
+
+      try {
+        const filtered = applyFilters(base, slotFilters)
+        return filtered.length === 0
+      } catch (error) {
+        logger.error('候補件数の再計算に失敗しました', {
+          slot,
+          error: error instanceof Error ? error.message : String(error),
+        })
+        return true
+      }
+    })
+  })
+
+  const isHandoffDisabled = $derived.by<boolean>(
+    () => emptyCandidateSlots.length > 0,
+  )
+
+  const handoffDisabledReason = $derived.by<string | null>(() => {
+    if (!isHandoffDisabled) {
+      return null
+    }
+
+    const slotLabels = emptyCandidateSlots
+      .map((slot) => $i18n.t(`assembly:${slot}`))
+      .join('、')
+
+    return $i18n.t('navigation.handoff.disabledReason', {
+      ns: 'page/parts-list',
+      slots: slotLabels,
+    })
+  })
 
   if (browser && initialSearchParams) {
     void (async () => {
@@ -151,15 +203,7 @@
   $effect(() => {
     if (!browser) return
 
-    const filtersSnapshot = Object.entries(filtersPerSlot).reduce(
-      (acc, [slot, slotFilters]) => {
-        if (slotFilters) {
-          acc[slot as CandidatesKey] = [...slotFilters]
-        }
-        return acc
-      },
-      {} as FiltersPerSlot,
-    )
+    const filtersSnapshot = createFiltersSnapshot()
 
     const state: SharedState = {
       slot: currentSlot,
@@ -171,7 +215,17 @@
     void (async () => {
       try {
         const params = await serializeToURL(state)
-        const newUrl = `${window.location.pathname}?${params.toString()}`
+
+        const url = new URL(window.location.href)
+        MANAGED_SHARED_QUERY_KEYS.forEach((key) => {
+          url.searchParams.delete(key)
+        })
+
+        params.forEach((value, key) => {
+          url.searchParams.set(key, value)
+        })
+
+        const newUrl = `${url.pathname}${url.search}`
         try {
           replaceState(newUrl, {})
         } catch {
@@ -271,6 +325,65 @@
   export function handleToggleFavorites() {
     showFavoritesOnly = !showFavoritesOnly
   }
+
+  function createFiltersSnapshot(): FiltersPerSlot {
+    return Object.entries(filtersPerSlot).reduce((acc, [slot, slotFilters]) => {
+      if (slotFilters) {
+        acc[slot as CandidatesKey] = [...slotFilters]
+      }
+      return acc
+    }, {} as FiltersPerSlot)
+  }
+
+  async function handleNavigateToAssembly() {
+    if (!browser || isHandoffDisabled) return
+
+    const filtersSnapshot = createFiltersSnapshot()
+    filtersSnapshot[currentSlot] = [...filters]
+
+    const state: SharedState = {
+      slot: currentSlot,
+      filtersPerSlot: filtersSnapshot,
+      sortKey,
+      sortOrder,
+    }
+
+    try {
+      const sharedParams = await serializeToURL(state)
+      const restrictedParams = serializeFilteredPartsPool({
+        candidates: regulation.candidates,
+        filtersPerSlot: filtersSnapshot,
+      })
+
+      const url = new URL(window.location.href)
+      const params = url.searchParams
+
+      MANAGED_SHARED_QUERY_KEYS.forEach((key) => {
+        params.delete(key)
+      })
+
+      Array.from(params.keys())
+        .filter((key) => key.endsWith(SLOT_PARTS_PARAM_SUFFIX))
+        .forEach((key) => {
+          params.delete(key)
+        })
+
+      sharedParams.forEach((value, key) => {
+        params.set(key, value)
+      })
+
+      restrictedParams.forEach((value, key) => {
+        params.set(key, value)
+      })
+
+      const query = params.toString()
+      await goto(`/${query ? `?${query}` : ''}`)
+    } catch (error) {
+      logger.error('アセンブリページ遷移用のURL生成に失敗しました', {
+        error: error instanceof Error ? error.message : String(error),
+      })
+    }
+  }
 </script>
 
 <div class="parts-list-view">
@@ -299,6 +412,35 @@
       onsortchange={handleSortApply}
       onsortclear={handleSortClear}
     />
+  </div>
+
+  <div class="py-1 d-flex flex-column align-items-end gap-2">
+    {#if handoffDisabledReason}
+      <p
+        id="handoff-disabled-reason"
+        class="text-danger small mb-0 text-center"
+        role="status"
+        aria-live="polite"
+      >
+        {handoffDisabledReason}
+      </p>
+    {/if}
+    <button
+      class="btn btn-primary"
+      type="button"
+      title={isHandoffDisabled && handoffDisabledReason
+        ? handoffDisabledReason
+        : $i18n.t('navigation.handoff.description', {
+            ns: 'page/parts-list',
+          })}
+      disabled={isHandoffDisabled}
+      aria-describedby={isHandoffDisabled && handoffDisabledReason
+        ? 'handoff-disabled-reason'
+        : undefined}
+      onclick={handleNavigateToAssembly}
+    >
+      {$i18n.t('navigation.handoff.label', { ns: 'page/parts-list' })}
+    </button>
   </div>
 
   <div class="py-1">

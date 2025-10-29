@@ -8,12 +8,10 @@
 
   import {
     type Assembly,
-    type AssemblyKey,
     assemblyKeys,
     spaceByWord,
     createAssembly,
   } from '@ac6_assemble_tool/core/assembly/assembly'
-  import { UsableItemNotFoundError } from '@ac6_assemble_tool/core/assembly/filter/filters'
   import { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
   import { RandomAssembly } from '@ac6_assemble_tool/core/assembly/random/random-assembly'
   import {
@@ -32,29 +30,20 @@
   import { logger } from '@ac6_assemble_tool/shared/logger'
   import { onMount } from 'svelte'
 
-  import FilterByPartsOffCanvas from './filter/FilterByPartsOffCanvas.svelte'
-  import FilterForWholeOffCanvas from './filter/FilterForWholeOffCanvas.svelte'
   import type {
     ChangePartsEvent,
     ToggleLockEvent,
   } from './form/PartsSelectForm.svelte'
   import PartsSelectForm from './form/PartsSelectForm.svelte'
-  import {
-    assemblyErrorMessage,
-    filterApplyErrorMessage,
-  } from './interaction/error-message'
-  import {
-    applyFilter,
-    assemblyWithHeadParts,
-    changePartsFilter,
-    type FilterState,
-    initialFilterState,
-    toggleFilter,
-  } from './interaction/filter'
+  import { assemblyErrorMessage } from './interaction/error-message'
   import { initializeAssembly } from './interaction/initialize'
   import NavButton from './layout/navbar/NavButton.svelte'
   import Navbar from './layout/Navbar.svelte'
   import ToolSection from './layout/ToolSection.svelte'
+  import {
+    applyPartsPoolRestrictions,
+    type PartsPoolRestrictions,
+  } from './parts-pool'
   import RandomAssembleButton from './random/button/RandomAssembleButton.svelte'
   import RandomAssemblyOffCanvas, {
     type AssembleRandomly,
@@ -64,6 +53,7 @@
   import ShareAssembly from './share/ShareAssembly.svelte'
   import StoreAssembly from './store/StoreAssembly.svelte'
 
+  import { goto } from '$app/navigation'
   import {
     PUBLIC_REPORT_BUG_URL,
     PUBLIC_REPORT_REQUEST_URL,
@@ -102,18 +92,20 @@
 
   // state
   export let regulation: Regulation
+  export let partsPool: PartsPoolRestrictions
 
   const orders: Order = regulation.orders
   const version: string = regulation.version
 
-  let candidates: Candidates = regulation.candidates
-  let initialCandidates: Candidates = regulation.candidates
+  let partsPoolState: PartsPoolRestrictions = partsPool
+  let previousPartsPool: PartsPoolRestrictions = partsPool
+
+  let initialCandidates: Candidates = partsPoolState.candidates
+  let candidates: Candidates = partsPoolState.candidates
   let lockedParts: LockedParts = LockedParts.empty
-  let filter: FilterState = initialFilterState(initialCandidates)
   let randomAssembly = RandomAssembly.init({ limit: tryLimit })
 
   let openRandomAssembly: boolean = false
-  let openWholeFilter: boolean = false
   let openShare: boolean = false
   let openAssemblyStore: boolean = false
   let errorMessage: string[] = []
@@ -127,32 +119,23 @@
     updateCurrentSearch()
   })
 
+  $: if (partsPool !== previousPartsPool) {
+    // props由来の母集団が差し替わった場合のみ再同期する
+    previousPartsPool = partsPool
+    applyPartsPoolState(partsPool)
+  }
+
   onMount(() => {
+    updatePartsPoolFromUrl()
     initialize()
 
     serializeAssembly.enable()
   })
 
-  $: {
-    if (initialCandidates && filter && assembly && lockedParts) {
-      try {
-        logger.debug('update candidates', { filter, lockedParts })
+  $: if (initialCandidates) {
+    logger.debug('update candidates', { lockedParts })
 
-        updateCandidates()
-      } catch (e: unknown) {
-        const errorContext =
-          e instanceof Error
-            ? { errorMessage: e.message, errorStack: e.stack }
-            : { error: `${e}` }
-
-        logger.error('update candidates failed', errorContext)
-
-        errorMessage = filterApplyErrorMessage(
-          e instanceof UsableItemNotFoundError ? e : new Error(`${e}`),
-          $i18n,
-        )
-      }
-    }
+    updateCandidates()
   }
   $: {
     if (assembly && initialCandidates && !browserBacking) {
@@ -167,6 +150,21 @@
   }
 
   // handler
+  function applyPartsPoolState(pool: PartsPoolRestrictions) {
+    partsPoolState = pool
+    initialCandidates = pool.candidates
+    candidates = pool.candidates
+    lockedParts = LockedParts.empty
+    randomAssembly = RandomAssembly.init({ limit: tryLimit })
+
+    if (typeof window !== 'undefined') {
+      browserBacking = true
+      buildAssemblyFromQuery()
+    } else {
+      assembly = initializeAssembly(candidates)
+    }
+  }
+
   const onChangeParts = ({ detail }: CustomEvent<ChangePartsEvent>) => {
     // @ts-expect-error TS2590
     assembly[detail.id] = detail.selected
@@ -185,17 +183,11 @@
       : lockedParts.unlock(detail.id)
   }
 
-  const openFilter = (ev: CustomEvent<{ id: AssemblyKey }>) => {
-    filter = toggleFilter(ev.detail.id, filter)
-  }
-
   const updateCandidates = () => {
-    candidates = lockedParts.filter(
-      applyFilter(initialCandidates, filter, {
-        assembly,
-        wholeFilter: filter.map,
-      }),
-    )
+    const filtered = lockedParts.filter(initialCandidates)
+    candidates = {
+      ...filtered,
+    }
   }
 
   function buildAssemblyFromQuery() {
@@ -273,7 +265,68 @@
 
   const onPopstate = () => {
     browserBacking = true
+    updatePartsPoolFromUrl()
     buildAssemblyFromQuery()
+  }
+
+  function updatePartsPoolFromUrl() {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    const restricted = applyPartsPoolRestrictions(
+      new URLSearchParams(window.location.search),
+      partsPool.candidates,
+    )
+
+    if (isSameRestriction(partsPoolState, restricted)) {
+      return
+    }
+
+    applyPartsPoolState(restricted)
+  }
+
+  function isSameRestriction(
+    current: PartsPoolRestrictions,
+    next: PartsPoolRestrictions,
+  ): boolean {
+    const currentSlots = current.restrictedSlots
+    const nextSlots = next.restrictedSlots
+
+    const currentKeys = Object.keys(currentSlots) as Array<
+      keyof typeof currentSlots
+    >
+    const nextKeys = Object.keys(nextSlots) as Array<keyof typeof nextSlots>
+
+    if (currentKeys.length !== nextKeys.length) {
+      return false
+    }
+
+    return currentKeys.every((slot) => {
+      const currentIds = currentSlots[slot]
+      const nextIds = nextSlots[slot]
+
+      if (!currentIds || !nextIds || currentIds.length !== nextIds.length) {
+        return false
+      }
+
+      return currentIds.every((id, index) => id === nextIds[index])
+    })
+  }
+
+  const navigateToPartsList = () => {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    const search = window.location.search
+    const target = `/parts-list${search}`
+
+    void goto(target, { keepFocus: true }).catch((error) => {
+      logger.error('パーツ一覧ページへの遷移に失敗しました', {
+        error: error instanceof Error ? error.message : String(error),
+      })
+    })
   }
 </script>
 
@@ -292,6 +345,17 @@
     </span>
   </NavButton>
   <NavButton
+    id="open-parts-list"
+    class="me-3"
+    title={$i18n.t('command.partsList.description', { ns: 'page/index' })}
+    on:click={navigateToPartsList}
+  >
+    <i slot="icon" class="bi bi-funnel"></i>
+    <span class="d-none d-md-inline">
+      {$i18n.t('command.partsList.label', { ns: 'page/index' })}
+    </span>
+  </NavButton>
+  <NavButton
     id="reset-lock-nav"
     class="me-3 d-none d-md-block"
     title={$i18n.t('command.resetLock.description', { ns: 'page/index' })}
@@ -300,17 +364,6 @@
     <i slot="icon" class="bi bi-unlock"></i>
     <span class="d-none d-md-inline">
       {$i18n.t('command.resetLock.label', { ns: 'page/index' })}
-    </span>
-  </NavButton>
-  <NavButton
-    id="open-whole-filter"
-    class="me-3"
-    title={$i18n.t('command.filterForWhole.description', { ns: 'page/index' })}
-    on:click={() => (openWholeFilter = true)}
-  >
-    <i slot="icon" class="bi bi-filter-square"></i>
-    <span class="d-none d-md-inline">
-      {$i18n.t('command.filterForWhole.label', { ns: 'page/index' })}
     </span>
   </NavButton>
   <NavButton
@@ -396,9 +449,7 @@
         parts={orderParts(key, candidates[key])}
         selected={assembly[key]}
         lock={lockedParts}
-        {filter}
         on:toggle-lock={onLock}
-        on:toggle-filter={openFilter}
         on:change={onChangeParts}
       />
     {/each}
@@ -458,34 +509,6 @@
     {$i18n.t('command.random.label', { ns: 'page/index' })}
   </svelte:fragment>
 </RandomAssemblyOffCanvas>
-
-<FilterByPartsOffCanvas
-  id="filter-by-parts"
-  open={filter.open}
-  current={filter.current}
-  on:toggle={(ev) => (filter.open = ev.detail.open)}
-  on:change-filter={({ detail }) => {
-    filter = changePartsFilter({ target: detail.target, state: filter })
-    updateCandidates()
-    assembly = assemblyWithHeadParts(candidates)
-  }}
-/>
-<FilterForWholeOffCanvas
-  id="filter-for-whole"
-  open={openWholeFilter}
-  {initialCandidates}
-  {candidates}
-  {assembly}
-  {lockedParts}
-  {filter}
-  {randomAssembly}
-  on:toggle={(ev) => (openWholeFilter = ev.detail.open)}
-  on:apply={({ detail }) => {
-    if (detail.candidates) candidates = detail.candidates
-    if (detail.assembly) assembly = detail.assembly
-    if (detail.filter) filter = detail.filter
-  }}
-/>
 <ShareAssembly
   id="share-assembly"
   open={openShare}
