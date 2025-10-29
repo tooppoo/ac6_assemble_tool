@@ -20,7 +20,7 @@
 
 <div class="empty-state text-center py-5">
   <Alert color="info" class="mx-auto" style="max-width: 600px;">
-    <h5 class="alert-heading mb-3">
+    <h5 class="alert-heading mb-0">
       <i class="bi bi-info-circle me-2"></i>
       {message}
     </h5>

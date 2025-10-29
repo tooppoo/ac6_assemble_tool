@@ -1,11 +1,5 @@
 import type { I18Next } from '$lib/i18n/define'
-import {
-  assemblyErrorMessage,
-  filterApplyErrorMessage,
-  type Translator,
-} from '$lib/view/index/interaction/error-message'
-
-import { UsableItemNotFoundError } from '@ac6_assemble_tool/core/assembly/filter/filters'
+import { assemblyErrorMessage, type Translator } from '$lib/view/index/interaction/error-message'
 import { OverTryLimitError } from '@ac6_assemble_tool/core/assembly/random/random-assembly'
 import {
   notCarrySameUnitInSameSideName,
@@ -15,7 +9,6 @@ import {
   ValidationError,
   type ValidationName,
 } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
-import { genAssemblyKey } from '@ac6_assemble_tool/core/spec-helper/property-generator'
 import { fc, it } from '@fast-check/vitest'
 import type { ArrayConstraints } from 'fast-check'
 import { afterEach, beforeEach, describe, expect, type Mock, vi } from 'vitest'
@@ -191,51 +184,6 @@ describe(assemblyErrorMessage.name, () => {
             vi.restoreAllMocks()
           },
         )
-      },
-    )
-  })
-})
-
-describe(filterApplyErrorMessage.name, () => {
-  let i18n: Pick<I18Next, 't'>
-  let mock: ReturnType<typeof vi.fn>
-
-  beforeEach(() => {
-    mock = vi.fn()
-    i18n = {
-      t: mock as never as I18Next['t'],
-    }
-  })
-  afterEach(() => {
-    vi.restoreAllMocks()
-  })
-
-  renderUnknownError(() => ({ mock, i18n }), filterApplyErrorMessage)
-
-  describe(UsableItemNotFoundError.name, () => {
-    it.prop([genAssemblyKey()])(
-      'should show description about the error and guide for next action',
-      (key) => {
-        const error = new UsableItemNotFoundError({
-          key,
-          property: 'manufacture',
-        })
-
-        filterApplyErrorMessage(error, i18n)
-
-        expect(mock).toHaveBeenCalledTimesWith(
-          1,
-          'filter.notFound.description',
-          {
-            ns: 'error',
-          },
-        )
-        expect(mock).toHaveBeenCalledTimesWith(1, 'filter.notFound.guide', {
-          ns: 'error',
-        })
-        // it.prop で実行する場合、
-        // beforeEachの前に次のプロパティが実行される模様
-        vi.restoreAllMocks()
       },
     )
   })

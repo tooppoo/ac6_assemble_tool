@@ -8,10 +8,6 @@ export const enPageIndex = {
       label: 'Reset Locks',
       description: 'Reset All Locks',
     },
-    filterForWhole: {
-      label: 'Filter',
-      description: 'Set filter for whole of assembly',
-    },
     share: {
       label: 'Share',
       description:

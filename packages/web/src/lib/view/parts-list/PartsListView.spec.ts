@@ -534,7 +534,7 @@ describe('PartsListView コンポーネント', () => {
       })
 
       const valueInput = screen.getByLabelText('値')
-      await fireEvent.input(valueInput, { target: { value: '0' } })
+  await fireEvent.input(valueInput, { target: { value: '-1' } })
       const addButton = screen.getByRole('button', { name: '追加' })
       await fireEvent.click(addButton)
 

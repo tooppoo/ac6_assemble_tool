@@ -8,19 +8,12 @@
     selected: ACParts
   }>
   export type ToggleLockEvent = Readonly<{ id: AssemblyKey; value: boolean }>
-  export type ToggleFilterEvent = Readonly<{ id: AssemblyKey }>
 </script>
 
 <script lang="ts">
   import i18n from '$lib/i18n/define'
-  import FilterBadge from '$lib/view/index/form/status/badge/FilterBadge.svelte'
   import LockBadge from '$lib/view/index/form/status/badge/LockBadge.svelte'
   import StatusBadgeList from '$lib/view/index/form/status/StatusBadgeList.svelte'
-  import {
-    anyFilterContain,
-    anyFilterEnabled,
-    type FilterState,
-  } from '$lib/view/index/interaction/filter'
 
   import { createEventDispatcher } from 'svelte'
 
@@ -30,7 +23,6 @@
   export let selected: ACParts
   export let tag = 'div'
   export let lock: LockedParts
-  export let filter: FilterState
 
   $: {
     if (!parts.find((p) => p.name === selected.name)) {
@@ -47,15 +39,11 @@
   const onToggleLock = () => {
     dispatch('toggle-lock', { id, value: !lock.isLocking(id) })
   }
-  const onToggleFilter = () => {
-    dispatch('toggle-filter', { id })
-  }
 
   // setup
   const dispatch = createEventDispatcher<{
     change: ChangePartsEvent
     'toggle-lock': ToggleLockEvent
-    'toggle-filter': ToggleFilterEvent
   }>()
 </script>
 
@@ -76,15 +64,6 @@
           clickable={true}
           on:click={onToggleLock}
         />
-        {#if anyFilterContain(id, filter)}
-          <FilterBadge
-            id={`filter-parts-${id}`}
-            class="ms-2 ms-sm-0 me-sm-2"
-            title={$i18n.t('filterByParts.description', { ns: 'filter' })}
-            applied={anyFilterEnabled(id, filter)}
-            on:click={onToggleFilter}
-          />
-        {/if}
       </StatusBadgeList>
     </label>
     <select

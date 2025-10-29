@@ -37,13 +37,6 @@ export const enError = {
       guide: 'Please retry relaxing conditions.',
     },
   },
-  filter: {
-    notFound: {
-      description:
-        'No parts were found available for the specified conditions.',
-      guide: 'Please retry relaxing the filtering conditions.',
-    },
-  },
   unknown: {
     label: 'Unexpected Error',
     description: 'Unexpected Error occurred',

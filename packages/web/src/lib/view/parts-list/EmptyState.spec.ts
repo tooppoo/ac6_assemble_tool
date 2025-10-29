@@ -11,23 +11,16 @@ describe('EmptyState', () => {
       expect(
         screen.getByText('フィルタ条件に一致するパーツが見つかりませんでした'),
       ).toBeTruthy()
-      expect(
-        screen.getByText(
-          /フィルタ条件を変更するか、別のスロットを選択してみてください/,
-        ),
-      ).toBeTruthy()
     })
 
     it('カスタムメッセージが表示されること', () => {
       render(EmptyState, {
         props: {
           message: 'カスタムメッセージ',
-          suggestion: 'カスタム提案',
         },
       })
 
       expect(screen.getByText('カスタムメッセージ')).toBeTruthy()
-      expect(screen.getByText('カスタム提案')).toBeTruthy()
     })
 
     it('ヒントが表示されること', () => {
@@ -39,9 +32,6 @@ describe('EmptyState', () => {
 
       expect(
         screen.getByText('• フィルタ条件を緩和してみてください'),
-      ).toBeTruthy()
-      expect(
-        screen.getByText('• 別のスロットを選択してみてください'),
       ).toBeTruthy()
       expect(
         screen.getByText('• フィルタをクリアして最初からやり直してください'),

@@ -131,6 +131,7 @@
     })
   })
 
+
   if (browser && initialSearchParams) {
     void (async () => {
       const result = await deserializeFromURL(initialSearchParams)
@@ -325,7 +326,7 @@
   }
 
   async function handleNavigateToAssembly() {
-    if (!browser) return
+    if (!browser || isHandoffDisabled) return
 
     const filtersSnapshot = createFiltersSnapshot()
 
