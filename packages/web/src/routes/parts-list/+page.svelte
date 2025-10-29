@@ -43,7 +43,7 @@
     </h2>
 
     <div class="d-flex justify-content-center mb-4">
-      <LanguageForm onUpdate={null} />
+      <LanguageForm />
     </div>
 
     <PartsListView {regulation} initialSearchParams={searchParams} />
