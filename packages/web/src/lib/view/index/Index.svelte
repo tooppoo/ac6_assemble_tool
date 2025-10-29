@@ -287,35 +287,28 @@
     current: PartsPoolRestrictions,
     next: PartsPoolRestrictions,
   ): boolean {
-    const currentKeys = Object.keys(current.restrictedSlots)
-    const nextKeys = Object.keys(next.restrictedSlots)
+    const currentSlots = current.restrictedSlots
+    const nextSlots = next.restrictedSlots
+
+    const currentKeys = Object.keys(currentSlots) as Array<
+      keyof typeof currentSlots
+    >
+    const nextKeys = Object.keys(nextSlots) as Array<keyof typeof nextSlots>
 
     if (currentKeys.length !== nextKeys.length) {
       return false
     }
 
-    for (const key of currentKeys) {
-      const currentIds =
-        current.restrictedSlots[key as keyof typeof current.restrictedSlots]
-      const nextIds =
-        next.restrictedSlots[key as keyof typeof next.restrictedSlots]
+    return currentKeys.every((slot) => {
+      const currentIds = currentSlots[slot]
+      const nextIds = nextSlots[slot]
 
-      if (!currentIds || !nextIds) {
+      if (!currentIds || !nextIds || currentIds.length !== nextIds.length) {
         return false
       }
 
-      if (currentIds.length !== nextIds.length) {
-        return false
-      }
-
-      for (let index = 0; index < currentIds.length; index += 1) {
-        if (currentIds[index] !== nextIds[index]) {
-          return false
-        }
-      }
-    }
-
-    return true
+      return currentIds.every((id, index) => id === nextIds[index])
+    })
   }
 
   const navigateToPartsList = () => {

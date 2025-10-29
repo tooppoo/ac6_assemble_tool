@@ -64,6 +64,7 @@
   const i18n = getContext<I18NextStore>('i18n')
 
   const defaultSlot: CandidatesKey = 'rightArmUnit'
+  const MANAGED_SHARED_QUERY_KEYS = ['slot', 'filters', 'sort'] as const
 
   // スロットごとの独立フィルタ管理（Requirement 2.5）
   let filtersPerSlot = $state<FiltersPerSlot>(createDefaultFiltersPerSlot())
@@ -339,6 +340,7 @@
     if (!browser || isHandoffDisabled) return
 
     const filtersSnapshot = createFiltersSnapshot()
+    filtersSnapshot[currentSlot] = [...filters]
 
     const state: SharedState = {
       slot: currentSlot,
@@ -355,21 +357,34 @@
       })
 
       const url = new URL(window.location.href)
-      url.searchParams.forEach((value, key) => {
-        if (key.endsWith(SLOT_PARTS_SUFFIX)) {
-          return
-        }
+      const newParams = url.searchParams
+      const managedSharedKeys = [...MANAGED_SHARED_QUERY_KEYS]
 
-        if (!sharedParams.has(key)) {
-          sharedParams.append(key, value)
+      sharedParams.forEach((_, key) => {
+        if (!managedSharedKeys.includes(key)) {
+          managedSharedKeys.push(key)
         }
+      })
+
+      managedSharedKeys.forEach((key) => {
+        newParams.delete(key)
+      })
+
+      Array.from(newParams.keys())
+        .filter((key) => key.endsWith(SLOT_PARTS_SUFFIX))
+        .forEach((key) => {
+          newParams.delete(key)
+        })
+
+      sharedParams.forEach((value, key) => {
+        newParams.set(key, value)
       })
 
       restrictedParams.forEach((value, key) => {
-        sharedParams.set(key, value)
+        newParams.set(key, value)
       })
 
-      const query = sharedParams.toString()
+      const query = newParams.toString()
       await goto(`/${query ? `?${query}` : ''}`)
     } catch (error) {
       logger.error('アセンブリページ遷移用のURL生成に失敗しました', {
