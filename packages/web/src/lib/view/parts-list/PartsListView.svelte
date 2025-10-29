@@ -410,6 +410,7 @@
   <div class="py-1 d-flex flex-column align-items-end gap-2">
     {#if handoffDisabledReason}
       <p
+        id="handoff-disabled-reason"
         class="text-danger small mb-0 text-center"
         role="status"
         aria-live="polite"
@@ -426,6 +427,9 @@
             ns: 'page/parts-list',
           })}
       disabled={isHandoffDisabled}
+      aria-describedby={isHandoffDisabled && handoffDisabledReason
+        ? 'handoff-disabled-reason'
+        : undefined}
       onclick={handleNavigateToAssembly}
     >
       {$i18n.t('navigation.handoff.label', { ns: 'page/parts-list' })}
