@@ -189,13 +189,13 @@ importers:
   packages/web:
     dependencies:
       '@ac6_assemble_tool/core':
-        specifier: workspace:1.0.0
+        specifier: workspace:*
         version: link:../core
       '@ac6_assemble_tool/parts':
-        specifier: workspace:1.8.1
+        specifier: workspace:*
         version: link:../parts
       '@ac6_assemble_tool/shared':
-        specifier: workspace:1.0.0
+        specifier: workspace:*
         version: link:../shared
       '@praha/byethrow':
         specifier: 0.6.3
@@ -223,13 +223,13 @@ importers:
         version: 3.0.1
     devDependencies:
       '@ac6_assemble_tool/eslint':
-        specifier: workspace:1.0.0
+        specifier: workspace:*
         version: link:../eslint
       '@ac6_assemble_tool/spec':
-        specifier: workspace:1.0.0
+        specifier: workspace:*
         version: link:../spec
       '@ac6_assemble_tool/tsconfig':
-        specifier: workspace:1.0.0
+        specifier: workspace:*
         version: link:../tsconfig
       '@playwright/test':
         specifier: 1.55.1
