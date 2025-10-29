@@ -484,7 +484,7 @@ describe('PartsListView コンポーネント', () => {
 
   describe('アセンブリページへの遷移', () => {
     it('現在の条件と母集団制限をURLに含めてアセンページに遷移する', async () => {
-      window.history.replaceState({}, '', '/parts-list?lng=en')
+  window.history.replaceState({}, '', '/parts-list?lng=en')
 
       gotoSpy.mockResolvedValue(undefined)
 
@@ -493,7 +493,9 @@ describe('PartsListView コンポーネント', () => {
         .mockResolvedValue(new URLSearchParams('slot=arms&sort=weight:asc'))
       const serializePartsPoolSpy = vi
         .spyOn(partsPoolSerializer, 'serializeFilteredPartsPool')
-        .mockReturnValue(new URLSearchParams('arms_parts=TEST-001,TEST-002'))
+        .mockReturnValue(
+          new URLSearchParams('arms_parts=TEST-001,TEST-002'),
+        )
 
       render(PartsListViewTestWrapper, {
         props: {
@@ -522,6 +524,32 @@ describe('PartsListView コンポーネント', () => {
 
       serializeToURLSpy.mockRestore()
       serializePartsPoolSpy.mockRestore()
+    })
+
+    it('候補が0件のスロットがある場合はボタンを無効化し理由を表示する', async () => {
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      const valueInput = screen.getByLabelText('値')
+      await fireEvent.input(valueInput, { target: { value: '0' } })
+      const addButton = screen.getByRole('button', { name: '追加' })
+      await fireEvent.click(addButton)
+
+      const handoffButton = await screen.findByRole('button', {
+        name: /アセンに渡す/,
+      })
+
+      await waitFor(() => expect(handoffButton).toBeDisabled())
+
+      expect(
+        screen.getByText(/候補が0件です: 右腕武器/),
+      ).toBeInTheDocument()
+
+      await fireEvent.click(handoffButton)
+      expect(gotoSpy).not.toHaveBeenCalled()
     })
   })
 })

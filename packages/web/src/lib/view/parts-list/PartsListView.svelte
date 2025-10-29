@@ -9,7 +9,10 @@
   import type { I18NextStore } from '$lib/i18n/define'
 
   import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
-  import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
+  import {
+    CANDIDATES_KEYS,
+    type CandidatesKey,
+  } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import { logger } from '@ac6_assemble_tool/shared/logger'
   import { Result } from '@praha/byethrow'
@@ -86,6 +89,47 @@
   let viewMode = $state<ViewMode>(loadViewMode())
   let favorites = $state<Set<string>>(new Set())
   let showFavoritesOnly = $state<boolean>(false)
+
+  const emptyCandidateSlots = $derived.by<CandidatesKey[]>(() => {
+    return CANDIDATES_KEYS.filter((slot) => {
+      const base = regulation.candidates[slot]
+      const slotFilters = filtersPerSlot[slot] ?? []
+
+      if (!slotFilters || slotFilters.length === 0) {
+        return base.length === 0
+      }
+
+      try {
+        const filtered = applyFilters(base, slotFilters)
+        return filtered.length === 0
+      } catch (error) {
+        logger.error('候補件数の再計算に失敗しました', {
+          slot,
+          error: error instanceof Error ? error.message : String(error),
+        })
+        return true
+      }
+    })
+  })
+
+  const isHandoffDisabled = $derived.by<boolean>(
+    () => emptyCandidateSlots.length > 0,
+  )
+
+  const handoffDisabledReason = $derived.by<string | null>(() => {
+    if (!isHandoffDisabled) {
+      return null
+    }
+
+    const slotLabels = emptyCandidateSlots
+      .map((slot) => $i18n.t(`assembly:${slot}`))
+      .join('、')
+
+    return $i18n.t('navigation.handoff.disabledReason', {
+      ns: 'page/parts-list',
+      slots: slotLabels,
+    })
+  })
 
   if (browser && initialSearchParams) {
     void (async () => {
@@ -352,13 +396,21 @@
     />
   </div>
 
-  <div class="py-1 d-flex justify-content-end">
+  <div class="py-1 d-flex flex-column align-items-end gap-2">
+    {#if handoffDisabledReason}
+      <p class="text-danger small mb-0 text-center">
+        {handoffDisabledReason}
+      </p>
+    {/if}
     <button
       class="btn btn-primary"
       type="button"
-      title={$i18n.t('navigation.handoff.description', {
-        ns: 'page/parts-list',
-      })}
+      title={isHandoffDisabled && handoffDisabledReason
+        ? handoffDisabledReason
+        : $i18n.t('navigation.handoff.description', {
+            ns: 'page/parts-list',
+          })}
+      disabled={isHandoffDisabled}
       onclick={handleNavigateToAssembly}
     >
       {$i18n.t('navigation.handoff.label', { ns: 'page/parts-list' })}

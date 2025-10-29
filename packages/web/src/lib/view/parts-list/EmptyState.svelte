@@ -11,12 +11,10 @@
   // Props
   interface Props {
     message?: string
-    suggestion?: string
   }
 
   let {
     message = 'フィルタ条件に一致するパーツが見つかりませんでした',
-    suggestion = 'フィルタ条件を変更するか、別のスロットを選択してみてください',
   }: Props = $props()
 </script>
 
@@ -26,7 +24,6 @@
       <i class="bi bi-info-circle me-2"></i>
       {message}
     </h5>
-    <p class="mb-0">{suggestion}</p>
   </Alert>
 
   <div class="mt-4 text-muted">
@@ -34,7 +31,6 @@
       <strong>ヒント:</strong>
       <ul class="list-unstyled mt-2">
         <li>• フィルタ条件を緩和してみてください</li>
-        <li>• 別のスロットを選択してみてください</li>
         <li>• フィルタをクリアして最初からやり直してください</li>
       </ul>
     </small>
