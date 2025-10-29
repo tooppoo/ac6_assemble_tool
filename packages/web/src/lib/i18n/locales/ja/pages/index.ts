@@ -8,6 +8,10 @@ export const jaPageIndex = {
       label: '全ロック解除',
       description: 'ロックを全て解除する',
     },
+    partsList: {
+      label: 'パーツ探索',
+      description: 'フィルタUIを開く',
+    },
     share: {
       label: '共有',
       description: "$t(share:command.target.caption, {'what': '現在のアセン'})",

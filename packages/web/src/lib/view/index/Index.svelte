@@ -50,6 +50,7 @@
   import ShareAssembly from './share/ShareAssembly.svelte'
   import StoreAssembly from './store/StoreAssembly.svelte'
 
+  import { goto } from '$app/navigation'
   import {
     PUBLIC_REPORT_BUG_URL,
     PUBLIC_REPORT_REQUEST_URL,
@@ -259,6 +260,21 @@
     browserBacking = true
     buildAssemblyFromQuery()
   }
+
+  const navigateToPartsList = () => {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    const search = window.location.search
+    const target = `/parts-list${search}`
+
+    void goto(target, { keepFocus: true }).catch((error) => {
+      logger.error('パーツ一覧ページへの遷移に失敗しました', {
+        error: error instanceof Error ? error.message : String(error),
+      })
+    })
+  }
 </script>
 
 <svelte:window on:popstate={onPopstate} />
@@ -273,6 +289,17 @@
     <i slot="icon" class="bi bi-tools"></i>
     <span class="d-none d-md-inline">
       {$i18n.t('command.random.label', { ns: 'page/index' })}
+    </span>
+  </NavButton>
+  <NavButton
+    id="open-parts-list"
+    class="me-3"
+    title={$i18n.t('command.partsList.description', { ns: 'page/index' })}
+    on:click={navigateToPartsList}
+  >
+    <i slot="icon" class="bi bi-funnel"></i>
+    <span class="d-none d-md-inline">
+      {$i18n.t('command.partsList.label', { ns: 'page/index' })}
     </span>
   </NavButton>
   <NavButton

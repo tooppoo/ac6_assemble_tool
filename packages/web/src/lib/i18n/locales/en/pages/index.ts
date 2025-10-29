@@ -8,6 +8,10 @@ export const enPageIndex = {
       label: 'Reset Locks',
       description: 'Reset All Locks',
     },
+    partsList: {
+      label: 'Parts List',
+      description: 'Open filter interface',
+    },
     share: {
       label: 'Share',
       description:
