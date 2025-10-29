@@ -2,7 +2,6 @@
   import TextButton from '$lib/components/button/TextButton.svelte'
   import LanguageForm from '$lib/components/language/LanguageForm.svelte'
   import ErrorModal from '$lib/components/modal/ErrorModal.svelte'
-  import Margin from '$lib/components/spacing/Margin.svelte'
   import i18n from '$lib/i18n/define'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
 
@@ -54,22 +53,6 @@
   import StoreAssembly from './store/StoreAssembly.svelte'
 
   import { goto } from '$app/navigation'
-  import {
-    PUBLIC_REPORT_BUG_URL,
-    PUBLIC_REPORT_REQUEST_URL,
-  } from '$env/static/public'
-
-  const reportRequestLinkAttributes = {
-    href: PUBLIC_REPORT_REQUEST_URL,
-    target: '_blank',
-    rel: 'external noopener noreferrer',
-  } as const
-
-  const reportBugLinkAttributes = {
-    href: PUBLIC_REPORT_BUG_URL,
-    target: '_blank',
-    rel: 'external noopener noreferrer',
-  } as const
 
   let aboutHref: string = '/about/ja'
   let currentSearch: string = ''
@@ -457,35 +440,6 @@
 
   <ToolSection id="assembly-report" class="container mw-100 mx-0 my-4 w-100">
     <ReportList {assembly} />
-  </ToolSection>
-
-  <ToolSection
-    id="development-report"
-    class="container mw-100 mx-0 my-4 w-100 text-center d-flex flex-column align-items-center"
-  >
-    <a class="d-block ms-1" {...reportRequestLinkAttributes}>
-      {$i18n.t('report.request', { ns: 'page/index' })}
-      <i class="bi bi-send"></i>
-    </a>
-
-    <Margin space={2} />
-
-    <a class="d-block ms-1" {...reportBugLinkAttributes}>
-      {$i18n.t('report.bug', { ns: 'page/index' })}
-      <i class="bi bi-send"></i>
-    </a>
-
-    <hr class="w-100" />
-
-    <a
-      class="d-block ms-1"
-      href="https://github.com/tooppoo/ac6_assemble_tool/releases"
-      target="_blank"
-      rel="external noopener noreferrer"
-    >
-      Release Notes
-      <i class="bi bi-journal-text"></i>
-    </a>
   </ToolSection>
 </article>
 
