@@ -35,9 +35,7 @@
     ToggleLockEvent,
   } from './form/PartsSelectForm.svelte'
   import PartsSelectForm from './form/PartsSelectForm.svelte'
-  import {
-    assemblyErrorMessage,
-  } from './interaction/error-message'
+  import { assemblyErrorMessage } from './interaction/error-message'
   import { initializeAssembly } from './interaction/initialize'
   import NavButton from './layout/navbar/NavButton.svelte'
   import Navbar from './layout/Navbar.svelte'
@@ -126,12 +124,11 @@
     serializeAssembly.enable()
   })
 
-  $:
-    if (initialCandidates) {
-      logger.debug('update candidates', { lockedParts })
+  $: if (initialCandidates) {
+    logger.debug('update candidates', { lockedParts })
 
-      updateCandidates()
-    }
+    updateCandidates()
+  }
   $: {
     if (assembly && initialCandidates && !browserBacking) {
       logger.debug('replace state', {

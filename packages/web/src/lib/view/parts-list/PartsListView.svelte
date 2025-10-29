@@ -131,7 +131,6 @@
     })
   })
 
-
   if (browser && initialSearchParams) {
     void (async () => {
       const result = await deserializeFromURL(initialSearchParams)
