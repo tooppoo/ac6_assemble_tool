@@ -14,6 +14,10 @@ export type ViewMode = 'grid' | 'list'
  * LocalStorageへの表示モード保存（プライベート設定）
  */
 export function saveViewMode(viewMode: ViewMode): void {
+  if (typeof localStorage === 'undefined') {
+    return
+  }
+
   try {
     localStorage.setItem(VIEW_MODE_KEY, viewMode)
   } catch (error) {
@@ -27,6 +31,10 @@ export function saveViewMode(viewMode: ViewMode): void {
  * LocalStorageからの表示モード読み込み
  */
 export function loadViewMode(): ViewMode {
+  if (typeof localStorage === 'undefined') {
+    return 'grid'
+  }
+
   try {
     const saved = localStorage.getItem(VIEW_MODE_KEY)
 

@@ -40,7 +40,10 @@
   import NavButton from './layout/navbar/NavButton.svelte'
   import Navbar from './layout/Navbar.svelte'
   import ToolSection from './layout/ToolSection.svelte'
-  import type { PartsPoolRestrictions } from './parts-pool'
+  import {
+    applyPartsPoolRestrictions,
+    type PartsPoolRestrictions,
+  } from './parts-pool'
   import RandomAssembleButton from './random/button/RandomAssembleButton.svelte'
   import RandomAssemblyOffCanvas, {
     type AssembleRandomly,
@@ -120,6 +123,7 @@
   }
 
   onMount(() => {
+    updatePartsPoolFromUrl()
     initialize()
 
     serializeAssembly.enable()
@@ -258,7 +262,60 @@
 
   const onPopstate = () => {
     browserBacking = true
+    updatePartsPoolFromUrl()
     buildAssemblyFromQuery()
+  }
+
+  function updatePartsPoolFromUrl() {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    const restricted = applyPartsPoolRestrictions(
+      new URLSearchParams(window.location.search),
+      partsPool.candidates,
+    )
+
+    if (isSameRestriction(partsPoolState, restricted)) {
+      return
+    }
+
+    applyPartsPoolState(restricted)
+  }
+
+  function isSameRestriction(
+    current: PartsPoolRestrictions,
+    next: PartsPoolRestrictions,
+  ): boolean {
+    const currentKeys = Object.keys(current.restrictedSlots)
+    const nextKeys = Object.keys(next.restrictedSlots)
+
+    if (currentKeys.length !== nextKeys.length) {
+      return false
+    }
+
+    for (const key of currentKeys) {
+      const currentIds =
+        current.restrictedSlots[key as keyof typeof current.restrictedSlots]
+      const nextIds =
+        next.restrictedSlots[key as keyof typeof next.restrictedSlots]
+
+      if (!currentIds || !nextIds) {
+        return false
+      }
+
+      if (currentIds.length !== nextIds.length) {
+        return false
+      }
+
+      for (let index = 0; index < currentIds.length; index += 1) {
+        if (currentIds[index] !== nextIds[index]) {
+          return false
+        }
+      }
+    }
+
+    return true
   }
 
   const navigateToPartsList = () => {
