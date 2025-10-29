@@ -85,7 +85,7 @@
 <RangeSlider
   id="load"
   class={$$props.class}
-  label={$i18n.t('maxLoadLimit', { ns: 'filter' })}
+  label={$i18n.t('range.load.label', { ns: 'random' })}
   {max}
   {min}
   {value}
@@ -119,7 +119,7 @@
         {/if}
       </DropdownItem>
       <DropdownItem on:click={onSetLoadLimit}>
-        {$i18n.t('applyCurrentLegsLoadLimit', { ns: 'filter' })}
+        {$i18n.t('range.load.applyCurrentLegsLoadLimit', { ns: 'random' })}
       </DropdownItem>
     </DropdownMenu>
   </Dropdown>

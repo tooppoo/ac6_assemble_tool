@@ -10,4 +10,13 @@ export const jaRandom = {
       label: '腕部積載超過を禁止',
     },
   },
+  range: {
+    coam: {
+      label: 'COAM上限',
+    },
+    load: {
+      label: '積載上限',
+      applyCurrentLegsLoadLimit: '現在の脚部積載上限を適用',
+    },
+  },
 }

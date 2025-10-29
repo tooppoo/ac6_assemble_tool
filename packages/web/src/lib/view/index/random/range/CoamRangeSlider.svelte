@@ -52,7 +52,7 @@
 <RangeSlider
   id="coam"
   class={$$props.class}
-  label={$i18n.t('maxCoamLimit', { ns: 'filter' })}
+  label={$i18n.t('range.coam.label', { ns: 'random' })}
   {max}
   {value}
   step={1000}

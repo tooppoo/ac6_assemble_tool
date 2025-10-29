@@ -10,4 +10,13 @@ export const enRandom = {
       label: 'Disallow Arms Over Load',
     },
   },
+  range: {
+    coam: {
+      label: 'COAM limit',
+    },
+    load: {
+      label: 'Load limit',
+      applyCurrentLegsLoadLimit: 'Apply current legs load limit',
+    },
+  },
 }

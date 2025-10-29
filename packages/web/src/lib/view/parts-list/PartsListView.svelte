@@ -216,19 +216,16 @@
         const params = await serializeToURL(state)
         const managedKeys = ['slot', 'filters', 'sort'] as const
 
-        const currentParams = new URLSearchParams(window.location.search)
+        const url = new URL(window.location.href)
         for (const key of managedKeys) {
-          currentParams.delete(key)
+          url.searchParams.delete(key)
         }
 
         params.forEach((value, key) => {
-          currentParams.set(key, value)
+          url.searchParams.set(key, value)
         })
 
-        const queryString = currentParams.toString()
-        const newUrl = queryString
-          ? `${window.location.pathname}?${queryString}`
-          : window.location.pathname
+        const newUrl = `${url.pathname}${url.search}`
         try {
           replaceState(newUrl, {})
         } catch {
@@ -357,8 +354,8 @@
         filtersPerSlot: filtersSnapshot,
       })
 
-      const currentParams = new URLSearchParams(window.location.search)
-      currentParams.forEach((value, key) => {
+      const url = new URL(window.location.href)
+      url.searchParams.forEach((value, key) => {
         if (key.endsWith(SLOT_PARTS_SUFFIX)) {
           return
         }
