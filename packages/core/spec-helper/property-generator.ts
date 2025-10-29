@@ -3,11 +3,6 @@ import {
   assemblyKeys,
   type RawAssembly,
 } from '#core/assembly/assembly'
-import type {
-  FilterApplyContext,
-  WholeFilter,
-} from '#core/assembly/filter/base'
-import { PartsFilterSet } from '#core/assembly/filter/filter-set'
 import { LockedParts } from '#core/assembly/random/lock'
 import { randomBuild } from '#core/assembly/random/random-builder'
 
@@ -95,20 +90,6 @@ export const genCandidates = (() => {
     })
   }
 })()
-
-export const genFilterApplyContext = () =>
-  genAssembly().map(
-    (assembly): FilterApplyContext => ({
-      assembly,
-      wholeFilter: assemblyKeys().reduce(
-        (acc, k) => ({
-          ...acc,
-          [k]: PartsFilterSet.empty,
-        }),
-        {} as WholeFilter,
-      ),
-    }),
-  )
 
 /**
  * パーツID検索テスト用のジェネレータ
