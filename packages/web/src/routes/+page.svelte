@@ -15,11 +15,8 @@
   <meta property="og:url" content={appUrl()} />
 
   <!-- title -->
-  <title>AC6 ASSEMBLE TOOL(UNOFFICIAL) | ARMORED CORE Ⅵ FIRES OF RUBICON</title>
-  <meta
-    property="og:title"
-    content="AC6 ASSEMBLE TOOL(UNOFFICIAL) | ARMORED CORE Ⅵ FIRES OF RUBICON"
-  />
+  <title>AC6 ASSEMBLE TOOL(UNOFFICIAL)</title>
+  <meta property="og:title" content="AC6 ASSEMBLE TOOL(UNOFFICIAL)" />
 
   <!-- description -->
   <meta

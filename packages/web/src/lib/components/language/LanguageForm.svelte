@@ -10,7 +10,9 @@
   const defaultLanguage: string = 'ja'
   const languageQuery: string = 'lng'
 
-  export let onUpdate: ((search: string) => void) | undefined
+  export let onUpdate: (search: string) => void = () => {
+    /* no-op */
+  }
 
   // state
   let language: string = defaultLanguage
