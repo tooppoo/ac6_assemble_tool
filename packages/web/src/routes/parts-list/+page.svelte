@@ -25,25 +25,25 @@
 </script>
 
 <svelte:head>
-  <title>パーツ一覧 - AC6 Assemble Tool</title>
+  <title>AC6 PARTS LIST | AC6 ASSEMBLE TOOL(UNOFFICIAL)</title>
   <meta
     name="description"
     content="AC6のパーツを一覧表示、フィルタリング、並び替えできる探索的UIページ"
   />
-  <!-- 開発中の暫定措置: 検索インデックスに登録されないようにする -->
-  <meta name="robots" content="noindex" />
 </svelte:head>
 
 <main class="parts-list-page py-4">
   <div class="container">
-    <h1 class="py-2">PARTS LIST</h1>
+    <h1 class="py-2 d-flex justify-content-center">
+      ARMORED CORE Ⅵ PARTS LIST
+    </h1>
 
-    <h2 class="py-2">
+    <h2 class="py-2 d-flex justify-content-center">
       Regulation for {regulation.version}
     </h2>
 
-    <div class="d-flex justify-content-end mb-4">
-      <LanguageForm />
+    <div class="d-flex justify-content-center mb-4">
+      <LanguageForm onUpdate={null} />
     </div>
 
     <PartsListView {regulation} initialSearchParams={searchParams} />
