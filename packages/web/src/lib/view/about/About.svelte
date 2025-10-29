@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Navbar from '$lib/view/index/layout/Navbar.svelte'
+  import Navbar from '$lib/components/layout/Navbar.svelte'
 
   import type { AboutSection } from './types'
 

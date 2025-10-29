@@ -37,9 +37,9 @@
   import PartsSelectForm from './form/PartsSelectForm.svelte'
   import { assemblyErrorMessage } from './interaction/error-message'
   import { initializeAssembly } from './interaction/initialize'
-  import NavButton from './layout/navbar/NavButton.svelte'
-  import Navbar from './layout/Navbar.svelte'
-  import ToolSection from './layout/ToolSection.svelte'
+  import NavButton from '$lib/components/layout/navbar/NavButton.svelte'
+  import Navbar from '$lib/components/layout/Navbar.svelte'
+  import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import {
     applyPartsPoolRestrictions,
     type PartsPoolRestrictions,
