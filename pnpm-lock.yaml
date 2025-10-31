@@ -131,8 +131,8 @@ importers:
         specifier: workspace:1.0.0
         version: link:../tsconfig
       fake-indexeddb:
-        specifier: 6.2.2
-        version: 6.2.2
+        specifier: 6.2.4
+        version: 6.2.4
 
   packages/docs:
     devDependencies:
@@ -259,8 +259,8 @@ importers:
         specifier: 3.12.4
         version: 3.12.4(eslint@9.37.0)(svelte@5.38.6)
       fake-indexeddb:
-        specifier: 6.2.2
-        version: 6.2.2
+        specifier: 6.2.4
+        version: 6.2.4
       jsdom:
         specifier: 26.1.0
         version: 26.1.0
@@ -1920,8 +1920,8 @@ packages:
   extendable-error@0.1.7:
     resolution: {integrity: sha512-UOiS2in6/Q0FK0R0q6UY9vYpQ21mr/Qn1KOnte7vsACuNJf514WvCCUHSRCPcgjPT2bAhNIJdlE6bVap1GKmeg==}
 
-  fake-indexeddb@6.2.2:
-    resolution: {integrity: sha512-SGbf7fzjeHz3+12NO1dYigcYn4ivviaeULV5yY5rdGihBvvgwMds4r4UBbNIUMwkze57KTDm32rq3j1Az8mzEw==}
+  fake-indexeddb@6.2.4:
+    resolution: {integrity: sha512-INKeIKEtSViN4yVtEWEUqbsqmaIy7Ls+MfU0yxQVXg67pOJ/sH1ZxcVrP8XrKULUFohcPD9gnmym+qBfEybACw==}
     engines: {node: '>=18'}
 
   fast-check@4.3.0:
@@ -5405,7 +5405,7 @@ snapshots:
 
   extendable-error@0.1.7: {}
 
-  fake-indexeddb@6.2.2: {}
+  fake-indexeddb@6.2.4: {}
 
   fast-check@4.3.0:
     dependencies:
