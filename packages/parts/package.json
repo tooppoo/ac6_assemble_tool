@@ -17,8 +17,8 @@
     "lint": "eslint . --cache && prettier . --check --cache",
     "format": "eslint . --cache --fix && prettier . --write --cache",
     "check-types": "tsc --noEmit",
-    "generate-part-id": "tsx scripts/generate-part-id-cli.ts",
-    "validate-ids": "tsx scripts/validate-part-ids.ts",
+    "generate-part-id": "tsx scripts/part-id/generate-part-id-cli.ts",
+    "validate-ids": "tsx scripts/part-id/validate-part-ids.ts",
     "build": "pnpm validate-ids"
   },
   "author": "philomagi <tooppoo56@gmail.com> (https://github.com/tooppoo)",
