@@ -19,6 +19,7 @@
     "check-types": "tsc --noEmit",
     "generate-part-id": "tsx scripts/part-id/generate-part-id-cli.ts",
     "validate-ids": "tsx scripts/part-id/validate-part-ids.ts",
+    "generate-attrs": "tsx scripts/attributes/generate-attributes-cli.ts",
     "build": "pnpm validate-ids"
   },
   "author": "philomagi <tooppoo56@gmail.com> (https://github.com/tooppoo)",
