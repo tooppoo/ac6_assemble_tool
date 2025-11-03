@@ -39,6 +39,7 @@ Kiro-style Spec Driven Development implementation using claude code slash comman
 
 - **parts-unique-id**: パーツにユニークIDを付与し、IDから特定のパーツを引当可能にする機能（互換性維持 or v2.0.0への移行検討）
 - **parts-list-view**: スロット先行でパーツを一覧・フィルタリング・並び替えし、アセンページへ母集団を受け渡す画面（探索的UI構築）
+- **filter-sort-by-attributes**: attributes.ts を基準にスロットごとのフィルター・ソート対象項目を決定し、optional属性の適切な処理を実装
 - Use `/kiro:spec-status [feature-name]` to check progress
 
 ## Development Guidelines
