@@ -1,14 +1,31 @@
+import { branch } from 'ceiocs'
+
 import type { ACParts } from "../../src/types/base/types"
 
 export type ACPartsAttribute = Readonly<{
   attributeName: string
-  valueType: ValueType
   optional: boolean
-}>
-type ValueType = 'numeric' | 'array'
+}> & Readonly<
+  | {
+    valueType: 'numeric' | 'literal'
+    candidates: []
+  }
+  | {
+    valueType: 'array'
+    candidates: string[]
+  }
+>
+type InnerValueType = 'numeric' | 'array'
+/**
+ * numeric: 以下/以上など、数値比較でのフィルタが可能な属性. ソート可能
+ * literal: 一定の値で固定された文字列で、フィルタ不可(head.categoryなど). ソート可能
+ * array: 候補の中から選択してフィルタ可能な属性. ソート可能(個々のパーツの属性値でソート)
+ */
+type ValueType = 'numeric' | 'array' | 'literal'
 
 export function excludeAttributes(parts: readonly ACParts[]): readonly ACPartsAttribute[] {
-  const attributesScores = new Map<string, { count: number, valueType: ValueType }>()
+  const attributesScores = new Map<string, { count: number, valueType: InnerValueType }>()
+  const arrayCandidates = new Map<string, string[]>()
   // 属性ごとに登場回数をカウント + 値の型を保存
   // 同じ属性でもパーツによって値の型が変わることはない
   forParts(parts, (attributeName, part) => {
@@ -16,26 +33,50 @@ export function excludeAttributes(parts: readonly ACParts[]): readonly ACPartsAt
     if (attributeName === 'id' || attributeName === 'name') {
       return
     }
-    const stored = attributesScores.get(attributeName)
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const value = (part as any)[attributeName]
+
+    const storedScore = attributesScores.get(attributeName)
+    const valueType: InnerValueType = typeof value === 'number' ? 'numeric' : 'array'
     attributesScores.set(
       attributeName,
       {
-        count: stored ? stored.count + 1 : 1,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        valueType: typeof (part as any)[attributeName] === 'number' ? 'numeric' : 'array',
+        count: storedScore ? storedScore.count + 1 : 1,
+        valueType,
       }
     )
+
+    const storedCandidates = arrayCandidates.get(attributeName)
+    arrayCandidates.set(attributeName, [...storedCandidates ?? [], value])
   })
 
   const result: ACPartsAttribute[] = []
   attributesScores.forEach((score, attributeName) => {
-    result.push({
-      attributeName,
-      valueType: score.valueType,
-      // 属性の登場回数がパーツ数より少ない = 属性を持たないパーツがある = optional
-      optional: score.count < parts.length,
-    })
+    const candidates = Array.from(new Set(arrayCandidates.get(attributeName) ?? []))
+    // 値が文字列だったとしても、候補が1以下しかないならliteralとして扱う
+    const valueType = branch
+      .if<ValueType>(score.valueType === 'numeric', 'numeric')
+      .else(() => candidates.length > 1 ? 'array' : 'literal')
+
+    if (valueType === 'array') {
+      result.push({
+        attributeName,
+        valueType,
+        candidates,
+        // 属性の登場回数がパーツ数より少ない = 属性を持たないパーツがある = optional
+        optional: score.count < parts.length,
+      })
+    }
+    else {
+      result.push({
+        attributeName,
+        valueType,
+        candidates: [],
+        // 属性の登場回数がパーツ数より少ない = 属性を持たないパーツがある = optional
+        optional: score.count < parts.length,
+      })
+    }
   })
 
   return result

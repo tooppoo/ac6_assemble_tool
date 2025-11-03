@@ -23,10 +23,12 @@ describe('excludeAttributes', () => {
     const weightAttr = result.find((attr) => attr.attributeName === 'weight')
     expect(weightAttr).toBeDefined()
     expect(weightAttr!.valueType).toBe('numeric')
+    expect(weightAttr!.candidates.length).toBe(0)
 
     const attackTypeAttr = result.find((attr) => attr.attributeName === 'attack_type')
     expect(attackTypeAttr).toBeDefined()
     expect(attackTypeAttr!.valueType).toBe('array')
+    expect(attackTypeAttr!.candidates.length).toBeGreaterThan(0)
   })
   it('属性名でユニークになっていること', () => {
     const result = excludeAttributes(armUnits)

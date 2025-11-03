@@ -4,181 +4,291 @@ export const armUnitAttributes = [
   {
     "attributeName": "classification",
     "valueType": "array",
+    "candidates": [
+      "arm-unit",
+      "left-arm-unit"
+    ],
     "optional": false
   },
   {
     "attributeName": "category",
     "valueType": "array",
+    "candidates": [
+      "burst_rifle",
+      "linear_rifle",
+      "assault_rifle",
+      "burst_assault_rifle",
+      "machine_gun",
+      "heavy_machine_gun",
+      "burst_machine_gun",
+      "gatling_gun",
+      "shotgun",
+      "handgun",
+      "burst_handgun",
+      "needle_gun",
+      "stun_gun",
+      "bazooka",
+      "detonating_bazooka",
+      "grenade",
+      "napalm_bomb_launcher",
+      "jamming_bomb_launcher",
+      "stun_bomb_launcher",
+      "flamethrower",
+      "laser_rifle",
+      "laser_shotgun",
+      "laser_handgun",
+      "plasma_rifle",
+      "coral_rifle",
+      "multi_energy_rifle",
+      "pulse_gun",
+      "hand_missile",
+      "split_hand_missile",
+      "siege_hand_missile",
+      "pulse_hand_missile",
+      "pile_bunker",
+      "explosive_thrower",
+      "chainsaw",
+      "stun_baton",
+      "laser_dagger",
+      "laser_blade",
+      "laser_slicer",
+      "laser_lance",
+      "plasma_thrower",
+      "pulse_blade",
+      "light_wave_blade",
+      "coral_oscillator"
+    ],
     "optional": false
   },
   {
     "attributeName": "attack_type",
     "valueType": "array",
+    "candidates": [
+      "kinetic",
+      "explosive",
+      "energy",
+      "coral"
+    ],
     "optional": false
   },
   {
     "attributeName": "weapon_type",
     "valueType": "array",
+    "candidates": [
+      "charge",
+      "full_auto",
+      "semi_auto",
+      "burst",
+      "homing",
+      "melee"
+    ],
     "optional": false
   },
   {
     "attributeName": "manufacture",
     "valueType": "array",
+    "candidates": [
+      "baws",
+      "balam",
+      "dafeng",
+      "rad",
+      "elcano",
+      "melinite",
+      "allmind",
+      "arquebus",
+      "arquebus_add",
+      "schneider",
+      "vcpl",
+      "rubicon_research_institute",
+      "takigawa",
+      "furlong"
+    ],
     "optional": false
   },
   {
     "attributeName": "price",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "attack_power",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "impact",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "accumulative_impact",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "charge_attack_power",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "charge_impact",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "charge_accumulative_impact",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "direct_hit_adjustment",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "recoil",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "ideal_range",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "effective_range",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "rapid_fire",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "charge_time",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "magazine_rounds",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "total_rounds",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "reload_time",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "ammunition_cost",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "weight",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "en_load",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "charge_heat_buildup",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "cooling",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "heat_buildup",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "blast_radius",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "charge_en_load",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "charge_ammo_consumption",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "charge_blast_radius",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "pa_interference",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "guidance",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "homing_lock_time",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "lock_count",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "consecutive_hits",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   }
 ] as const
@@ -186,862 +296,1157 @@ export const backUnitAttributes = [
   {
     "attributeName": "classification",
     "valueType": "array",
+    "candidates": [
+      "back-unit",
+      "left-back-unit"
+    ],
     "optional": false
   },
   {
     "attributeName": "category",
     "valueType": "array",
+    "candidates": [
+      "gatling_cannon",
+      "spread_bazooka",
+      "grenade_cannon",
+      "stun_needle_launcher",
+      "laser_canon",
+      "diffuse_laser_canon",
+      "plasma_canon",
+      "pulse_canon",
+      "pulse_shield_launcher",
+      "light_wave_cannon",
+      "missile",
+      "split_missile",
+      "dual_missile",
+      "vertical_missile",
+      "active_homing_missile",
+      "container_missile",
+      "cluster_missile",
+      "scatter_missile",
+      "detonating_missile",
+      "needle_missile",
+      "plasma_missile",
+      "coral_missile",
+      "bullet_orbit",
+      "laser_orbit",
+      "laser_turret",
+      "pulse_shield",
+      "pulse_buckler",
+      "pulse_scutum",
+      "coral_shield"
+    ],
     "optional": false
   },
   {
     "attributeName": "attack_type",
     "valueType": "array",
+    "candidates": [
+      "kinetic",
+      "explosive",
+      "energy",
+      "coral",
+      "none"
+    ],
     "optional": false
   },
   {
     "attributeName": "weapon_type",
     "valueType": "array",
+    "candidates": [
+      "full_auto",
+      "semi_auto",
+      "burst",
+      "charge",
+      "homing",
+      "shield"
+    ],
     "optional": false
   },
   {
     "attributeName": "manufacture",
     "valueType": "array",
+    "candidates": [
+      "dafeng",
+      "balam",
+      "melinite",
+      "arquebus_add",
+      "arquebus",
+      "schneider",
+      "rubicon_research_institute",
+      "furlong",
+      "rad",
+      "allmind",
+      "elcano",
+      "vcpl",
+      "takigawa"
+    ],
     "optional": false
   },
   {
     "attributeName": "price",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "attack_power",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "impact",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "accumulative_impact",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "heat_buildup",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "direct_hit_adjustment",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "recoil",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "ideal_range",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "effective_range",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "rapid_fire",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "total_rounds",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "cooling",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "ammunition_cost",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "weight",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "en_load",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "blast_radius",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "reload_time",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "charge_attack_power",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "charge_impact",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "charge_accumulative_impact",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "charge_heat_buildup",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "charge_en_load",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "charge_time",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "charge_ammo_consumption",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "charge_blast_radius",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "pa_interference",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "magazine_rounds",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "guidance",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "homing_lock_time",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "lock_count",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "damage_mitigation",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "impact_dampening",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "ig_damage_mitigation",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "ig_impact_dampening",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "ig_duration",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "deploy_heat_buildup",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "deployment",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "idle_damage_mitigation",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "idle_impact_dampening",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "idle_duration",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   }
 ] as const
 export const headAttributes = [
   {
     "attributeName": "classification",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "category",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "manufacture",
     "valueType": "array",
+    "candidates": [
+      "baws",
+      "balam",
+      "dafeng",
+      "arquebus",
+      "schneider",
+      "arquebus_add",
+      "rad",
+      "elcano",
+      "allmind",
+      "rubicon_research_institute"
+    ],
     "optional": false
   },
   {
     "attributeName": "price",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "ap",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "anti_kinetic_defense",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "anti_energy_defense",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "anti_explosive_defense",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "attitude_stability",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "system_recovery",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "scan_distance",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "scan_effect_duration",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "scan_standby_time",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "weight",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "en_load",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   }
 ] as const
 export const armAttributes = [
   {
     "attributeName": "classification",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "category",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "manufacture",
     "valueType": "array",
+    "candidates": [
+      "baws",
+      "balam",
+      "dafeng",
+      "arquebus",
+      "schneider",
+      "arquebus_add",
+      "rad",
+      "elcano",
+      "allmind",
+      "rubicon_research_institute"
+    ],
     "optional": false
   },
   {
     "attributeName": "price",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "ap",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "anti_kinetic_defense",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "anti_energy_defense",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "anti_explosive_defense",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "arms_load_limit",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "recoil_control",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "firearm_specialization",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "melee_specialization",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "weight",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "en_load",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   }
 ] as const
 export const legAttributes = [
   {
     "attributeName": "classification",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "category",
     "valueType": "array",
+    "candidates": [
+      "two_legs",
+      "reverse_joint",
+      "four_legs",
+      "tank"
+    ],
     "optional": false
   },
   {
     "attributeName": "manufacture",
     "valueType": "array",
+    "candidates": [
+      "baws",
+      "balam",
+      "dafeng",
+      "arquebus",
+      "schneider",
+      "arquebus_add",
+      "rad",
+      "elcano",
+      "allmind",
+      "rubicon_research_institute"
+    ],
     "optional": false
   },
   {
     "attributeName": "price",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "ap",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "anti_kinetic_defense",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "anti_energy_defense",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "anti_explosive_defense",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "attitude_stability",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "load_limit",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "jump_distance",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "jump_height",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "weight",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "en_load",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "travel_speed",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "high_speed_performance",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "thrust",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "upward_thrust",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "upward_en_consumption",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "qb_thrust",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "qb_jet_duration",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "qb_en_consumption",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "qb_reload_time",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "qb_reload_ideal_weight",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "ab_thrust",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "ab_en_consumption",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   }
 ] as const
 export const coreAttributes = [
   {
     "attributeName": "classification",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "category",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "manufacture",
     "valueType": "array",
+    "candidates": [
+      "baws",
+      "balam",
+      "dafeng",
+      "arquebus",
+      "schneider",
+      "arquebus_add",
+      "rad",
+      "elcano",
+      "allmind",
+      "rubicon_research_institute"
+    ],
     "optional": false
   },
   {
     "attributeName": "price",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "ap",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "anti_kinetic_defense",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "anti_energy_defense",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "anti_explosive_defense",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "attitude_stability",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "booster_efficiency_adjective",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "generator_output_adjective",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "generator_supply_adjective",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "weight",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "en_load",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   }
 ] as const
 export const fcsAttributes = [
   {
     "attributeName": "classification",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "category",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "manufacture",
     "valueType": "array",
+    "candidates": [
+      "furlong",
+      "balam",
+      "arquebus_add",
+      "rubicon_research_institute"
+    ],
     "optional": false
   },
   {
     "attributeName": "price",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "close_range_assist",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "medium_range_assist",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "long_range_assist",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "missile_lock_correction",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "multi_lock_correction",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "weight",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "en_load",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   }
 ] as const
 export const boosterAttributes = [
   {
     "attributeName": "classification",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "category",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "manufacture",
     "valueType": "array",
+    "candidates": [
+      "baws",
+      "furlong",
+      "schneider",
+      "rad",
+      "rubicon_research_institute"
+    ],
     "optional": false
   },
   {
     "attributeName": "price",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "thrust",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "upward_thrust",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "upward_en_consumption",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "qb_thrust",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "qb_jet_duration",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "qb_en_consumption",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "qb_reload_time",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "qb_reload_ideal_weight",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "ab_thrust",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "ab_en_consumption",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "melee_attack_thrust",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "melee_attack_en_consumption",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "weight",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "en_load",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   }
 ] as const
 export const generatorAttributes = [
   {
     "attributeName": "classification",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "category",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "manufacture",
     "valueType": "array",
+    "candidates": [
+      "baws",
+      "dafeng",
+      "arquebus",
+      "arquebus_add",
+      "rubicon_research_institute"
+    ],
     "optional": false
   },
   {
     "attributeName": "price",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "en_capacity",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "en_recharge",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "supply_recovery",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "post_recovery_en_supply",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "energy_firearm_spec",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "weight",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "en_output",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "en_load",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   }
 ] as const
 export const expansionAttributes = [
   {
     "attributeName": "classification",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "category",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "manufacture",
-    "valueType": "array",
+    "valueType": "literal",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "attack_power",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "impact",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "accumulative_impact",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "blast_radius",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "effective_range",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "direct_hit_adjustment",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "price",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "weight",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "en_load",
     "valueType": "numeric",
+    "candidates": [],
     "optional": false
   },
   {
     "attributeName": "durability",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   },
   {
     "attributeName": "time_limit",
     "valueType": "numeric",
+    "candidates": [],
     "optional": true
   }
 ] as const
