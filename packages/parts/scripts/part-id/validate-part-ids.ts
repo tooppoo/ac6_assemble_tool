@@ -5,7 +5,7 @@
  * 全パーツのIDに重複がないかチェックし、重複がある場合はビルドを失敗させる
  */
 
-import { validatePartsOnStartup } from '../src/validation/validate-on-startup'
+import { validatePartsOnStartup } from '../../src/validation/validate-on-startup'
 
 try {
   console.log('🔍 Validating part IDs...')
