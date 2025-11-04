@@ -23,7 +23,7 @@
 
 #### Acceptance Criteria
 
-1. WHEN ユーザーが特定のスロット（例：右腕武器）を選択 THEN Parts List View SHALL そのスロット固有の属性（`valueType` が `"numeric"` と `"array"` の属性）をフィルター・ソート対象として提供
+1. WHEN ユーザーが特定のスロット（例：右腕武器）を選択 THEN Parts List View SHALL そのスロット固有の属性（`valueType` が `"numeric"` と `"array"` の属性）をフィルター・ソート対象として提供し、`valueType` が `"literal"` の属性は除外
 2. WHEN ユーザーがスロットを切り替え（例：右腕武器 → 頭部）THEN Parts List View SHALL 新しいスロット固有の属性（例：AP、防御力、スキャン距離、カテゴリ、製造企業）に即座に切り替え
 3. WHEN フィルター・ソート可能な属性を表示 THEN Parts List View SHALL `attributes.ts` に定義されている順序通りに属性を表示
 4. IF スロットに利用可能な属性が存在しない THEN Parts List View SHALL "利用可能な属性がありません" というメッセージを表示
@@ -38,7 +38,7 @@
 
 1. WHEN ユーザーがフィルターパネルを開く THEN Filter Panel SHALL 現在選択中のスロット固有の属性（例：右腕武器なら「攻撃力」「射程」「連射速度」など）を選択肢として表示
 2. WHEN ユーザーが `valueType` が `"numeric"` の属性（例：「攻撃力」「重量」）を選択 THEN Filter Panel SHALL 数値比較のUI（条件演算子：以上・以下・等しいなど + 数値入力欄）を提供
-3. WHEN ユーザーが `valueType` が `"array"` の属性（例：「カテゴリ」「製造企業」）を選択 THEN Filter Panel SHALL 選択肢から選ぶUI（チェックボックスまたはドロップダウン）を提供
+3. WHEN ユーザーが `valueType` が `"array"` の属性（例：「カテゴリ」「製造企業」）を選択 THEN Filter Panel SHALL そのスロットで利用可能な選択肢から選ぶUI（チェックボックスまたはドロップダウン）を提供
 4. WHEN ユーザーが複数のフィルター条件を設定（例：「攻撃力 >= 1000」AND「重量 <= 500」AND「製造企業 = BAWS」）THEN Filter Panel SHALL 全ての条件を満たすパーツのみを表示
 5. WHEN ユーザーがフィルターを適用 THEN Parts List View SHALL リアルタイムに絞り込み結果を表示し、該当件数を明示
 6. WHEN ユーザーがスロットを変更 THEN Filter Panel SHALL 新しいスロットに対応する属性リストに即座に切り替え、既存のフィルターをクリア
