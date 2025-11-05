@@ -1,4 +1,6 @@
+import { getNumericAttributes } from '@ac6_assemble_tool/parts/attributes-utils'
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
+import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { describe, it, expect } from 'vitest'
 
 import {
@@ -8,7 +10,12 @@ import {
   type SortKey,
 } from './sort'
 
-function createPart(overrides: Partial<ACParts>, index: number): ACParts {
+type ExtendedPart = ACParts & Record<string, unknown>
+
+function createPart(
+  overrides: Record<string, unknown>,
+  index: number,
+): ExtendedPart {
   return {
     id: `TEST-${index}`,
     name: `テストパーツ${index}`,
@@ -19,7 +26,7 @@ function createPart(overrides: Partial<ACParts>, index: number): ACParts {
     weight: 2000 + index,
     en_load: 300 + index,
     ...overrides,
-  }
+  } as ExtendedPart
 }
 
 describe('parseSort', () => {
@@ -60,7 +67,6 @@ describe('parseSort', () => {
   })
 
   it('動的属性を持つソートパラメータを正しく復元できること', () => {
-    // 動的属性（stability など）のソートパラメータが正しく復元される
     const result = parseSort('stability:asc')
 
     expect(result).not.toBeNull()
@@ -70,28 +76,25 @@ describe('parseSort', () => {
 })
 
 describe('getAvailableSortKeys', () => {
-  it('数値が存在するプロパティのみを返すこと', () => {
-    const parts: ACParts[] = [
-      createPart({ weight: Number.NaN, en_load: Number.NaN }, 1),
-      createPart({ weight: Number.NaN, en_load: Number.NaN }, 2),
-    ]
+  it('attributes.ts で定義された数値属性を返すこと', () => {
+    const slot: CandidatesKey = 'head'
 
-    const result = getAvailableSortKeys(parts)
+    const result = getAvailableSortKeys(slot)
 
-    expect(result).toEqual<SortKey[]>(['price'])
+    expect(result).toEqual<SortKey[]>([...getNumericAttributes(slot)])
   })
 
-  it('全てのプロパティが有効な場合は全キーを返すこと', () => {
-    const parts: ACParts[] = [createPart({}, 1)]
+  it('動的な数値属性を含むスロットではその属性を返すこと', () => {
+    const slot: CandidatesKey = 'rightArmUnit'
 
-    const result = getAvailableSortKeys(parts)
+    const result = getAvailableSortKeys(slot)
 
-    expect(result).toEqual<SortKey[]>(['price', 'weight', 'en_load'])
+    expect(result).toContain('attack_power')
   })
 })
 
 describe('sortPartsByKey', () => {
-  const parts: ACParts[] = [
+  const parts: ExtendedPart[] = [
     createPart({ price: 4000, weight: 1500 }, 1),
     createPart({ price: 2000, weight: 1200 }, 2),
     createPart({ price: 2000, weight: 1800 }, 3),

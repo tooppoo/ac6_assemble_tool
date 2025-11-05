@@ -28,10 +28,7 @@ export interface ArrayFilterOptions {
    * - 使用しない場面: 値をそのまま表示すれば十分な場合（未指定で元の値が使用される）。
    * - displayName と併用する場合: ラベルと値の翻訳キーが異なる、またはラベルは固定表示にしたいが値のみ翻訳したい場合。
    */
-  readonly translateValue?: (
-    value: string,
-    i18n: I18Next,
-  ) => string
+  readonly translateValue?: (value: string, i18n: I18Next) => string
 }
 
 const PROPERTY_FILTER_KEY_SET: ReadonlySet<PropertyFilterKey> = new Set(
@@ -265,11 +262,11 @@ function translateArrayFilterValue(
   return options.translateValue(value, i18n)
 }
 
-function translateAssemblyKey(
-  key: string,
-  i18n: I18Next,
-): string | null {
-  if (typeof i18n.exists === 'function' && i18n.exists(key, { ns: 'assembly' })) {
+function translateAssemblyKey(key: string, i18n: I18Next): string | null {
+  if (
+    typeof i18n.exists === 'function' &&
+    i18n.exists(key, { ns: 'assembly' })
+  ) {
     return i18n.t(key, { ns: 'assembly' })
   }
 

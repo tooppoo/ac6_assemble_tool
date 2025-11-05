@@ -11,15 +11,12 @@
   import { Collapse } from '@sveltestrap/sveltestrap'
   import { getContext } from 'svelte'
 
-  import {
-    translateProperty,
-    type PropertyFilterKey,
-  } from './state/filter/filters-application'
+  import { translateProperty } from './state/filter/filters-application'
   import type { SortKey, SortOrder } from './state/sort'
 
   interface Props {
     slot: CandidatesKey
-    properties: readonly PropertyFilterKey[]
+    properties: readonly SortKey[]
     sortKey: SortKey | null
     sortOrder: SortOrder | null
     onsortchange?: (payload: { key: SortKey; order: SortOrder }) => void
@@ -134,7 +131,7 @@
     isOpen = !isOpen
   }
 
-  function translatePropertyLabel(property: PropertyFilterKey): string {
+  function translatePropertyLabel(property: SortKey): string {
     return translateProperty(property, $i18n)
   }
 </script>

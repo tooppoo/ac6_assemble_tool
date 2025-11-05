@@ -1,11 +1,8 @@
+import { getNumericAttributes } from '@ac6_assemble_tool/parts/attributes-utils'
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
+import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 
-import {
-  PROPERTY_FILTER_KEYS,
-  type PropertyFilterKey,
-} from './filter/filters-application'
-
-export type SortKey = PropertyFilterKey
+export type SortKey = string
 export type SortOrder = 'asc' | 'desc'
 
 /**
@@ -37,21 +34,9 @@ export function parseSort(
 /**
  * 選択中スロットで利用可能な並び替えキーを取得する
  */
-export function getAvailableSortKeys(parts: readonly ACParts[]): SortKey[] {
-  const keys: SortKey[] = []
-
-  for (const key of PROPERTY_FILTER_KEYS) {
-    if (
-      parts.some((part) => {
-        const value = (part as Record<string, unknown>)[key]
-        return typeof value === 'number' && Number.isFinite(value)
-      })
-    ) {
-      keys.push(key)
-    }
-  }
-
-  return keys
+export function getAvailableSortKeys(slot: CandidatesKey): SortKey[] {
+  // 配列型属性のソート対応は Task 3.2 で追加予定。現状は数値型属性のみ返却する。
+  return [...getNumericAttributes(slot)]
 }
 
 /**

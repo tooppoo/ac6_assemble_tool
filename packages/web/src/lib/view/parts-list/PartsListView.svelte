@@ -146,9 +146,7 @@
         const restoredFilters = merged[result.value.slot] ?? []
         filters = [...restoredFilters]
         updateFiltersForSlot(result.value.slot, filters)
-        const availableKeys = getAvailableSortKeys(
-          regulation.candidates[result.value.slot],
-        )
+        const availableKeys = getAvailableSortKeys(result.value.slot)
         if (
           result.value.sortKey &&
           result.value.sortOrder &&
@@ -195,7 +193,7 @@
   })
 
   const availableSortKeys = $derived.by<SortKey[]>(() =>
-    getAvailableSortKeys(regulation.candidates[currentSlot]),
+    getAvailableSortKeys(currentSlot),
   )
 
   // URL パラメータへの同期（状態変更時に自動実行）

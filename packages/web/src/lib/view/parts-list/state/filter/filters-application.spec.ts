@@ -1,8 +1,7 @@
 import type { I18Next } from '$lib/i18n/define'
 
-import { describe, it, expect, vi } from 'vitest'
-
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
+import { describe, it, expect, vi } from 'vitest'
 
 import {
   buildArrayFilter,
@@ -70,14 +69,12 @@ const createI18nMock = (language: 'ja' | 'en' = 'ja') => {
 
       return `${ns}:${key}`
     },
-    )
-
-  const exists = vi.fn(
-    (key: string, options?: { ns?: string }) => {
-      const ns = options?.ns ?? 'translation'
-      return Boolean(dictionaries[ns]?.[key])
-    },
   )
+
+  const exists = vi.fn((key: string, options?: { ns?: string }) => {
+    const ns = options?.ns ?? 'translation'
+    return Boolean(dictionaries[ns]?.[key])
+  })
 
   return {
     t,
@@ -150,9 +147,7 @@ describe('filters-application', () => {
         'filters.array.label',
       )
 
-      expect(filter.serialize()).toBe(
-        'array:custom_array:in_any:alpha,beta',
-      )
+      expect(filter.serialize()).toBe('array:custom_array:in_any:alpha,beta')
       expect(filter.stringify(i18n)).toBe('配列フィルター: alpha, beta')
     })
 
