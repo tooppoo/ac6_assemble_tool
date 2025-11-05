@@ -4,8 +4,6 @@ import { jaCategory } from '$lib/i18n/locales/ja/category'
 import { jaFilterOperand } from '$lib/i18n/locales/ja/filter/operand'
 import { jaManufactures } from '$lib/i18n/locales/ja/manufactures'
 
-import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
-
 import {
   defineExtractor,
   type Filter,
@@ -16,6 +14,26 @@ export const PROPERTY_FILTER_KEYS = ['price', 'weight', 'en_load'] as const
 // PropertyFilterKey is now string to support dynamic attributes
 // PROPERTY_FILTER_KEYS remains for backward compatibility checking
 export type PropertyFilterKey = string
+
+export interface ArrayFilterOptions {
+  /**
+   * 表示名（ラベル）を直接指定する／翻訳キーとして使用する。
+   * - 使用する場面: 属性名とは異なるラベルを表示したい場合、あるいは i18n リソース上の別キーを使いたい場合。
+   * - 使用しない場面: 属性キーそのものを翻訳した結果をラベルにしたい場合（未指定で translateProperty の結果が利用される）。
+   * - translateValue と併用する場合: ラベルと値の翻訳戦略を個別に制御したいケース（例: ラベルは固定文言にし、値はIDから名称へ変換）。
+   */
+  readonly displayName?: string
+  /**
+   * 属性値を UI 表示用に変換するための翻訳関数。
+   * - 使用する場面: 製造企業やカテゴリなど、候補値に対して個別の翻訳や整形が必要な場合。
+   * - 使用しない場面: 値をそのまま表示すれば十分な場合（未指定で元の値が使用される）。
+   * - displayName と併用する場合: ラベルと値の翻訳キーが異なる、またはラベルは固定表示にしたいが値のみ翻訳したい場合。
+   */
+  readonly translateValue?: (
+    value: string,
+    i18n: I18Next,
+  ) => string
+}
 
 const PROPERTY_FILTER_KEY_SET: ReadonlySet<PropertyFilterKey> = new Set(
   PROPERTY_FILTER_KEYS,
@@ -53,6 +71,33 @@ export function buildPropertyFilter(
     },
   }
 }
+
+export function buildArrayFilter(
+  property: PropertyFilterKey,
+  operand: FilterOperand<'array'>,
+  value: readonly string[],
+  displayNameOrOptions?: string | ArrayFilterOptions,
+): Filter {
+  const options = resolveArrayFilterOptions(displayNameOrOptions)
+
+  return {
+    operand,
+    property,
+    extractor: defineExtractor(property),
+    value,
+    stringify(i18n: I18Next) {
+      const label = translateArrayFilterLabel(property, options, i18n)
+      const translatedValues = value.map((item) =>
+        translateArrayFilterValue(item, i18n, options),
+      )
+      return `${label}: ${translatedValues.join(', ')}`
+    },
+    serialize() {
+      return `${this.operand.dataType}:${this.property}:${this.operand.id}:${value.join(',')}`
+    },
+  }
+}
+
 export function translateProperty(
   property: PropertyFilterKey,
   i18n: I18Next,
@@ -98,18 +143,10 @@ export function buildManufactureFilter(
   operand: FilterOperand<'array'>,
   value: readonly string[],
 ): Filter {
-  return {
-    operand,
-    property: 'manufacture',
-    extractor: defineExtractor('manufacture'),
-    value,
-    stringify(i18n: I18Next) {
-      return `メーカー: ${value.map((v) => translateManufacturer(v, i18n)).join(', ')}`
-    },
-    serialize() {
-      return `${this.operand.dataType}:${this.property}:${this.operand.id}:${value.join(',')}`
-    },
-  }
+  return buildArrayFilter('manufacture', operand, value, {
+    displayName: 'メーカー',
+    translateValue: translateManufacturer,
+  })
 }
 export function translateManufacturer(
   manufacturer: string,
@@ -126,18 +163,10 @@ export function buildCategoryFilter(
   operand: FilterOperand<'array'>,
   value: readonly string[],
 ): Filter {
-  return {
-    operand,
-    property: 'category' as keyof ACParts,
-    extractor: defineExtractor('category'),
-    value,
-    stringify(i18n: I18Next) {
-      return `カテゴリ: ${value.map((v) => translateCategory(v, i18n)).join(', ')}`
-    },
-    serialize() {
-      return `${this.operand.dataType}:${this.property}:${this.operand.id}:${value.join(',')}`
-    },
-  }
+  return buildArrayFilter('category', operand, value, {
+    displayName: 'カテゴリ',
+    translateValue: translateCategory,
+  })
 }
 export function translateCategory(category: string, i18n: I18Next): string {
   if (!isCategoryTranslationKey(category)) {
@@ -199,4 +228,49 @@ function isAssemblyTranslationKey(
 
 function toCamelCase(value: string): string {
   return value.replace(/_([a-z])/g, (_, char: string) => char.toUpperCase())
+}
+
+function resolveArrayFilterOptions(
+  displayNameOrOptions?: string | ArrayFilterOptions,
+): ArrayFilterOptions {
+  if (typeof displayNameOrOptions === 'string') {
+    return { displayName: displayNameOrOptions }
+  }
+  return displayNameOrOptions ?? {}
+}
+
+function translateArrayFilterLabel(
+  property: PropertyFilterKey,
+  options: ArrayFilterOptions,
+  i18n: I18Next,
+): string {
+  if (!options.displayName) {
+    return translateProperty(property, i18n)
+  }
+
+  const translated = i18n.t(options.displayName, {
+    defaultValue: options.displayName,
+  })
+
+  if (translated === options.displayName) {
+    if (options.displayName === property) {
+      return translateProperty(property, i18n)
+    }
+
+    return options.displayName
+  }
+
+  return translated
+}
+
+function translateArrayFilterValue(
+  value: string,
+  i18n: I18Next,
+  options: ArrayFilterOptions,
+): string {
+  if (!options.translateValue) {
+    return value
+  }
+
+  return options.translateValue(value, i18n)
 }

@@ -3,11 +3,13 @@ import type { I18Next } from '$lib/i18n/define'
 import { describe, it, expect, vi } from 'vitest'
 
 import {
+  buildArrayFilter,
   buildCategoryFilter,
   buildManufactureFilter,
   buildNameFilter,
   buildPropertyFilter,
   isPropertyFilterKey,
+  translateCategory,
   translateProperty,
   translateOperand,
 } from './filters-application'
@@ -28,21 +30,44 @@ const createI18nMock = (language: 'ja' | 'en' = 'ja') => {
       manufacture: { balam: 'ベイラム' },
       category: { bazooka: 'バズーカ' },
       'filter/operand': { lte: '≤', contain: 'を含む' },
+      translation: {
+        'filters.array.label': '配列フィルター',
+      },
     },
     en: {
       assembly: { price: 'Price', weight: 'Weight', enLoad: 'EN Load' },
       manufacture: { balam: 'BALAM' },
       category: { bazooka: 'Bazooka' },
       'filter/operand': { lte: '<=', contain: 'contains' },
+      translation: {
+        'filters.array.label': 'Array Filter',
+      },
     },
   }
 
   const dictionaries = dictionariesByLanguage[language]
 
-  const t = vi.fn((key: string, options?: { ns?: string }) => {
-    const ns = options?.ns ?? 'translation'
-    return dictionaries[ns]?.[key] ?? `${ns}:${key}`
-  })
+  const t = vi.fn(
+    (
+      key: string,
+      options?: {
+        ns?: string
+        defaultValue?: string
+      },
+    ) => {
+      const ns = options?.ns ?? 'translation'
+      const namespaceDict = dictionaries[ns]
+      if (namespaceDict && key in namespaceDict) {
+        return namespaceDict[key]
+      }
+
+      if (options?.defaultValue !== undefined) {
+        return options.defaultValue
+      }
+
+      return `${ns}:${key}`
+    },
+    )
 
   return {
     t,
@@ -100,6 +125,43 @@ describe('filters-application', () => {
 
       expect(filter.serialize()).toBe('array:category:in_any:bazooka,mystery')
       expect(filter.stringify(i18n)).toBe('カテゴリ: バズーカ, mystery')
+    })
+  })
+
+  describe('buildArrayFilter', () => {
+    it('displayName に i18n キーを指定すると翻訳を使用すること', () => {
+      const i18n = createI18nMock('ja')
+      const operand = selectAnyOperand()
+      const filter = buildArrayFilter(
+        'custom_array',
+        operand,
+        ['alpha', 'beta'],
+        'filters.array.label',
+      )
+
+      expect(filter.serialize()).toBe(
+        'array:custom_array:in_any:alpha,beta',
+      )
+      expect(filter.stringify(i18n)).toBe('配列フィルター: alpha, beta')
+    })
+
+    it('displayName を指定しない場合は translateProperty の結果を利用すること', () => {
+      const i18n = createI18nMock('en')
+      const operand = selectAnyOperand()
+      const filter = buildArrayFilter('en_load', operand, ['200', '400'])
+
+      expect(filter.stringify(i18n)).toBe('EN LOAD: 200, 400')
+    })
+
+    it('translateValue オプションで値を翻訳できること', () => {
+      const i18n = createI18nMock()
+      const operand = selectAnyOperand()
+      const filter = buildArrayFilter('category', operand, ['bazooka', 'x'], {
+        displayName: 'カテゴリ',
+        translateValue: (value, context) => translateCategory(value, context),
+      })
+
+      expect(filter.stringify(i18n)).toBe('カテゴリ: バズーカ, x')
     })
   })
 
