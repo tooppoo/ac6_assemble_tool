@@ -557,7 +557,7 @@ interface FiltersApplicationService {
 
 **Dependencies**
 - **Inbound**: PartsListView
-- **Outbound**: なし
+- **Outbound**: attributes-utils（`attributes.ts` から取得したメタデータを参照）
 - **External**: なし
 
 **Modification Strategy**: ソートロジックを拡張
@@ -586,10 +586,10 @@ interface SortService {
 
   /**
    * スロットで利用可能なソートキーを取得
-   * @param parts - 対象スロットのパーツ配列
-   * @returns 利用可能なソートキー配列
+   * @param slot - 対象スロット
+   * @returns 利用可能なソートキー配列（attributes.ts の定義順）
    */
-  getAvailableSortKeys(parts: readonly ACParts[]): SortKey[]
+  getAvailableSortKeys(slot: CandidatesKey): SortKey[]
 
   /**
    * ソートパラメータをパース
@@ -599,6 +599,8 @@ interface SortService {
   parseSort(sortParam: string): { key: SortKey; order: SortOrder } | null
 }
 ```
+
+`getAvailableSortKeys` は `attributes-utils` を通じて `attributes.ts` のメタデータを参照し、スロットごとの数値・配列属性を定義順で返す。実際のパーツデータを走査して候補を導出する実装は禁止し、単一真実の源を維持する。
 
 **Preconditions**:
 - `parts` 配列が空でないこと

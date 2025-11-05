@@ -26,7 +26,8 @@
 1. WHEN ユーザーが特定のスロット（例：右腕武器）を選択 THEN Parts List View SHALL そのスロット固有の属性（`valueType` が `"numeric"` と `"array"` の属性）をフィルター・ソート対象として提供し、`valueType` が `"literal"` の属性は除外
 2. WHEN ユーザーがスロットを切り替え（例：右腕武器 → 頭部）THEN Parts List View SHALL 新しいスロット固有の属性（例：AP、防御力、スキャン距離、カテゴリ、製造企業）に即座に切り替え
 3. WHEN フィルター・ソート可能な属性を表示 THEN Parts List View SHALL `attributes.ts` に定義されている順序通りに属性を表示
-4. IF スロットに利用可能な属性が存在しない THEN Parts List View SHALL "利用可能な属性がありません" というメッセージを表示
+4. Attributes list derivation: Parts List View SHALL derive the available attributes exclusively from `attributes.ts` (via the attribute utilities), avoiding per-render computation from actual parts data
+5. IF スロットに利用可能な属性が存在しない THEN Parts List View SHALL "利用可能な属性がありません" というメッセージを表示
 
 ---
 
@@ -52,11 +53,12 @@
 #### Acceptance Criteria
 
 1. WHEN ユーザーがソートコントロールを開く THEN Sort Control SHALL 現在選択中のスロット固有の全属性（`valueType` が `"numeric"` と `"array"` の属性）を選択肢として表示
-2. WHEN ユーザーが数値属性（`valueType` が `"numeric"`、例：「攻撃力」）を選択 THEN Sort Control SHALL 昇順・降順を選択できるUIを提供し、数値としてソート
-3. WHEN ユーザーが配列属性（`valueType` が `"array"`、例：「カテゴリ」「製造企業」）を選択 THEN Sort Control SHALL 昇順・降順を選択できるUIを提供し、文字列としてソート
-4. WHEN ユーザーがソートを適用 THEN Parts List View SHALL 選択された属性と順序でパーツを並び替えて表示
-5. WHEN ユーザーがスロットを変更 THEN Sort Control SHALL 新しいスロットに対応する属性リストに即座に切り替え
-6. IF 現在選択中のソート属性が新しいスロットで利用不可能 THEN Sort Control SHALL ソート設定を自動的にクリアし、デフォルト順序に戻す
+2. Sort attribute derivation: Sort Control SHALL source candidate attributes from `attributes.ts` (through the attribute utilities) rather than scanning runtime parts data
+3. WHEN ユーザーが数値属性（`valueType` が `"numeric"`、例：「攻撃力」）を選択 THEN Sort Control SHALL 昇順・降順を選択できるUIを提供し、数値としてソート
+4. WHEN ユーザーが配列属性（`valueType` が `"array"`、例：「カテゴリ」「製造企業」）を選択 THEN Sort Control SHALL 昇順・降順を選択できるUIを提供し、文字列としてソート
+5. WHEN ユーザーがソートを適用 THEN Parts List View SHALL 選択された属性と順序でパーツを並び替えて表示
+6. WHEN ユーザーがスロットを変更 THEN Sort Control SHALL 新しいスロットに対応する属性リストに即座に切り替え
+7. IF 現在選択中のソート属性が新しいスロットで利用不可能 THEN Sort Control SHALL ソート設定を自動的にクリアし、デフォルト順序に戻す
 
 ---
 
