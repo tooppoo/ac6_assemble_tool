@@ -13,7 +13,6 @@ import {
   buildNameFilter,
   buildManufactureFilter,
   buildCategoryFilter,
-  isPropertyFilterKey,
 } from './filters-application'
 import {
   type Filter,
@@ -39,8 +38,9 @@ export function parseFilter(filterParam: string): Filter | null {
     case 'numeric': {
       const [, property, operator, valueStr] = parts
 
-      // propertyの検証: 無効なプロパティはスキップ
-      if (!isPropertyFilterKey(property)) {
+      // propertyの検証: 空でないことのみチェック
+      // 動的属性をサポートするため、isPropertyFilterKey による固定属性チェックは削除
+      if (!property || property.trim() === '') {
         return null
       }
 

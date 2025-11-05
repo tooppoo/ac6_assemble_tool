@@ -8,6 +8,7 @@ import {
   buildNameFilter,
   buildPropertyFilter,
   isPropertyFilterKey,
+  translateProperty,
   translateOperand,
 } from './filters-application'
 import {
@@ -17,20 +18,37 @@ import {
   type FilterOperand,
 } from './filters-core'
 
-const createI18nMock = () => {
-  const dictionaries: Record<string, Record<string, string>> = {
-    assembly: { price: '価格', weight: '重量' },
-    manufacture: { balam: 'ベイラム' },
-    category: { bazooka: 'バズーカ' },
-    'filter/operand': { lte: '≤', contain: 'を含む' },
+const createI18nMock = (language: 'ja' | 'en' = 'ja') => {
+  const dictionariesByLanguage: Record<
+    'ja' | 'en',
+    Record<string, Record<string, string>>
+  > = {
+    ja: {
+      assembly: { price: '価格', weight: '重量', enLoad: 'EN負荷' },
+      manufacture: { balam: 'ベイラム' },
+      category: { bazooka: 'バズーカ' },
+      'filter/operand': { lte: '≤', contain: 'を含む' },
+    },
+    en: {
+      assembly: { price: 'Price', weight: 'Weight', enLoad: 'EN Load' },
+      manufacture: { balam: 'BALAM' },
+      category: { bazooka: 'Bazooka' },
+      'filter/operand': { lte: '<=', contain: 'contains' },
+    },
   }
+
+  const dictionaries = dictionariesByLanguage[language]
 
   const t = vi.fn((key: string, options?: { ns?: string }) => {
     const ns = options?.ns ?? 'translation'
     return dictionaries[ns]?.[key] ?? `${ns}:${key}`
   })
 
-  return { t } as unknown as I18Next
+  return {
+    t,
+    language,
+    resolvedLanguage: language,
+  } as unknown as I18Next
 }
 
 describe('filters-application', () => {
@@ -96,6 +114,53 @@ describe('filters-application', () => {
       }
 
       expect(translateOperand(operand, i18n)).toBe('custom')
+    })
+  })
+
+  describe('translateProperty', () => {
+    it('assembly 名前空間に存在するキーは翻訳値を返すこと', () => {
+      expect(translateProperty('price', createI18nMock('ja'))).toBe('価格')
+      expect(translateProperty('weight', createI18nMock('en'))).toBe('Weight')
+    })
+
+    it('スネークケースのキーはキャメルケースに変換して翻訳を取得すること', () => {
+      expect(translateProperty('en_load', createI18nMock('ja'))).toBe('EN負荷')
+      expect(translateProperty('en_load', createI18nMock('en'))).toBe('EN Load')
+    })
+  })
+
+  describe('PropertyFilterKey - 動的属性対応', () => {
+    it('任意の属性名でプロパティフィルターを構築できること', () => {
+      const operand = numericOperands().find((op) => op.id === 'gte')!
+
+      // 動的属性名（attack_power など）でフィルターを構築
+      const filter = buildPropertyFilter('attack_power', operand, 500)
+
+      expect(filter.property).toBe('attack_power')
+      expect(filter.value).toBe(500)
+      expect(filter.serialize()).toBe('numeric:attack_power:gte:500')
+    })
+
+    it('既存の固定属性（price, weight, en_load）も引き続き動作すること', () => {
+      const operand = numericOperands().find((op) => op.id === 'eq')!
+
+      // 既存の固定属性でフィルターを構築
+      const filter = buildPropertyFilter('weight', operand, 1500)
+
+      expect(filter.property).toBe('weight')
+      expect(filter.value).toBe(1500)
+      expect(filter.serialize()).toBe('numeric:weight:eq:1500')
+    })
+
+    it('isPropertyFilterKey は後方互換性のため固定キーのみtrueを返すこと', () => {
+      // 固定の3属性のみtrueを返す（後方互換性）
+      expect(isPropertyFilterKey('price')).toBe(true)
+      expect(isPropertyFilterKey('weight')).toBe(true)
+      expect(isPropertyFilterKey('en_load')).toBe(true)
+
+      // 動的属性はfalseを返す（既存の振る舞いを維持）
+      expect(isPropertyFilterKey('attack_power')).toBe(false)
+      expect(isPropertyFilterKey('ap')).toBe(false)
     })
   })
 })

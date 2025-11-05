@@ -32,7 +32,7 @@ describe('filter serialization utilities', () => {
       ['空文字', ''],
       ['要素不足', 'numeric:weight:lte'],
       ['無効なデータ型', 'unknown:weight:eq:5'],
-      ['無効なプロパティ', 'numeric:unknown:eq:5'],
+      ['空のプロパティ名', 'numeric::eq:5'],
       ['無効な演算子', 'numeric:weight:unknown:5'],
       ['数値変換失敗', 'numeric:weight:eq:abc'],
       ['空文字列値', 'string:name:contain:'],
@@ -40,6 +40,14 @@ describe('filter serialization utilities', () => {
       ['空の配列値', 'array:manufacture:in_any:'],
     ])('parseFilterがnullを返す: %s', (_, input) => {
       expect(parseFilter(input)).toBeNull()
+    })
+
+    it('動的属性を持つフィルターを正しく復元できること', () => {
+      // 動的属性（attack_power など）のフィルターが正しく復元される
+      const filter = parseFilter('numeric:attack_power:gte:500')
+      expect(filter).not.toBeNull()
+      expect(filter?.property).toBe('attack_power')
+      expect(filter?.value).toBe(500)
     })
   })
 

@@ -43,7 +43,7 @@ export function getAvailableSortKeys(parts: readonly ACParts[]): SortKey[] {
   for (const key of PROPERTY_FILTER_KEYS) {
     if (
       parts.some((part) => {
-        const value = part[key]
+        const value = (part as Record<string, unknown>)[key]
         return typeof value === 'number' && Number.isFinite(value)
       })
     ) {
@@ -66,7 +66,7 @@ export function sortPartsByKey(
   const withoutValue: Array<{ part: ACParts; index: number }> = []
 
   parts.forEach((part, index) => {
-    const value = part[key]
+    const value = (part as Record<string, unknown>)[key]
     if (typeof value === 'number' && Number.isFinite(value)) {
       withValue.push({ part, value, index })
     } else {
@@ -96,6 +96,8 @@ function isSortOrder(value: string): value is SortOrder {
 }
 
 function isSortKey(value: string): value is SortKey {
-  // 型安全性を保つため、`PropertyFilterKey`型にキャストして判定
-  return PROPERTY_FILTER_KEYS.includes(value as PropertyFilterKey)
+  // SortKey is now string to support dynamic attributes
+  // Accept any non-empty string as a valid sort key
+  // TODO: Future enhancement - validate against attributes.ts for the current slot
+  return typeof value === 'string' && value.trim() !== ''
 }

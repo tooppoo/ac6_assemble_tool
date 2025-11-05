@@ -53,10 +53,19 @@ describe('parseSort', () => {
     expect(result).toBeNull()
   })
 
-  it('定義されていないキーの場合はnullを返すこと', () => {
-    const result = parseSort('stability:asc')
+  it('空のキーの場合はnullを返すこと', () => {
+    const result = parseSort(':asc')
 
     expect(result).toBeNull()
+  })
+
+  it('動的属性を持つソートパラメータを正しく復元できること', () => {
+    // 動的属性（stability など）のソートパラメータが正しく復元される
+    const result = parseSort('stability:asc')
+
+    expect(result).not.toBeNull()
+    expect(result?.key).toBe('stability')
+    expect(result?.order).toBe('asc')
   })
 })
 

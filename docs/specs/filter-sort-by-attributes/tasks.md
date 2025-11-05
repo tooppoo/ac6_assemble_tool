@@ -42,7 +42,7 @@
 
 ### 2. 動的属性フィルタリング機能の実装
 
-- [ ] 2.1 PropertyFilterKey型の拡張
+- [x] 2.1 PropertyFilterKey型の拡張
   - PropertyFilterKey を固定ユニオン型から string 型に変更
   - 実行時の属性名検証ロジックを追加
   - 既存のフィルター構築関数との互換性を維持

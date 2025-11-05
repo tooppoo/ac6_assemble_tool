@@ -1,5 +1,5 @@
 import type { I18Next } from '$lib/i18n/define'
-import type { jaAssembly } from '$lib/i18n/locales/ja/assembly'
+import { jaAssembly } from '$lib/i18n/locales/ja/assembly'
 import { jaCategory } from '$lib/i18n/locales/ja/category'
 import { jaFilterOperand } from '$lib/i18n/locales/ja/filter/operand'
 import { jaManufactures } from '$lib/i18n/locales/ja/manufactures'
@@ -13,29 +13,12 @@ import {
 } from './filters-core'
 
 export const PROPERTY_FILTER_KEYS = ['price', 'weight', 'en_load'] as const
-export type PropertyFilterKey = (typeof PROPERTY_FILTER_KEYS)[number]
-
-type AssemblyTranslationKey = keyof typeof jaAssembly
-type ManufactureTranslationKey = keyof typeof jaManufactures
-type CategoryTranslationKey = keyof typeof jaCategory
-type FilterOperandTranslationKey = keyof typeof jaFilterOperand
+// PropertyFilterKey is now string to support dynamic attributes
+// PROPERTY_FILTER_KEYS remains for backward compatibility checking
+export type PropertyFilterKey = string
 
 const PROPERTY_FILTER_KEY_SET: ReadonlySet<PropertyFilterKey> = new Set(
   PROPERTY_FILTER_KEYS,
-)
-const propertyI18nMap = {
-  price: 'price',
-  weight: 'weight',
-  en_load: 'enLoad',
-} as const satisfies Record<PropertyFilterKey, AssemblyTranslationKey>
-const manufactureTranslationKeys = new Set<ManufactureTranslationKey>(
-  Object.keys(jaManufactures) as ManufactureTranslationKey[],
-)
-const categoryTranslationKeys = new Set<CategoryTranslationKey>(
-  Object.keys(jaCategory) as CategoryTranslationKey[],
-)
-const operandTranslationKeys = new Set<FilterOperandTranslationKey>(
-  Object.keys(jaFilterOperand) as FilterOperandTranslationKey[],
 )
 
 export function isPropertyFilterKey(value: string): value is PropertyFilterKey {
@@ -74,7 +57,21 @@ export function translateProperty(
   property: PropertyFilterKey,
   i18n: I18Next,
 ): string {
-  return i18n.t(propertyI18nMap[property], { ns: 'assembly' })
+  if (isAssemblyTranslationKey(property)) {
+    return i18n.t(property, { ns: 'assembly' })
+  }
+  else {
+    // プロパティ名と変換キーの不一致を調整
+    // 将来的に、どちらかに寄せるかも
+    const camelCaseKey = toCamelCase(property)
+
+    if (isAssemblyTranslationKey(camelCaseKey)) {
+      return i18n.t(camelCaseKey, { ns: 'assembly' })
+    }
+    else {
+      return property
+    }
+  }
 }
 
 // name filter builder
@@ -160,20 +157,46 @@ export function translateOperand(
   return i18n.t(operand.id, { ns: 'filter/operand' })
 }
 
+type ManufactureTranslationKey = keyof typeof jaManufactures
+const manufactureTranslationKeys = new Set<ManufactureTranslationKey>(
+  Object.keys(jaManufactures) as ManufactureTranslationKey[],
+)
 function isManufactureTranslationKey(
   value: string,
 ): value is ManufactureTranslationKey {
   return manufactureTranslationKeys.has(value as ManufactureTranslationKey)
 }
 
+type CategoryTranslationKey = keyof typeof jaCategory
+const categoryTranslationKeys = new Set<CategoryTranslationKey>(
+  Object.keys(jaCategory) as CategoryTranslationKey[],
+)
 function isCategoryTranslationKey(
   value: string,
 ): value is CategoryTranslationKey {
   return categoryTranslationKeys.has(value as CategoryTranslationKey)
 }
 
+type FilterOperandTranslationKey = keyof typeof jaFilterOperand
+const operandTranslationKeys = new Set<FilterOperandTranslationKey>(
+  Object.keys(jaFilterOperand) as FilterOperandTranslationKey[],
+)
 function isOperandTranslationKey(
   value: string,
 ): value is FilterOperandTranslationKey {
   return operandTranslationKeys.has(value as FilterOperandTranslationKey)
+}
+
+type FilterAssemlyTranslationKey = keyof typeof jaAssembly
+const assemblyTranslationKey = new Set<FilterAssemlyTranslationKey>(
+  Object.keys(jaAssembly) as FilterAssemlyTranslationKey[],
+)
+function isAssemblyTranslationKey(
+  value: string,
+): value is FilterAssemlyTranslationKey {
+  return assemblyTranslationKey.has(value as FilterAssemlyTranslationKey)
+}
+
+function toCamelCase(value: string): string {
+  return value.replace(/_([a-z])/g, (_, char: string) => char.toUpperCase())
 }
