@@ -2,6 +2,8 @@ import type { I18Next } from '$lib/i18n/define'
 
 import { describe, it, expect, vi } from 'vitest'
 
+import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
+
 import {
   buildArrayFilter,
   buildCategoryFilter,
@@ -14,6 +16,7 @@ import {
   translateOperand,
 } from './filters-application'
 import {
+  applyFilters,
   numericOperands,
   selectAnyOperand,
   stringOperands,
@@ -237,6 +240,88 @@ describe('filters-application', () => {
       // 動的属性はfalseを返す（既存の振る舞いを維持）
       expect(isPropertyFilterKey('attack_power')).toBe(false)
       expect(isPropertyFilterKey('ap')).toBe(false)
+    })
+  })
+
+  describe('フィルター適用', () => {
+    type ExtendedPart = ACParts & Record<string, unknown>
+    const sampleParts: readonly ExtendedPart[] = [
+      {
+        id: 'p1',
+        name: 'Alpha',
+        classification: 'arm-unit',
+        manufacture: 'balam',
+        category: 'bazooka',
+        price: 1500,
+        weight: 420,
+        en_load: 110,
+        attack_power: 1200,
+      },
+      {
+        id: 'p2',
+        name: 'Beta',
+        classification: 'arm-unit',
+        manufacture: 'allmind',
+        category: 'shotgun',
+        price: 2100,
+        weight: 380,
+        en_load: 130,
+        attack_power: 800,
+      },
+      {
+        id: 'p3',
+        name: 'Gamma',
+        classification: 'arm-unit',
+        manufacture: 'balam',
+        category: 'bazooka',
+        price: 1800,
+        weight: 620,
+        en_load: 150,
+      },
+    ]
+
+    it('数値型属性フィルターで該当パーツのみを返すこと', () => {
+      const operand = numericOperands().find((op) => op.id === 'lt')!
+      const filter = buildPropertyFilter('weight', operand, 500)
+
+      const result = applyFilters(sampleParts, [filter])
+
+      expect(result.map((part) => part.id)).toEqual(['p1', 'p2'])
+    })
+
+    it('配列型属性フィルターで候補値に含まれるパーツを返すこと', () => {
+      const operand = selectAnyOperand()
+      const filter = buildArrayFilter('manufacture', operand, ['balam'])
+
+      const result = applyFilters(sampleParts, [filter])
+
+      expect(result.map((part) => part.id)).toEqual(['p1', 'p3'])
+    })
+
+    it('optional属性でフィルターした場合に属性未保持パーツを除外すること', () => {
+      const operand = numericOperands().find((op) => op.id === 'gte')!
+      const filter = buildPropertyFilter('attack_power', operand, 900)
+
+      const result = applyFilters(sampleParts, [filter])
+
+      expect(result.map((part) => part.id)).toEqual(['p1'])
+    })
+
+    it('複数条件をAND適用して該当パーツのみを返すこと', () => {
+      const weightOperand = numericOperands().find((op) => op.id === 'lte')!
+      const weightFilter = buildPropertyFilter('weight', weightOperand, 500)
+      const manufactureFilter = buildArrayFilter(
+        'manufacture',
+        selectAnyOperand(),
+        ['balam'],
+      )
+
+      const result = applyFilters(sampleParts, [
+        weightFilter,
+        manufactureFilter,
+      ])
+
+      expect(result.map((part) => part.id)).toEqual(['p1'])
     })
   })
 })
