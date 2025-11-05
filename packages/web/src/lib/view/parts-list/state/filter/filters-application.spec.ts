@@ -69,8 +69,16 @@ const createI18nMock = (language: 'ja' | 'en' = 'ja') => {
     },
     )
 
+  const exists = vi.fn(
+    (key: string, options?: { ns?: string }) => {
+      const ns = options?.ns ?? 'translation'
+      return Boolean(dictionaries[ns]?.[key])
+    },
+  )
+
   return {
     t,
+    exists,
     language,
     resolvedLanguage: language,
   } as unknown as I18Next
@@ -150,7 +158,7 @@ describe('filters-application', () => {
       const operand = selectAnyOperand()
       const filter = buildArrayFilter('en_load', operand, ['200', '400'])
 
-      expect(filter.stringify(i18n)).toBe('EN LOAD: 200, 400')
+      expect(filter.stringify(i18n)).toBe('EN Load: 200, 400')
     })
 
     it('translateValue オプションで値を翻訳できること', () => {
@@ -188,6 +196,12 @@ describe('filters-application', () => {
     it('スネークケースのキーはキャメルケースに変換して翻訳を取得すること', () => {
       expect(translateProperty('en_load', createI18nMock('ja'))).toBe('EN負荷')
       expect(translateProperty('en_load', createI18nMock('en'))).toBe('EN Load')
+    })
+
+    it('翻訳が存在しない場合はキャメルケースへフォールバックすること', () => {
+      expect(translateProperty('attack_power', createI18nMock('ja'))).toBe(
+        'attackPower',
+      )
     })
   })
 

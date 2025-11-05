@@ -1,5 +1,4 @@
 import type { I18Next } from '$lib/i18n/define'
-import { jaAssembly } from '$lib/i18n/locales/ja/assembly'
 import { jaCategory } from '$lib/i18n/locales/ja/category'
 import { jaFilterOperand } from '$lib/i18n/locales/ja/filter/operand'
 import { jaManufactures } from '$lib/i18n/locales/ja/manufactures'
@@ -102,21 +101,22 @@ export function translateProperty(
   property: PropertyFilterKey,
   i18n: I18Next,
 ): string {
-  if (isAssemblyTranslationKey(property)) {
-    return i18n.t(property, { ns: 'assembly' })
+  const direct = translateAssemblyKey(property, i18n)
+  if (direct !== null) {
+    return direct
   }
-  else {
-    // プロパティ名と変換キーの不一致を調整
-    // 将来的に、どちらかに寄せるかも
-    const camelCaseKey = toCamelCase(property)
 
-    if (isAssemblyTranslationKey(camelCaseKey)) {
-      return i18n.t(camelCaseKey, { ns: 'assembly' })
+  const camelCaseKey = toCamelCase(property)
+  if (camelCaseKey !== property) {
+    const camelTranslated = translateAssemblyKey(camelCaseKey, i18n)
+    if (camelTranslated !== null) {
+      return camelTranslated
     }
-    else {
-      return property
-    }
+
+    return camelCaseKey
   }
+
+  return property
 }
 
 // name filter builder
@@ -216,16 +216,6 @@ function isOperandTranslationKey(
   return operandTranslationKeys.has(value as FilterOperandTranslationKey)
 }
 
-type FilterAssemlyTranslationKey = keyof typeof jaAssembly
-const assemblyTranslationKey = new Set<FilterAssemlyTranslationKey>(
-  Object.keys(jaAssembly) as FilterAssemlyTranslationKey[],
-)
-function isAssemblyTranslationKey(
-  value: string,
-): value is FilterAssemlyTranslationKey {
-  return assemblyTranslationKey.has(value as FilterAssemlyTranslationKey)
-}
-
 function toCamelCase(value: string): string {
   return value.replace(/_([a-z])/g, (_, char: string) => char.toUpperCase())
 }
@@ -273,4 +263,20 @@ function translateArrayFilterValue(
   }
 
   return options.translateValue(value, i18n)
+}
+
+function translateAssemblyKey(
+  key: string,
+  i18n: I18Next,
+): string | null {
+  if (typeof i18n.exists === 'function' && i18n.exists(key, { ns: 'assembly' })) {
+    return i18n.t(key, { ns: 'assembly' })
+  }
+
+  const translated = i18n.t(key, { ns: 'assembly' })
+  if (translated === key || translated === `assembly:${key}`) {
+    return null
+  }
+
+  return translated
 }
