@@ -151,7 +151,8 @@ describe('attributes-utils', () => {
       const arrayAttrs = getArrayAttributes('head')
 
       // head の classification は literal 型なので含まれない
-      // （もし literal 型の classification があっても除外される）
+      expect(arrayAttrs).not.toContain('classification')
+      expect(Array.isArray(arrayAttrs)).toBe(true)
     })
   })
 
