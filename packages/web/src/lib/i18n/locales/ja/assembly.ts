@@ -114,7 +114,7 @@ export const jaAssembly = {
   abEnConsumption: 'AB消費EN',
   meleeAttackThrust: '近接攻撃推力',
   meleeAttackEnConsumption: '近接攻撃消費EN',
-  
+
   // generator
   enCapacity: 'EN容量',
   enRecharge: 'EN補充性能',

@@ -4,6 +4,10 @@
 
 import i18n from '$lib/i18n/define'
 
+import {
+  getAttributesForSlot,
+  type AttributeDefinition,
+} from '@ac6_assemble_tool/parts/attributes-utils'
 import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { render, screen, fireEvent } from '@testing-library/svelte'
 import { describe, it, expect } from 'vitest'
@@ -14,10 +18,6 @@ import {
   type PropertyFilterKey,
 } from './state/filter/filters-application'
 import { numericOperands, type Filter } from './state/filter/filters-core'
-import {
-  getAttributesForSlot,
-  type AttributeDefinition,
-} from '@ac6_assemble_tool/parts/attributes-utils'
 
 type FilterPanelProps = {
   slot: CandidatesKey

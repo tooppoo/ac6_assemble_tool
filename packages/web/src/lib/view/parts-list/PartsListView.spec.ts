@@ -464,11 +464,11 @@ describe('PartsListView コンポーネント', () => {
       ) as HTMLSelectElement
       await fireEvent.change(propertySelect, { target: { value: 'price' } })
       await fireEvent.click(applyButton)
-    const sortCard = document.querySelector('.sort-control-card')
-    expect(sortCard).not.toBeNull()
-    const clearButton = within(sortCard as HTMLElement).getByRole('button', {
-      name: 'クリア',
-    })
+      const sortCard = document.querySelector('.sort-control-card')
+      expect(sortCard).not.toBeNull()
+      const clearButton = within(sortCard as HTMLElement).getByRole('button', {
+        name: 'クリア',
+      })
       await waitFor(() => expect(extractPrices()).toEqual(sortedByPriceAsc))
       await fireEvent.click(clearButton)
 
@@ -480,16 +480,12 @@ describe('PartsListView コンポーネント', () => {
 
     it('配列型属性の並び替えが適用されること', async () => {
       const slotParts = regulation.candidates.rightArmUnit
-      const expectedAsc = sortPartsByKey(
-        slotParts,
-        'attack_type',
-        'asc',
-      ).map((part) => part.name)
-      const expectedDesc = sortPartsByKey(
-        slotParts,
-        'attack_type',
-        'desc',
-      ).map((part) => part.name)
+      const expectedAsc = sortPartsByKey(slotParts, 'attack_type', 'asc').map(
+        (part) => part.name,
+      )
+      const expectedDesc = sortPartsByKey(slotParts, 'attack_type', 'desc').map(
+        (part) => part.name,
+      )
 
       render(PartsListViewTestWrapper, {
         props: {

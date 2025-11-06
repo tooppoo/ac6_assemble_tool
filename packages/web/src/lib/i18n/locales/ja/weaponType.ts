@@ -1,4 +1,3 @@
-
 export const jaWeaponType = {
   charge: 'チャージ',
   full_auto: 'フルオート',
@@ -6,5 +5,5 @@ export const jaWeaponType = {
   burst: 'バースト',
   homing: '誘導兵装',
   melee: '近接武器',
-  shield: 'シールド'
+  shield: 'シールド',
 }

@@ -1,18 +1,18 @@
-import { armUnits, leftArmUnits } from "#parts/arm-units"
-import { arms } from "#parts/arms"
-import { backUnits, leftBackUnits } from "#parts/back-units"
-import { boosters } from "#parts/booster"
-import { cores } from "#parts/cores"
-import { expansions } from "#parts/expansions"
-import { fcses } from "#parts/fces"
-import { generators } from "#parts/generators"
-import { heads } from "#parts/heads"
-import { legs } from "#parts/legs"
+import { armUnits, leftArmUnits } from '#parts/arm-units'
+import { arms } from '#parts/arms'
+import { backUnits, leftBackUnits } from '#parts/back-units'
+import { boosters } from '#parts/booster'
+import { cores } from '#parts/cores'
+import { expansions } from '#parts/expansions'
+import { fcses } from '#parts/fces'
+import { generators } from '#parts/generators'
+import { heads } from '#parts/heads'
+import { legs } from '#parts/legs'
 
-import { writeFileSync } from "fs"
-import { resolve } from "path"
+import { writeFileSync } from 'fs'
+import { resolve } from 'path'
 
-import { excludeAttributes } from "./exclude-attributes"
+import { excludeAttributes } from './exclude-attributes'
 
 export function main() {
   const attr = excludeParts()
@@ -84,7 +84,10 @@ export const expansionAttributes = ${JSON.stringify(expansionAttributes, null, 2
 }
 function writeFileContents(contents: string): void {
   const thisFilePath = new URL(import.meta.url)
-  const targetFilePath = resolve(thisFilePath.pathname, '../../../src/attributes.ts')
+  const targetFilePath = resolve(
+    thisFilePath.pathname,
+    '../../../src/attributes.ts',
+  )
 
   writeFileSync(targetFilePath, contents, { flag: 'w+' })
 }

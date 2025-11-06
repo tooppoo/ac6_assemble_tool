@@ -140,15 +140,10 @@ describe('filters-application', () => {
       const i18n = createI18nMock()
       const operand = selectAnyOperand()
       const translator = resolveSelectionValueTranslator('category')
-      const filter = buildArrayFilter(
-        'category',
-        operand,
-        ['bazooka', 'x'],
-        {
-          displayName: 'カテゴリ',
-          translateValue: translator,
-        },
-      )
+      const filter = buildArrayFilter('category', operand, ['bazooka', 'x'], {
+        displayName: 'カテゴリ',
+        translateValue: translator,
+      })
 
       expect(filter.stringify(i18n)).toBe('カテゴリ: バズーカ, x')
     })
@@ -167,9 +162,7 @@ describe('filters-application', () => {
         },
       )
 
-      expect(filter.serialize()).toBe(
-        'array:manufacture:in_any:balam,unknown',
-      )
+      expect(filter.serialize()).toBe('array:manufacture:in_any:balam,unknown')
       expect(filter.stringify(i18n)).toBe('メーカー: ベイラム, unknown')
     })
   })

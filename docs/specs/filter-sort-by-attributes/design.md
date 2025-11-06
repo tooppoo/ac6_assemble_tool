@@ -32,17 +32,20 @@
 本機能は既存のパーツリストビューシステムの拡張です。現在のアーキテクチャ：
 
 **現在の制約**:
+
 - フィルター・ソート対象は `PROPERTY_FILTER_KEYS = ['price', 'weight', 'en_load']` に固定
 - `PropertyFilterKey` は型レベルで限定されたユニオン型
 - スロット変更時の属性リスト切り替え機能が未実装
 
 **保持すべき既存パターン**:
+
 - Svelte 5 runes ($state, $derived, $effect) によるリアクティブ状態管理
 - FilterPanel / SortControl / PartsListView の責務分離
 - Filter オブジェクトによるフィルタリングロジックの抽象化
 - URL パラメータへの状態シリアライゼーション
 
 **統合ポイント**:
+
 - `PartsListView.svelte`: スロット変更時に利用可能属性を更新
 - `FilterPanel.svelte` / `SortControl.svelte`: 動的属性リストを受け取りUIを更新
 - `filters-application.ts`: PropertyFilterKey を文字列に変更し、動的属性に対応
@@ -85,6 +88,7 @@ graph TB
 ```
 
 **Architecture Integration**:
+
 - **既存パターン保持**: Filter オブジェクトの構造、applyFilters/sortPartsByKey の関数シグネチャは維持
 - **新規コンポーネント**: `attributes-utils.ts` を parts パッケージに追加（属性メタデータ抽出）
 - **Technology Alignment**: Svelte 5、TypeScript、既存の型システムとの整合性を維持
@@ -95,14 +99,17 @@ graph TB
 本機能は既存技術スタックに完全に準拠します：
 
 **Frontend Framework**: Svelte 5 + SvelteKit
+
 - Svelte 5 runes を活用した状態管理（$state, $derived, $effect）
 - コンポーネント設計原則の維持
 
 **Type Safety**: TypeScript
+
 - `AttributeDefinition` 型による属性メタデータの型安全性確保
 - ジェネリクスを活用した型推論（`FilterOperand<'numeric' | 'array'>`）
 
 **New Utilities Introduced**:
+
 - `packages/parts/src/attributes-utils.ts`: 属性メタデータ取得ユーティリティ
   - Rationale: attributes.ts が自動生成ファイルであり、直接依存するとメンテナンス性が低下するため、抽象化層を提供
   - candidates フィールドにより、配列型属性の選択肢を動的に取得可能（ハードコード不要）
@@ -118,6 +125,7 @@ graph TB
 **Context**: 現在の `PropertyFilterKey` は `'price' | 'weight' | 'en_load'` として固定されており、動的な属性追加に対応できない
 
 **Alternatives**:
+
 1. テンプレートリテラル型でスロットごとにユニオン型を生成
 2. ジェネリクス型パラメータで属性を受け取る設計
 3. `string` 型に変更し、実行時に検証
@@ -125,11 +133,13 @@ graph TB
 **Selected Approach**: `string` 型に変更し、実行時に `attributes.ts` から取得した属性リストで検証
 
 **Rationale**:
+
 - テンプレートリテラル型は attributes.ts の自動生成との相性が悪く、型生成の複雑度が増加
 - ジェネリクス型は既存コードの大規模リファクタリングが必要
 - `string` 型 + 実行時検証は最小限の変更で動的属性に対応可能
 
 **Trade-offs**:
+
 - 利点: 実装が簡潔、既存コードへの影響が最小
 - 欠点: コンパイル時の型安全性が低下（実行時検証でカバー）
 
@@ -140,6 +150,7 @@ graph TB
 **Context**: 要件では `valueType: "array"` の属性もソート対象とし、文字列としてソートする必要がある
 
 **Alternatives**:
+
 1. 配列の最初の要素を取り出して文字列比較
 2. 配列全体を JSON.stringify して文字列比較
 3. 配列の要素を join して文字列比較
@@ -147,11 +158,13 @@ graph TB
 **Selected Approach**: 配列の最初の要素を取り出して文字列比較（存在しない場合は空文字列扱い）
 
 **Rationale**:
+
 - AC6 のパーツデータでは、配列型属性は単一要素または少数要素を持つことが多い
 - category や manufacture は通常単一値
 - UI上で直感的（表示されている値でソートされる）
 
 **Trade-offs**:
+
 - 利点: シンプル、パフォーマンス良好、UI表示と一貫性
 - 欠点: 複数要素を持つ配列の場合、2番目以降の要素は無視される（現実のデータでは稀）
 
@@ -162,6 +175,7 @@ graph TB
 **Context**: 一部のパーツのみが持つ任意属性（charge_attack_power等）でフィルタリングする際の挙動を定義
 
 **Alternatives**:
+
 1. 属性なしパーツも表示し、フィルター条件を「値が存在しない」として扱う
 2. 属性なしパーツを除外（選択したアプローチ）
 3. UI上で「属性なしを含む」チェックボックスを提供
@@ -169,11 +183,13 @@ graph TB
 **Selected Approach**: 属性なしパーツを自動的に除外
 
 **Rationale**:
+
 - ユーザーが特定の属性でフィルターをかける意図は、その属性を持つパーツを探すこと
 - 「チャージ攻撃力 >= 1000」を設定した場合、チャージ機能がないパーツは除外されるべき
 - 既存の filters-core.ts のロジックで自然に実現可能（属性なし = undefined → 条件不一致）
 
 **Trade-offs**:
+
 - 利点: 直感的、実装がシンプル、パフォーマンス良好
 - 欠点: 属性なしパーツを意図的に表示したい場合は別のフィルターが必要（現在の要件では対象外）
 
@@ -184,6 +200,7 @@ graph TB
 **Context**: 従来は製造企業やカテゴリの選択肢をコード内にハードコードしていたが、パーツデータ追加時に選択肢の更新漏れが発生するリスクがあった
 
 **Alternatives**:
+
 1. 選択肢をコード内にハードコード（従来方式）
 2. パーツデータから実行時に選択肢を抽出（extractManufacturers, extractCategories）
 3. attributes.ts の candidates フィールドを使用（選択したアプローチ）
@@ -191,12 +208,14 @@ graph TB
 **Selected Approach**: attributes.ts の candidates フィールドを単一真実の源として使用し、UI選択肢を動的生成
 
 **Rationale**:
+
 - attributes.ts は自動生成ファイルであり、パーツデータと常に同期している
 - 実行時抽出（Alternative 2）と比較して、パフォーマンスが向上（事前計算済み）
 - ハードコード（Alternative 1）と比較して、保守性が大幅に向上（更新漏れゼロ）
 - 存在しない値（廃止されたカテゴリなど）を選択肢から自動的に除外可能
 
 **Trade-offs**:
+
 - 利点: 保守性向上、パフォーマンス良好、データ整合性保証
 - 欠点: attributes.ts の生成ロジックに依存（ただし、既に自動生成インフラが確立済み）
 
@@ -296,18 +315,20 @@ flowchart TD
 
 #### attributes-utils (New Component)
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: `attributes.ts` から属性メタデータを抽出し、型安全に提供する
 - **Domain Boundary**: Parts パッケージのユーティリティ層
 - **Data Ownership**: 属性定義データの読み取り専用アクセス
 - **Transaction Boundary**: なし（純粋関数のみ）
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: web パッケージの PartsListView, filters-application
 - **Outbound**: attributes.ts（自動生成ファイル）
 - **External**: なし
 
-**Contract Definition**
+##### Contract Definition
 
 ```typescript
 export interface AttributeDefinition {
@@ -352,14 +373,17 @@ interface AttributesUtilsService {
 ```
 
 **Preconditions**:
+
 - `slot` は有効な CandidatesKey であること
 - attributes.ts が正しく生成されていること
 
 **Postconditions**:
+
 - 返される配列は attributes.ts の定義順を維持
 - 返される属性名は ACParts 型のプロパティキーとして有効
 
 **Invariants**:
+
 - 同じスロット・同じ属性名に対して常に同じ結果を返す（純粋関数）
 - 空配列を返すことはない（最低でも共通属性が存在）
 
@@ -367,23 +391,26 @@ interface AttributesUtilsService {
 
 #### PartsListView (Modified Component)
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: パーツリスト全体の状態管理とサブコンポーネントの統合
 - **Domain Boundary**: Parts List View の最上位コンポーネント
 - **Data Ownership**: currentSlot, filters, sortKey, sortOrder の状態
 - **Transaction Boundary**: なし（クライアントサイド状態のみ）
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: SvelteKit routes
 - **Outbound**: FilterPanel, SortControl, PartsGrid, attributes-utils
 - **External**: なし
 
 **Modification Strategy**: 既存コードを拡張
+
 - 新規追加: `availableAttributes` の derived state
 - 変更: FilterPanel, SortControl への Props 追加
 - 保持: 既存のフィルター・ソート状態管理ロジック
 
-**Contract Definition**
+##### Contract Definition
 
 ```typescript
 interface PartsListViewState {
@@ -404,29 +431,33 @@ const availableAttributes = $derived.by<readonly AttributeDefinition[]>(() => {
 ```
 
 **Integration Strategy**:
+
 - **Modification Approach**: 既存コンポーネントを拡張（新規 derived state 追加）
 - **Backward Compatibility**: 既存の URL パラメータシリアライゼーションを維持
 - **Migration Path**: 段階的リリース可能（新属性は追加機能として扱う）
 
 #### FilterPanel (Modified Component)
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: フィルター条件の設定UIを提供し、ユーザー入力を Filter オブジェクトに変換
 - **Domain Boundary**: フィルターUI層
 - **Data Ownership**: フィルター入力状態（選択された属性、演算子、値）
 - **Transaction Boundary**: なし
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: PartsListView
 - **Outbound**: filters-application, filters-core
 - **External**: なし
 
 **Modification Strategy**: 既存UIを拡張
+
 - 新規追加: `availableAttributes` Props、valueType に基づくUI分岐
 - 変更: 属性選択ドロップダウンを動的リストに変更
 - 保持: 既存のフィルター構築ロジック（buildPropertyFilter 等）
 
-**Contract Definition**
+##### Contract Definition
 
 ```typescript
 interface FilterPanelProps {
@@ -441,6 +472,7 @@ interface FilterPanelProps {
 ```
 
 **UI Contract**:
+
 | Attribute valueType | UI Component | Input Method | Data Source |
 |---------------------|--------------|--------------|-------------|
 | numeric | Operator dropdown + Number input | 演算子選択（>=, <=, ==, !=, >, <） + 数値入力フィールド | - |
@@ -449,23 +481,26 @@ interface FilterPanelProps {
 
 #### SortControl (Modified Component)
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: ソート条件の設定UIを提供し、ユーザー入力をソートパラメータに変換
 - **Domain Boundary**: ソートUI層
 - **Data Ownership**: ソート入力状態（選択された属性、順序）
 - **Transaction Boundary**: なし
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: PartsListView
 - **Outbound**: sort, filters-application
 - **External**: なし
 
 **Modification Strategy**: 既存UIを拡張
+
 - 新規追加: `availableAttributes` Props
 - 変更: 属性選択ドロップダウンを動的リストに変更、配列型属性のソートサポート
 - 保持: 既存の昇順・降順選択UI
 
-**Contract Definition**
+##### Contract Definition
 
 ```typescript
 interface SortControlProps {
@@ -482,23 +517,26 @@ interface SortControlProps {
 
 #### filters-application (Modified Module)
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: アプリケーション固有のフィルター構築ロジックと翻訳機能
 - **Domain Boundary**: フィルターアプリケーション層
 - **Data Ownership**: なし（ステートレス関数群）
 - **Transaction Boundary**: なし
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: FilterPanel
 - **Outbound**: filters-core, i18n, attributes-utils
 - **External**: なし
 
 **Modification Strategy**: 型定義と関数シグネチャを拡張
+
 - 変更: `PropertyFilterKey` を string 型に変更
 - 新規追加: 汎用 `buildArrayFilter` と `resolveSelectionValueTranslator`
 - 保持: 既存のフィルター構築ロジック
 
-**Contract Definition**
+##### Contract Definition
 
 ```typescript
 // 型定義の変更
@@ -542,22 +580,25 @@ interface FiltersApplicationService {
 
 #### sort (Modified Module)
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: パーツリストのソートロジック
 - **Domain Boundary**: ソート処理層
 - **Data Ownership**: なし（ステートレス関数群）
 - **Transaction Boundary**: なし
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: PartsListView
 - **Outbound**: attributes-utils（`attributes.ts` から取得したメタデータを参照）
 - **External**: なし
 
 **Modification Strategy**: ソートロジックを拡張
+
 - 変更: `SortKey` を string 型に変更、配列型属性のソート処理を追加
 - 保持: 既存の sortPartsByKey の optional属性処理（属性なしパーツを末尾配置）
 
-**Contract Definition**
+##### Contract Definition
 
 ```typescript
 export type SortKey = string // 従来: PropertyFilterKey
@@ -596,14 +637,17 @@ interface SortService {
 `getAvailableSortKeys` は `attributes-utils` を通じて `attributes.ts` のメタデータを参照し、スロットごとの数値・配列属性を定義順で返す。実際のパーツデータを走査して候補を導出する実装は禁止し、単一真実の源を維持する。
 
 **Preconditions**:
+
 - `parts` 配列が空でないこと
 - `key` が ACParts のプロパティとして存在すること
 
 **Postconditions**:
+
 - 属性値を持つパーツが先頭、持たないパーツが末尾
 - 同じ属性値を持つパーツは元の順序を維持（安定ソート）
 
 **Invariants**:
+
 - 入力配列を変更しない（イミュータブル）
 - 同じ入力に対して常に同じ結果を返す（純粋関数）
 
@@ -615,6 +659,7 @@ interface SortService {
 
 **AttributeDefinition (Value Object)**:
 属性メタデータを表すイミュータブルなValue Object
+
 - `attributeName`: 属性名（ACParts のプロパティキー）
 - `valueType`: データ型（'numeric' | 'array' | 'literal'）
   - `'numeric'`: 数値型属性（フィルター・ソート対象）
@@ -625,6 +670,7 @@ interface SortService {
 
 **Filter (Entity)**:
 フィルター条件を表すEntity（既存、変更なし）
+
 - `operand`: フィルター演算子
 - `property`: 対象属性名
 - `extractor`: 値抽出関数
@@ -633,6 +679,7 @@ interface SortService {
 - `serialize()`: URLパラメータ化
 
 **Business Rules & Invariants**:
+
 1. **Attribute Definition Order**: `attributes.ts` の定義順を維持する
 2. **Optional Attribute Filtering**: optional: true の属性でフィルター時、属性なしパーツは除外
 3. **Optional Attribute Sorting**: optional: true の属性でソート時、属性なしパーツは末尾配置
@@ -715,6 +762,7 @@ erDiagram
 ```
 
 **Consistency & Integrity**:
+
 - **Transaction Boundaries**: クライアントサイドのみ（サーバー側トランザクションなし）
 - **Referential Integrity**: AttributeDefinition.attributeName は ACParts のプロパティキーと一致
 - **Temporal Aspects**: なし（バージョン管理・監査不要）
@@ -728,16 +776,19 @@ erDiagram
 ### Error Categories and Responses
 
 **User Errors (入力エラー)**:
+
 - **Invalid Filter Value** (数値フィルターに文字列入力): フィールドレベルバリデーションでリアルタイムフィードバック、適用ボタンを無効化
 - **Empty Filter Value** (必須入力が空): UI上でエラーメッセージ表示、適用ボタンを無効化
 - **Attribute Not Found** (存在しない属性名): 選択肢から選択するUIのため発生しない（防御的プログラミングで対応）
 
 **System Errors (システムエラー)**:
+
 - **Attributes.ts Parse Error** (属性定義の読み込み失敗): フォールバック値（共通属性のみ）を使用し、エラーログ出力
 - **Filter Application Error** (フィルター適用時の例外): フィルターをスキップし、全パーツ表示、コンソールエラー出力
 - **Sort Application Error** (ソート適用時の例外): ソートをスキップし、元の順序で表示、コンソールエラー出力
 
 **Business Logic Errors (ビジネスロジックエラー)**:
+
 - **Incompatible Filter Type** (valueType と operand の不一致): UI設計により発生を防止、実行時チェックで例外スロー
 - **Invalid Slot Key** (存在しないスロット): TypeScript型チェックで防止、実行時チェックでフォールバック
 
@@ -777,14 +828,17 @@ const filteredParts = $derived.by<readonly ACParts[]>(() => {
 ### Monitoring
 
 **Error Tracking**:
+
 - **Structured Logging**: `@ac6_assemble_tool/shared/logger` を使用し、エラー情報を構造化ログとして出力
 - **Log Levels**: ERROR（システムエラー）、WARN（フォールバック発生）、DEBUG（開発時デバッグ）
 
 **Health Monitoring**:
+
 - クライアントサイドアプリケーションのため、サーバー側ヘルスチェックは不要
 - ブラウザコンソールでのエラー監視（開発者ツール）
 
 **Metrics** (将来拡張):
+
 - フィルター適用回数、ソート適用回数
 - エラー発生率（属性取得失敗、フィルター適用失敗）
 
@@ -793,6 +847,7 @@ const filteredParts = $derived.by<readonly ACParts[]>(() => {
 ### Unit Tests
 
 **attributes-utils.ts**:
+
 1. `getAttributesForSlot()` - 各スロットタイプで正しい属性リストを返すことを検証
 2. `getNumericAttributes()` - 数値型属性のみを抽出することを検証
 3. `getArrayAttributes()` - 配列型属性のみを抽出することを検証
@@ -800,11 +855,13 @@ const filteredParts = $derived.by<readonly ACParts[]>(() => {
 5. Error handling - 存在しないスロットキーでフォールバックすることを検証
 
 **filters-application.ts**:
+
 1. `buildArrayFilter()` - 配列型フィルターの構築が正しいことを検証
 2. `translateProperty()` - 動的属性名の翻訳（フォールバック含む）を検証
 3. PropertyFilterKey string 型への変更に伴う型安全性テスト
 
 **sort.ts**:
+
 1. `sortPartsByKey()` - 配列型属性の文字列ソートを検証
 2. Optional属性ソート - 属性なしパーツが末尾に配置されることを検証
 3. Stable sort - 同値パーツの順序が維持されることを検証
@@ -812,6 +869,7 @@ const filteredParts = $derived.by<readonly ACParts[]>(() => {
 ### Integration Tests
 
 **PartsListView + FilterPanel + filters-application**:
+
 1. スロット変更時に利用可能属性が更新され、FilterPanel に反映されることを検証
 2. 数値型属性でフィルター適用時、正しくパーツが絞り込まれることを検証
 3. 配列型属性（category, manufacture）でフィルター適用時、正しくパーツが絞り込まれることを検証
@@ -819,6 +877,7 @@ const filteredParts = $derived.by<readonly ACParts[]>(() => {
 5. 複数フィルター適用時、AND条件で絞り込まれることを検証
 
 **PartsListView + SortControl + sort**:
+
 1. スロット変更時に利用可能属性が更新され、SortControl に反映されることを検証
 2. 数値型属性でソート適用時、正しくパーツがソートされることを検証
 3. 配列型属性でソート適用時、文字列としてソートされることを検証
@@ -828,12 +887,14 @@ const filteredParts = $derived.by<readonly ACParts[]>(() => {
 ### E2E/UI Tests
 
 **探索的フィルタリングシナリオ**:
+
 1. 右腕武器スロットで「攻撃力 >= 1000」フィルターを適用し、結果が正しいことを確認
 2. 頭部スロットで「カテゴリ = 重量型」フィルターを適用し、結果が正しいことを確認
 3. スロット変更時にフィルターがクリアされることを確認
 4. フィルター適用後に該当件数が表示されることを確認
 
 **多様な観点でのソートシナリオ**:
+
 1. 右腕武器スロットで「攻撃力」降順ソートを適用し、結果が正しいことを確認
 2. 頭部スロットで「製造企業」昇順ソートを適用し、文字列ソートされることを確認
 3. スロット変更時に無効なソートがクリアされることを確認
@@ -841,10 +902,12 @@ const filteredParts = $derived.by<readonly ACParts[]>(() => {
 ### Performance Tests
 
 **属性取得パフォーマンス**:
+
 1. `getAttributesForSlot()` が 10ms 以内に完了することを検証
 2. 全スロットタイプでの属性取得が 100ms 以内に完了することを検証
 
 **フィルター・ソート適用パフォーマンス**:
+
 1. 100件のパーツに対するフィルター適用が 50ms 以内に完了することを検証
 2. 100件のパーツに対するソート適用が 50ms 以内に完了することを検証
 3. フィルター+ソート同時適用が 100ms 以内に完了することを検証（Requirement 7.1, 7.2）
@@ -852,19 +915,23 @@ const filteredParts = $derived.by<readonly ACParts[]>(() => {
 ## Security Considerations
 
 **Input Validation**:
+
 - **Filter Values**: 数値フィルターの入力値を Number.isFinite() で検証し、NaN や Infinity を拒否
 - **Attribute Names**: ドロップダウンからの選択のため、インジェクション攻撃のリスクは低いが、実行時に ACParts のプロパティキーとして存在することを確認
 - **URL Parameters**: シリアライズ・デシリアライズ時に不正な値を検証し、パースエラー時はデフォルト値を使用
 
 **XSS Prevention**:
+
 - Svelte の自動エスケープ機能により、ユーザー入力がHTMLとしてレンダリングされることを防止
 - 属性名・フィルター値の表示時も自動エスケープが適用される
 
 **Data Protection**:
+
 - 本機能は公開ゲームデータ（パーツ性能）のみを扱い、個人情報や機密情報は含まない
 - クライアントサイドのみで完結し、サーバー送信は発生しない
 
 **Authentication & Authorization**:
+
 - 認証・認可は不要（パブリックアクセス可能なツール）
 
 ## Performance & Scalability
@@ -885,36 +952,44 @@ const filteredParts = $derived.by<readonly ACParts[]>(() => {
 ### Scaling Approaches
 
 **Horizontal Scaling**:
+
 - クライアントサイドアプリケーションのため、ユーザー数増加によるスケーリングは不要
 - 静的サイト生成により、CDN（Cloudflare Pages）で配信
 
 **Vertical Scaling**:
+
 - 不要（クライアント端末のリソースを使用）
 
 ### Caching Strategies
 
 **Attribute Definitions Caching**:
+
 - `getAttributesForSlot()` の結果をメモ化（同じスロットへの繰り返しアクセスを高速化）
 - 実装例: `Map<CandidatesKey, AttributeDefinition[]>` でキャッシュ
 
 **Parts List Caching**:
+
 - `regulation.candidates[slot]` はビルド時に静的データとして含まれ、キャッシュ不要
 - ブラウザの JavaScript ヒープに自動キャッシュ
 
 **UI State Caching**:
+
 - Svelte の $derived による自動メモ化で、依存する状態が変更されない限り再計算されない
 
 ### Optimization Techniques
 
 **Lazy Evaluation**:
+
 - `$derived.by()` を活用し、必要な時のみ計算を実行
 - フィルター・ソート結果は依存する状態（filters, sortKey, sortOrder）が変更された時のみ再計算
 
 **Immutable Data Structures**:
+
 - フィルター・ソート処理は元の配列を変更せず、新しい配列を返す
 - Svelte の変更検知の効率化
 
 **Tree Shaking**:
+
 - 未使用の属性定義やフィルター関数は Vite のビルドプロセスで除去
 
 ## Migration Strategy

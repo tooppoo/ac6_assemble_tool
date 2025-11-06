@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest'
 
-import type { CandidatesKey } from './types/candidates'
-
 import {
   getArrayAttributes,
   getAttributesForSlot,
@@ -9,6 +7,7 @@ import {
   getNumericAttributes,
   isAttributeOptional,
 } from './attributes-utils'
+import type { CandidatesKey } from './types/candidates'
 
 describe('attributes-utils', () => {
   describe('getAttributesForSlot', () => {
@@ -159,7 +158,10 @@ describe('attributes-utils', () => {
   describe('isAttributeOptional', () => {
     it('should return true for optional attributes', () => {
       // armUnitAttributes には optional: true の属性がある（例: charge_attack_power）
-      const isOptional = isAttributeOptional('rightArmUnit', 'charge_attack_power')
+      const isOptional = isAttributeOptional(
+        'rightArmUnit',
+        'charge_attack_power',
+      )
 
       expect(isOptional).toBe(true)
     })
@@ -194,7 +196,10 @@ describe('attributes-utils', () => {
     })
 
     it('should return candidates for manufacture attribute', () => {
-      const candidates = getCandidatesForAttribute('rightArmUnit', 'manufacture')
+      const candidates = getCandidatesForAttribute(
+        'rightArmUnit',
+        'manufacture',
+      )
 
       expect(candidates).toBeDefined()
       expect(Array.isArray(candidates)).toBe(true)
@@ -224,7 +229,10 @@ describe('attributes-utils', () => {
     })
 
     it('should handle slots with different candidate sets', () => {
-      const armCandidates = getCandidatesForAttribute('rightArmUnit', 'manufacture')
+      const armCandidates = getCandidatesForAttribute(
+        'rightArmUnit',
+        'manufacture',
+      )
       const headCandidates = getCandidatesForAttribute('head', 'manufacture')
 
       expect(armCandidates).toBeDefined()

@@ -96,9 +96,7 @@ export function getAttributesForSlot(
  * @param slot - 対象スロット
  * @returns 数値型属性名の配列
  */
-export function getNumericAttributes(
-  slot: CandidatesKey,
-): readonly string[] {
+export function getNumericAttributes(slot: CandidatesKey): readonly string[] {
   const attributes = getAttributesForSlot(slot)
 
   return attributes

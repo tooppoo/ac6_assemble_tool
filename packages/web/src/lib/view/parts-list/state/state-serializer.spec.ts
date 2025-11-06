@@ -65,16 +65,11 @@ describe('StateSerializer', () => {
           ],
           rightArmUnit: [
             buildPropertyFilter('price', lteOperand, 100000),
-            buildArrayFilter(
-              'manufacture',
-              selectAnyOperand(),
-              ['BALAM', 'FURLONG'],
-            ),
-            buildArrayFilter(
-              'category',
-              selectAnyOperand(),
-              ['MEDIUM'],
-            ),
+            buildArrayFilter('manufacture', selectAnyOperand(), [
+              'BALAM',
+              'FURLONG',
+            ]),
+            buildArrayFilter('category', selectAnyOperand(), ['MEDIUM']),
           ],
         },
         sortKey: null,

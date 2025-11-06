@@ -8,7 +8,9 @@ describe('excludeAttributes', () => {
   it('属性のうち、全パーツに存在しないものはoptional: trueとして抽出される', () => {
     const result = excludeAttributes(armUnits)
 
-    const optionalAttributes = result.filter((attr) => attr.optional).map((attr) => attr.attributeName)
+    const optionalAttributes = result
+      .filter((attr) => attr.optional)
+      .map((attr) => attr.attributeName)
 
     expect(optionalAttributes).toContain('cooling')
     expect(optionalAttributes).toContain('charge_attack_power')
@@ -25,7 +27,9 @@ describe('excludeAttributes', () => {
     expect(weightAttr!.valueType).toBe('numeric')
     expect(weightAttr!.candidates.length).toBe(0)
 
-    const attackTypeAttr = result.find((attr) => attr.attributeName === 'attack_type')
+    const attackTypeAttr = result.find(
+      (attr) => attr.attributeName === 'attack_type',
+    )
     expect(attackTypeAttr).toBeDefined()
     expect(attackTypeAttr!.valueType).toBe('array')
     expect(attackTypeAttr!.candidates.length).toBeGreaterThan(0)
@@ -36,6 +40,6 @@ describe('excludeAttributes', () => {
     const attributeNames = result.map((attr) => attr.attributeName)
     const uniqueAttributeNames = Array.from(new Set(attributeNames))
 
-    expect(attributeNames.length).toBe(uniqueAttributeNames.length) 
+    expect(attributeNames.length).toBe(uniqueAttributeNames.length)
   })
 })

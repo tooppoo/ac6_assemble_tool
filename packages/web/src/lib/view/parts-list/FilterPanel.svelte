@@ -1,32 +1,32 @@
 <script lang="ts">
-/**
- * FilterPanel - フィルタ設定UIコンポーネント
- *
- * スロット対応の属性フィルタUIを提供し、フィルタ条件の変更イベントを発火します。
- */
+  /**
+   * FilterPanel - フィルタ設定UIコンポーネント
+   *
+   * スロット対応の属性フィルタUIを提供し、フィルタ条件の変更イベントを発火します。
+   */
 
-import type { I18NextStore } from '$lib/i18n/define'
+  import type { I18NextStore } from '$lib/i18n/define'
 
-import type { AttributeDefinition } from '@ac6_assemble_tool/parts/attributes-utils'
-import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
-import { Collapse } from '@sveltestrap/sveltestrap'
-import { getContext } from 'svelte'
+  import type { AttributeDefinition } from '@ac6_assemble_tool/parts/attributes-utils'
+  import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
+  import { Collapse } from '@sveltestrap/sveltestrap'
+  import { getContext } from 'svelte'
 
-import {
-  buildArrayFilter,
-  buildNameFilter,
-  buildPropertyFilter,
-  resolveSelectionValueTranslator,
-  translateOperand,
-  translateProperty,
-  type PropertyFilterKey,
-} from './state/filter/filters-application'
-import {
-  numericOperands,
-  selectAnyOperand,
-  stringOperands,
-  type Filter,
-} from './state/filter/filters-core'
+  import {
+    buildArrayFilter,
+    buildNameFilter,
+    buildPropertyFilter,
+    resolveSelectionValueTranslator,
+    translateOperand,
+    translateProperty,
+    type PropertyFilterKey,
+  } from './state/filter/filters-application'
+  import {
+    numericOperands,
+    selectAnyOperand,
+    stringOperands,
+    type Filter,
+  } from './state/filter/filters-core'
 
   // i18n
   const i18n = getContext<I18NextStore>('i18n')
@@ -91,64 +91,63 @@ import {
   let nameOperandId = $state(nameOperandList[0].id)
   let nameInputValue = $state('')
 
-// SelectionFilter用の状態
-const selectionAttributes = $derived.by<readonly PropertyFilterKey[]>(() =>
-  arrayAttributes.map(
-    (attr) => attr.attributeName as PropertyFilterKey,
-  ),
-)
+  // SelectionFilter用の状態
+  const selectionAttributes = $derived.by<readonly PropertyFilterKey[]>(() =>
+    arrayAttributes.map((attr) => attr.attributeName as PropertyFilterKey),
+  )
 
-let selectedSelectionAttributeState = $state<PropertyFilterKey | null>(null)
-const selectedSelectionAttribute =
-  $derived.by<PropertyFilterKey | null>(() => {
-    if (selectionAttributes.length === 0) {
-      return null
+  let selectedSelectionAttributeState = $state<PropertyFilterKey | null>(null)
+  const selectedSelectionAttribute = $derived.by<PropertyFilterKey | null>(
+    () => {
+      if (selectionAttributes.length === 0) {
+        return null
+      }
+      if (
+        selectedSelectionAttributeState !== null &&
+        selectionAttributes.includes(selectedSelectionAttributeState)
+      ) {
+        return selectedSelectionAttributeState
+      }
+      return selectionAttributes[0]
+    },
+  )
+
+  const selectionCandidates = $derived.by<readonly string[]>(() => {
+    if (!selectedSelectionAttribute) {
+      return []
     }
-    if (
-      selectedSelectionAttributeState !== null &&
-      selectionAttributes.includes(selectedSelectionAttributeState)
-    ) {
-      return selectedSelectionAttributeState
-    }
-    return selectionAttributes[0]
+    const definition = arrayAttributes.find(
+      (attr) => attr.attributeName === selectedSelectionAttribute,
+    )
+    return definition?.candidates ?? []
   })
 
-const selectionCandidates = $derived.by<readonly string[]>(() => {
-  if (!selectedSelectionAttribute) {
-    return []
-  }
-  const definition = arrayAttributes.find(
-    (attr) => attr.attributeName === selectedSelectionAttribute,
+  let selectedSelectionValuesState = $state<string[]>([])
+  const selectedSelectionValues = $derived.by<readonly string[]>(() =>
+    selectedSelectionValuesState.filter((value) =>
+      selectionCandidates.includes(value),
+    ),
   )
-  return definition?.candidates ?? []
-})
 
-let selectedSelectionValuesState = $state<string[]>([])
-const selectedSelectionValues = $derived.by<readonly string[]>(() =>
-  selectedSelectionValuesState.filter((value) =>
-    selectionCandidates.includes(value),
-  ),
-)
-
-function handleSelectionAttributeChange(event: Event) {
-  const target = event.currentTarget as HTMLSelectElement
-  const value = target.value.trim()
-  selectedSelectionAttributeState =
-    value === '' ? null : (value as PropertyFilterKey)
-  selectedSelectionValuesState = []
-}
-
-function translateSelectionValue(value: string): string {
-  const attribute = selectedSelectionAttribute
-  if (!attribute) {
-    return value
+  function handleSelectionAttributeChange(event: Event) {
+    const target = event.currentTarget as HTMLSelectElement
+    const value = target.value.trim()
+    selectedSelectionAttributeState =
+      value === '' ? null : (value as PropertyFilterKey)
+    selectedSelectionValuesState = []
   }
-  const translator = resolveSelectionValueTranslator(attribute)
-  if (!translator) {
-    return value
+
+  function translateSelectionValue(value: string): string {
+    const attribute = selectedSelectionAttribute
+    if (!attribute) {
+      return value
+    }
+    const translator = resolveSelectionValueTranslator(attribute)
+    if (!translator) {
+      return value
+    }
+    return translator(value, $i18n)
   }
-  return translator(value, $i18n)
-}
 
   // 折りたたみ状態
   let isOpen = $state(true)
@@ -249,9 +248,7 @@ function translateSelectionValue(value: string): string {
         if (valueStr === '') return
 
         // IDから対応するoperandを見つける
-        const operand = nameOperandList.find(
-          (op) => op.id === nameOperandId,
-        )
+        const operand = nameOperandList.find((op) => op.id === nameOperandId)
         if (!operand) return
 
         newFilter = buildNameFilter(operand, valueStr)
@@ -511,7 +508,10 @@ function translateSelectionValue(value: string): string {
         {#if selectedFilterType === 'selection'}
           <div class="row g-2">
             <div class="col-12 col-md-4">
-              <label for="selection-attribute" class="form-label mb-1 text-white">
+              <label
+                for="selection-attribute"
+                class="form-label mb-1 text-white"
+              >
                 {$i18n.t('filterPanel.selection.attributeLabel', {
                   ns: 'page/parts-list',
                 })}

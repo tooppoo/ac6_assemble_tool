@@ -1,4 +1,3 @@
-
 export const enWeaponType = {
   charge: 'CHARGE',
   full_auto: 'FULL AUTO',
@@ -6,5 +5,5 @@ export const enWeaponType = {
   burst: 'BURST',
   homing: 'HOMING',
   melee: 'MELEE',
-  shield: 'SHIELD'
+  shield: 'SHIELD',
 }

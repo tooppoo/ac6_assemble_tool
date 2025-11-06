@@ -398,7 +398,7 @@
     <FilterPanel
       slot={currentSlot}
       {filters}
-      availableAttributes={availableAttributes}
+      {availableAttributes}
       {showFavoritesOnly}
       onclearfilters={handleClearFilters}
       onfilterchange={handleFilterChange}
@@ -409,7 +409,7 @@
   <div class="py-1">
     <SortControl
       slot={currentSlot}
-      availableAttributes={availableAttributes}
+      {availableAttributes}
       {sortKey}
       {sortOrder}
       onsortchange={handleSortApply}
