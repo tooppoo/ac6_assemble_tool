@@ -9,6 +9,7 @@ import {
   buildManufactureFilter,
   buildNameFilter,
   buildPropertyFilter,
+  getNumericFilterKeys,
   isPropertyFilterKey,
   translateCategory,
   translateProperty,
@@ -200,6 +201,16 @@ describe('filters-application', () => {
       expect(translateProperty('attack_power', createI18nMock('ja'))).toBe(
         'attackPower',
       )
+    })
+  })
+
+  describe('getNumericFilterKeys', () => {
+    it('attributes.ts に定義された数値属性を返すこと', () => {
+      expect(getNumericFilterKeys('head')).toContain('price')
+    })
+
+    it('動的属性を含むスロットではその属性を返すこと', () => {
+      expect(getNumericFilterKeys('rightArmUnit')).toContain('attack_power')
     })
   })
 

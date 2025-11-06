@@ -20,6 +20,7 @@
     translateManufacturer,
     translateOperand,
     translateProperty,
+    getNumericFilterKeys,
     type PropertyFilterKey,
   } from './state/filter/filters-application'
   import {
@@ -66,7 +67,15 @@
   }
 
   // PropertyFilter用の状態
-  let selectedProperty = $state<PropertyFilterKey>('price')
+  const propertyOptions = $derived.by<readonly PropertyFilterKey[]>(() =>
+    getNumericFilterKeys(slot),
+  )
+
+  const defaultProperty = $derived(
+    propertyOptions.length > 0 ? propertyOptions[0] : null,
+  )
+
+  let selectedProperty = $state<PropertyFilterKey | null>(null)
   let propertyOperandId = $state(availableFilters.property[0].id)
   let propertyInputValue = $state('')
 
@@ -82,6 +91,20 @@
 
   // 折りたたみ状態
   let isOpen = $state(true)
+
+  $effect(() => {
+    if (defaultProperty !== null && selectedProperty === null) {
+      selectedProperty = defaultProperty
+      return
+    }
+
+    if (
+      selectedProperty !== null &&
+      !propertyOptions.includes(selectedProperty)
+    ) {
+      selectedProperty = defaultProperty
+    }
+  })
 
   const heading = $derived.by(() =>
     $i18n.t('filterPanel.heading', {
@@ -154,7 +177,8 @@
         const valueStr = String(propertyInputValue).trim()
         if (valueStr === '') return
 
-        const property = selectedProperty
+        const property = selectedProperty ?? defaultProperty
+        if (!property) return
         const value = parseInt(valueStr, 10)
 
         // IDから対応するoperandを見つける
@@ -319,15 +343,11 @@
                 class="form-select"
                 bind:value={selectedProperty}
               >
-                <option value="price"
-                  >{translateProperty('price', $i18n)}</option
-                >
-                <option value="weight"
-                  >{translateProperty('weight', $i18n)}</option
-                >
-                <option value="en_load"
-                  >{translateProperty('en_load', $i18n)}</option
-                >
+                {#each propertyOptions as property (property)}
+                  <option value={property}>
+                    {translateProperty(property, $i18n)}
+                  </option>
+                {/each}
               </select>
             </div>
 

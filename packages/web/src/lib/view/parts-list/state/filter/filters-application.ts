@@ -3,6 +3,9 @@ import { jaCategory } from '$lib/i18n/locales/ja/category'
 import { jaFilterOperand } from '$lib/i18n/locales/ja/filter/operand'
 import { jaManufactures } from '$lib/i18n/locales/ja/manufactures'
 
+import { getNumericAttributes } from '@ac6_assemble_tool/parts/attributes-utils'
+import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
+
 import {
   defineExtractor,
   type Filter,
@@ -37,6 +40,12 @@ const PROPERTY_FILTER_KEY_SET: ReadonlySet<PropertyFilterKey> = new Set(
 
 export function isPropertyFilterKey(value: string): value is PropertyFilterKey {
   return PROPERTY_FILTER_KEY_SET.has(value as PropertyFilterKey)
+}
+
+export function getNumericFilterKeys(
+  slot: CandidatesKey,
+): readonly PropertyFilterKey[] {
+  return getNumericAttributes(slot)
 }
 
 /**
