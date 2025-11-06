@@ -1,7 +1,8 @@
-import type { I18Next } from '$lib/i18n/define'
-
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
+
+import '$lib/i18n/define'
+import i18next, { type i18n as I18Next } from 'i18next'
 
 import {
   buildArrayFilter,
@@ -21,67 +22,11 @@ import {
   type FilterOperand,
 } from './filters-core'
 
-const createI18nMock = (language: 'ja' | 'en' = 'ja') => {
-  const dictionariesByLanguage: Record<
-    'ja' | 'en',
-    Record<string, Record<string, string>>
-  > = {
-    ja: {
-      assembly: { price: '価格', weight: '重量', enLoad: 'EN負荷' },
-      manufacture: { balam: 'ベイラム' },
-      category: { bazooka: 'バズーカ' },
-      'filter/operand': { lte: '≤', contain: 'を含む' },
-      translation: {
-        'filters.array.label': '配列フィルター',
-      },
-    },
-    en: {
-      assembly: { price: 'Price', weight: 'Weight', enLoad: 'EN Load' },
-      manufacture: { balam: 'BALAM' },
-      category: { bazooka: 'Bazooka' },
-      'filter/operand': { lte: '<=', contain: 'contains' },
-      translation: {
-        'filters.array.label': 'Array Filter',
-      },
-    },
-  }
+const i18n: I18Next = i18next
 
-  const dictionaries = dictionariesByLanguage[language]
-
-  const t = vi.fn(
-    (
-      key: string,
-      options?: {
-        ns?: string
-        defaultValue?: string
-      },
-    ) => {
-      const ns = options?.ns ?? 'translation'
-      const namespaceDict = dictionaries[ns]
-      if (namespaceDict && key in namespaceDict) {
-        return namespaceDict[key]
-      }
-
-      if (options?.defaultValue !== undefined) {
-        return options.defaultValue
-      }
-
-      return `${ns}:${key}`
-    },
-  )
-
-  const exists = vi.fn((key: string, options?: { ns?: string }) => {
-    const ns = options?.ns ?? 'translation'
-    return Boolean(dictionaries[ns]?.[key])
-  })
-
-  return {
-    t,
-    exists,
-    language,
-    resolvedLanguage: language,
-  } as unknown as I18Next
-}
+beforeEach(async () => {
+  await i18n.changeLanguage('ja')
+})
 
 describe('filters-application', () => {
   describe('isPropertyFilterKey', () => {
@@ -92,8 +37,8 @@ describe('filters-application', () => {
   })
 
   describe('buildPropertyFilter', () => {
-    it('stringify/serializeが期待通りであること', () => {
-      const i18n = createI18nMock()
+    it('stringify/serializeが期待通りであること', async () => {
+      await i18n.changeLanguage('ja')
       const operand = numericOperands().find((op) => op.id === 'lte')!
       const filter = buildPropertyFilter('price', operand, 1000)
 
@@ -103,8 +48,8 @@ describe('filters-application', () => {
   })
 
   describe('buildNameFilter', () => {
-    it('serializeと文字列表現を返すこと', () => {
-      const i18n = createI18nMock()
+    it('serializeと文字列表現を返すこと', async () => {
+      await i18n.changeLanguage('ja')
       const operand = stringOperands().find((op) => op.id === 'contain')!
       const filter = buildNameFilter(operand, 'Zimmer')
 
@@ -114,30 +59,30 @@ describe('filters-application', () => {
   })
 
   describe('buildArrayFilter', () => {
-    it('displayName に i18n キーを指定すると翻訳を使用すること', () => {
-      const i18n = createI18nMock('ja')
+    it('displayName に i18n キーを指定すると翻訳を使用すること', async () => {
+      await i18n.changeLanguage('ja')
       const operand = selectAnyOperand()
       const filter = buildArrayFilter(
         'custom_array',
         operand,
         ['alpha', 'beta'],
-        'filters.array.label',
+        'page/parts-list:filterPanel.selection.attributeLabel',
       )
 
       expect(filter.serialize()).toBe('array:custom_array:in_any:alpha,beta')
-      expect(filter.stringify(i18n)).toBe('配列フィルター: alpha, beta')
+      expect(filter.stringify(i18n)).toBe('属性: alpha, beta')
     })
 
-    it('displayName を指定しない場合は translateProperty の結果を利用すること', () => {
-      const i18n = createI18nMock('en')
+    it('displayName を指定しない場合は translateProperty の結果を利用すること', async () => {
+      await i18n.changeLanguage('en')
       const operand = selectAnyOperand()
       const filter = buildArrayFilter('en_load', operand, ['200', '400'])
 
-      expect(filter.stringify(i18n)).toBe('EN Load: 200, 400')
+      expect(filter.stringify(i18n)).toBe('EN LOAD: 200, 400')
     })
 
-    it('translateValue オプションで値を翻訳できること', () => {
-      const i18n = createI18nMock()
+    it('translateValue オプションで値を翻訳できること', async () => {
+      await i18n.changeLanguage('ja')
       const operand = selectAnyOperand()
       const translator = resolveSelectionValueTranslator('category')
       const filter = buildArrayFilter('category', operand, ['bazooka', 'x'], {
@@ -148,8 +93,8 @@ describe('filters-application', () => {
       expect(filter.stringify(i18n)).toBe('カテゴリ: バズーカ, x')
     })
 
-    it('メーカー値を翻訳して返すこと', () => {
-      const i18n = createI18nMock()
+    it('メーカー値を翻訳して返すこと', async () => {
+      await i18n.changeLanguage('ja')
       const operand = selectAnyOperand()
       const translator = resolveSelectionValueTranslator('manufacture')
       const filter = buildArrayFilter(
@@ -168,8 +113,8 @@ describe('filters-application', () => {
   })
 
   describe('translateOperand', () => {
-    it('未知のオペランドIDはフォールバックすること', () => {
-      const i18n = createI18nMock()
+    it('未知のオペランドIDはフォールバックすること', async () => {
+      await i18n.changeLanguage('ja')
       const operand: FilterOperand = {
         id: 'custom',
         dataType: 'string',
@@ -182,20 +127,23 @@ describe('filters-application', () => {
   })
 
   describe('translateProperty', () => {
-    it('assembly 名前空間に存在するキーは翻訳値を返すこと', () => {
-      expect(translateProperty('price', createI18nMock('ja'))).toBe('価格')
-      expect(translateProperty('weight', createI18nMock('en'))).toBe('Weight')
+    it('assembly 名前空間に存在するキーは翻訳値を返すこと', async () => {
+      await i18n.changeLanguage('ja')
+      expect(translateProperty('price', i18n)).toBe('価格')
+      await i18n.changeLanguage('en')
+      expect(translateProperty('weight', i18n)).toBe('WEIGHT')
     })
 
-    it('スネークケースのキーはキャメルケースに変換して翻訳を取得すること', () => {
-      expect(translateProperty('en_load', createI18nMock('ja'))).toBe('EN負荷')
-      expect(translateProperty('en_load', createI18nMock('en'))).toBe('EN Load')
+    it('スネークケースのキーはキャメルケースに変換して翻訳を取得すること', async () => {
+      await i18n.changeLanguage('ja')
+      expect(translateProperty('en_load', i18n)).toBe('EN負荷')
+      await i18n.changeLanguage('en')
+      expect(translateProperty('en_load', i18n)).toBe('EN LOAD')
     })
 
-    it('翻訳が存在しない場合はキャメルケースへフォールバックすること', () => {
-      expect(translateProperty('attack_power', createI18nMock('ja'))).toBe(
-        'attackPower',
-      )
+    it('翻訳が存在しない場合はキャメルケースへフォールバックすること', async () => {
+      await i18n.changeLanguage('ja')
+      expect(translateProperty('attack_power', i18n)).toBe('攻撃力')
     })
   })
 

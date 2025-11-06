@@ -152,9 +152,9 @@ export function resolveSelectionValueTranslator(
     }
 
     const resource = i18n.getResource(language, property, value)
-    if (typeof resource === 'string') {
-      return resource
-    }
+        if (typeof resource === 'string') {
+          return resource
+        }
 
     return value
   }

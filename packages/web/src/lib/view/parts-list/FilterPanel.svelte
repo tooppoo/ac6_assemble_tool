@@ -53,7 +53,9 @@
 
   // フィルタ追加フォームの状態
   type FilterType = 'numeric' | 'name' | 'selection'
-  let selectedFilterType = $state<FilterType>('numeric')
+  type FilterTypeSelectValue = FilterType | PropertyFilterKey
+
+  let selectedFilterTypeState = $state<FilterType>('numeric')
 
   const numericOperandList = numericOperands()
   const nameOperandList = stringOperands()
@@ -97,6 +99,16 @@
   )
 
   let selectedSelectionAttributeState = $state<PropertyFilterKey | null>(null)
+
+  const selectedFilterType = $derived.by<FilterType>(() => {
+    if (
+      selectedFilterTypeState === 'selection' &&
+      selectionAttributes.length === 0
+    ) {
+      return 'numeric'
+    }
+    return selectedFilterTypeState
+  })
   const selectedSelectionAttribute = $derived.by<PropertyFilterKey | null>(
     () => {
       if (selectionAttributes.length === 0) {
@@ -111,6 +123,13 @@
       return selectionAttributes[0]
     },
   )
+
+  const filterTypeSelectValue = $derived.by<FilterTypeSelectValue>(() => {
+    if (selectedFilterType === 'selection') {
+      return selectedSelectionAttribute ?? 'numeric'
+    }
+    return selectedFilterType
+  })
 
   const selectionCandidates = $derived.by<readonly string[]>(() => {
     if (!selectedSelectionAttribute) {
@@ -134,6 +153,22 @@
     const value = target.value.trim()
     selectedSelectionAttributeState =
       value === '' ? null : (value as PropertyFilterKey)
+    selectedSelectionValuesState = []
+  }
+
+  function handleFilterTypeChange(event: Event) {
+    const target = event.currentTarget as HTMLSelectElement
+    const value = target.value as FilterTypeSelectValue
+
+    if (value === 'numeric' || value === 'name') {
+      selectedFilterTypeState = value
+      selectedSelectionAttributeState = null
+      selectedSelectionValuesState = []
+      return
+    }
+
+    selectedFilterTypeState = 'selection'
+    selectedSelectionAttributeState = value
     selectedSelectionValuesState = []
   }
 
@@ -294,6 +329,7 @@
   function handleToggleFavorites() {
     ontogglefavorites?.()
   }
+
 </script>
 
 <div class="card filter-panel-card">
@@ -350,7 +386,8 @@
             <select
               id="filter-type"
               class="form-select"
-              bind:value={selectedFilterType}
+              value={filterTypeSelectValue}
+              onchange={handleFilterTypeChange}
             >
               <option value="numeric">
                 {$i18n.t('filterPanel.filterTypes.numeric', {
@@ -362,11 +399,19 @@
                   ns: 'page/parts-list',
                 })}
               </option>
-              <option value="selection">
-                {$i18n.t('filterPanel.filterTypes.selection', {
-                  ns: 'page/parts-list',
-                })}
-              </option>
+              {#if selectionAttributes.length > 0}
+                <optgroup
+                  label={$i18n.t('filterPanel.filterTypes.selection', {
+                    ns: 'page/parts-list',
+                  })}
+                >
+                  {#each selectionAttributes as attribute (attribute)}
+                    <option value={attribute}>
+                      {translateProperty(attribute, $i18n)}
+                    </option>
+                  {/each}
+                </optgroup>
+              {/if}
             </select>
           </div>
         </div>
