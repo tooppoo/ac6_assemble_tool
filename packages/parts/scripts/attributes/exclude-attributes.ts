@@ -30,7 +30,8 @@ export function excludeAttributes(parts: readonly ACParts[]): readonly ACPartsAt
   // 同じ属性でもパーツによって値の型が変わることはない
   forParts(parts, (attributeName, part) => {
     // IDと名前は固有の方法でソート・フィルタを提供するので除外
-    if (attributeName === 'id' || attributeName === 'name') {
+    // classificationはslot選択時点で固定されるため除外
+    if (attributeName === 'id' || attributeName === 'name' || attributeName === 'classification') {
       return
     }
 
