@@ -28,10 +28,9 @@ export const jaPartsListPage = {
     },
     filterTypeLabel: 'フィルタ種類',
     filterTypes: {
-      property: '属性値検索',
-      name: '名前検索',
-      manufacture: 'メーカー検索',
-      category: 'カテゴリ検索',
+      numeric: '数値フィルタ',
+      name: '名前フィルタ',
+      selection: '選択フィルタ',
     },
     property: {
       label: '属性',
@@ -44,11 +43,10 @@ export const jaPartsListPage = {
       placeholder: 'パーツ名を入力',
       modeLabel: '検索モード',
     },
-    manufacture: {
-      label: 'メーカー（複数選択可）',
-    },
-    category: {
-      label: 'カテゴリ（複数選択可）',
+    selection: {
+      attributeLabel: '属性',
+      valuesLabel: '値（複数選択可）',
+      empty: '選択可能な値がありません',
     },
     add: '追加',
     list: {

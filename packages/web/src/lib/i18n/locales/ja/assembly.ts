@@ -1,5 +1,3 @@
-import { melee } from "@ac6_assemble_tool/parts/types/unit/weapon_type";
-
 export const jaAssembly = {
   rightArmUnit: '右腕武器',
   leftArmUnit: '左腕武器',

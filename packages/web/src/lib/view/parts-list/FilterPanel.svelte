@@ -1,34 +1,32 @@
 <script lang="ts">
-  /**
-   * FilterPanel - フィルタ設定UIコンポーネント
-   *
-   * スロット対応の属性フィルタUIを提供し、フィルタ条件の変更イベントを発火します。
-   */
+/**
+ * FilterPanel - フィルタ設定UIコンポーネント
+ *
+ * スロット対応の属性フィルタUIを提供し、フィルタ条件の変更イベントを発火します。
+ */
 
-  import type { I18NextStore } from '$lib/i18n/define'
+import type { I18NextStore } from '$lib/i18n/define'
 
-  import type { AttributeDefinition } from '@ac6_assemble_tool/parts/attributes-utils'
-  import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
-  import { Collapse } from '@sveltestrap/sveltestrap'
-  import { getContext } from 'svelte'
+import type { AttributeDefinition } from '@ac6_assemble_tool/parts/attributes-utils'
+import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
+import { Collapse } from '@sveltestrap/sveltestrap'
+import { getContext } from 'svelte'
 
-  import {
-    buildCategoryFilter,
-    buildManufactureFilter,
-    buildNameFilter,
-    buildPropertyFilter,
-    translateCategory,
-    translateManufacturer,
-    translateOperand,
-    translateProperty,
-    type PropertyFilterKey,
-  } from './state/filter/filters-application'
-  import {
-    numericOperands,
-    selectAnyOperand,
-    stringOperands,
-    type Filter,
-  } from './state/filter/filters-core'
+import {
+  buildArrayFilter,
+  buildNameFilter,
+  buildPropertyFilter,
+  resolveSelectionValueTranslator,
+  translateOperand,
+  translateProperty,
+  type PropertyFilterKey,
+} from './state/filter/filters-application'
+import {
+  numericOperands,
+  selectAnyOperand,
+  stringOperands,
+  type Filter,
+} from './state/filter/filters-core'
 
   // i18n
   const i18n = getContext<I18NextStore>('i18n')
@@ -54,15 +52,12 @@
   }: Props = $props()
 
   // フィルタ追加フォームの状態
-  type FilterType = 'property' | 'name' | 'manufacture' | 'category'
-  let selectedFilterType = $state<FilterType>('property')
+  type FilterType = 'numeric' | 'name' | 'selection'
+  let selectedFilterType = $state<FilterType>('numeric')
 
-  const availableFilters = {
-    property: numericOperands(),
-    name: stringOperands(),
-    manufacture: selectAnyOperand(),
-    category: selectAnyOperand(),
-  }
+  const numericOperandList = numericOperands()
+  const nameOperandList = stringOperands()
+  const selectionOperand = selectAnyOperand()
 
   // PropertyFilter用の状態
   const numericAttributes = $derived.by(() =>
@@ -89,18 +84,71 @@
     }
     return propertyOptions[0]
   })
-  let propertyOperandId = $state(availableFilters.property[0].id)
+  let propertyOperandId = $state(numericOperandList[0].id)
   let propertyInputValue = $state('')
 
   // NameFilter用の状態
-  let nameOperandId = $state(availableFilters.name[0].id)
+  let nameOperandId = $state(nameOperandList[0].id)
   let nameInputValue = $state('')
 
-  // ManufactureFilter用の状態
-  let selectedManufacturers = $state<string[]>([])
+// SelectionFilter用の状態
+const selectionAttributes = $derived.by<readonly PropertyFilterKey[]>(() =>
+  arrayAttributes.map(
+    (attr) => attr.attributeName as PropertyFilterKey,
+  ),
+)
 
-  // CategoryFilter用の状態
-  let selectedCategories = $state<string[]>([])
+let selectedSelectionAttributeState = $state<PropertyFilterKey | null>(null)
+const selectedSelectionAttribute =
+  $derived.by<PropertyFilterKey | null>(() => {
+    if (selectionAttributes.length === 0) {
+      return null
+    }
+    if (
+      selectedSelectionAttributeState !== null &&
+      selectionAttributes.includes(selectedSelectionAttributeState)
+    ) {
+      return selectedSelectionAttributeState
+    }
+    return selectionAttributes[0]
+  })
+
+const selectionCandidates = $derived.by<readonly string[]>(() => {
+  if (!selectedSelectionAttribute) {
+    return []
+  }
+  const definition = arrayAttributes.find(
+    (attr) => attr.attributeName === selectedSelectionAttribute,
+  )
+  return definition?.candidates ?? []
+})
+
+let selectedSelectionValuesState = $state<string[]>([])
+const selectedSelectionValues = $derived.by<readonly string[]>(() =>
+  selectedSelectionValuesState.filter((value) =>
+    selectionCandidates.includes(value),
+  ),
+)
+
+function handleSelectionAttributeChange(event: Event) {
+  const target = event.currentTarget as HTMLSelectElement
+  const value = target.value.trim()
+  selectedSelectionAttributeState =
+    value === '' ? null : (value as PropertyFilterKey)
+  selectedSelectionValuesState = []
+}
+
+function translateSelectionValue(value: string): string {
+  const attribute = selectedSelectionAttribute
+  if (!attribute) {
+    return value
+  }
+  const translator = resolveSelectionValueTranslator(attribute)
+  if (!translator) {
+    return value
+  }
+  return translator(value, $i18n)
+}
 
   // 折りたたみ状態
   let isOpen = $state(true)
@@ -142,39 +190,21 @@
 
   const collapseContentId = $derived(`filter-panel-${slot}-body`)
 
-  // 利用可能なメーカーとカテゴリを計算
-  const availableManufacturers = $derived(
-    arrayAttributes.find((attr) => attr.attributeName === 'manufacture')
-      ?.candidates ?? [],
-  )
-  const availableCategories = $derived(
-    arrayAttributes.find((attr) => attr.attributeName === 'category')
-      ?.candidates ?? [],
-  )
-
-  const selectedManufacturersNormalized = $derived.by(() =>
-    selectedManufacturers.filter((value) =>
-      availableManufacturers.includes(value),
-    ),
-  )
-  const selectedCategoriesNormalized = $derived.by(() =>
-    selectedCategories.filter((value) => availableCategories.includes(value)),
-  )
-
   // 追加ボタンの有効/無効判定
   function isAddButtonDisabled(): boolean {
     switch (selectedFilterType) {
-      case 'property':
+      case 'numeric':
         return (
           selectedPropertyValue === null ||
           String(propertyInputValue).trim() === ''
         )
       case 'name':
         return String(nameInputValue).trim() === ''
-      case 'manufacture':
-        return selectedManufacturersNormalized.length === 0
-      case 'category':
-        return selectedCategoriesNormalized.length === 0
+      case 'selection':
+        return (
+          selectedSelectionAttribute === null ||
+          selectedSelectionValues.length === 0
+        )
       default:
         return true
     }
@@ -196,7 +226,7 @@
     let newFilter: Filter | null = null
 
     switch (selectedFilterType) {
-      case 'property': {
+      case 'numeric': {
         const valueStr = String(propertyInputValue).trim()
         if (selectedPropertyValue === null || valueStr === '') return
 
@@ -204,7 +234,7 @@
         const value = parseInt(valueStr, 10)
 
         // IDから対応するoperandを見つける
-        const operand = availableFilters.property.find(
+        const operand = numericOperandList.find(
           (op) => op.id === propertyOperandId,
         )
         if (!operand) return
@@ -219,7 +249,7 @@
         if (valueStr === '') return
 
         // IDから対応するoperandを見つける
-        const operand = availableFilters.name.find(
+        const operand = nameOperandList.find(
           (op) => op.id === nameOperandId,
         )
         if (!operand) return
@@ -229,25 +259,21 @@
         break
       }
 
-      case 'manufacture': {
-        const normalized = selectedManufacturersNormalized
-        if (normalized.length === 0) return
+      case 'selection': {
+        const attribute = selectedSelectionAttribute
+        const normalized = selectedSelectionValues
+        if (!attribute || normalized.length === 0) return
 
-        newFilter = buildManufactureFilter(availableFilters.manufacture, [
-          ...normalized,
-        ])
-        selectedManufacturers = []
-        break
-      }
-
-      case 'category': {
-        const normalized = selectedCategoriesNormalized
-        if (normalized.length === 0) return
-
-        newFilter = buildCategoryFilter(availableFilters.category, [
-          ...normalized,
-        ])
-        selectedCategories = []
+        const translator = resolveSelectionValueTranslator(attribute)
+        const options =
+          translator !== undefined ? { translateValue: translator } : undefined
+        newFilter = buildArrayFilter(
+          attribute,
+          selectionOperand,
+          [...normalized] as readonly string[],
+          options,
+        )
+        selectedSelectionValuesState = []
         break
       }
     }
@@ -329,8 +355,8 @@
               class="form-select"
               bind:value={selectedFilterType}
             >
-              <option value="property">
-                {$i18n.t('filterPanel.filterTypes.property', {
+              <option value="numeric">
+                {$i18n.t('filterPanel.filterTypes.numeric', {
                   ns: 'page/parts-list',
                 })}
               </option>
@@ -339,13 +365,8 @@
                   ns: 'page/parts-list',
                 })}
               </option>
-              <option value="manufacture">
-                {$i18n.t('filterPanel.filterTypes.manufacture', {
-                  ns: 'page/parts-list',
-                })}
-              </option>
-              <option value="category">
-                {$i18n.t('filterPanel.filterTypes.category', {
+              <option value="selection">
+                {$i18n.t('filterPanel.filterTypes.selection', {
                   ns: 'page/parts-list',
                 })}
               </option>
@@ -354,7 +375,7 @@
         </div>
 
         <!-- PropertyFilter用UI -->
-        {#if selectedFilterType === 'property'}
+        {#if selectedFilterType === 'numeric'}
           <div class="row g-2">
             <div class="col-12 col-md-4">
               <label for="filter-property" class="form-label mb-1 text-white">
@@ -393,7 +414,7 @@
                 disabled={propertyOptions.length === 0}
                 bind:value={propertyOperandId}
               >
-                {#each availableFilters.property as operand (operand.id)}
+                {#each numericOperandList as operand (operand.id)}
                   <option value={operand.id}>
                     {translateOperand(operand, $i18n)}
                   </option>
@@ -465,7 +486,7 @@
                 class="form-select"
                 bind:value={nameOperandId}
               >
-                {#each availableFilters.name as operand (operand.id)}
+                {#each nameOperandList as operand (operand.id)}
                   <option value={operand.id}>
                     {translateOperand(operand, $i18n)}
                   </option>
@@ -486,82 +507,69 @@
           </div>
         {/if}
 
-        <!-- ManufactureFilter用UI -->
-        {#if selectedFilterType === 'manufacture'}
+        <!-- SelectionFilter用UI -->
+        {#if selectedFilterType === 'selection'}
           <div class="row g-2">
-            <div class="col-12 col-md-10">
+            <div class="col-12 col-md-4">
+              <label for="selection-attribute" class="form-label mb-1 text-white">
+                {$i18n.t('filterPanel.selection.attributeLabel', {
+                  ns: 'page/parts-list',
+                })}
+              </label>
+              <select
+                id="selection-attribute"
+                class="form-select"
+                disabled={selectionAttributes.length === 0}
+                value={selectedSelectionAttribute ?? ''}
+                onchange={handleSelectionAttributeChange}
+              >
+                {#if selectionAttributes.length === 0}
+                  <option value="" disabled>-</option>
+                {:else}
+                  {#each selectionAttributes as attribute (attribute)}
+                    <option value={attribute}>
+                      {translateProperty(attribute, $i18n)}
+                    </option>
+                  {/each}
+                {/if}
+              </select>
+            </div>
+
+            <div class="col-12 col-md-6">
               <p class="form-label mb-1 text-white">
-                {$i18n.t('filterPanel.manufacture.label', {
+                {$i18n.t('filterPanel.selection.valuesLabel', {
                   ns: 'page/parts-list',
                 })}
               </p>
               <div
-                class="manufacture-checkboxes p-2 bg-dark bg-opacity-50 rounded"
+                class="selection-checkboxes p-2 bg-dark bg-opacity-50 rounded"
                 style="max-height: 200px; overflow-y: auto;"
               >
-                {#each availableManufacturers as manufacturer (manufacturer)}
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="manu-{manufacturer}"
-                      value={manufacturer}
-                      bind:group={selectedManufacturers}
-                    />
-                    <label
-                      class="form-check-label text-white"
-                      for="manu-{manufacturer}"
-                    >
-                      {translateManufacturer(manufacturer, $i18n)}
-                    </label>
-                  </div>
-                {/each}
-              </div>
-            </div>
-
-            <div class="col-12 col-md-2 d-flex align-items-end">
-              <button
-                type="button"
-                class="btn btn-primary w-100"
-                disabled={isAddButtonDisabled()}
-                onclick={handleAddFilter}
-              >
-                {$i18n.t('filterPanel.add', { ns: 'page/parts-list' })}
-              </button>
-            </div>
-          </div>
-        {/if}
-
-        <!-- CategoryFilter用UI -->
-        {#if selectedFilterType === 'category'}
-          <div class="row g-2">
-            <div class="col-12 col-md-10">
-              <p class="form-label mb-1 text-white">
-                {$i18n.t('filterPanel.category.label', {
-                  ns: 'page/parts-list',
-                })}
-              </p>
-              <div
-                class="category-checkboxes p-2 bg-dark bg-opacity-50 rounded"
-                style="max-height: 200px; overflow-y: auto;"
-              >
-                {#each availableCategories as category (category)}
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="cat-{category}"
-                      value={category}
-                      bind:group={selectedCategories}
-                    />
-                    <label
-                      class="form-check-label text-white"
-                      for="cat-{category}"
-                    >
-                      {translateCategory(category, $i18n)}
-                    </label>
-                  </div>
-                {/each}
+                {#if selectionCandidates.length === 0}
+                  <p class="text-muted mb-0">
+                    {$i18n.t('filterPanel.selection.empty', {
+                      ns: 'page/parts-list',
+                    })}
+                  </p>
+                {:else}
+                  {#each selectionCandidates as candidate (candidate)}
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="sel-{candidate}"
+                        value={candidate}
+                        bind:group={selectedSelectionValuesState}
+                      />
+                      <label
+                        class="form-check-label text-white"
+                        for="sel-{candidate}"
+                      >
+                        {translateSelectionValue(candidate)}
+                      </label>
+                    </div>
+                  {/each}
+                {/if}
               </div>
             </div>
 

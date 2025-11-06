@@ -11,8 +11,7 @@ import { decompressFromUrlSafeString } from './compression'
 import {
   buildPropertyFilter,
   buildNameFilter,
-  buildManufactureFilter,
-  buildCategoryFilter,
+  buildArrayFilter,
 } from './filters-application'
 import {
   type Filter,
@@ -98,18 +97,9 @@ export function parseFilter(filterParam: string): Filter | null {
         return null
       }
 
-      switch (property) {
-        case 'manufacture': {
-          return buildManufactureFilter(selectAnyOperand(), values)
-        }
-        case 'category': {
-          return buildCategoryFilter(selectAnyOperand(), values)
-        }
-        default:
-          // 未知のフィルタタイプ、またはレガシー形式
-          logger.warn('Unknown or legacy filter type', { filterParam })
-          return null
-      }
+      return buildArrayFilter(property, selectAnyOperand(), values, {
+        translateValue: (key: string, i18n) => i18n.t(key, { ns: property })
+      })
     }
     default:
       // 未知のフィルタタイプ、またはレガシー形式

@@ -29,10 +29,9 @@ export const enPartsListPage = {
     },
     filterTypeLabel: 'Filter type',
     filterTypes: {
-      property: 'Property filter',
-      name: 'Name filter',
-      manufacture: 'Manufacturer filter',
-      category: 'Category filter',
+      numeric: 'Numeric Filter',
+      name: 'Name Filter',
+      selection: 'Selection Filter',
     },
     property: {
       label: 'Property',
@@ -45,11 +44,10 @@ export const enPartsListPage = {
       placeholder: 'Enter part name',
       modeLabel: 'Search mode',
     },
-    manufacture: {
-      label: 'Manufacturers (multi select)',
-    },
-    category: {
-      label: 'Categories (multi select)',
+    selection: {
+      attributeLabel: 'Attribute',
+      valuesLabel: 'Values (multi select)',
+      empty: 'No selectable values available',
     },
     add: 'Add',
     list: {

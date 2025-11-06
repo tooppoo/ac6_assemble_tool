@@ -181,6 +181,12 @@ export function translateCategory(category: string, i18n: I18Next): string {
   return i18n.t(category, { ns: 'category' })
 }
 
+export function resolveSelectionValueTranslator(
+  property: PropertyFilterKey,
+): ArrayFilterOptions['translateValue'] | undefined {
+  return (key: string, i18n: I18Next) => i18n.t(key, { ns: property })
+}
+
 // util
 export function translateOperand(
   operand: FilterOperand,
