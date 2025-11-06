@@ -200,7 +200,7 @@ packages/web/src/lib/view/parts-list/
 
 2. **filters-application.ts** (115行追加):
    - `buildPropertyFilter()`, `buildNameFilter()`, `buildArrayFilter()`: Filterビルダー
-   - `translateOperand()`, `translateProperty()`, `translateManufacturer()`, `translateCategory()`: i18n関数
+   - `translateOperand()`, `translateProperty()`: i18n関数
    - アプリケーション固有のロジックと表示用文字列生成
 
 3. **i18n対応の強化**:
@@ -1019,8 +1019,6 @@ function buildArrayFilter(
 // i18n関数
 function translateOperand(operand: FilterOperand, i18n: I18Next): string
 function translateProperty(property: keyof ACParts, i18n: I18Next): string
-function translateManufacturer(manufacturer: string, i18n: I18Next): string
-function translateCategory(category: string, i18n: I18Next): string
 ```
 
 **Preconditions**:

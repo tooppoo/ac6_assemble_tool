@@ -1,7 +1,5 @@
 import type { I18Next } from '$lib/i18n/define'
-import { jaCategory } from '$lib/i18n/locales/ja/category'
 import { jaFilterOperand } from '$lib/i18n/locales/ja/filter/operand'
-import { jaManufactures } from '$lib/i18n/locales/ja/manufactures'
 
 import { getNumericAttributes } from '@ac6_assemble_tool/parts/attributes-utils'
 import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
@@ -144,23 +142,6 @@ export function buildNameFilter(
   }
 }
 
-export function translateManufacturer(
-  manufacturer: string,
-  i18n: I18Next,
-): string {
-  if (!isManufactureTranslationKey(manufacturer)) {
-    return manufacturer
-  }
-  return i18n.t(manufacturer, { ns: 'manufacture' })
-}
-
-export function translateCategory(category: string, i18n: I18Next): string {
-  if (!isCategoryTranslationKey(category)) {
-    return category
-  }
-  return i18n.t(category, { ns: 'category' })
-}
-
 export function resolveSelectionValueTranslator(
   property: PropertyFilterKey,
 ): ArrayFilterOptions['translateValue'] | undefined {
@@ -176,26 +157,6 @@ export function translateOperand(
     return operand.id
   }
   return i18n.t(operand.id, { ns: 'filter/operand' })
-}
-
-type ManufactureTranslationKey = keyof typeof jaManufactures
-const manufactureTranslationKeys = new Set<ManufactureTranslationKey>(
-  Object.keys(jaManufactures) as ManufactureTranslationKey[],
-)
-function isManufactureTranslationKey(
-  value: string,
-): value is ManufactureTranslationKey {
-  return manufactureTranslationKeys.has(value as ManufactureTranslationKey)
-}
-
-type CategoryTranslationKey = keyof typeof jaCategory
-const categoryTranslationKeys = new Set<CategoryTranslationKey>(
-  Object.keys(jaCategory) as CategoryTranslationKey[],
-)
-function isCategoryTranslationKey(
-  value: string,
-): value is CategoryTranslationKey {
-  return categoryTranslationKeys.has(value as CategoryTranslationKey)
 }
 
 type FilterOperandTranslationKey = keyof typeof jaFilterOperand

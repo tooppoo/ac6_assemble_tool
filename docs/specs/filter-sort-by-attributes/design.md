@@ -534,8 +534,6 @@ interface FiltersApplicationService {
 
   // 翻訳関数
   translateProperty(property: PropertyFilterKey, i18n: I18Next): string
-  translateManufacturer(manufacturer: string, i18n: I18Next): string
-  translateCategory(category: string, i18n: I18Next): string
   translateOperand(operand: FilterOperand, i18n: I18Next): string
 }
 ```

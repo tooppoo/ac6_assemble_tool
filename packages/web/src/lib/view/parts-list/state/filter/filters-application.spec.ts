@@ -9,10 +9,9 @@ import {
   buildPropertyFilter,
   getNumericFilterKeys,
   isPropertyFilterKey,
-  translateCategory,
-  translateManufacturer,
   translateProperty,
   translateOperand,
+  resolveSelectionValueTranslator,
 } from './filters-application'
 import {
   applyFilters,
@@ -140,10 +139,16 @@ describe('filters-application', () => {
     it('translateValue オプションで値を翻訳できること', () => {
       const i18n = createI18nMock()
       const operand = selectAnyOperand()
-      const filter = buildArrayFilter('category', operand, ['bazooka', 'x'], {
-        displayName: 'カテゴリ',
-        translateValue: (value, context) => translateCategory(value, context),
-      })
+      const translator = resolveSelectionValueTranslator('category')
+      const filter = buildArrayFilter(
+        'category',
+        operand,
+        ['bazooka', 'x'],
+        {
+          displayName: 'カテゴリ',
+          translateValue: translator,
+        },
+      )
 
       expect(filter.stringify(i18n)).toBe('カテゴリ: バズーカ, x')
     })
@@ -151,14 +156,14 @@ describe('filters-application', () => {
     it('メーカー値を翻訳して返すこと', () => {
       const i18n = createI18nMock()
       const operand = selectAnyOperand()
+      const translator = resolveSelectionValueTranslator('manufacture')
       const filter = buildArrayFilter(
         'manufacture',
         operand,
         ['balam', 'unknown'],
         {
           displayName: 'メーカー',
-          translateValue: (value, context) =>
-            translateManufacturer(value, context),
+          translateValue: translator,
         },
       )
 
@@ -180,30 +185,6 @@ describe('filters-application', () => {
       }
 
       expect(translateOperand(operand, i18n)).toBe('custom')
-    })
-  })
-
-  describe('translateManufacturer', () => {
-    it('既知メーカーを翻訳すること', () => {
-      const i18n = createI18nMock()
-      expect(translateManufacturer('balam', i18n)).toBe('ベイラム')
-    })
-
-    it('未知の値はそのまま返すこと', () => {
-      const i18n = createI18nMock()
-      expect(translateManufacturer('unknown', i18n)).toBe('unknown')
-    })
-  })
-
-  describe('translateCategory', () => {
-    it('既知カテゴリを翻訳すること', () => {
-      const i18n = createI18nMock()
-      expect(translateCategory('bazooka', i18n)).toBe('バズーカ')
-    })
-
-    it('未知の値はそのまま返すこと', () => {
-      const i18n = createI18nMock()
-      expect(translateCategory('mystery', i18n)).toBe('mystery')
     })
   })
 

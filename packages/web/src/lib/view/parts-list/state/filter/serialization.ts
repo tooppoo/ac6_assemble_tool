@@ -12,6 +12,7 @@ import {
   buildArrayFilter,
   buildNameFilter,
   buildPropertyFilter,
+  resolveSelectionValueTranslator,
 } from './filters-application'
 import {
   type Filter,
@@ -97,8 +98,10 @@ export function parseFilter(filterParam: string): Filter | null {
         return null
       }
 
+      const translateValue = resolveSelectionValueTranslator(property)
+
       return buildArrayFilter(property, selectAnyOperand(), values, {
-        translateValue: (key: string, i18n) => i18n.t(key, { ns: property })
+        translateValue,
       })
     }
     default:
