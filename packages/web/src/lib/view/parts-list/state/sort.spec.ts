@@ -1,4 +1,7 @@
-import { getNumericAttributes } from '@ac6_assemble_tool/parts/attributes-utils'
+import {
+  getArrayAttributes,
+  getNumericAttributes,
+} from '@ac6_assemble_tool/parts/attributes-utils'
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { describe, it, expect } from 'vitest'
@@ -76,20 +79,26 @@ describe('parseSort', () => {
 })
 
 describe('getAvailableSortKeys', () => {
-  it('attributes.ts で定義された数値属性を返すこと', () => {
+  it('数値属性が主なスロットでは数値+必要な配列属性を返すこと', () => {
     const slot: CandidatesKey = 'head'
 
     const result = getAvailableSortKeys(slot)
 
-    expect(result).toEqual<SortKey[]>([...getNumericAttributes(slot)])
+    expect(result).toEqual<SortKey[]>([
+      ...getNumericAttributes(slot),
+      ...getArrayAttributes(slot),
+    ])
   })
 
-  it('動的な数値属性を含むスロットではその属性を返すこと', () => {
+  it('数値・配列属性を持つスロットでは双方を返すこと', () => {
     const slot: CandidatesKey = 'rightArmUnit'
 
     const result = getAvailableSortKeys(slot)
 
-    expect(result).toContain('attack_power')
+    expect(result).toEqual<SortKey[]>([
+      ...getNumericAttributes(slot),
+      ...getArrayAttributes(slot),
+    ])
   })
 })
 
@@ -131,6 +140,42 @@ describe('sortPartsByKey', () => {
       'TEST-1',
       'TEST-4',
       'TEST-3',
+    ])
+  })
+
+  it('配列型属性（文字列）の昇順ソートを行うこと', () => {
+    const arrayParts: ExtendedPart[] = [
+      createPart({ attack_type: ['bazooka'] }, 1),
+      createPart({ attack_type: ['laser'] }, 2),
+      createPart({ attack_type: [] }, 3),
+      createPart({}, 4),
+    ]
+
+    const sorted = sortPartsByKey(arrayParts, 'attack_type', 'asc')
+
+    expect(sorted.map((part) => part.id)).toEqual([
+      'TEST-1', // bazooka
+      'TEST-2', // laser
+      'TEST-3', // empty array -> no value
+      'TEST-4', // undefined
+    ])
+  })
+
+  it('配列型属性（文字列）の降順ソートを行うこと', () => {
+    const arrayParts: ExtendedPart[] = [
+      createPart({ attack_type: ['assault'] }, 1),
+      createPart({ attack_type: ['bazooka'] }, 2),
+      createPart({ attack_type: ['laser'] }, 3),
+      createPart({}, 4),
+    ]
+
+    const sorted = sortPartsByKey(arrayParts, 'attack_type', 'desc')
+
+    expect(sorted.map((part) => part.id)).toEqual([
+      'TEST-3', // laser
+      'TEST-2', // bazooka
+      'TEST-1', // assault
+      'TEST-4', // undefined
     ])
   })
 })
