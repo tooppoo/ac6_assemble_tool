@@ -146,4 +146,7 @@ export const jaAssembly = {
   price: '価格',
 
   coam: '総COAM',
+
+  category: 'カテゴリ',
+  manufacture: 'メーカー',
 }

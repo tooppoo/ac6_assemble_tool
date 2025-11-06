@@ -143,4 +143,7 @@ export const enAssembly = {
   price: 'PRICE',
 
   coam: 'COAM',
+
+  category: 'CATEGORY',
+  manufacture: 'MANUFACTURE',
 }
