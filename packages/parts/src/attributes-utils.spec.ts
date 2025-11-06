@@ -39,10 +39,10 @@ describe('attributes-utils', () => {
     it('should maintain attributes.ts definition order', () => {
       const attributes = getAttributesForSlot('rightArmUnit')
 
-      // armUnitAttributes の最初の属性は classification (array 型)
-      // attributes.ts の定義順を維持するため、classification が最初に来るはず
+      // armUnitAttributes の最初の属性は category (array 型)
+      // attributes.ts の定義順を維持するため、category が最初に来るはず
       const firstAttribute = attributes[0]
-      expect(firstAttribute?.attributeName).toBe('classification')
+      expect(firstAttribute?.attributeName).toBe('category')
     })
 
     it('should include both numeric and array type attributes', () => {

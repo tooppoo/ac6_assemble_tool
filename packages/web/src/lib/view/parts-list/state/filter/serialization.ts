@@ -2,6 +2,7 @@ import {
   CANDIDATES_KEYS,
   type CandidatesKey,
 } from '@ac6_assemble_tool/parts/types/candidates'
+import { getArrayAttributes } from '@ac6_assemble_tool/parts/attributes-utils'
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 
@@ -20,6 +21,16 @@ import {
   selectAnyOperand,
   stringOperands,
 } from './filters-core'
+
+const ARRAY_FILTER_PROPERTY_SET: ReadonlySet<string> = (() => {
+  const entries = new Set<string>()
+  for (const slot of CANDIDATES_KEYS) {
+    for (const attribute of getArrayAttributes(slot)) {
+      entries.add(attribute)
+    }
+  }
+  return entries
+})()
 
 /**
  * フィルタパラメータをパース
@@ -87,7 +98,21 @@ export function parseFilter(filterParam: string): Filter | null {
       // Format1: array:manufacture:operand:value1,value2,value3
       // Format2: array:category:operand:value1,value2,value3
 
-      const [, property, , valuesStr] = parts
+      const [, property, operator, valuesStr] = parts
+
+      if (!property || property.trim() === '') {
+        return null
+      }
+
+      if (!ARRAY_FILTER_PROPERTY_SET.has(property)) {
+        return null
+      }
+
+      // operatorの検証
+      const arrayOperand = selectAnyOperand()
+      if (operator !== arrayOperand.id) {
+        return null
+      }
 
       // valuesの検証
       if (!valuesStr || valuesStr.trim() === '') {
@@ -100,7 +125,7 @@ export function parseFilter(filterParam: string): Filter | null {
 
       const translateValue = resolveSelectionValueTranslator(property)
 
-      return buildArrayFilter(property, selectAnyOperand(), values, {
+      return buildArrayFilter(property, arrayOperand, values, {
         translateValue,
       })
     }
