@@ -86,7 +86,7 @@ export const jaAssembly = {
   armsLoadLimit: '腕部積載上限',
   recoilControl: '反動制御',
   firearmSpecialization: '射撃武器適正',
-  melesSpecialization: '近接武器適正',
+  meleeSpecialization: '近接武器適正',
 
   // legs
   loadLimit: '積載上限',
@@ -133,7 +133,7 @@ export const jaAssembly = {
   weight: '総重量',
   load: '積載量',
   armsLoad: '腕部積載量',
-  melesRatio: ' 近接倍率',
+  meleeRatio: ' 近接倍率',
   enFirearmSpec: 'EN射撃武器適正',
   enFirearmRatio: 'EN射撃武器倍率',
   enRechargeDelay: 'EN補充遅延',

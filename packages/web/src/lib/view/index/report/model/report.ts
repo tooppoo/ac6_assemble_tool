@@ -20,8 +20,8 @@ export function defaultReportAggregation(): ReportAggregation {
       Report.create('loadLimit'),
       Report.create('armsLoad'),
       Report.create('armsLoadLimit'),
-      Report.create('melesSpecialization'),
-      Report.create('melesRatio'),
+      Report.create('meleeSpecialization'),
+      Report.create('meleeRatio'),
     ]),
     ReportBlock.create([
       Report.create('enLoad'),

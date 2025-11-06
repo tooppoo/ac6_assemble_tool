@@ -62,9 +62,9 @@ export type AssemblyProperty = {
   /** 腕部積載上限 */
   readonly armsLoadLimit: number
   /** 近接武器適正 */
-  readonly melesSpecialization: number
+  readonly meleeSpecialization: number
   /** 近接武器適正 */
-  readonly melesRatio: number
+  readonly meleeRatio: number
 
   /** EN負荷 */
   readonly enLoad: number
@@ -151,11 +151,11 @@ export function createAssembly(base: RawAssembly): Assembly {
     get armsLoadLimit(): number {
       return this.arms.arms_load_limit
     },
-    get melesSpecialization(): number {
+    get meleeSpecialization(): number {
       return this.arms.melee_specialization
     },
-    get melesRatio(): number {
-      return Math.floor((this.melesSpecialization + 100) / 2)
+    get meleeRatio(): number {
+      return Math.floor((this.meleeSpecialization + 100) / 2)
     },
     get enLoad(): number {
       return sum(

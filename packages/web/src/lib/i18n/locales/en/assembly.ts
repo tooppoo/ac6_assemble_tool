@@ -84,7 +84,7 @@ export const enAssembly = {
   armsLoadLimit: 'ARMS LOAD LIMIT',
   recoilControl: 'RECOIL CONTROL',
   firearmSpecialization: 'FIREARM SPECIALIZATION',
-  melesSpecialization: 'MELES SPECIALIZATION',
+  meleeSpecialization: 'MELEE SPECIALIZATION',
 
   // legs
   loadLimit: 'LOAD LIMIT',
@@ -130,7 +130,7 @@ export const enAssembly = {
   weight: 'WEIGHT',
   load: 'LOAD',
   armsLoad: 'ARMS LOAD',
-  melesRatio: 'MELES RATIO',
+  meleeRatio: 'MELEE RATIO',
 
   enFirearmSpec: 'EN FIREARM SPEC',
   enFirearmRatio: 'EN FIREARM RATIO',
