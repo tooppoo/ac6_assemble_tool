@@ -144,16 +144,6 @@ export function buildNameFilter(
   }
 }
 
-// manufacture
-export function buildManufactureFilter(
-  operand: FilterOperand<'array'>,
-  value: readonly string[],
-): Filter {
-  return buildArrayFilter('manufacture', operand, value, {
-    displayName: 'メーカー',
-    translateValue: translateManufacturer,
-  })
-}
 export function translateManufacturer(
   manufacturer: string,
   i18n: I18Next,
@@ -164,16 +154,6 @@ export function translateManufacturer(
   return i18n.t(manufacturer, { ns: 'manufacture' })
 }
 
-// category
-export function buildCategoryFilter(
-  operand: FilterOperand<'array'>,
-  value: readonly string[],
-): Filter {
-  return buildArrayFilter('category', operand, value, {
-    displayName: 'カテゴリ',
-    translateValue: translateCategory,
-  })
-}
 export function translateCategory(category: string, i18n: I18Next): string {
   if (!isCategoryTranslationKey(category)) {
     return category

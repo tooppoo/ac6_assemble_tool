@@ -9,9 +9,9 @@ import { VALID_SLOTS, type DeserializeError } from '../shared'
 
 import { decompressFromUrlSafeString } from './compression'
 import {
-  buildPropertyFilter,
-  buildNameFilter,
   buildArrayFilter,
+  buildNameFilter,
+  buildPropertyFilter,
 } from './filters-application'
 import {
   type Filter,

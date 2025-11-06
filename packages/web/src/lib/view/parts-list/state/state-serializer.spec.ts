@@ -6,8 +6,7 @@ import {
   decompressFromUrlSafeString,
 } from './filter/compression'
 import {
-  buildCategoryFilter,
-  buildManufactureFilter,
+  buildArrayFilter,
   buildNameFilter,
   buildPropertyFilter,
 } from './filter/filters-application'
@@ -66,8 +65,16 @@ describe('StateSerializer', () => {
           ],
           rightArmUnit: [
             buildPropertyFilter('price', lteOperand, 100000),
-            buildManufactureFilter(selectAnyOperand(), ['BALAM', 'FURLONG']),
-            buildCategoryFilter(selectAnyOperand(), ['MEDIUM']),
+            buildArrayFilter(
+              'manufacture',
+              selectAnyOperand(),
+              ['BALAM', 'FURLONG'],
+            ),
+            buildArrayFilter(
+              'category',
+              selectAnyOperand(),
+              ['MEDIUM'],
+            ),
           ],
         },
         sortKey: null,

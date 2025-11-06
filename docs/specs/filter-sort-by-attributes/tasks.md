@@ -53,7 +53,7 @@
 - [x] 2.2 配列型属性フィルター構築機能の汎用化
   - 汎用的な配列型フィルター構築関数を実装
   - candidates フィールドを使用した選択肢の動的生成
-  - 既存の buildCategoryFilter / buildManufactureFilter との統合
+  - 既存の buildArrayFilter 活用と翻訳戦略の統合
   - _Requirements: 2.3_
 
 - [x] 2.3 属性翻訳機能の拡張

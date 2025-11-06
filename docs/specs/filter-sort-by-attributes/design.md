@@ -239,7 +239,7 @@ flowchart TD
     ArrayUI --> ArrayInput[チェックボックス/ドロップダウン]
 
     NumericInput --> BuildNumeric[buildPropertyFilter]
-    ArrayInput --> BuildArray[buildCategoryFilter<br/>or buildManufactureFilter]
+    ArrayInput --> BuildArray[buildArrayFilter + translateValue resolver]
 
     BuildNumeric --> Apply[applyFilters]
     BuildArray --> Apply
@@ -280,7 +280,7 @@ flowchart TD
 | 1.1, 1.2 | スロット固有属性の提供 | attributes-utils, PartsListView | getAttributesForSlot() | User Interaction Flow |
 | 1.3 | 属性表示順序の維持 | attributes-utils | getAttributesForSlot() | - |
 | 2.1, 2.2 | 数値属性フィルター | FilterPanel, filters-application | buildPropertyFilter() | Filter Application Flow |
-| 2.3 | 配列属性フィルター | FilterPanel, filters-application | buildCategoryFilter(), buildManufactureFilter() | Filter Application Flow |
+| 2.3 | 配列属性フィルター | FilterPanel, filters-application | buildArrayFilter(), resolveSelectionValueTranslator() | Filter Application Flow |
 | 2.4 | 複数フィルター適用 | filters-core | applyFilters() | Filter Application Flow |
 | 2.6 | スロット変更時のフィルタークリア | PartsListView | handleSlotChange() | User Interaction Flow |
 | 3.1, 3.2, 3.3 | ソート機能 | SortControl, sort | sortPartsByKey() | Sort Application Flow |
@@ -495,7 +495,7 @@ interface SortControlProps {
 
 **Modification Strategy**: 型定義と関数シグネチャを拡張
 - 変更: `PropertyFilterKey` を string 型に変更
-- 新規追加: 配列型属性のフィルター構築関数（既存の buildCategoryFilter, buildManufactureFilter を汎用化）
+- 新規追加: 汎用 `buildArrayFilter` と `resolveSelectionValueTranslator`
 - 保持: 既存のフィルター構築ロジック
 
 **Contract Definition**
@@ -517,24 +517,20 @@ interface FiltersApplicationService {
     value: string
   ): Filter
 
-  // 既存の配列型フィルター（汎用化して再利用）
-  buildManufactureFilter(
-    operand: FilterOperand<'array'>,
-    value: readonly string[]
-  ): Filter
-
-  buildCategoryFilter(
-    operand: FilterOperand<'array'>,
-    value: readonly string[]
-  ): Filter
-
-  // 新規追加: 汎用配列型フィルター構築
+  // 汎用配列型フィルター構築
   buildArrayFilter(
     property: PropertyFilterKey,
     operand: FilterOperand<'array'>,
     value: readonly string[],
-    displayName: string // i18n キーまたは表示名
+    options?: {
+      displayName?: string
+      translateValue?: (value: string, i18n: I18Next) => string
+    }
   ): Filter
+
+  resolveSelectionValueTranslator(
+    property: PropertyFilterKey
+  ): ((value: string, i18n: I18Next) => string) | undefined
 
   // 翻訳関数
   translateProperty(property: PropertyFilterKey, i18n: I18Next): string

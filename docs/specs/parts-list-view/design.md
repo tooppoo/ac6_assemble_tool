@@ -199,7 +199,7 @@ packages/web/src/lib/view/parts-list/
    - `numericOperands()`, `stringOperands()`, `selectAnyOperand()`: operandファクトリー
 
 2. **filters-application.ts** (115行追加):
-   - `buildPropertyFilter()`, `buildNameFilter()`, `buildManufactureFilter()`, `buildCategoryFilter()`: Filterビルダー
+   - `buildPropertyFilter()`, `buildNameFilter()`, `buildArrayFilter()`: Filterビルダー
    - `translateOperand()`, `translateProperty()`, `translateManufacturer()`, `translateCategory()`: i18n関数
    - アプリケーション固有のロジックと表示用文字列生成
 
@@ -1006,14 +1006,14 @@ function buildNameFilter(
   value: string
 ): Filter
 
-function buildManufactureFilter(
+function buildArrayFilter(
+  property: string,
   operand: FilterOperand<'array'>,
-  value: readonly string[]
-): Filter
-
-function buildCategoryFilter(
-  operand: FilterOperand<'array'>,
-  value: readonly string[]
+  value: readonly string[],
+  options?: {
+    displayName?: string
+    translateValue?: (value: string, i18n: I18Next) => string
+  }
 ): Filter
 
 // i18n関数

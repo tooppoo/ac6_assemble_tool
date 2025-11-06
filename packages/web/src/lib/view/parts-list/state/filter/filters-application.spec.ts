@@ -5,13 +5,12 @@ import { describe, it, expect, vi } from 'vitest'
 
 import {
   buildArrayFilter,
-  buildCategoryFilter,
-  buildManufactureFilter,
   buildNameFilter,
   buildPropertyFilter,
   getNumericFilterKeys,
   isPropertyFilterKey,
   translateCategory,
+  translateManufacturer,
   translateProperty,
   translateOperand,
 } from './filters-application'
@@ -115,28 +114,6 @@ describe('filters-application', () => {
     })
   })
 
-  describe('buildManufactureFilter', () => {
-    it('既知・未知メーカーを混在させても翻訳できること', () => {
-      const i18n = createI18nMock()
-      const operand = selectAnyOperand()
-      const filter = buildManufactureFilter(operand, ['balam', 'unknown'])
-
-      expect(filter.serialize()).toBe('array:manufacture:in_any:balam,unknown')
-      expect(filter.stringify(i18n)).toBe('メーカー: ベイラム, unknown')
-    })
-  })
-
-  describe('buildCategoryFilter', () => {
-    it('カテゴリを翻訳して返すこと', () => {
-      const i18n = createI18nMock()
-      const operand = selectAnyOperand()
-      const filter = buildCategoryFilter(operand, ['bazooka', 'mystery'])
-
-      expect(filter.serialize()).toBe('array:category:in_any:bazooka,mystery')
-      expect(filter.stringify(i18n)).toBe('カテゴリ: バズーカ, mystery')
-    })
-  })
-
   describe('buildArrayFilter', () => {
     it('displayName に i18n キーを指定すると翻訳を使用すること', () => {
       const i18n = createI18nMock('ja')
@@ -170,6 +147,26 @@ describe('filters-application', () => {
 
       expect(filter.stringify(i18n)).toBe('カテゴリ: バズーカ, x')
     })
+
+    it('メーカー値を翻訳して返すこと', () => {
+      const i18n = createI18nMock()
+      const operand = selectAnyOperand()
+      const filter = buildArrayFilter(
+        'manufacture',
+        operand,
+        ['balam', 'unknown'],
+        {
+          displayName: 'メーカー',
+          translateValue: (value, context) =>
+            translateManufacturer(value, context),
+        },
+      )
+
+      expect(filter.serialize()).toBe(
+        'array:manufacture:in_any:balam,unknown',
+      )
+      expect(filter.stringify(i18n)).toBe('メーカー: ベイラム, unknown')
+    })
   })
 
   describe('translateOperand', () => {
@@ -183,6 +180,30 @@ describe('filters-application', () => {
       }
 
       expect(translateOperand(operand, i18n)).toBe('custom')
+    })
+  })
+
+  describe('translateManufacturer', () => {
+    it('既知メーカーを翻訳すること', () => {
+      const i18n = createI18nMock()
+      expect(translateManufacturer('balam', i18n)).toBe('ベイラム')
+    })
+
+    it('未知の値はそのまま返すこと', () => {
+      const i18n = createI18nMock()
+      expect(translateManufacturer('unknown', i18n)).toBe('unknown')
+    })
+  })
+
+  describe('translateCategory', () => {
+    it('既知カテゴリを翻訳すること', () => {
+      const i18n = createI18nMock()
+      expect(translateCategory('bazooka', i18n)).toBe('バズーカ')
+    })
+
+    it('未知の値はそのまま返すこと', () => {
+      const i18n = createI18nMock()
+      expect(translateCategory('mystery', i18n)).toBe('mystery')
     })
   })
 
