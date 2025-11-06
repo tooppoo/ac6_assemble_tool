@@ -357,11 +357,11 @@
         {#if selectedFilterType === 'property'}
           <div class="row g-2">
             <div class="col-12 col-md-4">
-              <label for="filter-property" class="form-label mb-1 text-white"
-                >{$i18n.t('filterPanel.property.label', {
+              <label for="filter-property" class="form-label mb-1 text-white">
+                {$i18n.t('filterPanel.property.label', {
                   ns: 'page/parts-list',
-                })}</label
-              >
+                })}
+              </label>
               <select
                 id="filter-property"
                 class="form-select"
