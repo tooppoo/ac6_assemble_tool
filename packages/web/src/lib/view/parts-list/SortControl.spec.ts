@@ -1,3 +1,4 @@
+import { getAttributesForSlot } from '@ac6_assemble_tool/parts/attributes-utils'
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte'
 import { describe, it, expect, vi } from 'vitest'
 
@@ -5,8 +6,8 @@ import SortControlTestWrapper from './SortControl.test-wrapper.svelte'
 
 describe('SortControl', () => {
   const baseProps = {
-    slot: 'head',
-    properties: ['price', 'weight', 'en_load'] as const,
+    slot: 'head' as const,
+    availableAttributes: getAttributesForSlot('head'),
     sortKey: null,
     sortOrder: null,
   }
@@ -22,7 +23,9 @@ describe('SortControl', () => {
     const propertyOptions = Array.from(propertySelect.options)
       .filter((option) => option.value !== '__none__')
       .map((option) => option.textContent)
-    expect(propertyOptions).toEqual(['価格', '総重量', 'EN負荷'])
+    expect(propertyOptions).toEqual(
+      expect.arrayContaining(['価格', '総重量', 'EN負荷']),
+    )
 
     const orderSelect = screen.getByLabelText('並び順') as HTMLSelectElement
     const orderOptions = Array.from(orderSelect.options).map(

@@ -8,6 +8,7 @@
 
   import type { I18NextStore } from '$lib/i18n/define'
 
+  import { getAttributesForSlot } from '@ac6_assemble_tool/parts/attributes-utils'
   import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
   import {
     CANDIDATES_KEYS,
@@ -171,6 +172,10 @@
       })(result)
     })
   })
+
+  const availableAttributes = $derived.by(() =>
+    getAttributesForSlot(currentSlot),
+  )
 
   // フィルタ済みパーツリストの計算（$derivedで自動計算）
   let filteredParts = $derived.by<readonly ACParts[]>(() => {
@@ -393,7 +398,7 @@
     <FilterPanel
       slot={currentSlot}
       {filters}
-      availableParts={regulation.candidates[currentSlot]}
+      availableAttributes={availableAttributes}
       {showFavoritesOnly}
       onclearfilters={handleClearFilters}
       onfilterchange={handleFilterChange}
@@ -404,7 +409,7 @@
   <div class="py-1">
     <SortControl
       slot={currentSlot}
-      properties={availableSortKeys}
+      availableAttributes={availableAttributes}
       {sortKey}
       {sortOrder}
       onsortchange={handleSortApply}

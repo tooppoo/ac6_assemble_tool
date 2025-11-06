@@ -433,7 +433,6 @@ interface FilterPanelProps {
   slot: CandidatesKey
   filters: Filter[]
   availableAttributes: readonly AttributeDefinition[] // 新規追加
-  availableParts: readonly ACParts[]
   showFavoritesOnly: boolean
   onclearfilters: () => void
   onfilterchange: (filters: Filter[]) => void

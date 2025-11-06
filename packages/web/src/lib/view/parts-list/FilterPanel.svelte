@@ -7,6 +7,7 @@
 
   import type { I18NextStore } from '$lib/i18n/define'
 
+  import type { AttributeDefinition } from '@ac6_assemble_tool/parts/attributes-utils'
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
   import { Collapse } from '@sveltestrap/sveltestrap'
   import { getContext } from 'svelte'
@@ -20,7 +21,6 @@
     translateManufacturer,
     translateOperand,
     translateProperty,
-    getNumericFilterKeys,
     type PropertyFilterKey,
   } from './state/filter/filters-application'
   import {
@@ -28,8 +28,6 @@
     selectAnyOperand,
     stringOperands,
     type Filter,
-    extractManufacturers,
-    extractCategories,
   } from './state/filter/filters-core'
 
   // i18n
@@ -38,17 +36,17 @@
   interface Props {
     slot: CandidatesKey
     filters: Filter[]
-    availableParts: readonly Record<string, unknown>[]
+    availableAttributes: readonly AttributeDefinition[]
     showFavoritesOnly?: boolean
     onclearfilters?: () => void
     onfilterchange?: (filters: Filter[]) => void
     ontogglefavorites?: () => void
   }
 
-  let {
+  const {
     slot,
     filters,
-    availableParts,
+    availableAttributes,
     showFavoritesOnly = false,
     onclearfilters,
     onfilterchange,
@@ -67,15 +65,30 @@
   }
 
   // PropertyFilter用の状態
+  const numericAttributes = $derived.by(() =>
+    availableAttributes.filter((attr) => attr.valueType === 'numeric'),
+  )
+  const arrayAttributes = $derived.by(() =>
+    availableAttributes.filter((attr) => attr.valueType === 'array'),
+  )
+
   const propertyOptions = $derived.by<readonly PropertyFilterKey[]>(() =>
-    getNumericFilterKeys(slot),
+    numericAttributes.map((attr) => attr.attributeName as PropertyFilterKey),
   )
 
-  const defaultProperty = $derived(
-    propertyOptions.length > 0 ? propertyOptions[0] : null,
-  )
-
-  let selectedProperty = $state<PropertyFilterKey | null>(null)
+  let selectedPropertyState = $state<PropertyFilterKey | null>(null)
+  const selectedPropertyValue = $derived.by<PropertyFilterKey | null>(() => {
+    if (propertyOptions.length === 0) {
+      return null
+    }
+    if (
+      selectedPropertyState !== null &&
+      propertyOptions.includes(selectedPropertyState)
+    ) {
+      return selectedPropertyState
+    }
+    return propertyOptions[0]
+  })
   let propertyOperandId = $state(availableFilters.property[0].id)
   let propertyInputValue = $state('')
 
@@ -91,20 +104,6 @@
 
   // 折りたたみ状態
   let isOpen = $state(true)
-
-  $effect(() => {
-    if (defaultProperty !== null && selectedProperty === null) {
-      selectedProperty = defaultProperty
-      return
-    }
-
-    if (
-      selectedProperty !== null &&
-      !propertyOptions.includes(selectedProperty)
-    ) {
-      selectedProperty = defaultProperty
-    }
-  })
 
   const heading = $derived.by(() =>
     $i18n.t('filterPanel.heading', {
@@ -144,28 +143,52 @@
   const collapseContentId = $derived(`filter-panel-${slot}-body`)
 
   // 利用可能なメーカーとカテゴリを計算
-  const availableManufacturers = $derived(extractManufacturers(availableParts))
-  const availableCategories = $derived(extractCategories(availableParts))
+  const availableManufacturers = $derived(
+    arrayAttributes.find((attr) => attr.attributeName === 'manufacture')
+      ?.candidates ?? [],
+  )
+  const availableCategories = $derived(
+    arrayAttributes.find((attr) => attr.attributeName === 'category')
+      ?.candidates ?? [],
+  )
+
+  const selectedManufacturersNormalized = $derived.by(() =>
+    selectedManufacturers.filter((value) =>
+      availableManufacturers.includes(value),
+    ),
+  )
+  const selectedCategoriesNormalized = $derived.by(() =>
+    selectedCategories.filter((value) => availableCategories.includes(value)),
+  )
 
   // 追加ボタンの有効/無効判定
-  const isAddButtonDisabled = $derived(() => {
+  function isAddButtonDisabled(): boolean {
     switch (selectedFilterType) {
       case 'property':
-        return String(propertyInputValue).trim() === ''
+        return (
+          selectedPropertyValue === null ||
+          String(propertyInputValue).trim() === ''
+        )
       case 'name':
         return String(nameInputValue).trim() === ''
       case 'manufacture':
-        return selectedManufacturers.length === 0
+        return selectedManufacturersNormalized.length === 0
       case 'category':
-        return selectedCategories.length === 0
+        return selectedCategoriesNormalized.length === 0
       default:
         return true
     }
-  })
+  }
 
   // フィルタクリアハンドラ
   function handleClearFilters() {
     onclearfilters?.()
+  }
+
+  function handlePropertySelect(event: Event) {
+    const target = event.currentTarget as HTMLSelectElement
+    const value = target.value.trim()
+    selectedPropertyState = value === '' ? null : (value as PropertyFilterKey)
   }
 
   // フィルタ追加ハンドラ
@@ -175,10 +198,9 @@
     switch (selectedFilterType) {
       case 'property': {
         const valueStr = String(propertyInputValue).trim()
-        if (valueStr === '') return
+        if (selectedPropertyValue === null || valueStr === '') return
 
-        const property = selectedProperty ?? defaultProperty
-        if (!property) return
+        const property = selectedPropertyValue
         const value = parseInt(valueStr, 10)
 
         // IDから対応するoperandを見つける
@@ -208,20 +230,22 @@
       }
 
       case 'manufacture': {
-        if (selectedManufacturers.length === 0) return
+        const normalized = selectedManufacturersNormalized
+        if (normalized.length === 0) return
 
         newFilter = buildManufactureFilter(availableFilters.manufacture, [
-          ...selectedManufacturers,
+          ...normalized,
         ])
         selectedManufacturers = []
         break
       }
 
       case 'category': {
-        if (selectedCategories.length === 0) return
+        const normalized = selectedCategoriesNormalized
+        if (normalized.length === 0) return
 
         newFilter = buildCategoryFilter(availableFilters.category, [
-          ...selectedCategories,
+          ...normalized,
         ])
         selectedCategories = []
         break
@@ -341,13 +365,19 @@
               <select
                 id="filter-property"
                 class="form-select"
-                bind:value={selectedProperty}
+                disabled={propertyOptions.length === 0}
+                value={selectedPropertyValue ?? ''}
+                onchange={handlePropertySelect}
               >
-                {#each propertyOptions as property (property)}
-                  <option value={property}>
-                    {translateProperty(property, $i18n)}
-                  </option>
-                {/each}
+                {#if propertyOptions.length === 0}
+                  <option value="" disabled> - </option>
+                {:else}
+                  {#each propertyOptions as property (property)}
+                    <option value={property}>
+                      {translateProperty(property, $i18n)}
+                    </option>
+                  {/each}
+                {/if}
               </select>
             </div>
 
@@ -360,6 +390,7 @@
               <select
                 id="filter-operator"
                 class="form-select"
+                disabled={propertyOptions.length === 0}
                 bind:value={propertyOperandId}
               >
                 {#each availableFilters.property as operand (operand.id)}
@@ -380,6 +411,7 @@
                 id="filter-value"
                 type="number"
                 class="form-control"
+                disabled={propertyOptions.length === 0}
                 bind:value={propertyInputValue}
                 placeholder={$i18n.t('filterPanel.property.valuePlaceholder', {
                   ns: 'page/parts-list',
