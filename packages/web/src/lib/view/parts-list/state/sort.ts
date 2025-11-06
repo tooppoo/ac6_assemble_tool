@@ -121,16 +121,12 @@ function toSortableValue(value: unknown): SortableValue | null {
     return { kind: 'number', value }
   }
 
-  if (Array.isArray(value)) {
-    const first = value.find(
-      (candidate): candidate is string | number =>
-        (typeof candidate === 'string' && candidate.trim() !== '') ||
-        (typeof candidate === 'number' && Number.isFinite(candidate)),
-    )
-    if (typeof first === 'string') {
+  if (Array.isArray(value) && value.length > 0) {
+    const first = value[0]
+    if (typeof first === 'string' && first.trim() !== '') {
       return { kind: 'string', value: first }
     }
-    if (typeof first === 'number') {
+    if (typeof first === 'number' && Number.isFinite(first)) {
       return { kind: 'number', value: first }
     }
     return null
