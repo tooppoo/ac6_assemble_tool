@@ -178,4 +178,22 @@ describe('sortPartsByKey', () => {
       'TEST-4', // undefined
     ])
   })
+
+  it('optional属性で値が存在しないパーツを末尾に配置し、元の順序を維持すること', () => {
+    const optionalParts: ExtendedPart[] = [
+      createPart({}, 1), // no optional value
+      createPart({ attack_power: 900 }, 2),
+      createPart({ attack_power: 700 }, 3),
+      createPart({}, 4), // no optional value
+    ]
+
+    const sorted = sortPartsByKey(optionalParts, 'attack_power', 'asc')
+
+    expect(sorted.map((part) => part.id)).toEqual([
+      'TEST-3', // 700
+      'TEST-2', // 900
+      'TEST-1', // optional missing (original order preserved)
+      'TEST-4', // optional missing (original order preserved)
+    ])
+  })
 })
