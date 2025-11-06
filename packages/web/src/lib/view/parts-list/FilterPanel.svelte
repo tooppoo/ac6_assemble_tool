@@ -411,6 +411,8 @@
                 id="filter-value"
                 type="number"
                 class="form-control"
+                min="0"
+                step="10"
                 disabled={propertyOptions.length === 0}
                 bind:value={propertyInputValue}
                 placeholder={$i18n.t('filterPanel.property.valuePlaceholder', {
