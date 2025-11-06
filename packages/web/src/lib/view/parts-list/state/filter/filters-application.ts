@@ -145,7 +145,19 @@ export function buildNameFilter(
 export function resolveSelectionValueTranslator(
   property: PropertyFilterKey,
 ): ArrayFilterOptions['translateValue'] | undefined {
-  return (key: string, i18n: I18Next) => i18n.t(key, { ns: property })
+  return (value: string, i18n: I18Next) => {
+    const language = i18n.resolvedLanguage ?? i18n.language
+    if (!language) {
+      return value
+    }
+
+    const resource = i18n.getResource(language, property, value)
+    if (typeof resource === 'string') {
+      return resource
+    }
+
+    return value
+  }
 }
 
 // util
@@ -219,15 +231,9 @@ function translateArrayFilterValue(
 }
 
 function translateAssemblyKey(key: string, i18n: I18Next): string | null {
-  if (
-    typeof i18n.exists === 'function' &&
-    i18n.exists(key, { ns: 'assembly' })
-  ) {
-    return i18n.t(key, { ns: 'assembly' })
-  }
-
-  const translated = i18n.t(key, { ns: 'assembly' })
-  if (translated === key || translated === `assembly:${key}`) {
+  const namespacedKey = `assembly:${key}`
+  const translated = i18n.t(namespacedKey)
+  if (translated === namespacedKey || translated === key) {
     return null
   }
 
