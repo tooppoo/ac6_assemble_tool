@@ -26,7 +26,7 @@
 
   const i18n = getContext<I18NextStore>('i18n')
 
-  const {
+  let {
     slot,
     availableAttributes,
     sortKey,
