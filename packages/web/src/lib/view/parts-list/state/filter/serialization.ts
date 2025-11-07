@@ -1,3 +1,4 @@
+import { getArrayAttributes } from '@ac6_assemble_tool/parts/attributes-utils'
 import {
   CANDIDATES_KEYS,
   type CandidatesKey,
@@ -9,11 +10,10 @@ import { VALID_SLOTS, type DeserializeError } from '../shared'
 
 import { decompressFromUrlSafeString } from './compression'
 import {
-  buildPropertyFilter,
+  buildArrayFilter,
   buildNameFilter,
-  buildManufactureFilter,
-  buildCategoryFilter,
-  isPropertyFilterKey,
+  buildPropertyFilter,
+  resolveSelectionValueTranslator,
 } from './filters-application'
 import {
   type Filter,
@@ -21,6 +21,16 @@ import {
   selectAnyOperand,
   stringOperands,
 } from './filters-core'
+
+const ARRAY_FILTER_PROPERTY_SET: ReadonlySet<string> = (() => {
+  const entries = new Set<string>()
+  for (const slot of CANDIDATES_KEYS) {
+    for (const attribute of getArrayAttributes(slot)) {
+      entries.add(attribute)
+    }
+  }
+  return entries
+})()
 
 /**
  * フィルタパラメータをパース
@@ -39,8 +49,9 @@ export function parseFilter(filterParam: string): Filter | null {
     case 'numeric': {
       const [, property, operator, valueStr] = parts
 
-      // propertyの検証: 無効なプロパティはスキップ
-      if (!isPropertyFilterKey(property)) {
+      // propertyの検証: 空でないことのみチェック
+      // 動的属性をサポートするため、isPropertyFilterKey による固定属性チェックは削除
+      if (!property || property.trim() === '') {
         return null
       }
 
@@ -87,7 +98,21 @@ export function parseFilter(filterParam: string): Filter | null {
       // Format1: array:manufacture:operand:value1,value2,value3
       // Format2: array:category:operand:value1,value2,value3
 
-      const [, property, , valuesStr] = parts
+      const [, property, operator, valuesStr] = parts
+
+      if (!property || property.trim() === '') {
+        return null
+      }
+
+      if (!ARRAY_FILTER_PROPERTY_SET.has(property)) {
+        return null
+      }
+
+      // operatorの検証
+      const arrayOperand = selectAnyOperand()
+      if (operator !== arrayOperand.id) {
+        return null
+      }
 
       // valuesの検証
       if (!valuesStr || valuesStr.trim() === '') {
@@ -98,18 +123,11 @@ export function parseFilter(filterParam: string): Filter | null {
         return null
       }
 
-      switch (property) {
-        case 'manufacture': {
-          return buildManufactureFilter(selectAnyOperand(), values)
-        }
-        case 'category': {
-          return buildCategoryFilter(selectAnyOperand(), values)
-        }
-        default:
-          // 未知のフィルタタイプ、またはレガシー形式
-          logger.warn('Unknown or legacy filter type', { filterParam })
-          return null
-      }
+      const translateValue = resolveSelectionValueTranslator(property)
+
+      return buildArrayFilter(property, arrayOperand, values, {
+        translateValue,
+      })
     }
     default:
       // 未知のフィルタタイプ、またはレガシー形式

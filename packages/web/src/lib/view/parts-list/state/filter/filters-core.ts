@@ -8,10 +8,11 @@ import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
  */
 
 // filter
+// property is now string to support dynamic attributes
 export type Filter = Readonly<
   | {
       operand: FilterOperand<'numeric'>
-      property: keyof ACParts
+      property: string
       extractor: Extractor
       value: number
       stringify(i18n: I18Next): string
@@ -19,7 +20,7 @@ export type Filter = Readonly<
     }
   | {
       operand: FilterOperand<'string'>
-      property: keyof ACParts
+      property: string
       extractor: Extractor
       value: string
       stringify(i18n: I18Next): string
@@ -27,7 +28,7 @@ export type Filter = Readonly<
     }
   | {
       operand: FilterOperand<'array'>
-      property: keyof ACParts
+      property: string
       extractor: Extractor
       value: readonly unknown[]
       stringify(i18n: I18Next): string
@@ -150,17 +151,19 @@ class InnerFilterOperand<D extends FilterOperandDataType> {
 }
 
 // extractor
-export function defineExtractor(propertyKey: keyof ACParts): Extractor {
+// propertyKey is now string to support dynamic attributes
+export function defineExtractor(propertyKey: string): Extractor {
   return new Extractor(propertyKey)
 }
 class Extractor {
   constructor(
     /** 抽出対象のプロパティキー */
-    public readonly propertyKey: keyof ACParts,
+    public readonly propertyKey: string,
   ) {}
 
   extract(parts: ACParts): unknown {
-    return parts[this.propertyKey]
+    // Use index access with runtime key
+    return (parts as Record<string, unknown>)[this.propertyKey]
   }
 }
 

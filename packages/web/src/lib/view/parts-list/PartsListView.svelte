@@ -8,6 +8,7 @@
 
   import type { I18NextStore } from '$lib/i18n/define'
 
+  import { getAttributesForSlot } from '@ac6_assemble_tool/parts/attributes-utils'
   import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
   import {
     CANDIDATES_KEYS,
@@ -146,9 +147,7 @@
         const restoredFilters = merged[result.value.slot] ?? []
         filters = [...restoredFilters]
         updateFiltersForSlot(result.value.slot, filters)
-        const availableKeys = getAvailableSortKeys(
-          regulation.candidates[result.value.slot],
-        )
+        const availableKeys = getAvailableSortKeys(result.value.slot)
         if (
           result.value.sortKey &&
           result.value.sortOrder &&
@@ -174,6 +173,10 @@
     })
   })
 
+  const availableAttributes = $derived.by(() =>
+    getAttributesForSlot(currentSlot),
+  )
+
   // フィルタ済みパーツリストの計算（$derivedで自動計算）
   let filteredParts = $derived.by<readonly ACParts[]>(() => {
     // 選択中のスロットに対応するパーツを取得
@@ -195,7 +198,7 @@
   })
 
   const availableSortKeys = $derived.by<SortKey[]>(() =>
-    getAvailableSortKeys(regulation.candidates[currentSlot]),
+    getAvailableSortKeys(currentSlot),
   )
 
   // URL パラメータへの同期（状態変更時に自動実行）
@@ -395,7 +398,7 @@
     <FilterPanel
       slot={currentSlot}
       {filters}
-      availableParts={regulation.candidates[currentSlot]}
+      {availableAttributes}
       {showFavoritesOnly}
       onclearfilters={handleClearFilters}
       onfilterchange={handleFilterChange}
@@ -406,7 +409,7 @@
   <div class="py-1">
     <SortControl
       slot={currentSlot}
-      properties={availableSortKeys}
+      {availableAttributes}
       {sortKey}
       {sortOrder}
       onsortchange={handleSortApply}

@@ -37,6 +37,9 @@ analyze.html
 # turbo
 .turbo
 
+# pnpm
+.pnpm-store
+
 # claude code
 .claude/settings.local.json
 

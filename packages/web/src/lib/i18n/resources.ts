@@ -12,6 +12,7 @@ import { enPartsListPage } from './locales/en/pages/parts-list'
 import { enRandom } from './locales/en/random'
 import { enShare } from './locales/en/share'
 import { enSort } from './locales/en/sort'
+import { enWeaponType } from './locales/en/weaponType'
 import { jaAssembly } from './locales/ja/assembly'
 import { jaAssemblyStore } from './locales/ja/assemblyStore'
 import { jaAttackType } from './locales/ja/attackType'
@@ -26,6 +27,7 @@ import { jaPartsListPage } from './locales/ja/pages/parts-list'
 import { jaRandom } from './locales/ja/random'
 import { jaShare } from './locales/ja/share'
 import { jaSort } from './locales/ja/sort'
+import { jaWeaponType } from './locales/ja/weaponType'
 
 export const resources = {
   ja: {
@@ -46,6 +48,7 @@ export const resources = {
     error: jaError,
     share: jaShare,
     assembly_store: jaAssemblyStore,
+    weapon_type: jaWeaponType,
   },
   en: {
     translation: {
@@ -65,5 +68,6 @@ export const resources = {
     error: enError,
     share: enShare,
     assembly_store: enAssemblyStore,
+    weapon_type: enWeaponType,
   },
 } as const

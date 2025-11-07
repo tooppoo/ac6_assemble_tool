@@ -1,4 +1,9 @@
+import {
+  getArrayAttributes,
+  getNumericAttributes,
+} from '@ac6_assemble_tool/parts/attributes-utils'
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
+import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { describe, it, expect } from 'vitest'
 
 import {
@@ -8,7 +13,12 @@ import {
   type SortKey,
 } from './sort'
 
-function createPart(overrides: Partial<ACParts>, index: number): ACParts {
+type ExtendedPart = ACParts & Record<string, unknown>
+
+function createPart(
+  overrides: Record<string, unknown>,
+  index: number,
+): ExtendedPart {
   return {
     id: `TEST-${index}`,
     name: `テストパーツ${index}`,
@@ -19,7 +29,7 @@ function createPart(overrides: Partial<ACParts>, index: number): ACParts {
     weight: 2000 + index,
     en_load: 300 + index,
     ...overrides,
-  }
+  } as ExtendedPart
 }
 
 describe('parseSort', () => {
@@ -53,36 +63,47 @@ describe('parseSort', () => {
     expect(result).toBeNull()
   })
 
-  it('定義されていないキーの場合はnullを返すこと', () => {
-    const result = parseSort('stability:asc')
+  it('空のキーの場合はnullを返すこと', () => {
+    const result = parseSort(':asc')
 
     expect(result).toBeNull()
+  })
+
+  it('動的属性を持つソートパラメータを正しく復元できること', () => {
+    const result = parseSort('stability:asc')
+
+    expect(result).not.toBeNull()
+    expect(result?.key).toBe('stability')
+    expect(result?.order).toBe('asc')
   })
 })
 
 describe('getAvailableSortKeys', () => {
-  it('数値が存在するプロパティのみを返すこと', () => {
-    const parts: ACParts[] = [
-      createPart({ weight: Number.NaN, en_load: Number.NaN }, 1),
-      createPart({ weight: Number.NaN, en_load: Number.NaN }, 2),
-    ]
+  it('数値属性が主なスロットでは数値+必要な配列属性を返すこと', () => {
+    const slot: CandidatesKey = 'head'
 
-    const result = getAvailableSortKeys(parts)
+    const result = getAvailableSortKeys(slot)
 
-    expect(result).toEqual<SortKey[]>(['price'])
+    expect(result).toEqual<SortKey[]>([
+      ...getNumericAttributes(slot),
+      ...getArrayAttributes(slot),
+    ])
   })
 
-  it('全てのプロパティが有効な場合は全キーを返すこと', () => {
-    const parts: ACParts[] = [createPart({}, 1)]
+  it('数値・配列属性を持つスロットでは双方を返すこと', () => {
+    const slot: CandidatesKey = 'rightArmUnit'
 
-    const result = getAvailableSortKeys(parts)
+    const result = getAvailableSortKeys(slot)
 
-    expect(result).toEqual<SortKey[]>(['price', 'weight', 'en_load'])
+    expect(result).toEqual<SortKey[]>([
+      ...getNumericAttributes(slot),
+      ...getArrayAttributes(slot),
+    ])
   })
 })
 
 describe('sortPartsByKey', () => {
-  const parts: ACParts[] = [
+  const parts: ExtendedPart[] = [
     createPart({ price: 4000, weight: 1500 }, 1),
     createPart({ price: 2000, weight: 1200 }, 2),
     createPart({ price: 2000, weight: 1800 }, 3),
@@ -119,6 +140,60 @@ describe('sortPartsByKey', () => {
       'TEST-1',
       'TEST-4',
       'TEST-3',
+    ])
+  })
+
+  it('配列型属性（文字列）の昇順ソートを行うこと', () => {
+    const arrayParts: ExtendedPart[] = [
+      createPart({ attack_type: ['bazooka'] }, 1),
+      createPart({ attack_type: ['laser'] }, 2),
+      createPart({ attack_type: [] }, 3),
+      createPart({}, 4),
+    ]
+
+    const sorted = sortPartsByKey(arrayParts, 'attack_type', 'asc')
+
+    expect(sorted.map((part) => part.id)).toEqual([
+      'TEST-1', // bazooka
+      'TEST-2', // laser
+      'TEST-3', // empty array -> no value
+      'TEST-4', // undefined
+    ])
+  })
+
+  it('配列型属性（文字列）の降順ソートを行うこと', () => {
+    const arrayParts: ExtendedPart[] = [
+      createPart({ attack_type: ['assault'] }, 1),
+      createPart({ attack_type: ['bazooka'] }, 2),
+      createPart({ attack_type: ['laser'] }, 3),
+      createPart({}, 4),
+    ]
+
+    const sorted = sortPartsByKey(arrayParts, 'attack_type', 'desc')
+
+    expect(sorted.map((part) => part.id)).toEqual([
+      'TEST-3', // laser
+      'TEST-2', // bazooka
+      'TEST-1', // assault
+      'TEST-4', // undefined
+    ])
+  })
+
+  it('optional属性で値が存在しないパーツを末尾に配置し、元の順序を維持すること', () => {
+    const optionalParts: ExtendedPart[] = [
+      createPart({}, 1), // no optional value
+      createPart({ attack_power: 900 }, 2),
+      createPart({ attack_power: 700 }, 3),
+      createPart({}, 4), // no optional value
+    ]
+
+    const sorted = sortPartsByKey(optionalParts, 'attack_power', 'asc')
+
+    expect(sorted.map((part) => part.id)).toEqual([
+      'TEST-3', // 700
+      'TEST-2', // 900
+      'TEST-1', // optional missing (original order preserved)
+      'TEST-4', // optional missing (original order preserved)
     ])
   })
 })

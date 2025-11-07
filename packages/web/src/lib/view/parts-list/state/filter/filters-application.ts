@@ -1,10 +1,8 @@
 import type { I18Next } from '$lib/i18n/define'
-import type { jaAssembly } from '$lib/i18n/locales/ja/assembly'
-import { jaCategory } from '$lib/i18n/locales/ja/category'
 import { jaFilterOperand } from '$lib/i18n/locales/ja/filter/operand'
-import { jaManufactures } from '$lib/i18n/locales/ja/manufactures'
 
-import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
+import { getNumericAttributes } from '@ac6_assemble_tool/parts/attributes-utils'
+import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 
 import {
   defineExtractor,
@@ -13,33 +11,39 @@ import {
 } from './filters-core'
 
 export const PROPERTY_FILTER_KEYS = ['price', 'weight', 'en_load'] as const
-export type PropertyFilterKey = (typeof PROPERTY_FILTER_KEYS)[number]
+// PropertyFilterKey is now string to support dynamic attributes
+// PROPERTY_FILTER_KEYS remains for backward compatibility checking
+export type PropertyFilterKey = string
 
-type AssemblyTranslationKey = keyof typeof jaAssembly
-type ManufactureTranslationKey = keyof typeof jaManufactures
-type CategoryTranslationKey = keyof typeof jaCategory
-type FilterOperandTranslationKey = keyof typeof jaFilterOperand
+export interface ArrayFilterOptions {
+  /**
+   * 表示名（ラベル）を直接指定する／翻訳キーとして使用する。
+   * - 使用する場面: 属性名とは異なるラベルを表示したい場合、あるいは i18n リソース上の別キーを使いたい場合。
+   * - 使用しない場面: 属性キーそのものを翻訳した結果をラベルにしたい場合（未指定で translateProperty の結果が利用される）。
+   * - translateValue と併用する場合: ラベルと値の翻訳戦略を個別に制御したいケース（例: ラベルは固定文言にし、値はIDから名称へ変換）。
+   */
+  readonly displayName?: string
+  /**
+   * 属性値を UI 表示用に変換するための翻訳関数。
+   * - 使用する場面: 製造企業やカテゴリなど、候補値に対して個別の翻訳や整形が必要な場合。
+   * - 使用しない場面: 値をそのまま表示すれば十分な場合（未指定で元の値が使用される）。
+   * - displayName と併用する場合: ラベルと値の翻訳キーが異なる、またはラベルは固定表示にしたいが値のみ翻訳したい場合。
+   */
+  readonly translateValue?: (value: string, i18n: I18Next) => string
+}
 
 const PROPERTY_FILTER_KEY_SET: ReadonlySet<PropertyFilterKey> = new Set(
   PROPERTY_FILTER_KEYS,
 )
-const propertyI18nMap = {
-  price: 'price',
-  weight: 'weight',
-  en_load: 'enLoad',
-} as const satisfies Record<PropertyFilterKey, AssemblyTranslationKey>
-const manufactureTranslationKeys = new Set<ManufactureTranslationKey>(
-  Object.keys(jaManufactures) as ManufactureTranslationKey[],
-)
-const categoryTranslationKeys = new Set<CategoryTranslationKey>(
-  Object.keys(jaCategory) as CategoryTranslationKey[],
-)
-const operandTranslationKeys = new Set<FilterOperandTranslationKey>(
-  Object.keys(jaFilterOperand) as FilterOperandTranslationKey[],
-)
 
 export function isPropertyFilterKey(value: string): value is PropertyFilterKey {
   return PROPERTY_FILTER_KEY_SET.has(value as PropertyFilterKey)
+}
+
+export function getNumericFilterKeys(
+  slot: CandidatesKey,
+): readonly PropertyFilterKey[] {
+  return getNumericAttributes(slot)
 }
 
 /**
@@ -70,11 +74,53 @@ export function buildPropertyFilter(
     },
   }
 }
+
+export function buildArrayFilter(
+  property: PropertyFilterKey,
+  operand: FilterOperand<'array'>,
+  value: readonly string[],
+  displayNameOrOptions?: string | ArrayFilterOptions,
+): Filter {
+  const options = resolveArrayFilterOptions(displayNameOrOptions)
+
+  return {
+    operand,
+    property,
+    extractor: defineExtractor(property),
+    value,
+    stringify(i18n: I18Next) {
+      const label = translateArrayFilterLabel(property, options, i18n)
+      const translatedValues = value.map((item) =>
+        translateArrayFilterValue(item, i18n, options),
+      )
+      return `${label}: ${translatedValues.join(', ')}`
+    },
+    serialize() {
+      return `${this.operand.dataType}:${this.property}:${this.operand.id}:${value.join(',')}`
+    },
+  }
+}
+
 export function translateProperty(
   property: PropertyFilterKey,
   i18n: I18Next,
 ): string {
-  return i18n.t(propertyI18nMap[property], { ns: 'assembly' })
+  const direct = translateAssemblyKey(property, i18n)
+  if (direct !== null) {
+    return direct
+  }
+
+  const camelCaseKey = toCamelCase(property)
+  if (camelCaseKey !== property) {
+    const camelTranslated = translateAssemblyKey(camelCaseKey, i18n)
+    if (camelTranslated !== null) {
+      return camelTranslated
+    }
+
+    return camelCaseKey
+  }
+
+  return property
 }
 
 // name filter builder
@@ -96,57 +142,11 @@ export function buildNameFilter(
   }
 }
 
-// manufacture
-export function buildManufactureFilter(
-  operand: FilterOperand<'array'>,
-  value: readonly string[],
-): Filter {
-  return {
-    operand,
-    property: 'manufacture',
-    extractor: defineExtractor('manufacture'),
-    value,
-    stringify(i18n: I18Next) {
-      return `メーカー: ${value.map((v) => translateManufacturer(v, i18n)).join(', ')}`
-    },
-    serialize() {
-      return `${this.operand.dataType}:${this.property}:${this.operand.id}:${value.join(',')}`
-    },
-  }
-}
-export function translateManufacturer(
-  manufacturer: string,
-  i18n: I18Next,
-): string {
-  if (!isManufactureTranslationKey(manufacturer)) {
-    return manufacturer
-  }
-  return i18n.t(manufacturer, { ns: 'manufacture' })
-}
-
-// category
-export function buildCategoryFilter(
-  operand: FilterOperand<'array'>,
-  value: readonly string[],
-): Filter {
-  return {
-    operand,
-    property: 'category' as keyof ACParts,
-    extractor: defineExtractor('category'),
-    value,
-    stringify(i18n: I18Next) {
-      return `カテゴリ: ${value.map((v) => translateCategory(v, i18n)).join(', ')}`
-    },
-    serialize() {
-      return `${this.operand.dataType}:${this.property}:${this.operand.id}:${value.join(',')}`
-    },
-  }
-}
-export function translateCategory(category: string, i18n: I18Next): string {
-  if (!isCategoryTranslationKey(category)) {
-    return category
-  }
-  return i18n.t(category, { ns: 'category' })
+export function resolveSelectionValueTranslator(
+  property: PropertyFilterKey,
+): ArrayFilterOptions['translateValue'] | undefined {
+  return (value: string, i18n: I18Next) =>
+    i18n.t(`${property}:${value}`) ?? value
 }
 
 // util
@@ -160,20 +160,71 @@ export function translateOperand(
   return i18n.t(operand.id, { ns: 'filter/operand' })
 }
 
-function isManufactureTranslationKey(
-  value: string,
-): value is ManufactureTranslationKey {
-  return manufactureTranslationKeys.has(value as ManufactureTranslationKey)
-}
-
-function isCategoryTranslationKey(
-  value: string,
-): value is CategoryTranslationKey {
-  return categoryTranslationKeys.has(value as CategoryTranslationKey)
-}
-
+type FilterOperandTranslationKey = keyof typeof jaFilterOperand
+const operandTranslationKeys = new Set<FilterOperandTranslationKey>(
+  Object.keys(jaFilterOperand) as FilterOperandTranslationKey[],
+)
 function isOperandTranslationKey(
   value: string,
 ): value is FilterOperandTranslationKey {
   return operandTranslationKeys.has(value as FilterOperandTranslationKey)
+}
+
+function toCamelCase(value: string): string {
+  return value.replace(/_([a-z])/g, (_, char: string) => char.toUpperCase())
+}
+
+function resolveArrayFilterOptions(
+  displayNameOrOptions?: string | ArrayFilterOptions,
+): ArrayFilterOptions {
+  if (typeof displayNameOrOptions === 'string') {
+    return { displayName: displayNameOrOptions }
+  }
+  return displayNameOrOptions ?? {}
+}
+
+function translateArrayFilterLabel(
+  property: PropertyFilterKey,
+  options: ArrayFilterOptions,
+  i18n: I18Next,
+): string {
+  if (!options.displayName) {
+    return translateProperty(property, i18n)
+  }
+
+  const translated = i18n.t(options.displayName, {
+    defaultValue: options.displayName,
+  })
+
+  if (translated === options.displayName) {
+    if (options.displayName === property) {
+      return translateProperty(property, i18n)
+    }
+
+    return options.displayName
+  }
+
+  return translated
+}
+
+function translateArrayFilterValue(
+  value: string,
+  i18n: I18Next,
+  options: ArrayFilterOptions,
+): string {
+  if (!options.translateValue) {
+    return value
+  }
+
+  return options.translateValue(value, i18n)
+}
+
+function translateAssemblyKey(key: string, i18n: I18Next): string | null {
+  const namespacedKey = `assembly:${key}`
+  const translated = i18n.t(namespacedKey)
+  if (translated === namespacedKey || translated === key) {
+    return null
+  }
+
+  return translated
 }

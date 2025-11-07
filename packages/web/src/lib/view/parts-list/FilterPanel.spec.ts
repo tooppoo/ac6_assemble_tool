@@ -4,7 +4,10 @@
 
 import i18n from '$lib/i18n/define'
 
-import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
+import {
+  getAttributesForSlot,
+  type AttributeDefinition,
+} from '@ac6_assemble_tool/parts/attributes-utils'
 import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { render, screen, fireEvent } from '@testing-library/svelte'
 import { describe, it, expect } from 'vitest'
@@ -19,25 +22,12 @@ import { numericOperands, type Filter } from './state/filter/filters-core'
 type FilterPanelProps = {
   slot: CandidatesKey
   filters: Filter[]
-  availableParts: readonly ACParts[]
+  availableAttributes: readonly AttributeDefinition[]
   showFavoritesOnly?: boolean
   onclearfilters?: () => void
   onfilterchange?: (filters: Filter[]) => void
   ontogglefavorites?: () => void
 }
-
-const defaultAvailableParts: readonly ACParts[] = [
-  {
-    id: 'sample-part',
-    name: 'Sample Part',
-    classification: 'arm-unit',
-    manufacture: 'balam',
-    category: 'bazooka',
-    price: 1000,
-    weight: 500,
-    en_load: 120,
-  },
-]
 
 const numericOperandMap = new Map(
   numericOperands().map((operand) => [operand.id, operand]),
@@ -58,10 +48,12 @@ const createPropertyFilter = (
 ): Filter => buildPropertyFilter(property, getNumericOperand(operandId), value)
 
 const renderFilterPanel = (props?: Partial<FilterPanelProps>) => {
+  const slot = props?.slot ?? 'rightArmUnit'
   const mergedProps: FilterPanelProps = {
-    slot: props?.slot ?? 'rightArmUnit',
+    slot,
     filters: props?.filters ?? [],
-    availableParts: props?.availableParts ?? defaultAvailableParts,
+    availableAttributes:
+      props?.availableAttributes ?? getAttributesForSlot(slot),
     showFavoritesOnly: props?.showFavoritesOnly ?? false,
     onclearfilters: props?.onclearfilters,
     onfilterchange: props?.onfilterchange,

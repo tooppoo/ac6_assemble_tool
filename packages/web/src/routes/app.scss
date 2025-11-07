@@ -1,5 +1,5 @@
-@import 'bootstrap/scss/bootstrap';
-@import 'bootstrap-icons/font/bootstrap-icons.css';
+@use 'bootstrap/dist/css/bootstrap.css';
+@use 'bootstrap-icons/font/bootstrap-icons.css';
 
 :root {
   --bs-font-monospace: 'DM Mono', 'Sawarabi Gothic', monospace;

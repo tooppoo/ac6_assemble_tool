@@ -1,37 +1,31 @@
-import type { I18Next } from '$lib/i18n/define'
-
-import { describe, it, expect, vi } from 'vitest'
+import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
+import i18next, { type i18n as I18Next } from 'i18next'
+import { describe, it, expect, beforeEach } from 'vitest'
+import '$lib/i18n/define'
 
 import {
-  buildCategoryFilter,
-  buildManufactureFilter,
+  buildArrayFilter,
   buildNameFilter,
   buildPropertyFilter,
+  getNumericFilterKeys,
   isPropertyFilterKey,
+  translateProperty,
   translateOperand,
+  resolveSelectionValueTranslator,
 } from './filters-application'
 import {
+  applyFilters,
   numericOperands,
   selectAnyOperand,
   stringOperands,
   type FilterOperand,
 } from './filters-core'
 
-const createI18nMock = () => {
-  const dictionaries: Record<string, Record<string, string>> = {
-    assembly: { price: '価格', weight: '重量' },
-    manufacture: { balam: 'ベイラム' },
-    category: { bazooka: 'バズーカ' },
-    'filter/operand': { lte: '≤', contain: 'を含む' },
-  }
+const i18n: I18Next = i18next
 
-  const t = vi.fn((key: string, options?: { ns?: string }) => {
-    const ns = options?.ns ?? 'translation'
-    return dictionaries[ns]?.[key] ?? `${ns}:${key}`
-  })
-
-  return { t } as unknown as I18Next
-}
+beforeEach(async () => {
+  await i18n.changeLanguage('ja')
+})
 
 describe('filters-application', () => {
   describe('isPropertyFilterKey', () => {
@@ -42,8 +36,8 @@ describe('filters-application', () => {
   })
 
   describe('buildPropertyFilter', () => {
-    it('stringify/serializeが期待通りであること', () => {
-      const i18n = createI18nMock()
+    it('stringify/serializeが期待通りであること', async () => {
+      await i18n.changeLanguage('ja')
       const operand = numericOperands().find((op) => op.id === 'lte')!
       const filter = buildPropertyFilter('price', operand, 1000)
 
@@ -53,8 +47,8 @@ describe('filters-application', () => {
   })
 
   describe('buildNameFilter', () => {
-    it('serializeと文字列表現を返すこと', () => {
-      const i18n = createI18nMock()
+    it('serializeと文字列表現を返すこと', async () => {
+      await i18n.changeLanguage('ja')
       const operand = stringOperands().find((op) => op.id === 'contain')!
       const filter = buildNameFilter(operand, 'Zimmer')
 
@@ -63,31 +57,63 @@ describe('filters-application', () => {
     })
   })
 
-  describe('buildManufactureFilter', () => {
-    it('既知・未知メーカーを混在させても翻訳できること', () => {
-      const i18n = createI18nMock()
+  describe('buildArrayFilter', () => {
+    it('displayName に i18n キーを指定すると翻訳を使用すること', async () => {
+      await i18n.changeLanguage('ja')
       const operand = selectAnyOperand()
-      const filter = buildManufactureFilter(operand, ['balam', 'unknown'])
+      const filter = buildArrayFilter(
+        'custom_array',
+        operand,
+        ['alpha', 'beta'],
+        'page/parts-list:filterPanel.selection.attributeLabel',
+      )
+
+      expect(filter.serialize()).toBe('array:custom_array:in_any:alpha,beta')
+      expect(filter.stringify(i18n)).toBe('属性: alpha, beta')
+    })
+
+    it('displayName を指定しない場合は translateProperty の結果を利用すること', async () => {
+      await i18n.changeLanguage('en')
+      const operand = selectAnyOperand()
+      const filter = buildArrayFilter('en_load', operand, ['200', '400'])
+
+      expect(filter.stringify(i18n)).toBe('EN LOAD: 200, 400')
+    })
+
+    it('translateValue オプションで値を翻訳できること', async () => {
+      await i18n.changeLanguage('ja')
+      const operand = selectAnyOperand()
+      const translator = resolveSelectionValueTranslator('category')
+      const filter = buildArrayFilter('category', operand, ['bazooka', 'x'], {
+        displayName: 'カテゴリ',
+        translateValue: translator,
+      })
+
+      expect(filter.stringify(i18n)).toBe('カテゴリ: バズーカ, x')
+    })
+
+    it('メーカー値を翻訳して返すこと', async () => {
+      await i18n.changeLanguage('ja')
+      const operand = selectAnyOperand()
+      const translator = resolveSelectionValueTranslator('manufacture')
+      const filter = buildArrayFilter(
+        'manufacture',
+        operand,
+        ['balam', 'unknown'],
+        {
+          displayName: 'メーカー',
+          translateValue: translator,
+        },
+      )
 
       expect(filter.serialize()).toBe('array:manufacture:in_any:balam,unknown')
       expect(filter.stringify(i18n)).toBe('メーカー: ベイラム, unknown')
     })
   })
 
-  describe('buildCategoryFilter', () => {
-    it('カテゴリを翻訳して返すこと', () => {
-      const i18n = createI18nMock()
-      const operand = selectAnyOperand()
-      const filter = buildCategoryFilter(operand, ['bazooka', 'mystery'])
-
-      expect(filter.serialize()).toBe('array:category:in_any:bazooka,mystery')
-      expect(filter.stringify(i18n)).toBe('カテゴリ: バズーカ, mystery')
-    })
-  })
-
   describe('translateOperand', () => {
-    it('未知のオペランドIDはフォールバックすること', () => {
-      const i18n = createI18nMock()
+    it('未知のオペランドIDはフォールバックすること', async () => {
+      await i18n.changeLanguage('ja')
       const operand: FilterOperand = {
         id: 'custom',
         dataType: 'string',
@@ -96,6 +122,154 @@ describe('filters-application', () => {
       }
 
       expect(translateOperand(operand, i18n)).toBe('custom')
+    })
+  })
+
+  describe('translateProperty', () => {
+    it('assembly 名前空間に存在するキーは翻訳値を返すこと', async () => {
+      await i18n.changeLanguage('ja')
+      expect(translateProperty('price', i18n)).toBe('価格')
+      await i18n.changeLanguage('en')
+      expect(translateProperty('weight', i18n)).toBe('WEIGHT')
+    })
+
+    it('スネークケースのキーはキャメルケースに変換して翻訳を取得すること', async () => {
+      await i18n.changeLanguage('ja')
+      expect(translateProperty('en_load', i18n)).toBe('EN負荷')
+      await i18n.changeLanguage('en')
+      expect(translateProperty('en_load', i18n)).toBe('EN LOAD')
+    })
+
+    it('翻訳が存在しない場合はキャメルケースへフォールバックすること', async () => {
+      await i18n.changeLanguage('ja')
+      expect(translateProperty('attack_power', i18n)).toBe('攻撃力')
+    })
+  })
+
+  describe('getNumericFilterKeys', () => {
+    it('attributes.ts に定義された数値属性を返すこと', () => {
+      expect(getNumericFilterKeys('head')).toContain('price')
+    })
+
+    it('動的属性を含むスロットではその属性を返すこと', () => {
+      expect(getNumericFilterKeys('rightArmUnit')).toContain('attack_power')
+    })
+  })
+
+  describe('PropertyFilterKey - 動的属性対応', () => {
+    it('任意の属性名でプロパティフィルターを構築できること', () => {
+      const operand = numericOperands().find((op) => op.id === 'gte')!
+
+      // 動的属性名（attack_power など）でフィルターを構築
+      const filter = buildPropertyFilter('attack_power', operand, 500)
+
+      expect(filter.property).toBe('attack_power')
+      expect(filter.value).toBe(500)
+      expect(filter.serialize()).toBe('numeric:attack_power:gte:500')
+    })
+
+    it('既存の固定属性（price, weight, en_load）も引き続き動作すること', () => {
+      const operand = numericOperands().find((op) => op.id === 'eq')!
+
+      // 既存の固定属性でフィルターを構築
+      const filter = buildPropertyFilter('weight', operand, 1500)
+
+      expect(filter.property).toBe('weight')
+      expect(filter.value).toBe(1500)
+      expect(filter.serialize()).toBe('numeric:weight:eq:1500')
+    })
+
+    it('isPropertyFilterKey は後方互換性のため固定キーのみtrueを返すこと', () => {
+      // 固定の3属性のみtrueを返す（後方互換性）
+      expect(isPropertyFilterKey('price')).toBe(true)
+      expect(isPropertyFilterKey('weight')).toBe(true)
+      expect(isPropertyFilterKey('en_load')).toBe(true)
+
+      // 動的属性はfalseを返す（既存の振る舞いを維持）
+      expect(isPropertyFilterKey('attack_power')).toBe(false)
+      expect(isPropertyFilterKey('ap')).toBe(false)
+    })
+  })
+
+  describe('フィルター適用', () => {
+    type ExtendedPart = ACParts & Record<string, unknown>
+    const sampleParts: readonly ExtendedPart[] = [
+      {
+        id: 'p1',
+        name: 'Alpha',
+        classification: 'arm-unit',
+        manufacture: 'balam',
+        category: 'bazooka',
+        price: 1500,
+        weight: 420,
+        en_load: 110,
+        attack_power: 1200,
+      },
+      {
+        id: 'p2',
+        name: 'Beta',
+        classification: 'arm-unit',
+        manufacture: 'allmind',
+        category: 'shotgun',
+        price: 2100,
+        weight: 380,
+        en_load: 130,
+        attack_power: 800,
+      },
+      {
+        id: 'p3',
+        name: 'Gamma',
+        classification: 'arm-unit',
+        manufacture: 'balam',
+        category: 'bazooka',
+        price: 1800,
+        weight: 620,
+        en_load: 150,
+      },
+    ]
+
+    it('数値型属性フィルターで該当パーツのみを返すこと', () => {
+      const operand = numericOperands().find((op) => op.id === 'lt')!
+      const filter = buildPropertyFilter('weight', operand, 500)
+
+      const result = applyFilters(sampleParts, [filter])
+
+      expect(result.map((part) => part.id)).toEqual(['p1', 'p2'])
+    })
+
+    it('配列型属性フィルターで候補値に含まれるパーツを返すこと', () => {
+      const operand = selectAnyOperand()
+      const filter = buildArrayFilter('manufacture', operand, ['balam'])
+
+      const result = applyFilters(sampleParts, [filter])
+
+      expect(result.map((part) => part.id)).toEqual(['p1', 'p3'])
+    })
+
+    it('optional属性でフィルターした場合に属性未保持パーツを除外すること', () => {
+      const operand = numericOperands().find((op) => op.id === 'gte')!
+      const filter = buildPropertyFilter('attack_power', operand, 900)
+
+      const result = applyFilters(sampleParts, [filter])
+
+      expect(result.map((part) => part.id)).toEqual(['p1'])
+    })
+
+    it('複数条件をAND適用して該当パーツのみを返すこと', () => {
+      const weightOperand = numericOperands().find((op) => op.id === 'lte')!
+      const weightFilter = buildPropertyFilter('weight', weightOperand, 500)
+      const manufactureFilter = buildArrayFilter(
+        'manufacture',
+        selectAnyOperand(),
+        ['balam'],
+      )
+
+      const result = applyFilters(sampleParts, [
+        weightFilter,
+        manufactureFilter,
+      ])
+
+      expect(result.map((part) => part.id)).toEqual(['p1'])
     })
   })
 })

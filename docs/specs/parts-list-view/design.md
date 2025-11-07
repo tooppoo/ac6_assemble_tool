@@ -199,8 +199,8 @@ packages/web/src/lib/view/parts-list/
    - `numericOperands()`, `stringOperands()`, `selectAnyOperand()`: operandファクトリー
 
 2. **filters-application.ts** (115行追加):
-   - `buildPropertyFilter()`, `buildNameFilter()`, `buildManufactureFilter()`, `buildCategoryFilter()`: Filterビルダー
-   - `translateOperand()`, `translateProperty()`, `translateManufacturer()`, `translateCategory()`: i18n関数
+   - `buildPropertyFilter()`, `buildNameFilter()`, `buildArrayFilter()`: Filterビルダー
+   - `translateOperand()`, `translateProperty()`: i18n関数
    - アプリケーション固有のロジックと表示用文字列生成
 
 3. **i18n対応の強化**:
@@ -685,7 +685,7 @@ function applyPropertyFilter(parts: ACParts[], filter: PropertyFilter): ACParts[
 - 属性選択ドロップダウン（price, weight, en_load）
 - 演算子選択ドロップダウン（≤, ≥, <, >, =, ≠）
 - 数値入力フィールド
-- **UI表示名**: 「属性値検索」
+- **UI表示名**: 「数値フィルタ」
 
 **名前フィルタ（name）**:
 
@@ -720,68 +720,40 @@ function applyNameFilter(parts: ACParts[], filter: NameFilter): ACParts[] {
 - テキスト入力フィールド（Bootstrap Input）
 - 検索モード選択ドロップダウン（Bootstrap Select）
 - デフォルトモードは「含む」（contains）
+- **UI表示名**: 「名前フィルタ」
 
-**メーカーフィルタ（manufacture）**:
+**選択フィルタ（valueType === 'array'）**:
 
 ```typescript
-interface ManufactureFilter {
-  type: 'manufacture'
-  values: string[] // 選択されたメーカーのリスト（複数可）
+interface SelectionFilter {
+  type: 'selection'
+  attribute: string // 例: 'manufacture', 'category'
+  values: string[] // 選択された値のリスト（複数可）
 }
 
 // 実装例
-function applyManufactureFilter(parts: ACParts[], filter: ManufactureFilter): ACParts[] {
+function applySelectionFilter(parts: ACParts[], filter: SelectionFilter): ACParts[] {
   if (filter.values.length === 0) {
     return parts // 未選択時は全パーツを表示
   }
 
-  return parts.filter(part => filter.values.includes(part.manufacture))
+  return parts.filter(part => {
+    const target = part[filter.attribute]
+    if (!Array.isArray(target)) {
+      return filter.values.includes(target as string)
+    }
+    return target.some(value => filter.values.includes(value as string))
+  })
 }
 ```
 
 **UI構成**:
 
-- チェックボックスリスト（Bootstrap Form Check）またはマルチセレクトドロップダウン
-- 選択肢は現在のスロットのパーツに存在するメーカーのみを動的に生成
-- OR条件（いずれかのメーカーに該当すれば表示）
-- **UI表示名**: 「メーカー検索」
-- **i18n対応**: メーカー名は `i18next` の `manufacture` ネームスペースを使用して翻訳される
-
-  ```typescript
-  const i18n = getContext<I18NextStore>('i18n')
-  const translatedName = $i18n.t(manufacturer, { ns: 'manufacture' })
-  ```
-
-**カテゴリフィルタ（category）**:
-
-```typescript
-interface CategoryFilter {
-  type: 'category'
-  values: string[] // 選択されたカテゴリのリスト（複数可）
-}
-
-// 実装例
-function applyCategoryFilter(parts: ACParts[], filter: CategoryFilter): ACParts[] {
-  if (filter.values.length === 0) {
-    return parts // 未選択時は全パーツを表示
-  }
-
-  return parts.filter(part => filter.values.includes(part.category))
-}
-```
-
-**UI構成**:
-
-- チェックボックスリスト（Bootstrap Form Check）またはマルチセレクトドロップダウン
-- 選択肢は現在のスロットのパーツに存在するカテゴリのみを動的に生成
-- OR条件（いずれかのカテゴリに該当すれば表示）
-- **UI表示名**: 「カテゴリ検索」
-- **i18n対応**: カテゴリ名は `i18next` の `category` ネームスペースを使用して翻訳される
-
-  ```typescript
-  const i18n = getContext<I18NextStore>('i18n')
-  const translatedName = $i18n.t(category, { ns: 'category' })
-  ```
+- 属性選択ドロップダウン（valueType が `array` の属性から生成）
+- 値の複数選択UI（チェックボックスリストまたはマルチセレクト）
+- OR条件（いずれかの値に該当すれば表示）
+- **UI表示名**: 「選択フィルタ」
+- **i18n対応**: 属性ごとに値の翻訳関数を切り替え（例: manufacture → `ns: 'manufacture'`, category → `ns: 'category'`、その他は値そのまま）
 
 **分類フィルタ（classification）**:
 
@@ -1034,21 +1006,19 @@ function buildNameFilter(
   value: string
 ): Filter
 
-function buildManufactureFilter(
+function buildArrayFilter(
+  property: string,
   operand: FilterOperand<'array'>,
-  value: readonly string[]
-): Filter
-
-function buildCategoryFilter(
-  operand: FilterOperand<'array'>,
-  value: readonly string[]
+  value: readonly string[],
+  options?: {
+    displayName?: string
+    translateValue?: (value: string, i18n: I18Next) => string
+  }
 ): Filter
 
 // i18n関数
 function translateOperand(operand: FilterOperand, i18n: I18Next): string
 function translateProperty(property: keyof ACParts, i18n: I18Next): string
-function translateManufacturer(manufacturer: string, i18n: I18Next): string
-function translateCategory(category: string, i18n: I18Next): string
 ```
 
 **Preconditions**:

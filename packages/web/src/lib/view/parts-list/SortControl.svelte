@@ -7,19 +7,17 @@
 
   import type { I18NextStore } from '$lib/i18n/define'
 
+  import type { AttributeDefinition } from '@ac6_assemble_tool/parts/attributes-utils'
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
   import { Collapse } from '@sveltestrap/sveltestrap'
   import { getContext } from 'svelte'
 
-  import {
-    translateProperty,
-    type PropertyFilterKey,
-  } from './state/filter/filters-application'
+  import { translateProperty } from './state/filter/filters-application'
   import type { SortKey, SortOrder } from './state/sort'
 
   interface Props {
     slot: CandidatesKey
-    properties: readonly PropertyFilterKey[]
+    availableAttributes: readonly AttributeDefinition[]
     sortKey: SortKey | null
     sortOrder: SortOrder | null
     onsortchange?: (payload: { key: SortKey; order: SortOrder }) => void
@@ -30,12 +28,20 @@
 
   let {
     slot,
-    properties,
+    availableAttributes,
     sortKey,
     sortOrder,
     onsortchange,
     onsortclear,
   }: Props = $props()
+
+  const properties = $derived.by<readonly SortKey[]>(() =>
+    availableAttributes
+      .filter(
+        (attr) => attr.valueType === 'numeric' || attr.valueType === 'array',
+      )
+      .map((attr) => attr.attributeName as SortKey),
+  )
 
   const fallbackKey = $derived(properties[0] ?? null)
   const noneValue = '__none__'
@@ -134,7 +140,7 @@
     isOpen = !isOpen
   }
 
-  function translatePropertyLabel(property: PropertyFilterKey): string {
+  function translatePropertyLabel(property: SortKey): string {
     return translateProperty(property, $i18n)
   }
 </script>

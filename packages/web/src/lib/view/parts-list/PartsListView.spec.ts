@@ -26,12 +26,28 @@ import {
   decompressFromUrlSafeString,
 } from './state/filter/compression'
 import * as partsPoolSerializer from './state/parts-pool-serializer'
+import { sortPartsByKey } from './state/sort'
 import * as stateSerializer from './state/state-serializer'
 
 import * as navigation from '$app/navigation'
 
 const replaceStateSpy = vi.spyOn(navigation, 'replaceState')
 const gotoSpy = vi.spyOn(navigation, 'goto')
+
+function extractCardNames(): string[] {
+  return Array.from(
+    document.querySelectorAll<HTMLElement>('.parts-card .card-title'),
+  ).map((el) => el.textContent?.trim() ?? '')
+}
+
+type RightArmUnitCandidate = (typeof regulation.candidates.rightArmUnit)[number]
+
+function hasAttackPowerProperty(
+  candidates: RightArmUnitCandidate,
+): candidates is RightArmUnitCandidate & { readonly attack_power: number } {
+  const attackPower = (candidates as { attack_power?: unknown }).attack_power
+  return typeof attackPower === 'number'
+}
 
 describe('PartsListView コンポーネント', () => {
   // LocalStorageをクリア
@@ -343,20 +359,50 @@ describe('PartsListView コンポーネント', () => {
       })
     }
 
-    it('選択中のスロットに対応するパーツのみを表示すること', () => {
+    it('選択中のスロットに対応するパーツのみを表示すること', async () => {
       render(PartsListViewTestWrapper, {
         props: {
           regulation,
         },
       })
 
-      // デフォルト（head）のパーツが表示されることを確認
-      // 実際のテストは実装後に追加
+      const expectedNames = regulation.candidates.rightArmUnit.map(
+        (part) => part.name,
+      )
+      await waitFor(() => expect(extractCardNames()).toEqual(expectedNames))
     })
 
-    it('フィルタ条件が適用されたパーツが表示されること', () => {
-      // フィルタ条件を設定してパーツがフィルタリングされることを確認
-      // 実際のテストは実装後に追加
+    it('数値型フィルタが適用されたパーツを表示すること', async () => {
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      const propertySelect = screen.getByLabelText('属性') as HTMLSelectElement
+
+      await waitFor(() =>
+        expect(
+          Array.from(propertySelect.options).map((opt) => opt.value),
+        ).toContain('attack_power'),
+      )
+
+      await fireEvent.change(propertySelect, {
+        target: { value: 'attack_power' },
+      })
+
+      const valueInput = screen.getByLabelText('値')
+      await fireEvent.input(valueInput, { target: { value: '250' } })
+      const addButton = screen.getByRole('button', { name: '追加' })
+
+      const expectedNames = regulation.candidates.rightArmUnit
+        .filter(hasAttackPowerProperty)
+        .filter((part) => part.attack_power <= 250)
+        .map((part) => part.name)
+      await fireEvent.click(addButton)
+
+      await waitFor(() => expect(extractCardNames()).toEqual(expectedNames))
+      expect(screen.getByText('攻撃力: ≤ 250')).toBeInTheDocument()
     })
 
     it('並び替え設定が適用されたパーツが表示されること', async () => {
@@ -430,6 +476,163 @@ describe('PartsListView コンポーネント', () => {
 
       const orderSelect = screen.getByLabelText('並び順') as HTMLSelectElement
       expect(orderSelect.value).toBe('asc')
+    })
+
+    it('配列型属性の並び替えが適用されること', async () => {
+      const slotParts = regulation.candidates.rightArmUnit
+      const expectedAsc = sortPartsByKey(slotParts, 'attack_type', 'asc').map(
+        (part) => part.name,
+      )
+      const expectedDesc = sortPartsByKey(slotParts, 'attack_type', 'desc').map(
+        (part) => part.name,
+      )
+
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      const applyButton = screen.getByRole('button', { name: '適用' })
+      const propertySelect = screen.getByLabelText(
+        '並び替え対象',
+      ) as HTMLSelectElement
+      const orderSelect = screen.getByLabelText('並び順')
+
+      await fireEvent.change(propertySelect, {
+        target: { value: 'attack_type' },
+      })
+      await fireEvent.click(applyButton)
+
+      await waitFor(() => expect(extractCardNames()).toEqual(expectedAsc))
+
+      await fireEvent.change(orderSelect, { target: { value: 'desc' } })
+      await fireEvent.click(applyButton)
+
+      await waitFor(() => expect(extractCardNames()).toEqual(expectedDesc))
+    })
+
+    it('optional属性の並び替えでは値が無いパーツが末尾に配置されること', async () => {
+      const slotParts = regulation.candidates.rightArmUnit
+      const expectedAsc = sortPartsByKey(
+        slotParts,
+        'charge_attack_power',
+        'asc',
+      ).map((part) => part.name)
+
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      const applyButton = screen.getByRole('button', { name: '適用' })
+      const propertySelect = screen.getByLabelText(
+        '並び替え対象',
+      ) as HTMLSelectElement
+
+      await fireEvent.change(propertySelect, {
+        target: { value: 'charge_attack_power' },
+      })
+      await fireEvent.click(applyButton)
+
+      await waitFor(() => expect(extractCardNames()).toEqual(expectedAsc))
+    })
+  })
+
+  describe('フィルタとソートの統合動作', () => {
+    it('スロット変更時に属性候補が更新されること', async () => {
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      const propertySelect = screen.getByLabelText('属性') as HTMLSelectElement
+
+      await waitFor(() =>
+        expect(
+          Array.from(propertySelect.options).map((opt) => opt.value),
+        ).toContain('attack_power'),
+      )
+
+      const headButton = screen.getByText(/^HEAD$|^頭部$/)
+      await headButton.click()
+
+      await waitFor(() => {
+        const values = Array.from(propertySelect.options).map(
+          (opt) => opt.value,
+        )
+        expect(values).not.toContain('attack_power')
+        expect(values).toContain('scan_distance')
+      })
+    })
+
+    it('配列型フィルタとソートを組み合わせて適用できること', async () => {
+      const filtered = regulation.candidates.rightArmUnit.filter(
+        (part) => part.manufacture === 'balam',
+      )
+      const expectedNames = sortPartsByKey(
+        filtered,
+        'attack_power',
+        'desc',
+      ).map((part) => part.name)
+
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      const filterTypeSelect = screen.getByLabelText('フィルタ種類')
+      await fireEvent.change(filterTypeSelect, {
+        target: { value: 'manufacture' },
+      })
+      const manufacturerCheckbox = await screen.findByLabelText('ベイラム')
+      await fireEvent.click(manufacturerCheckbox)
+      const addButton = screen.getByRole('button', { name: '追加' })
+      await fireEvent.click(addButton)
+
+      const applyButton = screen.getByRole('button', { name: '適用' })
+      const propertySelect = screen.getByLabelText(
+        '並び替え対象',
+      ) as HTMLSelectElement
+      const orderSelect = screen.getByLabelText('並び順')
+
+      await fireEvent.change(propertySelect, {
+        target: { value: 'attack_power' },
+      })
+      await fireEvent.change(orderSelect, { target: { value: 'desc' } })
+      await fireEvent.click(applyButton)
+
+      await waitFor(() => expect(extractCardNames()).toEqual(expectedNames))
+    })
+
+    it('フィルタ結果が0件の場合に空状態メッセージを表示すること', async () => {
+      render(PartsListViewTestWrapper, {
+        props: {
+          regulation,
+        },
+      })
+
+      const propertySelect = screen.getByLabelText('属性') as HTMLSelectElement
+      await fireEvent.change(propertySelect, {
+        target: { value: 'attack_power' },
+      })
+
+      const valueInput = screen.getByLabelText('値')
+      await fireEvent.input(valueInput, { target: { value: '-1' } })
+      const addButton = screen.getByRole('button', { name: '追加' })
+      await fireEvent.click(addButton)
+
+      await waitFor(() =>
+        expect(
+          screen.getByText(
+            'フィルタ条件に一致するパーツが見つかりませんでした',
+          ),
+        ).toBeInTheDocument(),
+      )
+      expect(document.querySelectorAll('.parts-card').length).toBe(0)
     })
   })
 
