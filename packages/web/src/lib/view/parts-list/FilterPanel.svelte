@@ -41,7 +41,7 @@
     ontogglefavorites?: () => void
   }
 
-  const {
+  let {
     slot,
     filters,
     availableAttributes,
