@@ -45,8 +45,7 @@ export function excludeAttributes(
       return
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const value = (part as any)[attributeName]
+    const value = part[attributeName as keyof ACParts]
 
     const storedScore = attributesScores.get(attributeName)
     const valueType: InnerValueType =
