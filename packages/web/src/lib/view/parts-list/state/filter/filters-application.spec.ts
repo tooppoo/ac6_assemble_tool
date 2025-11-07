@@ -1,8 +1,7 @@
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
-import { describe, it, expect, beforeEach } from 'vitest'
-
-import '$lib/i18n/define'
 import i18next, { type i18n as I18Next } from 'i18next'
+import { describe, it, expect, beforeEach } from 'vitest'
+import '$lib/i18n/define'
 
 import {
   buildArrayFilter,

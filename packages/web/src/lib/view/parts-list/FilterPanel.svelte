@@ -329,7 +329,6 @@
   function handleToggleFavorites() {
     ontogglefavorites?.()
   }
-
 </script>
 
 <div class="card filter-panel-card">

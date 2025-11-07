@@ -1,8 +1,8 @@
+import { getArrayAttributes } from '@ac6_assemble_tool/parts/attributes-utils'
 import {
   CANDIDATES_KEYS,
   type CandidatesKey,
 } from '@ac6_assemble_tool/parts/types/candidates'
-import { getArrayAttributes } from '@ac6_assemble_tool/parts/attributes-utils'
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 
