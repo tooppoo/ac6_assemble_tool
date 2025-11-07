@@ -145,7 +145,8 @@ export function buildNameFilter(
 export function resolveSelectionValueTranslator(
   property: PropertyFilterKey,
 ): ArrayFilterOptions['translateValue'] | undefined {
-  return (value: string, i18n: I18Next) => i18n.t(`${property}:${value}`) ?? value
+  return (value: string, i18n: I18Next) =>
+    i18n.t(`${property}:${value}`) ?? value
 }
 
 // util
