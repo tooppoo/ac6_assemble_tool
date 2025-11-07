@@ -147,14 +147,20 @@ export function resolveSelectionValueTranslator(
 ): ArrayFilterOptions['translateValue'] | undefined {
   return (value: string, i18n: I18Next) => {
     const language = i18n.resolvedLanguage ?? i18n.language
-    if (!language) {
-      return value
+    if (language) {
+      const resource = i18n.getResource(language, property, value)
+      if (typeof resource === 'string') {
+        return resource
+      }
     }
 
-    const resource = i18n.getResource(language, property, value)
-        if (typeof resource === 'string') {
-          return resource
-        }
+    const translated = i18n.t(value, {
+      ns: property,
+      defaultValue: value,
+    })
+    if (typeof translated === 'string') {
+      return translated
+    }
 
     return value
   }
