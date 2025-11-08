@@ -19,15 +19,15 @@
   import { Result } from '@praha/byethrow'
   import { getContext } from 'svelte'
 
-  import FilterPanel from './FilterPanel.svelte'
-  import PartsGrid from './PartsGrid.svelte'
-  import SlotSelector from './SlotSelector.svelte'
-  import SortControl from './SortControl.svelte'
-  import { applyFilters } from './state/filter/filters-core'
+  import FilterPanel from './filter/FilterPanel.svelte'
+  import { applyFilters } from './filter/filters-core'
   import {
     createDefaultFiltersPerSlot,
     type FiltersPerSlot,
-  } from './state/filter/serialization'
+  } from './filter/serialization'
+  import PartsGrid from './PartsGrid.svelte'
+  import SlotSelector from './SlotSelector.svelte'
+  import SortControl from './SortControl.svelte'
   import { serializeFilteredPartsPool } from './state/parts-pool-serializer'
   import { SLOT_PARTS_PARAM_SUFFIX } from './state/slot-utils'
   import {

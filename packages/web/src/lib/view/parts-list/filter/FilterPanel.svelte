@@ -20,13 +20,13 @@
     translateOperand,
     translateProperty,
     type PropertyFilterKey,
-  } from './state/filter/filters-application'
+  } from './filters-application'
   import {
     numericOperands,
     selectAnyOperand,
     stringOperands,
     type Filter,
-  } from './state/filter/filters-core'
+  } from './filters-core'
 
   // i18n
   const i18n = getContext<I18NextStore>('i18n')

@@ -12,7 +12,7 @@
   import { Collapse } from '@sveltestrap/sveltestrap'
   import { getContext } from 'svelte'
 
-  import { translateProperty } from './state/filter/filters-application'
+  import { translateProperty } from './filter/filters-application'
   import type { SortKey, SortOrder } from './state/sort'
 
   interface Props {

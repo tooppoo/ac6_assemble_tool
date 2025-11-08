@@ -16,8 +16,8 @@ import FilterPanel from './FilterPanel.svelte'
 import {
   buildPropertyFilter,
   type PropertyFilterKey,
-} from './state/filter/filters-application'
-import { numericOperands, type Filter } from './state/filter/filters-core'
+} from './filters-application'
+import { numericOperands, type Filter } from './filters-core'
 
 type FilterPanelProps = {
   slot: CandidatesKey
