@@ -14,7 +14,7 @@ import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 import { render, screen, fireEvent } from '@testing-library/svelte'
 import { describe, it, expect } from 'vitest'
 
-import SlotSelector from './SlotSelector.svelte'
+import SlotSelector from '../SlotSelector.svelte'
 
 type SlotSelectorProps = {
   currentSlot: CandidatesKey

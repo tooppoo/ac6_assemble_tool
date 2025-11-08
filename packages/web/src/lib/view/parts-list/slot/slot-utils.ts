@@ -1,6 +1,6 @@
 import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
 
-import { VALID_SLOTS } from './shared'
+import { VALID_SLOTS } from '../state/shared'
 
 export const SLOT_PARTS_PARAM_SUFFIX = '_parts' as const
 
