@@ -127,8 +127,7 @@
       .map((slot) => $i18n.t(`assembly:${slot}`))
       .join('、')
 
-    return $i18n.t('navigation.handoff.disabledReason', {
-      ns: 'page/parts-list',
+    return $i18n.t('page/parts-list:navigation.handoff.disabledReason', {
       slots: slotLabels,
     })
   })

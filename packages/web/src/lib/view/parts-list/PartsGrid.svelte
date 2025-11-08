@@ -28,8 +28,7 @@
   const i18n = getContext<I18NextStore>('i18n')
 
   const summary = $derived.by(() =>
-    $i18n.t('partsGrid.summary', {
-      ns: 'page/parts-list',
+    $i18n.t('page/parts-list:partsGrid.summary', {
       count: parts.length,
     }),
   )
