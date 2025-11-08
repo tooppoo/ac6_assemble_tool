@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 
-# 新サイトのサイトマップを指定（評価継承促進）
 Sitemap: https://ac6-assemble-tool.philomagi.dev/sitemap.xml
