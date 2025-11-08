@@ -38,7 +38,7 @@
     "nodemon": "3.1.10",
     "prettier-plugin-svelte": "3.4.0",
     "purgecss": "7.0.2",
-    "sass-embedded": "1.92.0",
+    "sass-embedded": "1.93.3",
     "svelte-sitemap": "2.7.1",
     "vite-bundle-analyzer": "1.2.3"
   },
@@ -56,9 +56,9 @@
     "ulid": "3.0.1"
   },
   "optionalDependencies": {
-    "sass-embedded-darwin-arm64": "1.92.0",
-    "sass-embedded-darwin-x64": "1.92.0",
-    "sass-embedded-linux-x64": "1.92.0"
+    "sass-embedded-darwin-arm64": "1.93.3",
+    "sass-embedded-darwin-x64": "1.93.3",
+    "sass-embedded-linux-x64": "1.93.3"
   },
   "type": "module"
 }
