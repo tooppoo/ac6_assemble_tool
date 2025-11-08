@@ -27,15 +27,15 @@
   } from './filter/serialization'
   import PartsGrid from './PartsGrid.svelte'
   import SlotSelector from './SlotSelector.svelte'
-  import SortControl from './SortControl.svelte'
-  import { serializeFilteredPartsPool } from './state/parts-pool-serializer'
-  import { SLOT_PARTS_PARAM_SUFFIX } from './state/slot-utils'
   import {
     getAvailableSortKeys,
     sortPartsByKey,
     type SortKey,
     type SortOrder,
-  } from './state/sort'
+  } from './sort/sort'
+  import SortControl from './sort/SortControl.svelte'
+  import { serializeFilteredPartsPool } from './state/parts-pool-serializer'
+  import { SLOT_PARTS_PARAM_SUFFIX } from './state/slot-utils'
   import {
     MANAGED_SHARED_QUERY_KEYS,
     deserializeFromURL,

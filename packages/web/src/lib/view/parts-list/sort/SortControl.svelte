@@ -12,8 +12,9 @@
   import { Collapse } from '@sveltestrap/sveltestrap'
   import { getContext } from 'svelte'
 
-  import { translateProperty } from './filter/filters-application'
-  import type { SortKey, SortOrder } from './state/sort'
+  import { translateProperty } from '../filter/filters-application'
+
+  import type { SortKey, SortOrder } from './sort'
 
   interface Props {
     slot: CandidatesKey

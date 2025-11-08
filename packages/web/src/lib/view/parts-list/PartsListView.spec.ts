@@ -25,8 +25,8 @@ import {
 } from './filter/compression'
 import PartsListView from './PartsListView.svelte'
 import PartsListViewTestWrapper from './PartsListView.test-wrapper.svelte'
+import { sortPartsByKey } from './sort/sort'
 import * as partsPoolSerializer from './state/parts-pool-serializer'
-import { sortPartsByKey } from './state/sort'
 import * as stateSerializer from './state/state-serializer'
 
 import * as navigation from '$app/navigation'
