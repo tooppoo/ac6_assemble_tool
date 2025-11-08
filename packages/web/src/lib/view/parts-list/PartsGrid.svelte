@@ -12,7 +12,7 @@
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
   import { getContext } from 'svelte'
 
-  import EmptyState from './EmptyState.svelte'
+  import EmptyState from './state/EmptyState.svelte'
   import PartsCard from './PartsCard.svelte'
 
   // Props
