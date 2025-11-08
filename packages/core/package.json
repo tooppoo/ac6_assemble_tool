@@ -33,7 +33,7 @@
   "dependencies": {
     "@ac6_assemble_tool/parts": "workspace:1.8.1",
     "@ac6_assemble_tool/shared": "workspace:1.0.0",
-    "@praha/byethrow": "0.6.3",
+    "@praha/byethrow": "0.8.1",
     "dexie": "4.2.0",
     "ulid": "3.0.1",
     "zod": "4.1.5"
