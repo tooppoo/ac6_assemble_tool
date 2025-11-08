@@ -156,8 +156,6 @@ export type FiltersPerSlot = {
   [K in CandidatesKey]?: Filter[]
 }
 
-export { normalizeSlotKey } from '../slot-utils'
-
 type SerializedFiltersPerSlot = Record<string, string[]>
 
 export async function deserializeLegacyFiltersPerSlotFromURL(

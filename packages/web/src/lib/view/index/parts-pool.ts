@@ -1,4 +1,4 @@
-import { parseSlotPartsParamKey } from '$lib/view/parts-list/state/slot-utils'
+import { parseSlotPartsParamKey } from '$lib/view/parts-list/slot/slot-utils'
 
 import {
   CANDIDATES_KEYS,

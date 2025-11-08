@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
-import { normalizeSlotKey, parseFilter } from './serialization'
+import { normalizeSlotKey } from '../slot/slot-utils'
+
+import { parseFilter } from './serialization'
 
 describe('filter serialization utilities', () => {
   describe('parseFilter', () => {

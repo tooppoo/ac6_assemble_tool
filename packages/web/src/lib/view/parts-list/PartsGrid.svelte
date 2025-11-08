@@ -12,8 +12,8 @@
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
   import { getContext } from 'svelte'
 
-  import EmptyState from './EmptyState.svelte'
   import PartsCard from './PartsCard.svelte'
+  import EmptyState from './state/EmptyState.svelte'
 
   // Props
   interface Props {
@@ -28,8 +28,7 @@
   const i18n = getContext<I18NextStore>('i18n')
 
   const summary = $derived.by(() =>
-    $i18n.t('partsGrid.summary', {
-      ns: 'page/parts-list',
+    $i18n.t('page/parts-list:partsGrid.summary', {
       count: parts.length,
     }),
   )

@@ -28,15 +28,12 @@
   let isOpen = $state(true)
 
   const heading = $derived.by(() =>
-    $i18n.t('slotSelector.title', { ns: 'page/parts-list' }),
+    $i18n.t('page/parts-list:slotSelector.title'),
   )
 
   const toggleLabel = $derived.by(() =>
     $i18n.t(
-      isOpen ? 'slotSelector.toggle.collapse' : 'slotSelector.toggle.expand',
-      {
-        ns: 'page/parts-list',
-      },
+      `page/parts-list:slotSelector.toggle.${isOpen ? 'collapse' : 'expand'}`,
     ),
   )
 

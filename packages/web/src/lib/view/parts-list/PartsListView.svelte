@@ -19,23 +19,23 @@
   import { Result } from '@praha/byethrow'
   import { getContext } from 'svelte'
 
-  import FilterPanel from './FilterPanel.svelte'
-  import PartsGrid from './PartsGrid.svelte'
-  import SlotSelector from './SlotSelector.svelte'
-  import SortControl from './SortControl.svelte'
-  import { applyFilters } from './state/filter/filters-core'
+  import FilterPanel from './filter/FilterPanel.svelte'
+  import { applyFilters } from './filter/filters-core'
   import {
     createDefaultFiltersPerSlot,
     type FiltersPerSlot,
-  } from './state/filter/serialization'
-  import { serializeFilteredPartsPool } from './state/parts-pool-serializer'
-  import { SLOT_PARTS_PARAM_SUFFIX } from './state/slot-utils'
+  } from './filter/serialization'
+  import { serializeFilteredPartsPool } from './parts-pool-serializer'
+  import PartsGrid from './PartsGrid.svelte'
+  import { SLOT_PARTS_PARAM_SUFFIX } from './slot/slot-utils'
+  import SlotSelector from './slot/SlotSelector.svelte'
   import {
     getAvailableSortKeys,
     sortPartsByKey,
     type SortKey,
     type SortOrder,
-  } from './state/sort'
+  } from './sort/sort'
+  import SortControl from './sort/SortControl.svelte'
   import {
     MANAGED_SHARED_QUERY_KEYS,
     deserializeFromURL,
@@ -127,8 +127,7 @@
       .map((slot) => $i18n.t(`assembly:${slot}`))
       .join('、')
 
-    return $i18n.t('navigation.handoff.disabledReason', {
-      ns: 'page/parts-list',
+    return $i18n.t('page/parts-list:navigation.handoff.disabledReason', {
       slots: slotLabels,
     })
   })
@@ -433,16 +432,14 @@
       type="button"
       title={isHandoffDisabled && handoffDisabledReason
         ? handoffDisabledReason
-        : $i18n.t('navigation.handoff.description', {
-            ns: 'page/parts-list',
-          })}
+        : $i18n.t('page/parts-list:navigation.handoff.description')}
       disabled={isHandoffDisabled}
       aria-describedby={isHandoffDisabled && handoffDisabledReason
         ? 'handoff-disabled-reason'
         : undefined}
       onclick={handleNavigateToAssembly}
     >
-      {$i18n.t('navigation.handoff.label', { ns: 'page/parts-list' })}
+      {$i18n.t('page/parts-list:navigation.handoff.label')}
     </button>
   </div>
 

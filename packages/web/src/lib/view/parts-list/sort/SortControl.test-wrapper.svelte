@@ -5,8 +5,8 @@
   import type { CandidatesKey } from '@ac6_assemble_tool/parts/types/candidates'
   import { setContext } from 'svelte'
 
+  import type { SortKey, SortOrder } from './sort'
   import SortControl from './SortControl.svelte'
-  import type { SortKey, SortOrder } from './state/sort'
 
   interface Props {
     slot: CandidatesKey

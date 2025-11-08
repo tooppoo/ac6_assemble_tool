@@ -1,12 +1,10 @@
 # @ac6_assemble_tool/web
 
 ## 3.1.0
+
 ### Minor Changes
 
-
-
 - [#899](https://github.com/tooppoo/ac6_assemble_tool/pull/899) [`9effc29`](https://github.com/tooppoo/ac6_assemble_tool/commit/9effc29fb6ab59ffcfe5a175e8c5c46ec3a6facc) Thanks [@tooppoo](https://github.com/tooppoo)! - フィルタリング・ソートを任意の属性で実施可能にした
-
 
 ### Patch Changes
 

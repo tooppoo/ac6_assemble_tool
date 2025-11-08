@@ -7,7 +7,7 @@ import { logger } from '@ac6_assemble_tool/shared/logger'
 
 import { applyFilters, type Filter } from './filter/filters-core'
 import { type FiltersPerSlot } from './filter/serialization'
-import { toSlotPartsParamKey } from './slot-utils'
+import { toSlotPartsParamKey } from './slot/slot-utils'
 
 export interface SerializePartsPoolParamsInput {
   candidates: Candidates

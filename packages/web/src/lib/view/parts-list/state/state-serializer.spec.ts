@@ -4,17 +4,18 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import {
   compressToUrlSafeString,
   decompressFromUrlSafeString,
-} from './filter/compression'
+} from '../filter/compression'
 import {
   buildArrayFilter,
   buildNameFilter,
   buildPropertyFilter,
-} from './filter/filters-application'
+} from '../filter/filters-application'
 import {
   numericOperands,
   selectAnyOperand,
   stringOperands,
-} from './filter/filters-core'
+} from '../filter/filters-core'
+
 import {
   deserializeFromURL,
   serializeToURL,
