@@ -11,15 +11,13 @@ import {
 } from '../filter/compression'
 import { type Filter } from '../filter/filters-core'
 import {
-  normalizeSlotKey,
   parseFilter,
   type FiltersPerSlot,
 } from '../filter/serialization'
+import { type DeserializeError, VALID_SLOTS } from '../shared'
+import { normalizeSlotKey, toSlotParamValue } from '../slot/slot-utils'
 import { parseSort } from '../sort/sort'
 import type { SortKey, SortOrder } from '../sort/sort'
-
-import { type DeserializeError, VALID_SLOTS } from './shared'
-import { toSlotParamValue } from './slot-utils'
 
 // Filterは filters.ts からエクスポート
 export type { Filter } from '../filter/filters-core'

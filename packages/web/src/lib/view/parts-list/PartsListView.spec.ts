@@ -23,10 +23,10 @@ import {
   compressToUrlSafeString,
   decompressFromUrlSafeString,
 } from './filter/compression'
+import * as partsPoolSerializer from './parts-pool-serializer'
 import PartsListView from './PartsListView.svelte'
 import PartsListViewTestWrapper from './PartsListView.test-wrapper.svelte'
 import { sortPartsByKey } from './sort/sort'
-import * as partsPoolSerializer from './state/parts-pool-serializer'
 import * as stateSerializer from './state/state-serializer'
 
 import * as navigation from '$app/navigation'

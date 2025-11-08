@@ -26,7 +26,7 @@
     type FiltersPerSlot,
   } from './filter/serialization'
   import PartsGrid from './PartsGrid.svelte'
-  import SlotSelector from './SlotSelector.svelte'
+  import SlotSelector from './slot/SlotSelector.svelte'
   import {
     getAvailableSortKeys,
     sortPartsByKey,
@@ -34,8 +34,8 @@
     type SortOrder,
   } from './sort/sort'
   import SortControl from './sort/SortControl.svelte'
-  import { serializeFilteredPartsPool } from './state/parts-pool-serializer'
-  import { SLOT_PARTS_PARAM_SUFFIX } from './state/slot-utils'
+  import { serializeFilteredPartsPool } from './parts-pool-serializer'
+  import { SLOT_PARTS_PARAM_SUFFIX } from './slot/slot-utils'
   import {
     MANAGED_SHARED_QUERY_KEYS,
     deserializeFromURL,

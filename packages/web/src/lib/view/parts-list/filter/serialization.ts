@@ -6,7 +6,7 @@ import {
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 
-import { VALID_SLOTS, type DeserializeError } from '../state/shared'
+import { VALID_SLOTS, type DeserializeError } from '../shared'
 
 import { decompressFromUrlSafeString } from './compression'
 import {
@@ -155,8 +155,6 @@ export function createDefaultFiltersPerSlot(): FiltersPerSlot {
 export type FiltersPerSlot = {
   [K in CandidatesKey]?: Filter[]
 }
-
-export { normalizeSlotKey } from '../state/slot-utils'
 
 type SerializedFiltersPerSlot = Record<string, string[]>
 
