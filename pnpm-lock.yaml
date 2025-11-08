@@ -28,8 +28,8 @@ importers:
         specifier: 9.34.0
         version: 9.34.0
       '@fast-check/vitest':
-        specifier: 0.2.2
-        version: 0.2.2(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.12)(jsdom@26.1.0)(sass-embedded@1.92.0)(sass@1.92.0)(tsx@4.20.5)(yaml@2.8.1))
+        specifier: 0.2.3
+        version: 0.2.3(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.12)(jsdom@26.1.0)(sass-embedded@1.92.0)(sass@1.92.0)(tsx@4.20.5)(yaml@2.8.1))
       '@types/lodash-es':
         specifier: 4.17.12
         version: 4.17.12
@@ -636,10 +636,10 @@ packages:
     resolution: {integrity: sha512-sB5uyeq+dwCWyPi31B2gQlVlo+j5brPlWx4yZBrEaRo/nhdDE8Xke1gsGgtiBdaBTxuTkceLVuVt/pclrasb0A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@fast-check/vitest@0.2.2':
-    resolution: {integrity: sha512-bL7uiHj3PetEUSDoEANFzIY2QQIR2svQdCRbe6RgWxYO+QGaJD8PdyshM4hNA2ieqrtrDWuUs+1S34DWJQjn9A==}
+  '@fast-check/vitest@0.2.3':
+    resolution: {integrity: sha512-BBjiZOiCvKRfoeuWz62ZpjFfuaLEKSDWXl7Fkli9FBNJGUzBDv7PZdXPGbrUiaTreIFs9I1INrlQgboRBA3H1Q==}
     peerDependencies:
-      vitest: ^1 || ^2 || ^3
+      vitest: ^1 || ^2 || ^3 || ^4
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -4049,7 +4049,7 @@ snapshots:
       '@eslint/core': 0.16.0
       levn: 0.4.1
 
-  '@fast-check/vitest@0.2.2(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.12)(jsdom@26.1.0)(sass-embedded@1.92.0)(sass@1.92.0)(tsx@4.20.5)(yaml@2.8.1))':
+  '@fast-check/vitest@0.2.3(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.12)(jsdom@26.1.0)(sass-embedded@1.92.0)(sass@1.92.0)(tsx@4.20.5)(yaml@2.8.1))':
     dependencies:
       fast-check: 4.3.0
       vitest: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.12)(jsdom@26.1.0)(sass-embedded@1.92.0)(sass@1.92.0)(tsx@4.20.5)(yaml@2.8.1)
