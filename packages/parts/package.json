@@ -28,7 +28,7 @@
   "devDependencies": {
     "@ac6_assemble_tool/eslint": "workspace:1.0.0",
     "@ac6_assemble_tool/tsconfig": "workspace:1.0.0",
-    "ceiocs": "0.0.9"
+    "ceiocs": "0.2.0"
   },
   "dependencies": {
     "@ac6_assemble_tool/shared": "workspace:1.0.0"
