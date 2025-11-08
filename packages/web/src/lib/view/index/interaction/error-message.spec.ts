@@ -15,7 +15,7 @@ import {
 } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
 import { fc, it } from '@fast-check/vitest'
 import type { ArrayConstraints } from 'fast-check'
-import { afterEach, beforeEach, describe, expect, type Mock, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, vi } from 'vitest'
 
 describe(assemblyErrorMessage.name, () => {
   let i18n: Pick<I18Next, 't'>
@@ -43,7 +43,7 @@ describe(assemblyErrorMessage.name, () => {
     }) =>
       fc
         .string()
-        .map((msg) => new ValidationError({ validationName, adjustable }, msg))
+        .map((msg) => new ValidationError(msg, { validationName, adjustable }))
 
     type TestCase = {
       load: ArrayConstraints
@@ -137,7 +137,7 @@ describe(assemblyErrorMessage.name, () => {
           `should build error message for ${JSON.stringify(expected)}`,
           (loadError, coamError, notAdjustableError, unknownError) => {
             const shuffle = () => Math.random() - Math.random()
-            const sut = new OverTryLimitError({
+            const sut = new OverTryLimitError('over try limit', {
               limit: 5,
               errors: [
                 ...loadError,
@@ -194,7 +194,7 @@ describe(assemblyErrorMessage.name, () => {
 })
 
 function renderUnknownError(
-  provider: () => { i18n: Translator; mock: Mock },
+  provider: () => { i18n: Translator; mock: ReturnType<typeof vi.fn> },
   f: (e: Error, i18n: Translator) => unknown,
 ) {
   describe('unknown error', () => {
