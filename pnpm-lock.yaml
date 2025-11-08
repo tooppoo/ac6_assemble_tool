@@ -140,8 +140,8 @@ importers:
         specifier: 0.18.1
         version: 0.18.1
       markdownlint-cli2-formatter-pretty:
-        specifier: 0.0.8
-        version: 0.0.8(markdownlint-cli2@0.18.1)
+        specifier: 0.0.9
+        version: 0.0.9(markdownlint-cli2@0.18.1)
 
   packages/eslint: {}
 
@@ -1528,8 +1528,8 @@ packages:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
     engines: {node: '>=10'}
 
-  chalk@5.4.1:
-    resolution: {integrity: sha512-zgVZuo2WcZgfUEmsn6eO3kINexW8RAE4maiQ8QNs8CtpPCSyMiYsULR3HQYkm3w8FIA3SberyMJMSldGsW+U3w==}
+  chalk@5.6.2:
+    resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
   character-entities-legacy@3.0.0:
@@ -2097,6 +2097,10 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
+  has-flag@5.0.1:
+    resolution: {integrity: sha512-CsNUt5x9LUdx6hnk/E2SZLsDyvfqANZSUq4+D3D8RzDJ2M+HDTIkF60ibS1vHaK55vzgiZw1bEPFG9yH7l33wA==}
+    engines: {node: '>=12'}
+
   has-property-descriptors@1.0.2:
     resolution: {integrity: sha512-55JNKuIW+vq4Ke1BjOTjM2YctQIvCT7GFzHwmfZPGo5wnrgkid0YQtnAleFSqumZm4az3n2BS+erby5ipJdgrg==}
 
@@ -2471,8 +2475,8 @@ packages:
     peerDependencies:
       markdownlint-cli2: '>=0.0.4'
 
-  markdownlint-cli2-formatter-pretty@0.0.8:
-    resolution: {integrity: sha512-pljANIeNaT2Vy60dkFDZ75+dhEhq/OB8DnM2HlmweOiLBrIYW8jAOCQnPTHhYfwClWZkiV//iRWjVL+rR4LQhA==}
+  markdownlint-cli2-formatter-pretty@0.0.9:
+    resolution: {integrity: sha512-5zuqYonXTUu7yLP+f0ERcYu3c6tlWJVMkp+ovo6RNEvy8NEpkdUXRBAObbuJVSE3bJcaqderebfLSlEdUK8HDg==}
     engines: {node: '>=14.18.0'}
     peerDependencies:
       markdownlint-cli2: '>=0.0.4'
@@ -3227,6 +3231,10 @@ packages:
   strip-literal@3.0.0:
     resolution: {integrity: sha512-TcccoMhJOM3OebGhSBEmp3UZ2SfDMZUEBdRA/9ynfLi8yYajyWX3JiXArcJt4Umh4vISpspkQIY8ZZoCqjbviA==}
 
+  supports-color@10.2.2:
+    resolution: {integrity: sha512-SS+jx45GF1QjgEXQx4NJZV9ImqmO2NPz5FNsIHrsDjh2YsHnawpan7SNQ1o8NuhrbHZy9AZhIoCUiCeaW/C80g==}
+    engines: {node: '>=18'}
+
   supports-color@5.5.0:
     resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}
     engines: {node: '>=4'}
@@ -3239,9 +3247,9 @@ packages:
     resolution: {integrity: sha512-MpUEN2OodtUzxvKQl72cUF7RQ5EiHsGvSsVG0ia9c5RbWGL2CI4C7EpPS8UTBIplnlzZiNuV56w+FuNxy3ty2Q==}
     engines: {node: '>=10'}
 
-  supports-hyperlinks@3.2.0:
-    resolution: {integrity: sha512-zFObLMyZeEwzAoKCyu1B91U79K2t7ApXuQfo8OuxwXLDgcKxuwM+YvcbIhm6QWqz7mHUH1TVytR1PwVVjEuMig==}
-    engines: {node: '>=14.18'}
+  supports-hyperlinks@4.3.0:
+    resolution: {integrity: sha512-i6sWEzuwadSlcr2mOnb0ktlIl+K5FVxsPXmoPfknDd2gyw4ZBIAZ5coc0NQzYqDdEYXMHy8NaY9rWwa1Q1myiQ==}
+    engines: {node: '>=20'}
 
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
@@ -3286,9 +3294,9 @@ packages:
     resolution: {integrity: sha512-wK0Ri4fOGjv/XPy8SBHZChl8CM7uMc5VML7SqiQ0zG7+J5Vr+RMQDoHa2CNT6KHUnTGIXH34UDMkPzAUyapBZg==}
     engines: {node: '>=8'}
 
-  terminal-link@4.0.0:
-    resolution: {integrity: sha512-lk+vH+MccxNqgVqSnkMVKx4VLJfnLjDBGzH16JVZjKE2DoxP57s6/vt6JmXV5I3jBcfGrxNrYtC+mPtU7WJztA==}
-    engines: {node: '>=18'}
+  terminal-link@5.0.0:
+    resolution: {integrity: sha512-qFAy10MTMwjzjU8U16YS4YoZD+NQLHzLssFMNqgravjbvIPNiqkGFR4yjhJfmY9R5OFU7+yHxc6y+uGHkKwLRA==}
+    engines: {node: '>=20'}
 
   test-exclude@7.0.1:
     resolution: {integrity: sha512-pFYqmTw68LXVjeWJMST4+borgQP2AyMNbg1BpZh9LbyhUeNkeaPF9gzfPGUAnSMV3qPYdWUwDIjjCLiSDOl7vg==}
@@ -4930,7 +4938,7 @@ snapshots:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
-  chalk@5.4.1: {}
+  chalk@5.6.2: {}
 
   character-entities-legacy@3.0.0: {}
 
@@ -5602,6 +5610,8 @@ snapshots:
 
   has-flag@4.0.0: {}
 
+  has-flag@5.0.1: {}
+
   has-property-descriptors@1.0.2:
     dependencies:
       es-define-property: 1.0.1
@@ -5986,11 +5996,11 @@ snapshots:
     dependencies:
       markdownlint-cli2: 0.18.1
 
-  markdownlint-cli2-formatter-pretty@0.0.8(markdownlint-cli2@0.18.1):
+  markdownlint-cli2-formatter-pretty@0.0.9(markdownlint-cli2@0.18.1):
     dependencies:
-      chalk: 5.4.1
+      chalk: 5.6.2
       markdownlint-cli2: 0.18.1
-      terminal-link: 4.0.0
+      terminal-link: 5.0.0
 
   markdownlint-cli2@0.18.1:
     dependencies:
@@ -6847,6 +6857,8 @@ snapshots:
     dependencies:
       js-tokens: 9.0.1
 
+  supports-color@10.2.2: {}
+
   supports-color@5.5.0:
     dependencies:
       has-flag: 3.0.0
@@ -6859,10 +6871,10 @@ snapshots:
     dependencies:
       has-flag: 4.0.0
 
-  supports-hyperlinks@3.2.0:
+  supports-hyperlinks@4.3.0:
     dependencies:
-      has-flag: 4.0.0
-      supports-color: 7.2.0
+      has-flag: 5.0.1
+      supports-color: 10.2.2
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
@@ -6915,10 +6927,10 @@ snapshots:
 
   term-size@2.2.1: {}
 
-  terminal-link@4.0.0:
+  terminal-link@5.0.0:
     dependencies:
       ansi-escapes: 7.1.1
-      supports-hyperlinks: 3.2.0
+      supports-hyperlinks: 4.3.0
 
   test-exclude@7.0.1:
     dependencies:
