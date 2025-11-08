@@ -1,4 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>tooppoo/renovate-config"]
+  "extends": ["local>tooppoo/renovate-config"],
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["^sass-embedded"],
+      "groupName": "sass-embedded family",
+      "description": "Group updates for all sass-embedded packages."
+    }
+  ]
 }
