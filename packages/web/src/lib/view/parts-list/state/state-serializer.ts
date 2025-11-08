@@ -10,10 +10,7 @@ import {
   decompressFromUrlSafeString,
 } from '../filter/compression'
 import { type Filter } from '../filter/filters-core'
-import {
-  parseFilter,
-  type FiltersPerSlot,
-} from '../filter/serialization'
+import { parseFilter, type FiltersPerSlot } from '../filter/serialization'
 import { type DeserializeError, VALID_SLOTS } from '../shared'
 import { normalizeSlotKey, toSlotParamValue } from '../slot/slot-utils'
 import { parseSort } from '../sort/sort'

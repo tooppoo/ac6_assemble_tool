@@ -33,9 +33,7 @@
 
   const toggleLabel = $derived.by(() =>
     $i18n.t(
-      `page/parts-list:slotSelector.toggle.${
-        isOpen ? 'collapse' : 'expand'
-      }`,
+      `page/parts-list:slotSelector.toggle.${isOpen ? 'collapse' : 'expand'}`,
     ),
   )
 

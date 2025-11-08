@@ -387,7 +387,9 @@
               </option>
               {#if selectionAttributes.length > 0}
                 <optgroup
-                  label={$i18n.t('page/parts-list:filterPanel.filterTypes.selection')}
+                  label={$i18n.t(
+                    'page/parts-list:filterPanel.filterTypes.selection',
+                  )}
                 >
                   {#each selectionAttributes as attribute (attribute)}
                     <option value={attribute}>
@@ -428,7 +430,9 @@
 
             <div class="col-12 col-md-3">
               <label for="filter-operator" class="form-label mb-1 text-white"
-                >{$i18n.t('page/parts-list:filterPanel.property.conditionLabel')}</label
+                >{$i18n.t(
+                  'page/parts-list:filterPanel.property.conditionLabel',
+                )}</label
               >
               <select
                 id="filter-operator"
@@ -446,7 +450,9 @@
 
             <div class="col-12 col-md-3">
               <label for="filter-value" class="form-label mb-1 text-white"
-                >{$i18n.t('page/parts-list:filterPanel.property.valueLabel')}</label
+                >{$i18n.t(
+                  'page/parts-list:filterPanel.property.valueLabel',
+                )}</label
               >
               <input
                 id="filter-value"
@@ -487,7 +493,9 @@
                 type="text"
                 class="form-control"
                 bind:value={nameInputValue}
-                placeholder={$i18n.t('page/parts-list:filterPanel.name.placeholder')}
+                placeholder={$i18n.t(
+                  'page/parts-list:filterPanel.name.placeholder',
+                )}
               />
             </div>
 
@@ -529,7 +537,9 @@
                 for="selection-attribute"
                 class="form-label mb-1 text-white"
               >
-                {$i18n.t('page/parts-list:filterPanel.selection.attributeLabel')}
+                {$i18n.t(
+                  'page/parts-list:filterPanel.selection.attributeLabel',
+                )}
               </label>
               <select
                 id="selection-attribute"

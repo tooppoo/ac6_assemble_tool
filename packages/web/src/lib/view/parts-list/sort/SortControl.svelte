@@ -170,9 +170,7 @@
         type="button"
         class="btn btn-sm btn-outline-light"
         onclick={toggleCollapse}
-        aria-label={isOpen
-          ? $i18n.t('sort:collapse')
-          : $i18n.t('sort:expand')}
+        aria-label={isOpen ? $i18n.t('sort:collapse') : $i18n.t('sort:expand')}
       >
         {isOpen ? '▲' : '▼'}
       </button>
@@ -193,9 +191,7 @@
             disabled={properties.length === 0}
           >
             <option value={noneValue} disabled>
-              {properties.length === 0
-                ? '-'
-                : $i18n.t('sort:propertyLabel')}
+              {properties.length === 0 ? '-' : $i18n.t('sort:propertyLabel')}
             </option>
             {#each properties as property (property)}
               <option value={property}>

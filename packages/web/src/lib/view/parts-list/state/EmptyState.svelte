@@ -21,8 +21,7 @@
   let { message }: Props = $props()
 
   const resolvedMessage = $derived.by(
-    () =>
-      message ?? $i18n.t('page/parts-list:emptyState.message'),
+    () => message ?? $i18n.t('page/parts-list:emptyState.message'),
   )
 
   const hintTitle = $derived.by(() =>

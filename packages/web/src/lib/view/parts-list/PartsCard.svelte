@@ -30,9 +30,7 @@
   // i18n
   const i18n = getContext<I18NextStore>('i18n')
 
-  const translatedCategory = $derived(
-    $i18n.t(`category:${parts.category}`),
-  )
+  const translatedCategory = $derived($i18n.t(`category:${parts.category}`))
   const translatedManufacture = $derived(
     $i18n.t(`manufacture:${parts.manufacture}`),
   )
