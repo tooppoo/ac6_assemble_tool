@@ -432,16 +432,14 @@
       type="button"
       title={isHandoffDisabled && handoffDisabledReason
         ? handoffDisabledReason
-        : $i18n.t('navigation.handoff.description', {
-            ns: 'page/parts-list',
-          })}
+        : $i18n.t('page/parts-list:navigation.handoff.description')}
       disabled={isHandoffDisabled}
       aria-describedby={isHandoffDisabled && handoffDisabledReason
         ? 'handoff-disabled-reason'
         : undefined}
       onclick={handleNavigateToAssembly}
     >
-      {$i18n.t('navigation.handoff.label', { ns: 'page/parts-list' })}
+      {$i18n.t('page/parts-list:navigation.handoff.label')}
     </button>
   </div>
 

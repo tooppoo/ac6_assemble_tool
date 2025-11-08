@@ -31,39 +31,36 @@
   const i18n = getContext<I18NextStore>('i18n')
 
   const translatedCategory = $derived(
-    $i18n.t(parts.category, { ns: 'category' }),
+    $i18n.t(`category:${parts.category}`),
   )
   const translatedManufacture = $derived(
-    $i18n.t(parts.manufacture, { ns: 'manufacture' }),
+    $i18n.t(`manufacture:${parts.manufacture}`),
   )
 
   const favoriteLabel = $derived.by(() =>
     $i18n.t(
-      isFavorite ? 'partsCard.favorite.remove' : 'partsCard.favorite.add',
-      {
-        ns: 'page/parts-list',
-      },
+      `page/parts-list:partsCard.favorite.${isFavorite ? 'remove' : 'add'}`,
     ),
   )
 
   const manufactureLabel = $derived.by(() =>
-    $i18n.t('partsCard.manufacture', { ns: 'page/parts-list' }),
+    $i18n.t('page/parts-list:partsCard.manufacture'),
   )
 
   const categoryLabel = $derived.by(() =>
-    $i18n.t('partsCard.category', { ns: 'page/parts-list' }),
+    $i18n.t('page/parts-list:partsCard.category'),
   )
 
   const priceLabel = $derived.by(() =>
-    $i18n.t('partsCard.price', { ns: 'page/parts-list' }),
+    $i18n.t('page/parts-list:partsCard.price'),
   )
 
   const weightLabel = $derived.by(() =>
-    $i18n.t('partsCard.weight', { ns: 'page/parts-list' }),
+    $i18n.t('page/parts-list:partsCard.weight'),
   )
 
   const enLoadLabel = $derived.by(() =>
-    $i18n.t('partsCard.enLoad', { ns: 'page/parts-list' }),
+    $i18n.t('page/parts-list:partsCard.enLoad'),
   )
 
   function handleToggleFavorite() {

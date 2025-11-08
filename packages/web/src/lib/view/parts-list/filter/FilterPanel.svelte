@@ -188,37 +188,30 @@
   let isOpen = $state(true)
 
   const heading = $derived.by(() =>
-    $i18n.t('filterPanel.heading', {
-      ns: 'page/parts-list',
+    $i18n.t('page/parts-list:filterPanel.heading', {
       count: filters.length,
     }),
   )
 
   const favoriteToggleLabel = $derived.by(() =>
     $i18n.t(
-      showFavoritesOnly
-        ? 'filterPanel.favoritesToggle.active'
-        : 'filterPanel.favoritesToggle.inactive',
-      { ns: 'page/parts-list' },
+      `page/parts-list:filterPanel.favoritesToggle.${
+        showFavoritesOnly ? 'active' : 'inactive'
+      }`,
     ),
   )
 
   const favoriteToggleAria = $derived.by(() =>
-    $i18n.t('filterPanel.favoritesToggle.ariaLabel', {
-      ns: 'page/parts-list',
-    }),
+    $i18n.t('page/parts-list:filterPanel.favoritesToggle.ariaLabel'),
   )
 
   const clearLabel = $derived.by(() =>
-    $i18n.t('filterPanel.clear', { ns: 'page/parts-list' }),
+    $i18n.t('page/parts-list:filterPanel.clear'),
   )
 
   const collapseControlLabel = $derived.by(() =>
     $i18n.t(
-      isOpen ? 'filterPanel.toggle.collapse' : 'filterPanel.toggle.expand',
-      {
-        ns: 'page/parts-list',
-      },
+      `page/parts-list:filterPanel.toggle.${isOpen ? 'collapse' : 'expand'}`,
     ),
   )
 
@@ -378,9 +371,7 @@
         <div class="row g-2 mb-2">
           <div class="col-12">
             <label for="filter-type" class="form-label mb-1 text-white"
-              >{$i18n.t('filterPanel.filterTypeLabel', {
-                ns: 'page/parts-list',
-              })}</label
+              >{$i18n.t('page/parts-list:filterPanel.filterTypeLabel')}</label
             >
             <select
               id="filter-type"
@@ -389,20 +380,14 @@
               onchange={handleFilterTypeChange}
             >
               <option value="numeric">
-                {$i18n.t('filterPanel.filterTypes.numeric', {
-                  ns: 'page/parts-list',
-                })}
+                {$i18n.t('page/parts-list:filterPanel.filterTypes.numeric')}
               </option>
               <option value="name">
-                {$i18n.t('filterPanel.filterTypes.name', {
-                  ns: 'page/parts-list',
-                })}
+                {$i18n.t('page/parts-list:filterPanel.filterTypes.name')}
               </option>
               {#if selectionAttributes.length > 0}
                 <optgroup
-                  label={$i18n.t('filterPanel.filterTypes.selection', {
-                    ns: 'page/parts-list',
-                  })}
+                  label={$i18n.t('page/parts-list:filterPanel.filterTypes.selection')}
                 >
                   {#each selectionAttributes as attribute (attribute)}
                     <option value={attribute}>
@@ -420,9 +405,7 @@
           <div class="row g-2">
             <div class="col-12 col-md-4">
               <label for="filter-property" class="form-label mb-1 text-white">
-                {$i18n.t('filterPanel.property.label', {
-                  ns: 'page/parts-list',
-                })}
+                {$i18n.t('page/parts-list:filterPanel.property.label')}
               </label>
               <select
                 id="filter-property"
@@ -445,9 +428,7 @@
 
             <div class="col-12 col-md-3">
               <label for="filter-operator" class="form-label mb-1 text-white"
-                >{$i18n.t('filterPanel.property.conditionLabel', {
-                  ns: 'page/parts-list',
-                })}</label
+                >{$i18n.t('page/parts-list:filterPanel.property.conditionLabel')}</label
               >
               <select
                 id="filter-operator"
@@ -465,9 +446,7 @@
 
             <div class="col-12 col-md-3">
               <label for="filter-value" class="form-label mb-1 text-white"
-                >{$i18n.t('filterPanel.property.valueLabel', {
-                  ns: 'page/parts-list',
-                })}</label
+                >{$i18n.t('page/parts-list:filterPanel.property.valueLabel')}</label
               >
               <input
                 id="filter-value"
@@ -477,9 +456,9 @@
                 step="10"
                 disabled={propertyOptions.length === 0}
                 bind:value={propertyInputValue}
-                placeholder={$i18n.t('filterPanel.property.valuePlaceholder', {
-                  ns: 'page/parts-list',
-                })}
+                placeholder={$i18n.t(
+                  'page/parts-list:filterPanel.property.valuePlaceholder',
+                )}
               />
             </div>
 
@@ -490,7 +469,7 @@
                 disabled={isAddButtonDisabled()}
                 onclick={handleAddFilter}
               >
-                {$i18n.t('filterPanel.add', { ns: 'page/parts-list' })}
+                {$i18n.t('page/parts-list:filterPanel.add')}
               </button>
             </div>
           </div>
@@ -501,26 +480,20 @@
           <div class="row g-2">
             <div class="col-12 col-md-6">
               <label for="name-value" class="form-label mb-1 text-white"
-                >{$i18n.t('filterPanel.name.label', {
-                  ns: 'page/parts-list',
-                })}</label
+                >{$i18n.t('page/parts-list:filterPanel.name.label')}</label
               >
               <input
                 id="name-value"
                 type="text"
                 class="form-control"
                 bind:value={nameInputValue}
-                placeholder={$i18n.t('filterPanel.name.placeholder', {
-                  ns: 'page/parts-list',
-                })}
+                placeholder={$i18n.t('page/parts-list:filterPanel.name.placeholder')}
               />
             </div>
 
             <div class="col-12 col-md-4">
               <label for="name-mode" class="form-label mb-1 text-white"
-                >{$i18n.t('filterPanel.name.modeLabel', {
-                  ns: 'page/parts-list',
-                })}</label
+                >{$i18n.t('page/parts-list:filterPanel.name.modeLabel')}</label
               >
               <select
                 id="name-mode"
@@ -542,7 +515,7 @@
                 disabled={isAddButtonDisabled()}
                 onclick={handleAddFilter}
               >
-                {$i18n.t('filterPanel.add', { ns: 'page/parts-list' })}
+                {$i18n.t('page/parts-list:filterPanel.add')}
               </button>
             </div>
           </div>
@@ -556,9 +529,7 @@
                 for="selection-attribute"
                 class="form-label mb-1 text-white"
               >
-                {$i18n.t('filterPanel.selection.attributeLabel', {
-                  ns: 'page/parts-list',
-                })}
+                {$i18n.t('page/parts-list:filterPanel.selection.attributeLabel')}
               </label>
               <select
                 id="selection-attribute"
@@ -581,9 +552,7 @@
 
             <div class="col-12 col-md-6">
               <p class="form-label mb-1 text-white">
-                {$i18n.t('filterPanel.selection.valuesLabel', {
-                  ns: 'page/parts-list',
-                })}
+                {$i18n.t('page/parts-list:filterPanel.selection.valuesLabel')}
               </p>
               <div
                 class="selection-checkboxes p-2 bg-dark bg-opacity-50 rounded"
@@ -591,9 +560,7 @@
               >
                 {#if selectionCandidates.length === 0}
                   <p class="text-muted mb-0">
-                    {$i18n.t('filterPanel.selection.empty', {
-                      ns: 'page/parts-list',
-                    })}
+                    {$i18n.t('page/parts-list:filterPanel.selection.empty')}
                   </p>
                 {:else}
                   {#each selectionCandidates as candidate (candidate)}
@@ -624,7 +591,7 @@
                 disabled={isAddButtonDisabled()}
                 onclick={handleAddFilter}
               >
-                {$i18n.t('filterPanel.add', { ns: 'page/parts-list' })}
+                {$i18n.t('page/parts-list:filterPanel.add')}
               </button>
             </div>
           </div>
@@ -645,12 +612,8 @@
                 type="button"
                 class="btn btn-sm btn-outline-danger"
                 onclick={() => handleRemoveFilter(index)}
-                aria-label={$i18n.t('filterPanel.list.remove', {
-                  ns: 'page/parts-list',
-                })}
-                title={$i18n.t('filterPanel.list.remove', {
-                  ns: 'page/parts-list',
-                })}
+                aria-label={$i18n.t('page/parts-list:filterPanel.list.remove')}
+                title={$i18n.t('page/parts-list:filterPanel.list.remove')}
               >
                 ×
               </button>
@@ -659,7 +622,7 @@
         </div>
       {:else}
         <p class="text-muted mb-0">
-          {$i18n.t('filterPanel.list.empty', { ns: 'page/parts-list' })}
+          {$i18n.t('page/parts-list:filterPanel.list.empty')}
         </p>
       {/if}
     </div>

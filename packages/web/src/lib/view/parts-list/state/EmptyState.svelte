@@ -22,22 +22,16 @@
 
   const resolvedMessage = $derived.by(
     () =>
-      message ??
-      $i18n.t('emptyState.message', {
-        ns: 'page/parts-list',
-      }),
+      message ?? $i18n.t('page/parts-list:emptyState.message'),
   )
 
   const hintTitle = $derived.by(() =>
-    $i18n.t('emptyState.hintTitle', {
-      ns: 'page/parts-list',
-    }),
+    $i18n.t('page/parts-list:emptyState.hintTitle'),
   )
 
   const hints = $derived.by(
     () =>
-      $i18n.t('emptyState.hints', {
-        ns: 'page/parts-list',
+      $i18n.t('page/parts-list:emptyState.hints', {
         returnObjects: true,
       }) as string[],
   )
