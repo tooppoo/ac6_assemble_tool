@@ -46,7 +46,7 @@
     "@ac6_assemble_tool/core": "workspace:*",
     "@ac6_assemble_tool/parts": "workspace:*",
     "@ac6_assemble_tool/shared": "workspace:*",
-    "@praha/byethrow": "0.6.3",
+    "@praha/byethrow": "0.8.1",
     "bootstrap": "5.3.8",
     "bootstrap-icons": "1.13.1",
     "dexie": "4.2.0",
