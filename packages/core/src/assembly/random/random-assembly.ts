@@ -121,7 +121,10 @@ export class RandomAssembly {
 }
 
 export class OverTryLimitError extends BaseError {
-  constructor(message: string, private readonly option: { limit: number; errors: Error[] }) {
+  constructor(
+    message: string,
+    private readonly option: { limit: number; errors: Error[] },
+  ) {
     super(message)
   }
   get limit(): number {

@@ -17,7 +17,7 @@
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import { logger } from '@ac6_assemble_tool/shared/logger'
   import { Result } from '@praha/byethrow'
-import { getContext, onDestroy } from 'svelte'
+  import { getContext, onDestroy } from 'svelte'
 
   import FilterPanel from './filter/FilterPanel.svelte'
   import { applyFilters } from './filter/filters-core'

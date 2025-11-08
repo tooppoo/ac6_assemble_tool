@@ -10,13 +10,10 @@ export const notOverEnergyOutput: Validator = {
     return assembly.withinEnOutput
       ? Result.succeed(assembly)
       : Result.fail([
-          new ValidationError(
-            'EN output error',
-            {
-              validationName: notOverEnergyOutputName,
-              adjustable: false,
-            },
-          ),
+          new ValidationError('EN output error', {
+            validationName: notOverEnergyOutputName,
+            adjustable: false,
+          }),
         ])
   },
 } as const
@@ -141,7 +138,7 @@ export class ValidationError extends BaseError {
        * ユーザーでの調整を許さない場合、違反した時点でエラーあるいは処理失敗とすること
        */
       adjustable: boolean
-    }
+    },
   ) {
     super(message)
   }

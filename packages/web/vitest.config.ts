@@ -2,9 +2,7 @@ import { svelteTesting } from '@testing-library/svelte/vite'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
-  plugins: [
-    svelteTesting(),
-  ],
+  plugins: [svelteTesting()],
   resolve: {
     alias: {
       $lib: '/src/lib',
