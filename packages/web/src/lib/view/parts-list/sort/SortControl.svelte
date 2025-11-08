@@ -97,9 +97,8 @@
       return null
     }
     const property = translateProperty(sortKey, $i18n)
-    const order = $i18n.t(`order.${sortOrder}`, { ns: 'sort' })
-    return $i18n.t('summary', {
-      ns: 'sort',
+    const order = $i18n.t(`sort:order.${sortOrder}`)
+    return $i18n.t('sort:summary', {
       property,
       order,
     })
@@ -109,18 +108,18 @@
     if (hasPendingChanges) {
       return {
         variant: 'pending' as const,
-        text: $i18n.t('status.pending', { ns: 'sort' }),
+        text: $i18n.t('sort:status.pending'),
       }
     }
     if (appliedSummary) {
       return {
         variant: 'applied' as const,
-        text: `${$i18n.t('status.applied', { ns: 'sort' })}: ${appliedSummary}`,
+        text: `${$i18n.t('sort:status.applied')}: ${appliedSummary}`,
       }
     }
     return {
       variant: 'none' as const,
-      text: $i18n.t('status.none', { ns: 'sort' }),
+      text: $i18n.t('sort:status.none'),
     }
   })
 
@@ -151,7 +150,7 @@
     class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
   >
     <div class="d-flex flex-column gap-1">
-      <h5 class="mb-0">{$i18n.t('title', { ns: 'sort' })}</h5>
+      <h5 class="mb-0">{$i18n.t('sort:title')}</h5>
       <div class="status-indicator">
         <span class={`status-chip ${statusInfo.variant}`}>
           {statusInfo.text}
@@ -165,15 +164,15 @@
         onclick={handleClear}
         disabled={!sortKey}
       >
-        {$i18n.t('clear', { ns: 'sort' })}
+        {$i18n.t('sort:clear')}
       </button>
       <button
         type="button"
         class="btn btn-sm btn-outline-light"
         onclick={toggleCollapse}
         aria-label={isOpen
-          ? $i18n.t('collapse', { ns: 'sort' })
-          : $i18n.t('expand', { ns: 'sort' })}
+          ? $i18n.t('sort:collapse')
+          : $i18n.t('sort:expand')}
       >
         {isOpen ? '▲' : '▼'}
       </button>
@@ -185,7 +184,7 @@
       <div class="row g-2 align-items-end">
         <div class="col-12 col-md-6">
           <label for={propertyFieldId} class="form-label mb-1 text-white">
-            {$i18n.t('propertyLabel', { ns: 'sort' })}
+            {$i18n.t('sort:propertyLabel')}
           </label>
           <select
             id={propertyFieldId}
@@ -196,7 +195,7 @@
             <option value={noneValue} disabled>
               {properties.length === 0
                 ? '-'
-                : $i18n.t('propertyLabel', { ns: 'sort' })}
+                : $i18n.t('sort:propertyLabel')}
             </option>
             {#each properties as property (property)}
               <option value={property}>
@@ -208,7 +207,7 @@
 
         <div class="col-12 col-md-4">
           <label for={orderFieldId} class="form-label mb-1 text-white">
-            {$i18n.t('orderLabel', { ns: 'sort' })}
+            {$i18n.t('sort:orderLabel')}
           </label>
           <select
             id={orderFieldId}
@@ -217,10 +216,10 @@
             disabled={properties.length === 0}
           >
             <option value="asc">
-              {$i18n.t('order.asc', { ns: 'sort' })}
+              {$i18n.t('sort:order.asc')}
             </option>
             <option value="desc">
-              {$i18n.t('order.desc', { ns: 'sort' })}
+              {$i18n.t('sort:order.desc')}
             </option>
           </select>
         </div>
@@ -232,7 +231,7 @@
             onclick={handleApply}
             disabled={isApplyDisabled}
           >
-            {$i18n.t('apply', { ns: 'sort' })}
+            {$i18n.t('sort:apply')}
           </button>
         </div>
       </div>
