@@ -1,15 +1,15 @@
-import type { ArmUnit, LeftArmUnit } from "@ac6_assemble_tool/parts/arm-units"
-import type { Tank } from "@ac6_assemble_tool/parts/legs"
-import { boosterNotEquipped } from "@ac6_assemble_tool/parts/not-equipped"
-import { tank } from "@ac6_assemble_tool/parts/types/base/category"
+import type { ArmUnit, LeftArmUnit } from '@ac6_assemble_tool/parts/arm-units'
+import type { Tank } from '@ac6_assemble_tool/parts/legs'
+import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
+import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import {
   armUnit as armUnitClassification,
   leftArmUnit as leftArmUnitClassification,
-} from "@ac6_assemble_tool/parts/types/base/classification"
-import type { ACParts } from "@ac6_assemble_tool/parts/types/base/types"
-import type { Candidates } from "@ac6_assemble_tool/parts/types/candidates"
+} from '@ac6_assemble_tool/parts/types/base/classification'
+import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
+import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 
-import { createAssembly, type Assembly, type AssemblyKey } from "../assembly"
+import { createAssembly, type Assembly, type AssemblyKey } from '../assembly'
 
 interface ResultChangeAssembly {
   assembly: Assembly
@@ -17,7 +17,11 @@ interface ResultChangeAssembly {
 }
 export const changeAssemblyCommand =
   (candidates: Candidates) =>
-  (key: AssemblyKey, parts: ACParts, baseAssembly: Assembly): ResultChangeAssembly => {
+  (
+    key: AssemblyKey,
+    parts: ACParts,
+    baseAssembly: Assembly,
+  ): ResultChangeAssembly => {
     if (isTankLegs(parts)) {
       return {
         assembly: createAssembly({
@@ -28,7 +32,7 @@ export const changeAssemblyCommand =
         remainingCandidates: {
           ...candidates,
           booster: [boosterNotEquipped],
-        }
+        },
       }
     }
 
@@ -41,7 +45,9 @@ export const changeAssemblyCommand =
         remainingCandidates: {
           ...candidates,
           // 同じ武器を右手・右肩に装備は禁止
-          rightBackUnit: candidates.rightBackUnit.filter(p => p.id !== parts.id),
+          rightBackUnit: candidates.rightBackUnit.filter(
+            (p) => p.id !== parts.id,
+          ),
         },
       }
     }
@@ -54,7 +60,9 @@ export const changeAssemblyCommand =
         remainingCandidates: {
           ...candidates,
           // 同じ武器を右手・右肩に装備は禁止
-          rightArmUnit: candidates.rightArmUnit.filter(p => p.id !== parts.id),
+          rightArmUnit: candidates.rightArmUnit.filter(
+            (p) => p.id !== parts.id,
+          ),
         },
       }
     }
@@ -67,7 +75,9 @@ export const changeAssemblyCommand =
         remainingCandidates: {
           ...candidates,
           // 同じ武器を左手・左肩に装備は禁止
-          leftBackUnit: candidates.leftBackUnit.filter(p => p.id !== parts.id),
+          leftBackUnit: candidates.leftBackUnit.filter(
+            (p) => p.id !== parts.id,
+          ),
         },
       }
     }
@@ -80,7 +90,7 @@ export const changeAssemblyCommand =
         remainingCandidates: {
           ...candidates,
           // 同じ武器を左手・左肩に装備は禁止
-          leftArmUnit: candidates.leftArmUnit.filter(p => p.id !== parts.id),
+          leftArmUnit: candidates.leftArmUnit.filter((p) => p.id !== parts.id),
         },
       }
     }
@@ -99,7 +109,7 @@ function isTankLegs(parts: ACParts): parts is Tank {
 }
 function isArmUnit(parts: ACParts): parts is ArmUnit | LeftArmUnit {
   return isRightArmUnit(parts) || isLeftArmUnit(parts)
-} 
+}
 function isRightArmUnit(parts: ACParts): parts is ArmUnit {
   return parts.classification === armUnitClassification
 }

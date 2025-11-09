@@ -1,7 +1,4 @@
-import {
-  type Assembly,
-  createAssembly,
-} from '#core/assembly/assembly'
+import { type Assembly, createAssembly } from '#core/assembly/assembly'
 import { changeAssemblyCommand } from '#core/assembly/command/change-assembly'
 
 import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
@@ -44,45 +41,63 @@ describe('changeAssembly', () => {
   })
 
   it('右手武器を装備すると同一装備を右肩候補から除外する', () => {
-    const armUnit = findSharedArmUnit(candidates.rightArmUnit, candidates.rightBackUnit)
+    const armUnit = findSharedArmUnit(
+      candidates.rightArmUnit,
+      candidates.rightBackUnit,
+    )
 
     const result = change('rightArmUnit', armUnit, baseAssembly)
 
     expect(result.assembly.rightArmUnit).toBe(armUnit)
-    expect(result.remainingCandidates.rightBackUnit.some((p) => p.id === armUnit.id)).toBe(
-      false,
-    )
+    expect(
+      result.remainingCandidates.rightBackUnit.some((p) => p.id === armUnit.id),
+    ).toBe(false)
   })
 
   it('右肩で腕武器を装備すると同一装備を右手候補から除外する', () => {
-    const armUnitOnBack = findSharedArmUnit(candidates.rightBackUnit, candidates.rightArmUnit)
+    const armUnitOnBack = findSharedArmUnit(
+      candidates.rightBackUnit,
+      candidates.rightArmUnit,
+    )
 
     const result = change('rightBackUnit', armUnitOnBack, baseAssembly)
 
     expect(result.assembly.rightBackUnit).toBe(armUnitOnBack)
-    expect(result.remainingCandidates.rightArmUnit.some((p) => p.id === armUnitOnBack.id)).toBe(
-      false,
-    )
+    expect(
+      result.remainingCandidates.rightArmUnit.some(
+        (p) => p.id === armUnitOnBack.id,
+      ),
+    ).toBe(false)
   })
 
   it('左手武器を装備すると同一装備を左肩候補から除外する', () => {
-    const armUnit = findSharedArmUnit(candidates.leftArmUnit, candidates.leftBackUnit)
+    const armUnit = findSharedArmUnit(
+      candidates.leftArmUnit,
+      candidates.leftBackUnit,
+    )
 
     const result = change('leftArmUnit', armUnit, baseAssembly)
 
     expect(result.assembly.leftArmUnit).toBe(armUnit)
-    expect(result.remainingCandidates.leftBackUnit.some((p) => p.id === armUnit.id)).toBe(false)
+    expect(
+      result.remainingCandidates.leftBackUnit.some((p) => p.id === armUnit.id),
+    ).toBe(false)
   })
 
   it('左肩で腕武器を装備すると同一装備を左手候補から除外する', () => {
-    const armUnitOnBack = findSharedArmUnit(candidates.leftBackUnit, candidates.leftArmUnit)
+    const armUnitOnBack = findSharedArmUnit(
+      candidates.leftBackUnit,
+      candidates.leftArmUnit,
+    )
 
     const result = change('leftBackUnit', armUnitOnBack, baseAssembly)
 
     expect(result.assembly.leftBackUnit).toBe(armUnitOnBack)
-    expect(result.remainingCandidates.leftArmUnit.some((p) => p.id === armUnitOnBack.id)).toBe(
-      false,
-    )
+    expect(
+      result.remainingCandidates.leftArmUnit.some(
+        (p) => p.id === armUnitOnBack.id,
+      ),
+    ).toBe(false)
   })
 
   it('制約対象外のスロット変更では候補一覧を変更しない', () => {
@@ -112,7 +127,9 @@ function createAssemblyFromCandidates(base: Candidates): Assembly {
   } as never)
 }
 
-function pickEquippable<T extends { classification: string }>(parts: readonly T[]): T {
+function pickEquippable<T extends { classification: string }>(
+  parts: readonly T[],
+): T {
   const found = parts.find((part) => part.classification !== notEquipped)
   if (!found) {
     throw new Error('有効な候補が存在しません')
@@ -126,7 +143,9 @@ function findSharedArmUnit<T extends { classification: string; id: string }>(
   target: readonly { id: string }[],
 ): T {
   const found = source.find(
-    (part) => part.classification !== notEquipped && target.some((candidate) => candidate.id === part.id),
+    (part) =>
+      part.classification !== notEquipped &&
+      target.some((candidate) => candidate.id === part.id),
   )
   if (!found) {
     throw new Error('共有可能な武器が見つかりません')
