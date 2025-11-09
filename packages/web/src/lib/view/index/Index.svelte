@@ -14,6 +14,7 @@
     spaceByWord,
     createAssembly,
   } from '@ac6_assemble_tool/core/assembly/assembly'
+  import { changeAssemblyCommand } from '@ac6_assemble_tool/core/assembly/command/change-assembly'
   import { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
   import { RandomAssembly } from '@ac6_assemble_tool/core/assembly/random/random-assembly'
   import {
@@ -85,6 +86,7 @@
 
   let initialCandidates: Candidates = partsPoolState.candidates
   let candidates: Candidates = partsPoolState.candidates
+  let changeAssembly = changeAssemblyCommand(initialCandidates)
   let lockedParts: LockedParts = LockedParts.empty
   let randomAssembly = RandomAssembly.init({ limit: tryLimit })
 
@@ -149,9 +151,10 @@
   }
 
   const onChangeParts = ({ detail }: CustomEvent<ChangePartsEvent>) => {
-    // @ts-expect-error TS2590
-    assembly[detail.id] = detail.selected
-    assembly = assembly
+    const result = changeAssembly(detail.id, detail.selected, assembly)
+
+    assembly = result.assembly
+    candidates = result.remainingCandidates
   }
   const onRandom = ({ detail }: CustomEvent<AssembleRandomly>) => {
     assembly = detail.assembly
