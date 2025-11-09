@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import type { MockInstance } from 'vitest'
 
 import {
   validatePartIdUniqueness,
@@ -8,8 +9,8 @@ import { validatePartsOnStartup } from './validate-on-startup'
 
 describe('ID重複検証 統合テスト', () => {
   // コンソール出力をキャプチャするためのモック
-  let consoleErrorSpy: ReturnType<typeof vi.spyOn>
-  let consoleInfoSpy: ReturnType<typeof vi.spyOn>
+  let consoleErrorSpy: MockInstance<typeof console.error>
+  let consoleInfoSpy: MockInstance<typeof console.info>
 
   beforeEach(() => {
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})

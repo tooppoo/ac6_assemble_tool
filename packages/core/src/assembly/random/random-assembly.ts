@@ -1,7 +1,7 @@
 import type { Assembly } from '#core/assembly/assembly'
 
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
-import { BaseCustomError } from '@ac6_assemble_tool/shared/error'
+import { BaseError } from '@philomagi/base-error.js'
 import { Result } from '@praha/byethrow'
 
 import {
@@ -85,8 +85,8 @@ export class RandomAssembly {
 
             if (this.tryCount >= this.config.limit) {
               const error = new OverTryLimitError(
-                { limit: this.config.limit, errors: this.errors },
                 `over limit of try(${this.config.limit})`,
+                { limit: this.config.limit, errors: this.errors },
               )
 
               throw error
@@ -120,20 +120,23 @@ export class RandomAssembly {
   }
 }
 
-export class OverTryLimitError extends BaseCustomError<{
-  limit: number
-  errors: Error[]
-}> {
+export class OverTryLimitError extends BaseError {
+  constructor(
+    message: string,
+    private readonly option: { limit: number; errors: Error[] },
+  ) {
+    super(message)
+  }
   get limit(): number {
-    return this.customArgument.limit
+    return this.option.limit
   }
   get errors(): readonly Error[] {
-    return this.customArgument.errors
+    return this.option.errors
   }
 }
-export class OverwriteInnerSecretValidatorError extends BaseCustomError<string> {
-  get key(): string {
-    return this.customArgument
+export class OverwriteInnerSecretValidatorError extends BaseError {
+  constructor(public readonly key: string) {
+    super('Attempted to overwrite an inner secret validator')
   }
 }
 

@@ -213,6 +213,6 @@ export class FavoriteStore {
    * データベースを閉じる
    */
   async close(): Promise<void> {
-    await this.db.close()
+    return this.db.close()
   }
 }

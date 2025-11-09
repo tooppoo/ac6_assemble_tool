@@ -1,5 +1,5 @@
 import { notEquipped } from '@ac6_assemble_tool/parts/types/base/classification'
-import { BaseCustomError } from '@ac6_assemble_tool/shared/error'
+import { BaseError } from '@philomagi/base-error.js'
 import { Result } from '@praha/byethrow'
 
 import type { Validator } from './base'
@@ -10,13 +10,10 @@ export const notOverEnergyOutput: Validator = {
     return assembly.withinEnOutput
       ? Result.succeed(assembly)
       : Result.fail([
-          new ValidationError(
-            {
-              validationName: notOverEnergyOutputName,
-              adjustable: false,
-            },
-            'EN output error',
-          ),
+          new ValidationError('EN output error', {
+            validationName: notOverEnergyOutputName,
+            adjustable: false,
+          }),
         ])
   },
 } as const
@@ -31,11 +28,11 @@ export const notCarrySameUnitInSameSide: Validator = {
         assembly.rightArmUnit.name === assembly.rightBackUnit.name
           ? [
               new ValidationError(
+                `right arm unit and right back unit is same(${assembly.rightArmUnit.name})`,
                 {
                   validationName: notCarrySameUnitInSameSideName,
                   adjustable: false,
                 },
-                `right arm unit and right back unit is same(${assembly.rightArmUnit.name})`,
               ),
             ]
           : []
@@ -45,11 +42,11 @@ export const notCarrySameUnitInSameSide: Validator = {
         assembly.leftArmUnit.name === assembly.leftBackUnit.name
           ? [
               new ValidationError(
+                `left arm unit and left back unit is same(${assembly.leftArmUnit.name})`,
                 {
                   validationName: notCarrySameUnitInSameSideName,
                   adjustable: false,
                 },
-                `left arm unit and left back unit is same(${assembly.leftArmUnit.name})`,
               ),
             ]
           : []
@@ -68,8 +65,8 @@ export const totalCoamNotOverMax = (max: number): Validator => ({
       ? Result.succeed(assembly)
       : Result.fail([
           new ValidationError(
-            { validationName: totalCoamNotOverMaxName, adjustable: true },
             `total coam of assembly(${assembly.coam}) over max(${max})`,
+            { validationName: totalCoamNotOverMaxName, adjustable: true },
           ),
         ])
   },
@@ -82,8 +79,8 @@ export const totalLoadNotOverMax = (max: number): Validator => ({
       ? Result.succeed(assembly)
       : Result.fail([
           new ValidationError(
-            { validationName: totalLoadNotOverMaxName, adjustable: true },
             `total load of assembly(${assembly.load}) over max(${max})`,
+            { validationName: totalLoadNotOverMaxName, adjustable: true },
           ),
         ])
   },
@@ -96,8 +93,8 @@ export const disallowLoadOver = (): Validator => ({
       ? Result.succeed(assembly)
       : Result.fail([
           new ValidationError(
-            { validationName: disallowLoadOverName, adjustable: true },
             `load limit of assembly is (${assembly.loadLimit}), but load is ${assembly.load})`,
+            { validationName: disallowLoadOverName, adjustable: true },
           ),
         ])
   },
@@ -110,8 +107,8 @@ export const disallowArmsLoadOver = (): Validator => ({
       ? Result.succeed(assembly)
       : Result.fail([
           new ValidationError(
-            { validationName: disallowArmsLoadOverName, adjustable: true },
             `arms load limit of assembly is (${assembly.armsLoadLimit}), but load is ${assembly.armsLoad})`,
+            { validationName: disallowArmsLoadOverName, adjustable: true },
           ),
         ])
   },
@@ -125,22 +122,28 @@ export type ValidationName =
   | typeof disallowLoadOverName
   | typeof disallowArmsLoadOverName
 
-export class ValidationError extends BaseCustomError<{
-  /**
-   * バリデータの名前
-   */
-  validationName: ValidationName
-  /**
-   * 違反した状態をユーザーの調整で解消することを許すならtrue
-   * 違反した状態をユーザーの調整で解消することを許さないならfalse
-   *
-   * ユーザーでの調整を許す場合、違反しても処理を止めずユーザーに通知するに留めること
-   * ユーザーでの調整を許さない場合、違反した時点でエラーあるいは処理失敗とすること
-   */
-  adjustable: boolean
-}> {
+export class ValidationError extends BaseError {
+  constructor(
+    message: string,
+    private readonly option: {
+      /**
+       * バリデータの名前
+       */
+      validationName: ValidationName
+      /**
+       * 違反した状態をユーザーの調整で解消することを許すならtrue
+       * 違反した状態をユーザーの調整で解消することを許さないならfalse
+       *
+       * ユーザーでの調整を許す場合、違反しても処理を止めずユーザーに通知するに留めること
+       * ユーザーでの調整を許さない場合、違反した時点でエラーあるいは処理失敗とすること
+       */
+      adjustable: boolean
+    },
+  ) {
+    super(message)
+  }
   get validatorName(): ValidationName {
-    return this.customArgument.validationName
+    return this.option.validationName
   }
 
   /**
@@ -148,6 +151,6 @@ export class ValidationError extends BaseCustomError<{
    * 入力を調整することで回避の可能性を上げることが難しい or できない場合はfalse
    */
   get adjustable(): boolean {
-    return this.customArgument.adjustable
+    return this.option.adjustable
   }
 }
