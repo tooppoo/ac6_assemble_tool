@@ -60,7 +60,8 @@ export const changeAssemblyCommand =
     if (isRightArmBackKey(key) && isRightArmUnit(parts)) {
       return changeArmBackPair({
         targetKey: key,
-        counterpartKey: key === 'rightArmUnit' ? 'rightBackUnit' : 'rightArmUnit',
+        counterpartKey:
+          key === 'rightArmUnit' ? 'rightBackUnit' : 'rightArmUnit',
         parts,
         baseAssembly,
         baseCandidates,
@@ -101,9 +102,7 @@ function isLeftArmUnit(parts: ACParts): parts is LeftArmUnit {
   return parts.classification === leftArmUnitClassification
 }
 
-function getDefaultBooster(
-  boosterCandidates: Candidates['booster'],
-): Booster {
+function getDefaultBooster(boosterCandidates: Candidates['booster']): Booster {
   const booster = boosterCandidates.find(
     (candidate): candidate is Booster =>
       candidate.classification === boosterClassification,
@@ -153,10 +152,14 @@ function changeArmBackPair<K extends ArmBackKey>({
   }
 }
 
-function isRightArmBackKey(key: AssemblyKey): key is 'rightArmUnit' | 'rightBackUnit' {
+function isRightArmBackKey(
+  key: AssemblyKey,
+): key is 'rightArmUnit' | 'rightBackUnit' {
   return key === 'rightArmUnit' || key === 'rightBackUnit'
 }
 
-function isLeftArmBackKey(key: AssemblyKey): key is 'leftArmUnit' | 'leftBackUnit' {
+function isLeftArmBackKey(
+  key: AssemblyKey,
+): key is 'leftArmUnit' | 'leftBackUnit' {
   return key === 'leftArmUnit' || key === 'leftBackUnit'
 }
