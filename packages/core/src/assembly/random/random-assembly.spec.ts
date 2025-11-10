@@ -198,6 +198,7 @@ describe(RandomAssembly.name, () => {
     })
 
     afterEach(() => {
+      vi.clearAllMocks()
       vi.restoreAllMocks()
     })
 
