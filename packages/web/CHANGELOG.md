@@ -1,9 +1,8 @@
 # @ac6_assemble_tool/web
 
 ## 3.1.2
+
 ### Patch Changes
-
-
 
 - [#934](https://github.com/tooppoo/ac6_assemble_tool/pull/934) [`7988eeb`](https://github.com/tooppoo/ac6_assemble_tool/commit/7988eeb543bac6825155f88887c8e4d9b149045f) Thanks [@tooppoo](https://github.com/tooppoo)! - fix bug when tank legs are selected
 
