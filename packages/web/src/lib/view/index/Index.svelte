@@ -86,7 +86,8 @@
 
   let initialCandidates: Candidates = partsPoolState.candidates
   let candidates: Candidates = partsPoolState.candidates
-  let changeAssembly = changeAssemblyCommand(initialCandidates)
+  // changeAssemblyはinitialCandidatesの変更に追従するようリアクティブに定義
+  $: changeAssembly = changeAssemblyCommand(initialCandidates)
   let lockedParts: LockedParts = LockedParts.empty
   let randomAssembly = RandomAssembly.init({ limit: tryLimit })
 
