@@ -38,9 +38,10 @@ export const changeAssemblyCommand =
       }
     }
     if (key === 'legs' && isNotTankLegs(parts)) {
-      const booster = baseAssembly.booster.category !== 'not-equipped'
-        ? baseAssembly.booster
-        : initialCandidates.booster[0] as Booster
+      const booster =
+        baseAssembly.booster.category !== 'not-equipped'
+          ? baseAssembly.booster
+          : (initialCandidates.booster[0] as Booster)
       return {
         assembly: createAssembly({
           ...baseAssembly,
@@ -108,7 +109,9 @@ export const changeAssemblyCommand =
         remainingCandidates: {
           ...baseCandidates,
           // 同じ武器を左手・左肩に装備は禁止
-          leftArmUnit: baseCandidates.leftArmUnit.filter((p) => p.id !== parts.id),
+          leftArmUnit: baseCandidates.leftArmUnit.filter(
+            (p) => p.id !== parts.id,
+          ),
         },
       }
     }
