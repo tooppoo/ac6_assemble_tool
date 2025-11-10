@@ -55,65 +55,23 @@ export const changeAssemblyCommand =
       }
     }
 
-    if (key === 'rightArmUnit' && isRightArmUnit(parts)) {
-      return {
-        assembly: createAssembly({
-          ...baseAssembly,
-          rightArmUnit: parts,
-        }),
-        remainingCandidates: {
-          ...baseCandidates,
-          // 同じ武器を右手・右肩に装備は禁止
-          rightBackUnit: baseCandidates.rightBackUnit.filter(
-            (p) => p.id !== parts.id,
-          ),
-        },
-      }
+    if (isRightArmBackKey(key) && isRightArmUnit(parts)) {
+      return changeArmBackPair({
+        targetKey: key,
+        counterpartKey: key === 'rightArmUnit' ? 'rightBackUnit' : 'rightArmUnit',
+        parts,
+        baseAssembly,
+        baseCandidates,
+      })
     }
-    if (key === 'rightBackUnit' && isRightArmUnit(parts)) {
-      return {
-        assembly: createAssembly({
-          ...baseAssembly,
-          [key]: parts,
-        }),
-        remainingCandidates: {
-          ...baseCandidates,
-          // 同じ武器を右手・右肩に装備は禁止
-          rightArmUnit: baseCandidates.rightArmUnit.filter(
-            (p) => p.id !== parts.id,
-          ),
-        },
-      }
-    }
-    if (key === 'leftArmUnit' && isArmUnit(parts)) {
-      return {
-        assembly: createAssembly({
-          ...baseAssembly,
-          [key]: parts,
-        }),
-        remainingCandidates: {
-          ...baseCandidates,
-          // 同じ武器を左手・左肩に装備は禁止
-          leftBackUnit: baseCandidates.leftBackUnit.filter(
-            (p) => p.id !== parts.id,
-          ),
-        },
-      }
-    }
-    if (key === 'leftBackUnit' && isArmUnit(parts)) {
-      return {
-        assembly: createAssembly({
-          ...baseAssembly,
-          [key]: parts,
-        }),
-        remainingCandidates: {
-          ...baseCandidates,
-          // 同じ武器を左手・左肩に装備は禁止
-          leftArmUnit: baseCandidates.leftArmUnit.filter(
-            (p) => p.id !== parts.id,
-          ),
-        },
-      }
+    if (isLeftArmBackKey(key) && isArmUnit(parts)) {
+      return changeArmBackPair({
+        targetKey: key,
+        counterpartKey: key === 'leftArmUnit' ? 'leftBackUnit' : 'leftArmUnit',
+        parts,
+        baseAssembly,
+        baseCandidates,
+      })
     }
 
     return {
@@ -139,4 +97,49 @@ function isRightArmUnit(parts: ACParts): parts is ArmUnit {
 }
 function isLeftArmUnit(parts: ACParts): parts is LeftArmUnit {
   return parts.classification === leftArmUnitClassification
+}
+
+type ArmBackKey =
+  | 'rightArmUnit'
+  | 'rightBackUnit'
+  | 'leftArmUnit'
+  | 'leftBackUnit'
+
+type ChangeArmBackPairArgs<TargetKey extends ArmBackKey> = {
+  targetKey: TargetKey
+  counterpartKey: TargetKey extends 'rightArmUnit' | 'rightBackUnit'
+    ? 'rightArmUnit' | 'rightBackUnit'
+    : 'leftArmUnit' | 'leftBackUnit'
+  parts: ArmUnit | LeftArmUnit
+  baseAssembly: Assembly
+  baseCandidates: Candidates
+}
+
+function changeArmBackPair<K extends ArmBackKey>({
+  targetKey,
+  counterpartKey,
+  parts,
+  baseAssembly,
+  baseCandidates,
+}: ChangeArmBackPairArgs<K>): ResultChangeAssembly {
+  return {
+    assembly: createAssembly({
+      ...baseAssembly,
+      [targetKey]: parts,
+    }),
+    remainingCandidates: {
+      ...baseCandidates,
+      [counterpartKey]: baseCandidates[counterpartKey].filter(
+        (candidate) => candidate.id !== parts.id,
+      ),
+    },
+  }
+}
+
+function isRightArmBackKey(key: AssemblyKey): key is 'rightArmUnit' | 'rightBackUnit' {
+  return key === 'rightArmUnit' || key === 'rightBackUnit'
+}
+
+function isLeftArmBackKey(key: AssemblyKey): key is 'leftArmUnit' | 'leftBackUnit' {
+  return key === 'leftArmUnit' || key === 'leftBackUnit'
 }
