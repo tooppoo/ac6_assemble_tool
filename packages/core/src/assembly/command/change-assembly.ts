@@ -5,7 +5,9 @@ import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import {
   armUnit as armUnitClassification,
+  booster as boosterClassification,
   leftArmUnit as leftArmUnitClassification,
+  notEquipped as notEquippedClassification,
 } from '@ac6_assemble_tool/parts/types/base/classification'
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
@@ -39,9 +41,9 @@ export const changeAssemblyCommand =
     }
     if (key === 'legs' && isNotTankLegs(parts)) {
       const booster =
-        baseAssembly.booster.category !== 'not-equipped'
+        baseAssembly.booster.classification !== notEquippedClassification
           ? baseAssembly.booster
-          : (initialCandidates.booster[0] as Booster)
+          : getDefaultBooster(initialCandidates.booster)
       return {
         assembly: createAssembly({
           ...baseAssembly,
@@ -97,6 +99,21 @@ function isRightArmUnit(parts: ACParts): parts is ArmUnit {
 }
 function isLeftArmUnit(parts: ACParts): parts is LeftArmUnit {
   return parts.classification === leftArmUnitClassification
+}
+
+function getDefaultBooster(
+  boosterCandidates: Candidates['booster'],
+): Booster {
+  const booster = boosterCandidates.find(
+    (candidate): candidate is Booster =>
+      candidate.classification === boosterClassification,
+  )
+
+  if (!booster) {
+    throw new Error('ブースター候補が見つかりません')
+  }
+
+  return booster
 }
 
 type ArmBackKey =
