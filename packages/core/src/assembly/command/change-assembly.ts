@@ -1,5 +1,6 @@
 import type { ArmUnit, LeftArmUnit } from '@ac6_assemble_tool/parts/arm-units'
-import type { Tank } from '@ac6_assemble_tool/parts/legs'
+import type { Booster } from '@ac6_assemble_tool/parts/booster'
+import type { LegsNotTank, Tank } from '@ac6_assemble_tool/parts/legs'
 import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import {
@@ -16,11 +17,12 @@ interface ResultChangeAssembly {
   remainingCandidates: Candidates
 }
 export const changeAssemblyCommand =
-  (candidates: Candidates) =>
+  (initialCandidates: Candidates) =>
   (
     key: AssemblyKey,
     parts: ACParts,
     baseAssembly: Assembly,
+    baseCandidates: Candidates,
   ): ResultChangeAssembly => {
     if (key === 'legs' && isTankLegs(parts)) {
       return {
@@ -30,8 +32,24 @@ export const changeAssemblyCommand =
           booster: boosterNotEquipped,
         }),
         remainingCandidates: {
-          ...candidates,
+          ...baseCandidates,
           booster: [boosterNotEquipped],
+        },
+      }
+    }
+    if (key === 'legs' && isNotTankLegs(parts)) {
+      const booster = baseAssembly.booster.category !== 'not-equipped'
+        ? baseAssembly.booster
+        : initialCandidates.booster[0] as Booster
+      return {
+        assembly: createAssembly({
+          ...baseAssembly,
+          legs: parts,
+          booster,
+        }),
+        remainingCandidates: {
+          ...baseCandidates,
+          booster: initialCandidates.booster,
         },
       }
     }
@@ -43,9 +61,9 @@ export const changeAssemblyCommand =
           rightArmUnit: parts,
         }),
         remainingCandidates: {
-          ...candidates,
+          ...baseCandidates,
           // 同じ武器を右手・右肩に装備は禁止
-          rightBackUnit: candidates.rightBackUnit.filter(
+          rightBackUnit: baseCandidates.rightBackUnit.filter(
             (p) => p.id !== parts.id,
           ),
         },
@@ -58,9 +76,9 @@ export const changeAssemblyCommand =
           [key]: parts,
         }),
         remainingCandidates: {
-          ...candidates,
+          ...baseCandidates,
           // 同じ武器を右手・右肩に装備は禁止
-          rightArmUnit: candidates.rightArmUnit.filter(
+          rightArmUnit: baseCandidates.rightArmUnit.filter(
             (p) => p.id !== parts.id,
           ),
         },
@@ -73,9 +91,9 @@ export const changeAssemblyCommand =
           [key]: parts,
         }),
         remainingCandidates: {
-          ...candidates,
+          ...baseCandidates,
           // 同じ武器を左手・左肩に装備は禁止
-          leftBackUnit: candidates.leftBackUnit.filter(
+          leftBackUnit: baseCandidates.leftBackUnit.filter(
             (p) => p.id !== parts.id,
           ),
         },
@@ -88,9 +106,9 @@ export const changeAssemblyCommand =
           [key]: parts,
         }),
         remainingCandidates: {
-          ...candidates,
+          ...baseCandidates,
           // 同じ武器を左手・左肩に装備は禁止
-          leftArmUnit: candidates.leftArmUnit.filter((p) => p.id !== parts.id),
+          leftArmUnit: baseCandidates.leftArmUnit.filter((p) => p.id !== parts.id),
         },
       }
     }
@@ -100,12 +118,15 @@ export const changeAssemblyCommand =
         ...baseAssembly,
         [key]: parts,
       }),
-      remainingCandidates: candidates,
+      remainingCandidates: baseCandidates,
     }
   }
 
 function isTankLegs(parts: ACParts): parts is Tank {
   return parts.category === tank
+}
+function isNotTankLegs(parts: ACParts): parts is LegsNotTank {
+  return parts.classification === 'legs' && parts.category !== tank
 }
 function isArmUnit(parts: ACParts): parts is ArmUnit | LeftArmUnit {
   return isRightArmUnit(parts) || isLeftArmUnit(parts)

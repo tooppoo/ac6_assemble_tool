@@ -151,7 +151,7 @@
   }
 
   const onChangeParts = ({ detail }: CustomEvent<ChangePartsEvent>) => {
-    const result = changeAssembly(detail.id, detail.selected, assembly)
+    const result = changeAssembly(detail.id, detail.selected, assembly, candidates)
 
     assembly = result.assembly
     candidates = result.remainingCandidates
