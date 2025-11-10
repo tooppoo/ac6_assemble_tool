@@ -22,7 +22,7 @@ export const changeAssemblyCommand =
     parts: ACParts,
     baseAssembly: Assembly,
   ): ResultChangeAssembly => {
-    if (isTankLegs(parts)) {
+    if (key === 'legs' && isTankLegs(parts)) {
       return {
         assembly: createAssembly({
           ...baseAssembly,
