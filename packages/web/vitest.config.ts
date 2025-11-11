@@ -1,8 +1,11 @@
 import { svelteTesting } from '@testing-library/svelte/vite'
+import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
-  plugins: [svelteTesting()],
+  // SvelteファイルとSvelteKitの仮想モジュール($app/*等)を解決するため、
+  // Vitest側でもSvelteKitプラグインを有効化する。
+  plugins: [sveltekit(), svelteTesting()],
   resolve: {
     alias: {
       $lib: '/src/lib',
