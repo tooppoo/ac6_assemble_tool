@@ -6,6 +6,7 @@ import { loadViewMode, saveViewMode } from './view-mode'
 describe('state/view-mode', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
+    vi.clearAllMocks()
     vi.restoreAllMocks()
     if (typeof localStorage !== 'undefined') {
       localStorage.clear()

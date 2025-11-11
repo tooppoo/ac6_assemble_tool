@@ -28,6 +28,7 @@ describe(assemblyErrorMessage.name, () => {
     }
   })
   afterEach(() => {
+    vi.clearAllMocks()
     vi.restoreAllMocks()
   })
 
@@ -121,10 +122,6 @@ describe(assemblyErrorMessage.name, () => {
                 adjustable: false,
               }),
             )
-
-        afterEach(() => {
-          vi.restoreAllMocks()
-        })
         it.prop([
           fc.array(genTotalLoadNotOverMax(), load),
           fc.array(genTotalCoamNotOverMax(), coam),
@@ -183,9 +180,8 @@ describe(assemblyErrorMessage.name, () => {
               'times',
             )
 
-            // it.prop で実行する場合、
-            // beforeEachの前に次のプロパティが実行される模様
-            vi.restoreAllMocks()
+            // fast-check の各試行間でもモック呼び出し回数をリセットする
+            mock.mockClear()
           },
         )
       },

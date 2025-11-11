@@ -1,9 +1,8 @@
 # @ac6_assemble_tool/web
 
 ## 3.1.3
+
 ### Patch Changes
-
-
 
 - [#936](https://github.com/tooppoo/ac6_assemble_tool/pull/936) [`8c85fa3`](https://github.com/tooppoo/ac6_assemble_tool/commit/8c85fa30632a4c588eb7bfa030ce55775866bb90) Thanks [@tooppoo](https://github.com/tooppoo)! - remove Google Tag Manager
 

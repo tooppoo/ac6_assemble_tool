@@ -9,6 +9,7 @@ describe('parts-pool', () => {
   const baseCandidates = regulation.candidates
 
   afterEach(() => {
+    vi.clearAllMocks()
     vi.restoreAllMocks()
   })
 
