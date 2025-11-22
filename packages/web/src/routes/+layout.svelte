@@ -1,21 +1,27 @@
 <script lang="ts">
   import './app.scss'
-  import { publicPath } from '$lib/app-url'
+  import { appUrl, publicPath } from '$lib/app-url'
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import Margin from '$lib/components/spacing/Margin.svelte'
   import i18n from '$lib/i18n/define'
   import { extractChars } from '$lib/i18n/extract-chars'
   import { resources } from '$lib/i18n/resources'
   import { appVersion } from '$lib/utils/app-version'
+  import { withPageQuery } from '$lib/utils/page-query'
 
+  import { setLogLevel } from '@ac6_assemble_tool/shared/logger'
   import { setContext } from 'svelte'
 
   import {
+    PUBLIC_LOG_LEVEL,
     PUBLIC_REPORT_BUG_URL,
     PUBLIC_REPORT_REQUEST_URL,
   } from '$env/static/public'
 
+  let { children } = $props()
+
   setContext('i18n', i18n)
+  setLogLevel(PUBLIC_LOG_LEVEL || 'info')
 
   const jaText = extractChars(resources.ja)
   function onFontLoad(this: HTMLLinkElement): void {
@@ -33,16 +39,15 @@
     target: '_blank',
     rel: 'external noopener noreferrer',
   } as const
+
+  let pageQuery = $derived.by(withPageQuery)
 </script>
 
 <svelte:head>
   <!-- OGP -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="AC6 ASSEMBLE TOOL" />
-  <meta
-    property="og:image"
-    content={publicPath('/ogp/ac6_assembly_tool.png')}
-  />
+  <meta property="og:image" content={appUrl('/ogp/ac6_assembly_tool.png')} />
   <meta property="og:locale" content="ja_JP" />
 
   <meta name="twitter:card" content="summary" />
@@ -93,7 +98,7 @@
     href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap"
     rel="stylesheet"
     media="print"
-    on:load={onFontLoad}
+    onload={onFontLoad}
   />
   <link
     href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap&text={jaText}"
@@ -104,13 +109,13 @@
     href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap&text={jaText}"
     rel="stylesheet"
     media="print"
-    on:load={onFontLoad}
+    onload={onFontLoad}
   />
   <!-- End Font -->
 </svelte:head>
 
 <div class="font-monospace" data-testid="layout-root">
-  <slot></slot>
+  {@render children()}
 
   <ToolSection
     id="development-report"
@@ -145,22 +150,52 @@
 
   <footer class="text-center mb-3">
     <div>
+      <a href={`/${pageQuery}`}>ASSEMBLE TOOL</a>
+    </div>
+    <div>
+      <a href={`/parts-list${pageQuery}`}>PARTS LIST</a>
+    </div>
+    <hr class="w-25 mx-auto" />
+    <div>
+      <a href={`/about/ja${pageQuery}`}>このアプリについて</a> /
+      <a href={`/about/en${pageQuery}`}>About This App</a>
+    </div>
+    <div>
+      <a href={`/rule/ja${pageQuery}`}>利用規約</a> /
+      <a href={`/rule/en${pageQuery}`}>Terms of Use</a>
+    </div>
+    <div>
+      <a href={`/privacy/ja${pageQuery}`}>プライバシーポリシー</a> /
+      <a href={`/privacy/en${pageQuery}`}>Privacy Policy</a>
+    </div>
+    <hr class="w-25 mx-auto" />
+    <div>
       Created by
       <a
-        id="link-to-linktr"
-        href="https://linktr.ee/Philomagi"
+        id="link-to-twitter"
+        href="https://twitter.com/Philomagi"
         rel="external noopener noreferrer"
+        target="_blank"
       >
-        >Philomagi</a
-      >
+        Philomagi
+      </a>
+    </div>
+    <div>
+      My Page:
+      <a id="link-to-website" href="https://philomagi.dev" target="_blank">
+        https://philomagi.dev
+      </a>
     </div>
     <div>
       Source code is managed at
       <a
         id="link-to-src"
         href="https://github.com/tooppoo/ac6_assemble_tool/"
-        rel="external noopener noreferrer">Github</a
+        rel="external noopener noreferrer"
+        target="_blank"
       >
+        Github
+      </a>
     </div>
     <div>
       App Version v{appVersion}

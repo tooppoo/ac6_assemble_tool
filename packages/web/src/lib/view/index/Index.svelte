@@ -31,7 +31,6 @@
   } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import { logger } from '@ac6_assemble_tool/shared/logger'
-  import { onMount } from 'svelte'
 
   import type {
     ChangePartsEvent,
@@ -53,24 +52,8 @@
   import ShareAssembly from './share/ShareAssembly.svelte'
   import StoreAssembly from './store/StoreAssembly.svelte'
 
-  import { goto } from '$app/navigation'
-
-  let aboutHref: string = '/about/ja'
-  let currentSearch: string = ''
-
-  const updateCurrentSearch = () => {
-    if (typeof window === 'undefined') {
-      return
-    }
-
-    currentSearch = window.location.search
-  }
-
-  $: {
-    const basePath = $i18n.language === 'en' ? '/about/en' : '/about/ja'
-    const suffix = currentSearch || ''
-    aboutHref = `${basePath}?${suffix}`
-  }
+  import { afterNavigate, goto } from '$app/navigation'
+  import { page } from '$app/state'
 
   const tryLimit = 3000
 
@@ -102,7 +85,6 @@
   let assembly: Assembly = initializeAssembly(candidates)
   let serializeAssembly = useWithEnableState(() => {
     serializeAssemblyAsQuery()
-    updateCurrentSearch()
   })
 
   $: if (partsPool !== previousPartsPool) {
@@ -111,7 +93,10 @@
     applyPartsPoolState(partsPool)
   }
 
-  onMount(() => {
+  afterNavigate(() => {
+    if (page.state.initialized) {
+      return
+    }
     updatePartsPoolFromUrl()
     initialize()
 
@@ -125,11 +110,13 @@
   }
   $: {
     if (assembly && initialCandidates && !browserBacking) {
-      logger.debug('replace state', {
-        query: assemblyToSearchV2(assembly).toString(),
-      })
+      if (serializeAssembly.isEnabled()) {
+        logger.debug('replace state', {
+          query: assemblyToSearchV2(assembly).toString(),
+        })
 
-      serializeAssembly.run()
+        serializeAssembly.run()
+      }
     }
 
     browserBacking = false
@@ -211,7 +198,15 @@
     // v1の場合はURLをv2形式に更新（既存の非アセンブリパラメータを保持）
     if (convertedParams !== params) {
       mergeAssemblyParams(url.searchParams, convertedParams)
-      history.replaceState({}, '', url)
+      goto(url, {
+        replaceState: true,
+        keepFocus: true,
+        noScroll: true,
+        invalidateAll: true,
+        state: {
+          initialized: true,
+        },
+      })
     }
   }
   /**
@@ -245,7 +240,15 @@
     // 既存の非アセンブリパラメータ（lng等）を保持
     mergeAssemblyParams(url.searchParams, assemblyQuery)
 
-    history.pushState({}, '', url)
+    goto(url, {
+      replaceState: true,
+      keepFocus: true,
+      noScroll: true,
+      invalidateAll: true,
+      state: {
+        initialized: true,
+      },
+    })
   }
 
   // setup
@@ -380,17 +383,6 @@
       {$i18n.t('command.store.label', { ns: 'page/index' })}
     </span>
   </NavButton>
-  <NavButton
-    id="open-about-page"
-    title={$i18n.t('command.about.description', { ns: 'page/index' })}
-    href={aboutHref}
-    class="ms-md-2"
-  >
-    <i slot="icon" class="bi bi-info-circle"></i>
-    <span class="d-none d-md-inline">
-      {$i18n.t('command.about.label', { ns: 'page/index' })}
-    </span>
-  </NavButton>
 </Navbar>
 
 <header class="text-center mt-5">
@@ -402,7 +394,7 @@
     for Regulation {version}
   </h2>
   <div>
-    <LanguageForm onUpdate={(search) => (currentSearch = search)} />
+    <LanguageForm />
   </div>
 </header>
 

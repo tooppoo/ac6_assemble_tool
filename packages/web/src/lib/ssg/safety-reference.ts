@@ -9,6 +9,7 @@ type F = () => void
 type UseAsWitchEnableResult = Readonly<{
   run: F
   enable: F
+  isEnabled: () => boolean
 }>
 export function useWithEnableState(f: () => void): UseAsWitchEnableResult {
   let enable: boolean = false
@@ -22,5 +23,6 @@ export function useWithEnableState(f: () => void): UseAsWitchEnableResult {
     enable: () => {
       enable = true
     },
+    isEnabled: () => enable,
   }
 }

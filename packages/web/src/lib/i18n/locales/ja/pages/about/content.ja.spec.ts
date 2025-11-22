@@ -8,7 +8,7 @@ describe('aboutSections', () => {
       return (
         accumulator +
         section.lead +
-        section.body.reduce((sum, paragraph) => sum + paragraph, '')
+        section.paragraphs.reduce((sum, paragraph) => sum + paragraph, '')
       )
     }, '')
 

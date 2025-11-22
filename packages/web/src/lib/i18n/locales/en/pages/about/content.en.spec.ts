@@ -5,7 +5,7 @@ import { aboutSections } from './content.en'
 describe('aboutSections (en)', () => {
   it('本文が 800 語以上であること', () => {
     const aggregated = aboutSections.reduce((text, section) => {
-      return `${text} ${section.lead} ${section.body.join(' ')}`
+      return `${text} ${section.lead} ${section.paragraphs.join(' ')}`
     }, '')
 
     const wordCount = aggregated
