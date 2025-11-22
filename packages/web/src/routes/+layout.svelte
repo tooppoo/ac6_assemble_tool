@@ -157,6 +157,9 @@
     <div>
       <a href="/rule/ja">利用規約</a> / <a href="/rule/en">Terms of Use</a>
     </div>
+    <div>
+      <a href="/privacy/ja">プライバシーポリシー</a> / <a href="/privacy/en">Privacy Policy</a>
+    </div>
     <hr class="w-25 mx-auto" />
     <div>
       Created by
