@@ -31,7 +31,6 @@
   } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import { logger } from '@ac6_assemble_tool/shared/logger'
-  import { onMount } from 'svelte'
 
   import type {
     ChangePartsEvent,
@@ -53,7 +52,7 @@
   import ShareAssembly from './share/ShareAssembly.svelte'
   import StoreAssembly from './store/StoreAssembly.svelte'
 
-  import { goto, pushState, replaceState } from '$app/navigation'
+  import { afterNavigate, goto, pushState, replaceState } from '$app/navigation'
 
   const tryLimit = 3000
 
@@ -64,7 +63,6 @@
   const orders: Order = regulation.orders
   const version: string = regulation.version
 
-  let initialized: boolean = false
   let partsPoolState: PartsPoolRestrictions = partsPool
   let previousPartsPool: PartsPoolRestrictions = partsPool
 
@@ -94,9 +92,11 @@
     applyPartsPoolState(partsPool)
   }
 
-  onMount(() => {
+  afterNavigate(() => {
     updatePartsPoolFromUrl()
     initialize()
+
+    serializeAssembly.enable()
   })
 
   $: if (initialCandidates) {
@@ -105,19 +105,13 @@
     updateCandidates()
   }
   $: {
-    if (initialized && assembly && initialCandidates && !browserBacking) {
+    if (assembly && initialCandidates && !browserBacking) {
       if (serializeAssembly.isEnabled()) {
         logger.debug('replace state', {
           query: assemblyToSearchV2(assembly).toString(),
         })
 
         serializeAssembly.run()
-      }
-      else {
-        // 初回は自動シリアライズを有効化のみ行う
-        logger.debug('enable serialize assembly')
-
-        serializeAssembly.enable()
       }
     }
 
@@ -242,7 +236,6 @@
     buildAssemblyFromQuery()
 
     logger.debug('initialized', assembly)
-    initialized = true
   }
 
   const onPopstate = () => {
