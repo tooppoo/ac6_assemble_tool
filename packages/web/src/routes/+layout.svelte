@@ -1,5 +1,6 @@
 <script lang="ts">
   import './app.scss'
+  import { page } from '$app/state'
   import { appUrl, publicPath } from '$lib/app-url'
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import Margin from '$lib/components/spacing/Margin.svelte'
@@ -11,11 +12,14 @@
   import { setContext } from 'svelte'
 
   import {
+    PUBLIC_LOG_LEVEL,
     PUBLIC_REPORT_BUG_URL,
     PUBLIC_REPORT_REQUEST_URL,
   } from '$env/static/public'
+  import { setLogLevel } from '@ac6_assemble_tool/shared/logger'
 
   setContext('i18n', i18n)
+  setLogLevel(PUBLIC_LOG_LEVEL || 'info')
 
   const jaText = extractChars(resources.ja)
   function onFontLoad(this: HTMLLinkElement): void {
@@ -145,20 +149,20 @@
 
   <footer class="text-center mb-3">
     <div>
-      <a href="/">ASSEMBLE TOOL</a>
+      <a href={`/${page.url.search}`}>ASSEMBLE TOOL</a>
     </div>
     <div>
-      <a href="/parts-list">PARTS LIST</a>
+      <a href={`/parts-list${page.url.search}`}>PARTS LIST</a>
     </div>
     <hr class="w-25 mx-auto" />
     <div>
-      <a href="/about/ja">このアプリについて</a> / <a href="/about/en">About This App</a>
+      <a href={`/about/ja${page.url.search}`}>このアプリについて</a> / <a href={`/about/en${page.url.search}`}>About This App</a>
     </div>
     <div>
-      <a href="/rule/ja">利用規約</a> / <a href="/rule/en">Terms of Use</a>
+      <a href={`/rule/ja${page.url.search}`}>利用規約</a> / <a href={`/rule/en${page.url.search}`}>Terms of Use</a>
     </div>
     <div>
-      <a href="/privacy/ja">プライバシーポリシー</a> / <a href="/privacy/en">Privacy Policy</a>
+      <a href={`/privacy/ja${page.url.search}`}>プライバシーポリシー</a> / <a href={`/privacy/en${page.url.search}`}>Privacy Policy</a>
     </div>
     <hr class="w-25 mx-auto" />
     <div>

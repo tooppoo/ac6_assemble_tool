@@ -6,14 +6,38 @@
  * 機微情報は含めないこと。
  */
 
-export type LogLevel = 'info' | 'debug' | 'warn' | 'error' | 'fatal'
+const logLevel = ['info', 'debug', 'warn', 'error', 'fatal'] as const
+export type LogLevel = typeof logLevel[number]
 
 export type LogContext = Record<string, unknown>
+
+let currentLogLevel: LogLevel = 'info'
+
+export function setLogLevel(level: string): void {
+  if (logLevel.includes(level as LogLevel)) {
+    currentLogLevel = level as LogLevel
+  }
+}
+
+const logLevelEnum = {
+  fatal: 0,
+  error: 1,
+  warn: 2,
+  info: 3,
+  debug: 4,
+} as const
 
 /**
  * 構造化ログを出力する
  */
 function log(level: LogLevel, message: string, context: LogContext = {}): void {
+  const targetLogLevel = logLevelEnum[level]
+  const configuredLogLevel = logLevelEnum[currentLogLevel]
+
+  if (targetLogLevel > configuredLogLevel) {
+    return
+  }
+
   const logEntry = {
     level,
     timestamp: new Date().toISOString(),
@@ -25,6 +49,8 @@ function log(level: LogLevel, message: string, context: LogContext = {}): void {
 
   switch (level) {
     case 'debug':
+      console.debug(logString)
+      break
     case 'info':
       console.info(logString)
       break
