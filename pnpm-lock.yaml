@@ -216,14 +216,14 @@ importers:
         specifier: 4.2.1
         version: 4.2.1
       i18next:
-        specifier: 25.6.1
-        version: 25.6.1(typescript@5.9.3)
+        specifier: 25.6.2
+        version: 25.6.2(typescript@5.9.3)
       svelte:
         specifier: 5.43.12
         version: 5.43.12
       svelte-i18next:
         specifier: 2.2.2
-        version: 2.2.2(i18next@25.6.1(typescript@5.9.3))(svelte@5.43.12)
+        version: 2.2.2(i18next@25.6.2(typescript@5.9.3))(svelte@5.43.12)
       ulid:
         specifier: 3.0.1
         version: 3.0.1
@@ -2090,8 +2090,8 @@ packages:
     resolution: {integrity: sha512-v/J+4Z/1eIJovEBdlV5TYj1IR+ZiohcYGRY+qN/oC9dAfKzVT023N/Bgw37hrKCoVRBvk3bqyzpr2PP5YeTMSg==}
     hasBin: true
 
-  i18next@25.6.1:
-    resolution: {integrity: sha512-yUWvdXtalZztmKrKw3yz/AvSP3yKyqIkVPx/wyvoYy9lkLmwzItLxp0iHZLG5hfVQ539Jor4XLO+U+NHIXg7pw==}
+  i18next@25.6.2:
+    resolution: {integrity: sha512-0GawNyVUw0yvJoOEBq1VHMAsqdM23XrHkMtl2gKEjviJQSLVXsrPqsoYAxBEugW5AB96I2pZkwRxyl8WZVoWdw==}
     peerDependencies:
       typescript: ^5
     peerDependenciesMeta:
@@ -5495,7 +5495,7 @@ snapshots:
 
   human-id@4.1.2: {}
 
-  i18next@25.6.1(typescript@5.9.3):
+  i18next@25.6.2(typescript@5.9.3):
     dependencies:
       '@babel/runtime': 7.28.4
     optionalDependencies:
@@ -6715,9 +6715,9 @@ snapshots:
     optionalDependencies:
       svelte: 5.43.12
 
-  svelte-i18next@2.2.2(i18next@25.6.1(typescript@5.9.3))(svelte@5.43.12):
+  svelte-i18next@2.2.2(i18next@25.6.2(typescript@5.9.3))(svelte@5.43.12):
     dependencies:
-      i18next: 25.6.1(typescript@5.9.3)
+      i18next: 25.6.2(typescript@5.9.3)
       svelte: 5.43.12
 
   svelte-sitemap@2.7.1:
