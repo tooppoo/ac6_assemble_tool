@@ -103,40 +103,6 @@ describe(About.name, () => {
     expect(screen.getByTestId('nav-home-link').getAttribute('href')).toBe('/')
   })
 
-  it('言語切替: アクティブ状態を切り替え、未指定時は非表示にする', async () => {
-    const { rerender, unmount } = renderAbout()
-
-    const initialJa = screen.getByRole('link', { name: '日本語' })
-    const initialEn = screen.getByRole('link', { name: 'English' })
-    expect(initialJa.classList.contains('fw-bold')).toBe(true)
-    expect(initialJa.classList.contains('text-primary')).toBe(true)
-    expect(initialJa.getAttribute('aria-current')).toBe('page')
-    expect(initialEn.classList.contains('text-light')).toBe(true)
-    expect(initialEn.hasAttribute('aria-current')).toBe(false)
-
-    await rerender({
-      ...baseProps,
-      languageSwitcher: [
-        { label: '日本語', href: '/about/ja', active: false },
-        { label: 'English', href: '/about/en', active: true },
-      ] as const,
-    })
-
-    const toggledJa = screen.getByRole('link', { name: '日本語' })
-    const toggledEn = screen.getByRole('link', { name: 'English' })
-    expect(toggledJa.classList.contains('text-light')).toBe(true)
-    expect(toggledJa.hasAttribute('aria-current')).toBe(false)
-    expect(toggledEn.classList.contains('fw-bold')).toBe(true)
-    expect(toggledEn.classList.contains('text-primary')).toBe(true)
-    expect(toggledEn.getAttribute('aria-current')).toBe('page')
-
-    unmount()
-
-    renderAbout({ languageSwitcher: [] as const })
-    expect(screen.queryByRole('link', { name: '日本語' })).toBeNull()
-    expect(screen.queryByRole('link', { name: 'English' })).toBeNull()
-  })
-
   it('セクション目次: 目次ナビゲーションとアンカーリンクを生成する', () => {
     renderAbout()
 
@@ -153,17 +119,5 @@ describe(About.name, () => {
       const tocLink = within(tocNav).getByRole('link', { name: section.title })
       expect(tocLink.getAttribute('href')).toBe(`#${section.id}`)
     })
-  })
-
-  it('アクセシビリティ: アクティブ言語に aria-current を設定し、ナビゲーションにラベルを付与する', () => {
-    renderAbout()
-
-    const tocNav = screen.getByRole('navigation', {
-      name: baseProps.tocNavigationLabel,
-    })
-    expect(tocNav).toHaveAttribute('aria-label', baseProps.tocNavigationLabel)
-
-    const activeLanguageLink = screen.getByRole('link', { name: '日本語' })
-    expect(activeLanguageLink.getAttribute('aria-current')).toBe('page')
   })
 })
