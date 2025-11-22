@@ -40,7 +40,7 @@
     rel: 'external noopener noreferrer',
   } as const
 
-  let pageQuery = $derived.by(() => page.url.search)
+  let pageQuery = $derived(page.url.search)
 </script>
 
 <svelte:head>
