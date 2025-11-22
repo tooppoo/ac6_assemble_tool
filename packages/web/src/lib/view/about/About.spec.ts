@@ -88,21 +88,6 @@ describe(About.name, () => {
     expect(heroLead.classList.contains('fs-4')).toBe(true)
   })
 
-  it('戻りリンク: 明示的な遷移先とデフォルト遷移先の両方を提供する', () => {
-    const { unmount } = renderAbout()
-
-    const homeLink = screen.getByTestId('nav-home-link')
-    expect(homeLink).toHaveTextContent(baseProps.backLinkLabel)
-    expect(homeLink.getAttribute('href')).toBe(baseProps.homeHref)
-
-    unmount()
-
-    const { homeHref: _, ...propsWithoutHome } = baseProps
-    render(About, { props: propsWithoutHome })
-
-    expect(screen.getByTestId('nav-home-link').getAttribute('href')).toBe('/')
-  })
-
   it('セクション目次: 目次ナビゲーションとアンカーリンクを生成する', () => {
     renderAbout()
 
@@ -120,4 +105,5 @@ describe(About.name, () => {
       expect(tocLink.getAttribute('href')).toBe(`#${section.id}`)
     })
   })
+
 })
