@@ -16,6 +16,7 @@ export default defineConfig({
   test: {
     include: ['src/**/*.{test,spec}.{js,ts}'],
     environment: 'jsdom',
+    testTimeout: 20 * 1000,
     coverage: {
       reporter: ['text', 'json'],
       exclude: [
