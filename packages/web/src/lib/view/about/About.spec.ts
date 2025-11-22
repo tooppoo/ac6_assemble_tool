@@ -33,21 +33,12 @@ const baseProps = {
   heroTitle: 'AC6 ASSEMBLE TOOL /about',
   heroLead: '本ツールの目的と活用方法を紹介します。',
   backLinkLabel: 'ホームへ戻る',
-  homeHref: '/home',
-  languageSwitcher: [
-    { label: '日本語', href: '/about/ja', active: true },
-    { label: 'English', href: '/about/en', active: false },
-  ] as const,
   tocNavigationLabel: 'セクション一覧',
   tocHeadingLabel: 'セクション',
 }
 
 const renderAbout = (
-  props: Partial<Omit<typeof baseProps, 'languageSwitcher'>> & {
-    languageSwitcher?: ReadonlyArray<
-      (typeof baseProps.languageSwitcher)[number]
-    >
-  } = {},
+  props: Partial<typeof baseProps> = {},
 ) =>
   render(About, {
     props: {
