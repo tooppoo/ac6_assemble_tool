@@ -1,14 +1,14 @@
 <script lang="ts">
   import { appUrl } from '$lib/app-url'
-  import InfoPageLayout from '$lib/components/layout/InfoPageLayout.svelte'
+  import Information, { type InfoTocItem } from '$lib/view/info/Information.svelte'
 
   const canonical = appUrl('privacy', 'ja')
 
-  const sections = [
+  const tocItems: readonly InfoTocItem[] = [
     {
       id: 'scope',
       title: '第1条（総則・適用）',
-      items: [
+      paragraphs: [
         '本プライバシーポリシー（以下「本ポリシー」）は、AC6 ASSEMBLE TOOL（以下「本サービス」）における利用者情報の取り扱い方針を定めます。',
         '本サービスの利用者は、本ポリシーに同意したものとみなします。',
       ],
@@ -16,15 +16,15 @@
     {
       id: 'not-collected',
       title: '第2条（収集しない情報）',
-      items: [
-        '氏名・住所・メールアドレスなど、個人を特定できる情報を本サービス側で収集しません。',
+      paragraphs: [
+        '氏名・住所・メールアドレスなど、個人を特定できる情報を本サービス側で収集しません.',
         'ゲームアカウント情報や課金情報を取得・保存しません。',
       ],
     },
     {
       id: 'may-collect',
       title: '第3条（取得する可能性のある情報）',
-      items: [
+      paragraphs: [
         'ブラウザ・端末情報（User-Agent や画面サイズなど）',
         'IPアドレス（アクセス解析時に匿名化・短期保持される場合があります）',
         '利用状況データ（アクセス日時、閲覧ページ、クリック計測など。Google Analytics 等の外部解析ツール経由）',
@@ -35,7 +35,7 @@
     {
       id: 'purpose',
       title: '第4条（利用目的）',
-      items: [
+      paragraphs: [
         '本サービスの提供・改良・品質向上のため',
         '障害対応・セキュリティ確保のための監視・調査',
         '利用動向の統計分析（個人を特定しない形で実施）',
@@ -44,7 +44,7 @@
     {
       id: 'third-party',
       title: '第5条（外部送信・委託）',
-      items: [
+      paragraphs: [
         'アクセス解析に Google Analytics / Google Tag Manager を利用する場合があります。取得・利用されるデータの詳細は各サービスのプライバシーポリシーに従います。',
         'CDN / ホスティング（例: Cloudflare, Vercel, GitHub Pages 等）を利用する際、通信経路上でログが記録される場合があります。',
       ],
@@ -52,7 +52,7 @@
     {
       id: 'retention',
       title: '第6条（保存期間・管理）',
-      items: [
+      paragraphs: [
         '個人を特定しないアクセスログ・エラーログは、目的達成に必要な期間のみ保持し、定期的に削除・匿名化します。',
         'localStorage やクッキーに保存されるデータは、ユーザーがブラウザ設定で削除できます。',
       ],
@@ -60,7 +60,7 @@
     {
       id: 'choice',
       title: '第7条（ユーザーの選択）',
-      items: [
+      paragraphs: [
         'ブラウザ設定でクッキーの拒否や削除が可能です。ただし、一部機能（言語保持等）が正常に動作しない場合があります。',
         'トラッキング拒否を希望する場合は、ブラウザの Do Not Track 設定や広告ブロッカーを利用できます。',
       ],
@@ -68,7 +68,7 @@
     {
       id: 'disclaimer',
       title: '第8条（免責）',
-      items: [
+      paragraphs: [
         '外部サービスの障害・仕様変更により発生した問題について、運営者は責任を負いません。',
         'ユーザー自身の設定・端末・ネットワーク環境に起因する不具合について、運営者は責任を負いません。',
       ],
@@ -76,7 +76,7 @@
     {
       id: 'changes',
       title: '第9条（ポリシーの変更）',
-      items: [
+      paragraphs: [
         '運営者は必要に応じて本ポリシーを改定することがあります。',
         '改定後に本サービスを利用した場合、改定後の内容に同意したものとみなします。',
       ],
@@ -84,7 +84,7 @@
     {
       id: 'contact',
       title: '第10条（連絡先）',
-      items: [
+      paragraphs: [
         '運営者: philomagi（個人）',
         '連絡先: GitHub Issues または X(Twitter) 経由でご連絡ください。',
       ],
@@ -92,18 +92,14 @@
     {
       id: 'date',
       title: '制定日',
-      items: ['2025-11-22'],
+      paragraphs: ['2025-11-22'],
     },
-  ] as const
+  ]
 
   const heroTitle = 'AC6 ASSEMBLE TOOL | プライバシーポリシー'
   const heroLead =
     '本サービスにおける利用者情報の取り扱い方針を示します。収集しない情報・利用目的・外部送信・保存期間・選択肢などをご確認ください。'
 
-  const tocItems = sections.map((section) => ({
-    id: section.id,
-    title: section.title,
-  }))
 </script>
 
 <svelte:head>
@@ -124,26 +120,10 @@
   />
 </svelte:head>
 
-<InfoPageLayout
+<Information
   {heroTitle}
   {heroLead}
   {tocItems}
   tocNavigationLabel="プライバシーポリシー目次"
   tocHeadingLabel="目次"
->
-  {#each sections as section (section.id)}
-    <section id={section.id} class="mb-5">
-      <div class="mb-3">
-        <span class="badge text-bg-primary text-uppercase">
-          {section.id}
-        </span>
-      </div>
-      <h2 class="h3 fw-bold mb-3">{section.title}</h2>
-      <ol class="mt-3 lh-lg">
-        {#each section.items as item, idx (idx)}
-          <li class="mb-2">{item}</li>
-        {/each}
-      </ol>
-    </section>
-  {/each}
-</InfoPageLayout>
+/>

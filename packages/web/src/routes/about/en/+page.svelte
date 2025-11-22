@@ -1,7 +1,7 @@
 <script lang="ts">
   import { appUrl } from '$lib/app-url'
+  import Information from '$lib/view/info/Information.svelte'
   import { aboutSections } from '$lib/i18n/locales/en/pages/about/content.en'
-  import About from '$lib/view/about/About.svelte'
 
   const heroTitle = 'AC6 ASSEMBLE TOOL /about'
   const heroLead =
@@ -23,10 +23,11 @@
   />
 </svelte:head>
 
-<About
+<Information
   {heroTitle}
   {heroLead}
   tocNavigationLabel="Page navigation"
   tocHeadingLabel="Sections"
-  sections={aboutSections}
+  tocItems={aboutSections}
+  testId="about-page"
 />

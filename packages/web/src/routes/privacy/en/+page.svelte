@@ -1,14 +1,14 @@
 <script lang="ts">
   import { appUrl } from '$lib/app-url'
-  import InfoPageLayout from '$lib/components/layout/InfoPageLayout.svelte'
+  import Information, { type InfoTocItem } from '$lib/view/info/Information.svelte'
 
   const canonical = appUrl('privacy', 'en')
 
-  const sections = [
+  const tocItems: readonly InfoTocItem[] = [
     {
       id: 'scope',
       title: 'Article 1 (Scope and Application)',
-      items: [
+      paragraphs: [
         'This Privacy Policy (“Policy”) explains how AC6 ASSEMBLE TOOL (“the Service”) handles user information.',
         'By using the Service, you are deemed to agree to this Policy.',
       ],
@@ -16,7 +16,7 @@
     {
       id: 'not-collected',
       title: 'Article 2 (Information NOT Collected)',
-      items: [
+      paragraphs: [
         'We do not collect personally identifiable information such as name, address, or email.',
         'We do not obtain or store game account or payment information.',
       ],
@@ -24,7 +24,7 @@
     {
       id: 'may-collect',
       title: 'Article 3 (Information That May Be Collected)',
-      items: [
+      paragraphs: [
         'Browser / device data (e.g., User-Agent, screen size)',
         'IP address (may be anonymized and retained briefly for analytics)',
         'Usage data (timestamps, visited pages, clicks) via external analytics tools such as Google Analytics / Google Tag Manager',
@@ -35,7 +35,7 @@
     {
       id: 'purpose',
       title: 'Article 4 (Purpose of Use)',
-      items: [
+      paragraphs: [
         'To provide, improve, and maintain the Service',
         'To monitor and troubleshoot errors and ensure security',
         'To analyze usage trends in an aggregated, non-identifiable manner',
@@ -44,7 +44,7 @@
     {
       id: 'third-party',
       title: 'Article 5 (Third-Party Services and Transmission)',
-      items: [
+      paragraphs: [
         'We may use Google Analytics / Google Tag Manager. Data handling follows each provider’s privacy policy.',
         'CDN/hosting (e.g., Cloudflare, Vercel, GitHub Pages) may record logs in transit.',
       ],
@@ -52,7 +52,7 @@
     {
       id: 'retention',
       title: 'Article 6 (Retention and Management)',
-      items: [
+      paragraphs: [
         'Access and error logs without personal identifiers are kept only as long as necessary and then deleted or anonymized.',
         'Data stored in localStorage or cookies can be cleared by users via browser settings.',
       ],
@@ -60,7 +60,7 @@
     {
       id: 'choice',
       title: 'Article 7 (User Choices)',
-      items: [
+      paragraphs: [
         'You can refuse or delete cookies in browser settings, though some features (e.g., language preference) may not work properly.',
         'You may enable Do Not Track or use blockers to limit tracking.',
       ],
@@ -68,7 +68,7 @@
     {
       id: 'disclaimer',
       title: 'Article 8 (Disclaimer)',
-      items: [
+      paragraphs: [
         'The operator is not responsible for issues caused by external services or their policy/technical changes.',
         'The operator is not responsible for problems arising from users’ own settings, devices, or networks.',
       ],
@@ -76,7 +76,7 @@
     {
       id: 'changes',
       title: 'Article 9 (Changes to the Policy)',
-      items: [
+      paragraphs: [
         'The operator may update this Policy when necessary.',
         'Continued use after an update constitutes acceptance of the revised Policy.',
       ],
@@ -84,7 +84,7 @@
     {
       id: 'contact',
       title: 'Article 10 (Contact)',
-      items: [
+      paragraphs: [
         'Operator: philomagi (Individual)',
         'Contact: via GitHub Issues or X(Twitter).',
       ],
@@ -92,18 +92,14 @@
     {
       id: 'date',
       title: 'Effective Date',
-      items: ['2025-11-22'],
+      paragraphs: ['2025-11-22'],
     },
-  ] as const
+  ]
 
   const heroTitle = 'AC6 ASSEMBLE TOOL | Privacy Policy'
   const heroLead =
     'How we handle user data: what we do not collect, possible data points, purposes, third-party services, retention, and your choices.'
 
-  const tocItems = sections.map((section) => ({
-    id: section.id,
-    title: section.title,
-  }))
 </script>
 
 <svelte:head>
@@ -121,26 +117,10 @@
   />
 </svelte:head>
 
-<InfoPageLayout
+<Information
   {heroTitle}
   {heroLead}
   {tocItems}
   tocNavigationLabel="Privacy policy navigation"
   tocHeadingLabel="Contents"
->
-  {#each sections as section (section.id)}
-    <section id={section.id} class="mb-5">
-      <div class="mb-3">
-        <span class="badge text-bg-primary text-uppercase">
-          {section.id}
-        </span>
-      </div>
-      <h2 class="h3 fw-bold mb-3">{section.title}</h2>
-      <ol class="mt-3 lh-lg">
-        {#each section.items as item, idx (idx)}
-          <li class="mb-2">{item}</li>
-        {/each}
-      </ol>
-    </section>
-  {/each}
-</InfoPageLayout>
+/>
