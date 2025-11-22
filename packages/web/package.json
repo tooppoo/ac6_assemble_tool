@@ -35,7 +35,7 @@
     "eslint-plugin-svelte": "3.13.0",
     "fake-indexeddb": "6.2.5",
     "jsdom": "27.1.0",
-    "nodemon": "3.1.10",
+    "nodemon": "3.1.11",
     "prettier-plugin-svelte": "3.4.0",
     "purgecss": "7.0.2",
     "sass-embedded": "1.93.3",
