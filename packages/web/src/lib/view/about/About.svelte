@@ -14,7 +14,6 @@
     id: section.id,
     title: section.title,
   }))
-
 </script>
 
 <div class="bg-dark text-light min-vh-100">

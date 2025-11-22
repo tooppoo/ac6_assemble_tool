@@ -198,18 +198,15 @@
     // v1の場合はURLをv2形式に更新（既存の非アセンブリパラメータを保持）
     if (convertedParams !== params) {
       mergeAssemblyParams(url.searchParams, convertedParams)
-      goto(
-        url,
-        {
-          replaceState: true,
-          keepFocus: true,
-          noScroll: true,
-          invalidateAll: true,
-          state: {
-            initialized: true,
-          }
+      goto(url, {
+        replaceState: true,
+        keepFocus: true,
+        noScroll: true,
+        invalidateAll: true,
+        state: {
+          initialized: true,
         },
-      )
+      })
     }
   }
   /**
@@ -243,18 +240,15 @@
     // 既存の非アセンブリパラメータ（lng等）を保持
     mergeAssemblyParams(url.searchParams, assemblyQuery)
 
-    goto(
-      url,
-      {
-        replaceState: true,
-        keepFocus: true,
-        noScroll: true,
-        invalidateAll: true,
-        state: {
-          initialized: true,
-        }
+    goto(url, {
+      replaceState: true,
+      keepFocus: true,
+      noScroll: true,
+      invalidateAll: true,
+      state: {
+        initialized: true,
       },
-    )
+    })
   }
 
   // setup

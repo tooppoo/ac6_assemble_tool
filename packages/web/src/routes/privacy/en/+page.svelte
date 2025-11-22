@@ -84,7 +84,10 @@
     {
       id: 'contact',
       title: 'Article 10 (Contact)',
-      items: ['Operator: philomagi (Individual)', 'Contact: via GitHub Issues or X(Twitter).'],
+      items: [
+        'Operator: philomagi (Individual)',
+        'Contact: via GitHub Issues or X(Twitter).',
+      ],
     },
     {
       id: 'date',
@@ -128,7 +131,10 @@
 
     <div class="row">
       <aside class="col-lg-3 mb-4">
-        <nav class="position-sticky top-0 pt-lg-3" aria-label="Privacy policy navigation">
+        <nav
+          class="position-sticky top-0 pt-lg-3"
+          aria-label="Privacy policy navigation"
+        >
           <div class="card bg-dark border border-secondary">
             <div class="card-body">
               <h2 class="h6 text-uppercase fw-semibold mb-3 text-light">

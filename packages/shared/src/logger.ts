@@ -7,7 +7,7 @@
  */
 
 const logLevel = ['info', 'debug', 'warn', 'error', 'fatal'] as const
-export type LogLevel = typeof logLevel[number]
+export type LogLevel = (typeof logLevel)[number]
 
 export type LogContext = Record<string, unknown>
 

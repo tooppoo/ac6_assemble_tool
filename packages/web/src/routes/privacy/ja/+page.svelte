@@ -84,7 +84,10 @@
     {
       id: 'contact',
       title: '第10条（連絡先）',
-      items: ['運営者: philomagi（個人）', '連絡先: GitHub Issues または X(Twitter) 経由でご連絡ください。'],
+      items: [
+        '運営者: philomagi（個人）',
+        '連絡先: GitHub Issues または X(Twitter) 経由でご連絡ください。',
+      ],
     },
     {
       id: 'date',
@@ -102,7 +105,10 @@
   <link rel="canonical" href={canonical} />
   <meta property="og:url" content={canonical} />
   <title>AC6 ASSEMBLE TOOL | プライバシーポリシー</title>
-  <meta property="og:title" content="AC6 ASSEMBLE TOOL | プライバシーポリシー" />
+  <meta
+    property="og:title"
+    content="AC6 ASSEMBLE TOOL | プライバシーポリシー"
+  />
   <meta
     name="description"
     content="AC6 ASSEMBLE TOOL のプライバシーポリシー（日本語版）。収集する情報、利用目的、外部送信、保存期間、ユーザーの選択肢などを説明します。"
@@ -128,7 +134,10 @@
 
     <div class="row">
       <aside class="col-lg-3 mb-4">
-        <nav class="position-sticky top-0 pt-lg-3" aria-label="プライバシーポリシー目次">
+        <nav
+          class="position-sticky top-0 pt-lg-3"
+          aria-label="プライバシーポリシー目次"
+        >
           <div class="card bg-dark border border-secondary">
             <div class="card-body">
               <h2 class="h6 text-uppercase fw-semibold mb-3 text-light">

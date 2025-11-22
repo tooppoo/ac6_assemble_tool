@@ -1,14 +1,15 @@
 <script lang="ts">
   import './app.scss'
   import { appUrl, publicPath } from '$lib/app-url'
-  import { withPageQuery } from '$lib/utils/page-query'
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import Margin from '$lib/components/spacing/Margin.svelte'
   import i18n from '$lib/i18n/define'
   import { extractChars } from '$lib/i18n/extract-chars'
   import { resources } from '$lib/i18n/resources'
   import { appVersion } from '$lib/utils/app-version'
+  import { withPageQuery } from '$lib/utils/page-query'
 
+  import { setLogLevel } from '@ac6_assemble_tool/shared/logger'
   import { setContext } from 'svelte'
 
   import {
@@ -16,7 +17,6 @@
     PUBLIC_REPORT_BUG_URL,
     PUBLIC_REPORT_REQUEST_URL,
   } from '$env/static/public'
-  import { setLogLevel } from '@ac6_assemble_tool/shared/logger'
 
   let { children } = $props()
 
@@ -47,10 +47,7 @@
   <!-- OGP -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="AC6 ASSEMBLE TOOL" />
-  <meta
-    property="og:image"
-    content={appUrl('/ogp/ac6_assembly_tool.png')}
-  />
+  <meta property="og:image" content={appUrl('/ogp/ac6_assembly_tool.png')} />
   <meta property="og:locale" content="ja_JP" />
 
   <meta name="twitter:card" content="summary" />
@@ -160,13 +157,16 @@
     </div>
     <hr class="w-25 mx-auto" />
     <div>
-      <a href={`/about/ja${pageQuery}`}>このアプリについて</a> / <a href={`/about/en${pageQuery}`}>About This App</a>
+      <a href={`/about/ja${pageQuery}`}>このアプリについて</a> /
+      <a href={`/about/en${pageQuery}`}>About This App</a>
     </div>
     <div>
-      <a href={`/rule/ja${pageQuery}`}>利用規約</a> / <a href={`/rule/en${pageQuery}`}>Terms of Use</a>
+      <a href={`/rule/ja${pageQuery}`}>利用規約</a> /
+      <a href={`/rule/en${pageQuery}`}>Terms of Use</a>
     </div>
     <div>
-      <a href={`/privacy/ja${pageQuery}`}>プライバシーポリシー</a> / <a href={`/privacy/en${pageQuery}`}>Privacy Policy</a>
+      <a href={`/privacy/ja${pageQuery}`}>プライバシーポリシー</a> /
+      <a href={`/privacy/en${pageQuery}`}>Privacy Policy</a>
     </div>
     <hr class="w-25 mx-auto" />
     <div>
@@ -190,6 +190,5 @@
     <div>
       App Version v{appVersion}
     </div>
-
   </footer>
 </div>

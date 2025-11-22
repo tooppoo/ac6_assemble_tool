@@ -1,10 +1,9 @@
-import { page } from "$app/state"
+import { page } from '$app/state'
 
-export const withPageQuery = () =>{
+export const withPageQuery = () => {
   if (typeof window === 'undefined') {
     return ''
-  }
-  else {
+  } else {
     return page.url.search
   }
 }
