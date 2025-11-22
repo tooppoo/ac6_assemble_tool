@@ -144,11 +144,20 @@
   <hr class="my-3" />
 
   <footer class="text-center mb-3">
-    <div class="mb-2">
-      <a href="/about/ja" rel="noopener">このアプリについて / About This App</a>
-      <a href="/rule/ja" rel="noopener">利用規約 / Terms of Use</a>
+    <div>
+      <a href="/" rel="noopener">ASSEMBLE TOOL</a>
     </div>
-
+    <div>
+      <a href="/parts-list" rel="noopener">PARTS LIST</a>
+    </div>
+    <hr class="w-25 mx-auto" />
+    <div>
+      <a href="/about/ja" rel="noopener">このアプリについて</a> / <a href="/about/en" rel="noopener">About This App</a>
+    </div>
+    <div>
+      <a href="/rule/ja" rel="noopener">利用規約</a> / <a href="/rule/en" rel="noopener">Terms of Use</a>
+    </div>
+    <hr class="w-25 mx-auto" />
     <div>
       Created by
       <a
