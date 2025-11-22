@@ -1,9 +1,11 @@
 <script lang="ts">
-  import { page } from '$app/state'
+  import { withPageQuery } from '$lib/utils/page-query'
 
-  let { children } = $props()
+  let { children } = $props<{
+    children?: () => unknown
+  }>()
 
-  let pageQuery = $derived(page.url.search)
+  let pageQuery = $derived.by(withPageQuery)
 </script>
 
 <nav

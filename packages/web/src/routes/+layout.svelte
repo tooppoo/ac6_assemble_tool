@@ -1,7 +1,7 @@
 <script lang="ts">
   import './app.scss'
-  import { page } from '$app/state'
   import { appUrl, publicPath } from '$lib/app-url'
+  import { withPageQuery } from '$lib/utils/page-query'
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import Margin from '$lib/components/spacing/Margin.svelte'
   import i18n from '$lib/i18n/define'
@@ -40,7 +40,7 @@
     rel: 'external noopener noreferrer',
   } as const
 
-  let pageQuery = $derived(page.url.search)
+  let pageQuery = $derived.by(withPageQuery)
 </script>
 
 <svelte:head>
