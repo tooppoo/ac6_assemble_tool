@@ -28,7 +28,7 @@
     "@ac6_assemble_tool/eslint": "workspace:1.0.0",
     "@ac6_assemble_tool/spec": "workspace:1.0.0",
     "@ac6_assemble_tool/tsconfig": "workspace:1.0.0",
-    "fake-indexeddb": "6.2.4"
+    "fake-indexeddb": "6.2.5"
   },
   "dependencies": {
     "@ac6_assemble_tool/parts": "workspace:1.8.1",
