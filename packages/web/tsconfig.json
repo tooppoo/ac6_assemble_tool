@@ -10,8 +10,12 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "module": "preserve",
-    "types": ["@ac6_assemble_tool/spec/lib/vitest"]
-  }
+    "types": ["@ac6_assemble_tool/spec/lib/vitest", "@testing-library/jest-dom"]
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./vitest-setup.ts"
+  ]
   // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
   // except $lib which is handled by https://kit.svelte.dev/docs/configuration#files
   //
