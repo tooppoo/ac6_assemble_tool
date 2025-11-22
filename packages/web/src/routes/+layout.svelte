@@ -145,17 +145,17 @@
 
   <footer class="text-center mb-3">
     <div>
-      <a href="/" rel="noopener">ASSEMBLE TOOL</a>
+      <a href="/">ASSEMBLE TOOL</a>
     </div>
     <div>
-      <a href="/parts-list" rel="noopener">PARTS LIST</a>
+      <a href="/parts-list">PARTS LIST</a>
     </div>
     <hr class="w-25 mx-auto" />
     <div>
-      <a href="/about/ja" rel="noopener">このアプリについて</a> / <a href="/about/en" rel="noopener">About This App</a>
+      <a href="/about/ja">このアプリについて</a> / <a href="/about/en">About This App</a>
     </div>
     <div>
-      <a href="/rule/ja" rel="noopener">利用規約</a> / <a href="/rule/en" rel="noopener">Terms of Use</a>
+      <a href="/rule/ja">利用規約</a> / <a href="/rule/en">Terms of Use</a>
     </div>
     <hr class="w-25 mx-auto" />
     <div>
