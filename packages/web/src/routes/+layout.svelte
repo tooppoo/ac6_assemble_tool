@@ -172,11 +172,19 @@
     <div>
       Created by
       <a
-        id="link-to-linktr"
-        href="https://linktr.ee/Philomagi"
+        id="link-to-twitter"
+        href="https://twitter.com/Philomagi"
         rel="external noopener noreferrer"
+        target="_blank"
       >
         Philomagi
+      </a>
+
+    </div>
+    <div>
+      My Page: 
+      <a id="link-to-website" href="https://philomagi.dev" target="_blank">
+        https://philomagi.dev
       </a>
     </div>
     <div>
@@ -184,8 +192,11 @@
       <a
         id="link-to-src"
         href="https://github.com/tooppoo/ac6_assemble_tool/"
-        rel="external noopener noreferrer">Github</a
+        rel="external noopener noreferrer"
+        target="_blank"
       >
+        Github
+      </a>
     </div>
     <div>
       App Version v{appVersion}
