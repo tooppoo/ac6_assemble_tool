@@ -96,11 +96,6 @@
   const heroTitle = 'AC6 ASSEMBLE TOOL | Terms of Use'
   const heroLead =
     'These Terms outline the conditions of use, prohibited acts, intellectual property, and disclaimers. Please read before using the Service.'
-
-  const languageSwitcher = [
-    { label: '日本語', href: '/rule/ja', active: false },
-    { label: 'English', href: '/rule/en', active: true },
-  ] as const
 </script>
 
 <svelte:head>
@@ -119,20 +114,7 @@
 </svelte:head>
 
 <div class="bg-dark text-light min-vh-100">
-  <Navbar>
-    <a class="nav-link text-light" href="/" data-testid="nav-home-link">
-      Back to home
-    </a>
-    {#each languageSwitcher as locale (locale.href)}
-      <a
-        class={`nav-link ms-3 ${locale.active ? 'fw-bold text-primary' : 'text-light'}`}
-        href={locale.href}
-        aria-current={locale.active ? 'page' : undefined}
-      >
-        {locale.label}
-      </a>
-    {/each}
-  </Navbar>
+  <Navbar />
 
   <main class="container py-5 fs-5">
     <header class="mb-5">

@@ -6,14 +6,7 @@
   export let sections: readonly AboutSection[]
   export let heroTitle: string
   export let heroLead: string
-  export let backLinkLabel: string
-  type LanguageSwitcherItem = {
-    readonly label: string
-    readonly href: string
-    readonly active: boolean
-  }
 
-  export let languageSwitcher: readonly LanguageSwitcherItem[] = []
   export let tocNavigationLabel: string = 'Page navigation'
   export let tocHeadingLabel: string = 'Sections'
 
@@ -22,33 +15,10 @@
     title: section.title,
   }))
 
-  $: resolvedLanguageSwitcher = languageSwitcher.map((locale) => ({
-    ...locale,
-    resolvedHref: locale.href,
-  }))
 </script>
 
 <div class="bg-dark text-light min-vh-100">
-  <Navbar>
-    <a
-      class="nav-link text-light"
-      href='/'
-      data-testid="nav-home-link"
-    >
-      {backLinkLabel}
-    </a>
-    {#if resolvedLanguageSwitcher.length > 0}
-      {#each resolvedLanguageSwitcher as locale (locale.href)}
-        <a
-          class={`nav-link ms-3 ${locale.active ? 'fw-bold text-primary' : 'text-light'}`}
-          href={locale.resolvedHref}
-          aria-current={locale.active ? 'page' : undefined}
-        >
-          {locale.label}
-        </a>
-      {/each}
-    {/if}
-  </Navbar>
+  <Navbar />
 
   <main class="container py-5 fs-5" data-testid="about-page">
     <header class="mb-5">

@@ -96,11 +96,6 @@
   const heroTitle = 'AC6 ASSEMBLE TOOL | Privacy Policy'
   const heroLead =
     'How we handle user data: what we do not collect, possible data points, purposes, third-party services, retention, and your choices.'
-
-  const languageSwitcher = [
-    { label: '日本語', href: '/privacy/ja', active: false },
-    { label: 'English', href: '/privacy/en', active: true },
-  ] as const
 </script>
 
 <svelte:head>
@@ -119,20 +114,7 @@
 </svelte:head>
 
 <div class="bg-dark text-light min-vh-100">
-  <Navbar>
-    <a class="nav-link text-light" href="/" data-testid="nav-home-link">
-      Back to home
-    </a>
-    {#each languageSwitcher as locale (locale.href)}
-      <a
-        class={`nav-link ms-3 ${locale.active ? 'fw-bold text-primary' : 'text-light'}`}
-        href={locale.href}
-        aria-current={locale.active ? 'page' : undefined}
-      >
-        {locale.label}
-      </a>
-    {/each}
-  </Navbar>
+  <Navbar />
 
   <main class="container py-5 fs-5">
     <header class="mb-5">

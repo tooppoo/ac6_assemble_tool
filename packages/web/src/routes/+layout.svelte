@@ -18,6 +18,8 @@
   } from '$env/static/public'
   import { setLogLevel } from '@ac6_assemble_tool/shared/logger'
 
+  let { children } = $props()
+
   setContext('i18n', i18n)
   setLogLevel(PUBLIC_LOG_LEVEL || 'info')
 
@@ -37,6 +39,8 @@
     target: '_blank',
     rel: 'external noopener noreferrer',
   } as const
+
+  let pageQuery = $derived.by(() => page.url.search)
 </script>
 
 <svelte:head>
@@ -97,7 +101,7 @@
     href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap"
     rel="stylesheet"
     media="print"
-    on:load={onFontLoad}
+    onload={onFontLoad}
   />
   <link
     href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap&text={jaText}"
@@ -108,13 +112,13 @@
     href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap&text={jaText}"
     rel="stylesheet"
     media="print"
-    on:load={onFontLoad}
+    onload={onFontLoad}
   />
   <!-- End Font -->
 </svelte:head>
 
 <div class="font-monospace" data-testid="layout-root">
-  <slot></slot>
+  {@render children()}
 
   <ToolSection
     id="development-report"
@@ -149,20 +153,20 @@
 
   <footer class="text-center mb-3">
     <div>
-      <a href={`/${page.url.search}`}>ASSEMBLE TOOL</a>
+      <a href={`/${pageQuery}`}>ASSEMBLE TOOL</a>
     </div>
     <div>
-      <a href={`/parts-list${page.url.search}`}>PARTS LIST</a>
+      <a href={`/parts-list${pageQuery}`}>PARTS LIST</a>
     </div>
     <hr class="w-25 mx-auto" />
     <div>
-      <a href={`/about/ja${page.url.search}`}>このアプリについて</a> / <a href={`/about/en${page.url.search}`}>About This App</a>
+      <a href={`/about/ja${pageQuery}`}>このアプリについて</a> / <a href={`/about/en${pageQuery}`}>About This App</a>
     </div>
     <div>
-      <a href={`/rule/ja${page.url.search}`}>利用規約</a> / <a href={`/rule/en${page.url.search}`}>Terms of Use</a>
+      <a href={`/rule/ja${pageQuery}`}>利用規約</a> / <a href={`/rule/en${pageQuery}`}>Terms of Use</a>
     </div>
     <div>
-      <a href={`/privacy/ja${page.url.search}`}>プライバシーポリシー</a> / <a href={`/privacy/en${page.url.search}`}>Privacy Policy</a>
+      <a href={`/privacy/ja${pageQuery}`}>プライバシーポリシー</a> / <a href={`/privacy/en${pageQuery}`}>Privacy Policy</a>
     </div>
     <hr class="w-25 mx-auto" />
     <div>

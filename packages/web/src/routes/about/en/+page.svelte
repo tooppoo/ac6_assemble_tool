@@ -2,16 +2,10 @@
   import { appUrl } from '$lib/app-url'
   import { aboutSections } from '$lib/i18n/locales/en/pages/about/content.en'
   import About from '$lib/view/about/About.svelte'
-  import type { LanguageLink } from '$lib/view/about/language-state'
 
   const heroTitle = 'AC6 ASSEMBLE TOOL /about'
   const heroLead =
     'This page introduces AC6 ASSEMBLE TOOL, explains why it exists, highlights the current features—including the new parts exploration workspace—and outlines what comes next so that pilots can rely on the application while planning their builds.'
-
-  let languageSwitcher: readonly LanguageLink[] = [
-    { label: '日本語', href: '/about/ja', active: false },
-    { label: 'English', href: '/about/en', active: true },
-  ]
 </script>
 
 <svelte:head>
@@ -32,9 +26,7 @@
 <About
   {heroTitle}
   {heroLead}
-  backLinkLabel="Back to home"
   tocNavigationLabel="Page navigation"
   tocHeadingLabel="Sections"
   sections={aboutSections}
-  languageSwitcher={languageSwitcher}
 />

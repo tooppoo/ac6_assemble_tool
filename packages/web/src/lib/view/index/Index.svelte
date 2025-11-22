@@ -55,23 +55,6 @@
 
   import { goto } from '$app/navigation'
 
-  let aboutHref: string = '/about/ja'
-  let currentSearch: string = ''
-
-  const updateCurrentSearch = () => {
-    if (typeof window === 'undefined') {
-      return
-    }
-
-    currentSearch = window.location.search
-  }
-
-  $: {
-    const basePath = $i18n.language === 'en' ? '/about/en' : '/about/ja'
-    const suffix = currentSearch || ''
-    aboutHref = `${basePath}?${suffix}`
-  }
-
   const tryLimit = 3000
 
   // state
@@ -102,7 +85,6 @@
   let assembly: Assembly = initializeAssembly(candidates)
   let serializeAssembly = useWithEnableState(() => {
     serializeAssemblyAsQuery()
-    updateCurrentSearch()
   })
 
   $: if (partsPool !== previousPartsPool) {
@@ -391,7 +373,7 @@
     for Regulation {version}
   </h2>
   <div>
-    <LanguageForm onUpdate={(search) => (currentSearch = search)} />
+    <LanguageForm />
   </div>
 </header>
 
