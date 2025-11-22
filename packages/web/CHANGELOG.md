@@ -1,5 +1,12 @@
 # @ac6_assemble_tool/web
 
+## 3.2.0
+### Minor Changes
+
+
+
+- [#952](https://github.com/tooppoo/ac6_assemble_tool/pull/952) [`54e8ea5`](https://github.com/tooppoo/ac6_assemble_tool/commit/54e8ea5a8a5e992389a42e3aa679c138bfe99ef9) Thanks [@tooppoo](https://github.com/tooppoo)! - add static pages
+
 ## 3.1.3
 
 ### Patch Changes
