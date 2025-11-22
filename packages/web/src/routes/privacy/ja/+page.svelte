@@ -1,6 +1,6 @@
 <script lang="ts">
   import { appUrl } from '$lib/app-url'
-  import Navbar from '$lib/components/layout/Navbar.svelte'
+  import InfoPageLayout from '$lib/components/layout/InfoPageLayout.svelte'
 
   const canonical = appUrl('privacy', 'ja')
 
@@ -99,6 +99,11 @@
   const heroTitle = 'AC6 ASSEMBLE TOOL | プライバシーポリシー'
   const heroLead =
     '本サービスにおける利用者情報の取り扱い方針を示します。収集しない情報・利用目的・外部送信・保存期間・選択肢などをご確認ください。'
+
+  const tocItems = sections.map((section) => ({
+    id: section.id,
+    title: section.title,
+  }))
 </script>
 
 <svelte:head>
@@ -119,64 +124,26 @@
   />
 </svelte:head>
 
-<div class="bg-dark text-light min-vh-100">
-  <Navbar />
-
-  <main class="container py-5 fs-5">
-    <header class="mb-5">
-      <h1 class="display-5 fw-bold mb-3">
-        {heroTitle}
-      </h1>
-      <p class="lead text-light fs-4">
-        {heroLead}
-      </p>
-    </header>
-
-    <div class="row">
-      <aside class="col-lg-3 mb-4">
-        <nav
-          class="position-sticky top-0 pt-lg-3"
-          aria-label="プライバシーポリシー目次"
-        >
-          <div class="card bg-dark border border-secondary">
-            <div class="card-body">
-              <h2 class="h6 text-uppercase fw-semibold mb-3 text-light">
-                目次
-              </h2>
-              <ul class="m-0 ps-4 text-light">
-                {#each sections as section (section.id)}
-                  <li class="mb-2">
-                    <a
-                      class="link-light link-underline-opacity-25 link-underline-opacity-75-hover"
-                      href={`#${section.id}`}
-                    >
-                      {section.title}
-                    </a>
-                  </li>
-                {/each}
-              </ul>
-            </div>
-          </div>
-        </nav>
-      </aside>
-
-      <div class="col-lg-9">
-        {#each sections as section (section.id)}
-          <section id={section.id} class="mb-5">
-            <div class="mb-3">
-              <span class="badge text-bg-primary text-uppercase">
-                {section.id}
-              </span>
-            </div>
-            <h2 class="h3 fw-bold mb-3">{section.title}</h2>
-            <ol class="mt-3 lh-lg">
-              {#each section.items as item, idx (idx)}
-                <li class="mb-2">{item}</li>
-              {/each}
-            </ol>
-          </section>
-        {/each}
+<InfoPageLayout
+  {heroTitle}
+  {heroLead}
+  {tocItems}
+  tocNavigationLabel="プライバシーポリシー目次"
+  tocHeadingLabel="目次"
+>
+  {#each sections as section (section.id)}
+    <section id={section.id} class="mb-5">
+      <div class="mb-3">
+        <span class="badge text-bg-primary text-uppercase">
+          {section.id}
+        </span>
       </div>
-    </div>
-  </main>
-</div>
+      <h2 class="h3 fw-bold mb-3">{section.title}</h2>
+      <ol class="mt-3 lh-lg">
+        {#each section.items as item, idx (idx)}
+          <li class="mb-2">{item}</li>
+        {/each}
+      </ol>
+    </section>
+  {/each}
+</InfoPageLayout>
