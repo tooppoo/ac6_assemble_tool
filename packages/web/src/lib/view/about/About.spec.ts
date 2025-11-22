@@ -105,5 +105,4 @@ describe(About.name, () => {
       expect(tocLink.getAttribute('href')).toBe(`#${section.id}`)
     })
   })
-
 })
