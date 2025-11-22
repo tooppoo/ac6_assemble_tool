@@ -37,9 +37,7 @@ const baseProps = {
   tocHeadingLabel: 'セクション',
 }
 
-const renderAbout = (
-  props: Partial<typeof baseProps> = {},
-) =>
+const renderAbout = (props: Partial<typeof baseProps> = {}) =>
   render(About, {
     props: {
       ...baseProps,
