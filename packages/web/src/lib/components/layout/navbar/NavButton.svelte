@@ -1,21 +1,36 @@
 <script lang="ts">
   import TextButton from '$lib/components/button/TextButton.svelte'
+  import type { Snippet } from 'svelte'
 
-  import { createEventDispatcher } from 'svelte'
+  interface Props {
+    id: string
+    class?: string
+    title: string
+    href?: string
+    rel?: string
+    target?: string
+    icon?: Snippet
+    children?: Snippet
+    onclick?: () => void
+  }
 
-  export let id: string = ''
-  export let title: string
-  export let href: string | null = null
-  export let rel: string | undefined = undefined
-  export let target: string | undefined = undefined
-
-  const dispatch = createEventDispatcher<{ click: null }>()
+  let {
+    id,
+    class: className = '',
+    title,
+    href,
+    rel,
+    target,
+    onclick,
+    icon,
+    children,
+  }: Props = $props()
 
   const onClick = () => {
     if (href) {
       return
     }
-    dispatch('click')
+    onclick?.()
   }
 </script>
 
@@ -26,19 +41,19 @@
     {rel}
     {target}
     aria-label={title}
-    class={`${$$props.class || ''} btn btn-secondary bg-dark-subtle`}
+    class={`${className} btn btn-secondary bg-dark-subtle`}
   >
-    <slot name="icon"></slot>
-    <slot></slot>
+    {@render icon?.()}
+    {@render children?.()}
   </a>
 {:else}
   <TextButton
     {id}
-    class={`${$$props.class || ''}`}
+    class={`${className}`}
     aria-label={title}
-    on:click={onClick}
+    onclick={onClick}
   >
-    <slot name="icon"></slot>
-    <slot></slot>
+    {@render icon?.()}
+    {@render children?.()}
   </TextButton>
 {/if}

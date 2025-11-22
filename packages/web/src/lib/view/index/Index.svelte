@@ -332,9 +332,11 @@
     id="random-assemble"
     class="me-3"
     title={$i18n.t('command.random.description', { ns: 'page/index' })}
-    on:click={() => (openRandomAssembly = true)}
+    onclick={() => (openRandomAssembly = true)}
   >
-    <i slot="icon" class="bi bi-tools"></i>
+    {#snippet icon()}
+    <i class="bi bi-tools"></i>
+    {/snippet}
     <span class="d-none d-md-inline">
       {$i18n.t('command.random.label', { ns: 'page/index' })}
     </span>
@@ -343,9 +345,11 @@
     id="open-parts-list"
     class="me-3"
     title={$i18n.t('command.partsList.description', { ns: 'page/index' })}
-    on:click={navigateToPartsList}
+    onclick={navigateToPartsList}
   >
-    <i slot="icon" class="bi bi-funnel"></i>
+    {#snippet icon()}
+    <i class="bi bi-funnel"></i>
+    {/snippet}
     <span class="d-none d-md-inline">
       {$i18n.t('command.partsList.label', { ns: 'page/index' })}
     </span>
@@ -354,9 +358,11 @@
     id="reset-lock-nav"
     class="me-3 d-none d-md-block"
     title={$i18n.t('command.resetLock.description', { ns: 'page/index' })}
-    on:click={() => (lockedParts = LockedParts.empty)}
+    onclick={() => (lockedParts = LockedParts.empty)}
   >
-    <i slot="icon" class="bi bi-unlock"></i>
+    {#snippet icon()}
+    <i class="bi bi-unlock"></i>
+    {/snippet}
     <span class="d-none d-md-inline">
       {$i18n.t('command.resetLock.label', { ns: 'page/index' })}
     </span>
@@ -365,9 +371,11 @@
     id="open-share"
     class="me-3"
     title={$i18n.t('command.share.description', { ns: 'page/index' })}
-    on:click={() => (openShare = true)}
+    onclick={() => (openShare = true)}
   >
-    <i slot="icon" class="bi bi-share"></i>
+    {#snippet icon()}
+    <i class="bi bi-share"></i>
+    {/snippet}
     <span class="d-none d-md-inline">
       {$i18n.t('command.share.label', { ns: 'page/index' })}
     </span>
@@ -376,9 +384,11 @@
     id="open-assembly-store"
     class="me-3"
     title={$i18n.t('command.store.description', { ns: 'page/index' })}
-    on:click={() => (openAssemblyStore = true)}
+    onclick={() => (openAssemblyStore = true)}
   >
-    <i slot="icon" class="bi bi-database"></i>
+    {#snippet icon()}
+    <i class="bi bi-database"></i>
+    {/snippet}
     <span class="d-none d-md-inline">
       {$i18n.t('command.store.label', { ns: 'page/index' })}
     </span>
@@ -418,7 +428,7 @@
         tooltipText={$i18n.t('command.resetLock.description', {
           ns: 'page/index',
         })}
-        on:click={() => (lockedParts = LockedParts.empty)}
+        onclick={() => (lockedParts = LockedParts.empty)}
       >
         <i class="bi bi-unlock"></i>
       </TextButton>

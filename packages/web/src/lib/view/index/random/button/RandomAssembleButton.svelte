@@ -19,7 +19,7 @@
   // handler
   const onRandom = () => {
     try {
-      logger.debug('on random', lockedParts, candidates.booster)
+      logger.debug('on random', { lockedParts, booster: candidates.booster })
       const actualCandidates =
         !lockedParts.isLocking('legs') &&
         candidates.booster.length === 1 &&
@@ -34,10 +34,10 @@
         'click',
         randomAssembly.assemble(actualCandidates, { lockedParts }),
       )
-    } catch (e) {
-      logger.error(e)
+    } catch (error) {
+      logger.error('RandomAssembleButton: error onRandom', { error })
 
-      dispatch('error', e instanceof Error ? e : new Error(`${e}`))
+      dispatch('error', error instanceof Error ? error : new Error(`${error}`))
     }
   }
 
@@ -53,7 +53,7 @@
   type="button"
   {tooltipText}
   {...$$restProps}
-  on:click={onRandom}
+  onclick={onRandom}
 >
   <i class="bi bi-shuffle"></i>
   <span class="d-none d-md-inline">
