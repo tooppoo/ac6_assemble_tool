@@ -1,6 +1,6 @@
 <script lang="ts">
   import './app.scss'
-  import { publicPath } from '$lib/app-url'
+  import { appUrl, publicPath } from '$lib/app-url'
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import Margin from '$lib/components/spacing/Margin.svelte'
   import i18n from '$lib/i18n/define'
@@ -41,7 +41,7 @@
   <meta property="og:site_name" content="AC6 ASSEMBLE TOOL" />
   <meta
     property="og:image"
-    content={publicPath('/ogp/ac6_assembly_tool.png')}
+    content={appUrl('/ogp/ac6_assembly_tool.png')}
   />
   <meta property="og:locale" content="ja_JP" />
 
