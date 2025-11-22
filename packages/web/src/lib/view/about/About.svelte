@@ -7,7 +7,6 @@
   export let heroTitle: string
   export let heroLead: string
   export let backLinkLabel: string
-  export let homeHref: string = '/'
   type LanguageSwitcherItem = {
     readonly label: string
     readonly href: string
@@ -23,7 +22,6 @@
     title: section.title,
   }))
 
-  $: resolvedHomeHref = homeHref
   $: resolvedLanguageSwitcher = languageSwitcher.map((locale) => ({
     ...locale,
     resolvedHref: locale.href,
@@ -34,7 +32,7 @@
   <Navbar>
     <a
       class="nav-link text-light"
-      href={resolvedHomeHref}
+      href='/'
       data-testid="nav-home-link"
     >
       {backLinkLabel}

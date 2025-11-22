@@ -380,17 +380,6 @@
       {$i18n.t('command.store.label', { ns: 'page/index' })}
     </span>
   </NavButton>
-  <NavButton
-    id="open-about-page"
-    title={$i18n.t('command.about.description', { ns: 'page/index' })}
-    href={aboutHref}
-    class="ms-md-2"
-  >
-    <i slot="icon" class="bi bi-info-circle"></i>
-    <span class="d-none d-md-inline">
-      {$i18n.t('command.about.label', { ns: 'page/index' })}
-    </span>
-  </NavButton>
 </Navbar>
 
 <header class="text-center mt-5">

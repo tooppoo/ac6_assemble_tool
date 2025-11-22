@@ -144,6 +144,11 @@
   <hr class="my-3" />
 
   <footer class="text-center mb-3">
+    <div class="mb-2">
+      <a href="/about/ja" rel="noopener">このアプリについて / About This App</a>
+      <a href="/rule/ja" rel="noopener">利用規約 / Terms of Use</a>
+    </div>
+
     <div>
       Created by
       <a
@@ -151,8 +156,8 @@
         href="https://linktr.ee/Philomagi"
         rel="external noopener noreferrer"
       >
-        >Philomagi</a
-      >
+        Philomagi
+      </a>
     </div>
     <div>
       Source code is managed at
@@ -165,5 +170,6 @@
     <div>
       App Version v{appVersion}
     </div>
+
   </footer>
 </div>
