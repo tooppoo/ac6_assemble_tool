@@ -53,7 +53,7 @@
   import ShareAssembly from './share/ShareAssembly.svelte'
   import StoreAssembly from './store/StoreAssembly.svelte'
 
-  import { goto } from '$app/navigation'
+  import { goto, pushState, replaceState } from '$app/navigation'
 
   const tryLimit = 3000
 
@@ -64,6 +64,7 @@
   const orders: Order = regulation.orders
   const version: string = regulation.version
 
+  let initialized: boolean = false
   let partsPoolState: PartsPoolRestrictions = partsPool
   let previousPartsPool: PartsPoolRestrictions = partsPool
 
@@ -96,8 +97,6 @@
   onMount(() => {
     updatePartsPoolFromUrl()
     initialize()
-
-    serializeAssembly.enable()
   })
 
   $: if (initialCandidates) {
@@ -106,12 +105,20 @@
     updateCandidates()
   }
   $: {
-    if (assembly && initialCandidates && !browserBacking) {
-      logger.debug('replace state', {
-        query: assemblyToSearchV2(assembly).toString(),
-      })
+    if (initialized && assembly && initialCandidates && !browserBacking) {
+      if (serializeAssembly.isEnabled()) {
+        logger.debug('replace state', {
+          query: assemblyToSearchV2(assembly).toString(),
+        })
 
-      serializeAssembly.run()
+        serializeAssembly.run()
+      }
+      else {
+        // 初回は自動シリアライズを有効化のみ行う
+        logger.debug('enable serialize assembly')
+
+        serializeAssembly.enable()
+      }
     }
 
     browserBacking = false
@@ -193,7 +200,7 @@
     // v1の場合はURLをv2形式に更新（既存の非アセンブリパラメータを保持）
     if (convertedParams !== params) {
       mergeAssemblyParams(url.searchParams, convertedParams)
-      history.replaceState({}, '', url)
+      replaceState(url, {})
     }
   }
   /**
@@ -227,7 +234,7 @@
     // 既存の非アセンブリパラメータ（lng等）を保持
     mergeAssemblyParams(url.searchParams, assemblyQuery)
 
-    history.pushState({}, '', url)
+    pushState(url, {})
   }
 
   // setup
@@ -235,6 +242,7 @@
     buildAssemblyFromQuery()
 
     logger.debug('initialized', assembly)
+    initialized = true
   }
 
   const onPopstate = () => {
