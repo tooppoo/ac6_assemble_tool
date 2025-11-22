@@ -162,6 +162,10 @@ logger.info('User operation completed', {
 - **依存の方向**：依存は常に一方向とすること。相互依存は禁止
 - **開放閉鎖原則**：各モジュールは、拡張が容易となるように作ること
 
+### Svelte 5 におけるURLクエリ取得
+
+- SHOULD: クライアントでクエリパラメータを参照する際は `$app/state` の `page.url.search` を `withPageQuery` と `$derived.by` で監視し、`window.location.search` へ直接依存しないこと（SSR/CSR の一貫性確保）。
+
 #### レイヤリングと配置
 
 - ルール優先順位: 「レイヤーが違ったら別ディレクトリ」 > 「関連が強いものは物理的に近く」。
