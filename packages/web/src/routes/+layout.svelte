@@ -179,10 +179,9 @@
       >
         Philomagi
       </a>
-
     </div>
     <div>
-      My Page: 
+      My Page:
       <a id="link-to-website" href="https://philomagi.dev" target="_blank">
         https://philomagi.dev
       </a>
