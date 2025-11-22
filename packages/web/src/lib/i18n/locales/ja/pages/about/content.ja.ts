@@ -1,4 +1,3 @@
-
 export const aboutSections = [
   {
     id: 'overview',

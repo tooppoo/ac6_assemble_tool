@@ -1,5 +1,7 @@
 <script lang="ts">
-  import InfoPageLayout, { type InfoTocItem } from '$lib/view/info/Information.svelte'
+  import InfoPageLayout, {
+    type InfoTocItem,
+  } from '$lib/view/info/Information.svelte'
 
   export let tocItems: readonly InfoTocItem[]
   export let heroTitle: string

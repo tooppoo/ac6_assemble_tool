@@ -1,6 +1,8 @@
 <script lang="ts">
   import { appUrl } from '$lib/app-url'
-  import Information, { type InfoTocItem } from '$lib/view/info/Information.svelte'
+  import Information, {
+    type InfoTocItem,
+  } from '$lib/view/info/Information.svelte'
 
   const canonical = appUrl('rule', 'en')
 
@@ -96,7 +98,6 @@
   const heroTitle = 'AC6 ASSEMBLE TOOL | Terms of Use'
   const heroLead =
     'These Terms outline the conditions of use, prohibited acts, intellectual property, and disclaimers. Please read before using the Service.'
-
 </script>
 
 <svelte:head>

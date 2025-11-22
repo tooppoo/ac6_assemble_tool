@@ -1,7 +1,7 @@
 <script lang="ts">
   import { appUrl } from '$lib/app-url'
-  import Information from '$lib/view/info/Information.svelte'
   import { aboutSections } from '$lib/i18n/locales/ja/pages/about/content.ja'
+  import Information from '$lib/view/info/Information.svelte'
 
   const heroTitle = 'AC6 ASSEMBLE TOOL /about'
   const heroLead =

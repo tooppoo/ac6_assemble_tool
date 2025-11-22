@@ -1,6 +1,8 @@
 <script lang="ts">
   import { appUrl } from '$lib/app-url'
-  import Information, { type InfoTocItem } from '$lib/view/info/Information.svelte'
+  import Information, {
+    type InfoTocItem,
+  } from '$lib/view/info/Information.svelte'
 
   const canonical = appUrl('privacy', 'ja')
 
@@ -99,7 +101,6 @@
   const heroTitle = 'AC6 ASSEMBLE TOOL | プライバシーポリシー'
   const heroLead =
     '本サービスにおける利用者情報の取り扱い方針を示します。収集しない情報・利用目的・外部送信・保存期間・選択肢などをご確認ください。'
-
 </script>
 
 <svelte:head>
