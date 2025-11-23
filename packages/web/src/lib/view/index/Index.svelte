@@ -138,10 +138,10 @@
     }
   }
 
-  const onChangeParts = ({ detail }: CustomEvent<ChangePartsEvent>) => {
+  const onChangeParts = (event: ChangePartsEvent) => {
     const result = changeAssembly(
-      detail.id,
-      detail.selected,
+      event.id,
+      event.selected,
       assembly,
       candidates,
     )
@@ -156,10 +156,10 @@
     errorMessage = assemblyErrorMessage(detail.error, $i18n)
   }
 
-  const onLock = ({ detail }: CustomEvent<ToggleLockEvent>) => {
-    lockedParts = detail.value
-      ? lockedParts.lock(detail.id, assembly[detail.id])
-      : lockedParts.unlock(detail.id)
+  const onLock = (event: ToggleLockEvent) => {
+    lockedParts = event.value
+      ? lockedParts.lock(event.id, assembly[event.id])
+      : lockedParts.unlock(event.id)
   }
 
   const updateCandidates = () => {
@@ -443,8 +443,8 @@
         parts={orderParts(key, candidates[key])}
         selected={assembly[key]}
         lock={lockedParts}
-        on:toggle-lock={onLock}
-        on:change={onChangeParts}
+        onToggleLock={onLock}
+        onchange={onChangeParts}
       />
     {/each}
   </ToolSection>
