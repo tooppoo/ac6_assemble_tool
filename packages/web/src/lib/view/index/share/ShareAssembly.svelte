@@ -27,7 +27,7 @@
     <slot name="title" />
   {/snippet}
   {#snippet body()}
-    <ShareByText id="{id}-share-by-text" class="mb-3" {prefix} {assembly} />
+    <ShareByText id="{id}-share-by-text" class="mb-3" prefix={prefix} {assembly} />
     <ShareByUrl id="{id}-share-by-url" />
   {/snippet}
 </OffCanvas>
