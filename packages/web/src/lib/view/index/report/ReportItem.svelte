@@ -1,9 +1,20 @@
 <script lang="ts">
   import type { ReportStatus } from '$lib/view/index/report/model/report'
+  import type { HTMLAttributes } from 'svelte/elements'
 
-  export let status: ReportStatus = 'normal'
-  export let caption: string
-  export let value: number
+  type Props = {
+    status?: ReportStatus
+    caption: string
+    value: number
+    class?: string
+  } & Omit<HTMLAttributes<HTMLElement>, 'class'>
+
+  let {
+    status = 'normal',
+    caption,
+    value,
+    class: className = '',
+  }: Props = $props()
 
   const textClass = (base: string, stat: ReportStatus) => {
     switch (stat) {
@@ -16,13 +27,14 @@
     }
   }
 
-  $: captionClass = textClass('fs-4', status)
-  $: valueClass = textClass('fs-5', status)
+  const captionClass = $derived(textClass('fs-4', status))
+  const valueClass = $derived(textClass('fs-5', status))
+  const displayValue = $derived(parseFloat(value.toFixed(2)))
 </script>
 
-<div class={$$props.class}>
+<div class={className}>
   <div class={captionClass}>{caption}</div>
   <div class={valueClass}>
-    {parseFloat(value.toFixed(2))}
+    {displayValue}
   </div>
 </div>
