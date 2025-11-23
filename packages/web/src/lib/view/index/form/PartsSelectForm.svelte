@@ -62,7 +62,7 @@
           titleWhenUnlocked={$i18n.t('unlocked', { ns: 'lock' })}
           locked={lock.isLocking(id)}
           clickable={true}
-          on:click={onToggleLock}
+          onclick={onToggleLock}
         />
       </StatusBadgeList>
     </label>

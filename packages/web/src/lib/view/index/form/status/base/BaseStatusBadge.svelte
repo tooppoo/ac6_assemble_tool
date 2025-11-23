@@ -1,26 +1,30 @@
 <script lang="ts">
   import IconButton from '$lib/components/button/IconButton.svelte'
 
-  import { createEventDispatcher } from 'svelte'
+  import type { HTMLAttributes } from 'svelte/elements'
 
-  export let title: string
-  export let clickable: boolean = false
-  export let withTooltip: boolean = false
-
-  // handler
-  function onClick() {
-    dispatch('click')
-  }
-
-  // setup
-  const dispatch = createEventDispatcher<{ click: null }>()
+  type Props = {
+    id: string
+    title: string
+    clickable?: boolean
+    withTooltip?: boolean
+    onclick?: () => void
+  } & HTMLAttributes<HTMLButtonElement>
+  let {
+    id,
+    title,
+    clickable,
+    withTooltip,
+    onclick,
+    ...rest
+  }: Props = $props()
 </script>
 
 <IconButton
-  id={$$props.id}
-  class={`${$$props.class} status-badge`}
+  id={id}
+  class={`${rest.class} status-badge`}
   {title}
   {clickable}
   {withTooltip}
-  onclick={onClick}
+  onclick={onclick}
 />

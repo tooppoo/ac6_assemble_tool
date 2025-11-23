@@ -1,35 +1,37 @@
 <script lang="ts">
   import BaseStatusBadge from '$lib/view/index/form/status/base/BaseStatusBadge.svelte'
+  import type { HTMLAttributes } from 'svelte/elements'
 
-  import { createEventDispatcher } from 'svelte'
+  type Props = {
+    id: string
+    titleWhenLocked?: string
+    titleWhenUnlocked?: string
+    locked?: boolean
+    clickable?: boolean
+    onclick?: () => void
+  } & HTMLAttributes<HTMLButtonElement>
 
-  export let titleWhenLocked: string = ''
-  export let titleWhenUnlocked: string = ''
-  export let locked: boolean = false
-  export let clickable: boolean = false
-
-  let title: string = ''
-  let classes: string = ''
+  let {
+    id,
+    titleWhenLocked = '',
+    titleWhenUnlocked = '',
+    locked = false,
+    clickable = false,
+    onclick,
+    ...rest
+  }: Props = $props()
 
   // state
-  $: classes = ['bi'].concat(locked ? 'bi-lock-fill' : 'bi-unlock').join(' ')
-  $: title = locked ? titleWhenLocked : titleWhenUnlocked
-
-  // handler
-  function onClick() {
-    dispatch('click')
-  }
-
-  // setup
-  const dispatch = createEventDispatcher<{ click: null }>()
+  let title: string = $derived(locked ? titleWhenLocked : titleWhenUnlocked)
+  let classes: string = $derived(['bi'].concat(locked ? 'bi-lock-fill' : 'bi-unlock').join(' '))
 </script>
 
 <BaseStatusBadge
-  id={$$props.id}
-  class={`${$$props.class || ''} ${classes}`}
+  id={id}
+  class={`${rest.class || ''} ${classes}`}
   data-clickable={clickable}
   {title}
   {clickable}
   withTooltip={true}
-  on:click={onClick}
+  onclick={onclick}
 />

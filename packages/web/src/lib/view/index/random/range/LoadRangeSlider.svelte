@@ -95,6 +95,7 @@
   <StatusBadgeList class="ms-2" slot="status">
     {#if lock.isLocking('legs')}
       <LockBadge
+        id="load-range-slider-lock-legs"
         titleWhenLocked={$i18n.t('lock:locking', {
           part: $i18n.t('legs', { ns: 'assembly' }),
         })}
