@@ -5,20 +5,26 @@
     ModalFooter,
     ModalHeader,
   } from '@sveltestrap/sveltestrap'
-  import { createEventDispatcher } from 'svelte'
+  import type { Snippet } from 'svelte'
 
-  export let id: string
-  export let open: boolean
+  interface Props {
+    id: string
+    open: boolean
+    title?: Snippet
+    children?: Snippet
+    button?: Snippet
+    onClose?: () => void
+  }
+  let {
+    id,
+    open,
+    title,
+    children,
+    button,
+    onClose,
+  }: Props = $props()
 
   const labelId = `${id}-label`
-
-  // handler
-  function onClose() {
-    dispatch('close')
-  }
-
-  // setup
-  const dispatch = createEventDispatcher<{ close: null }>()
 </script>
 
 <Modal
@@ -31,21 +37,21 @@
 >
   <ModalHeader>
     <h1 class="modal-title fs-5" id={labelId}>
-      <slot name="title"></slot>
+      {@render title?.()}
     </h1>
     <button
       type="button"
       class="btn-close"
-      on:click={onClose}
+      onclick={onClose}
       aria-label="Close"
     ></button>
   </ModalHeader>
   <ModalBody>
-    <slot></slot>
+    {@render children?.()}
   </ModalBody>
   <ModalFooter>
-    <button type="button" on:click={onClose} class="btn btn-primary">
-      <slot name="button"></slot>
+    <button type="button" onclick={onClose} class="btn btn-primary">
+      {@render button?.()}
     </button>
   </ModalFooter>
 </Modal>

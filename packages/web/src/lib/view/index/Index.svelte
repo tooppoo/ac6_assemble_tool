@@ -496,10 +496,14 @@
 <ErrorModal
   id="index-error-modal"
   open={errorMessage.length !== 0}
-  on:close={() => (errorMessage = [])}
+  onClose={() => (errorMessage = [])}
 >
-  <svelte:fragment slot="title">ERROR</svelte:fragment>
-  <svelte:fragment slot="button">OK</svelte:fragment>
+  {#snippet title()}
+    ERROR
+  {/snippet}
+  {#snippet button()}
+    OK
+  {/snippet}
 
   {#each errorMessage as row, i (i)}
     {row}<br />
