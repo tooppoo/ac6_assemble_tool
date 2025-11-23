@@ -25,7 +25,7 @@
     class="bi bi-pencil-square fs-2 me-3"
     title={$i18n.t('command.report.edit', { ns: 'page/index' })}
     clickable={true}
-    on:click={onEdit}
+    onclick={onEdit}
   />
 </div>
 <hr />

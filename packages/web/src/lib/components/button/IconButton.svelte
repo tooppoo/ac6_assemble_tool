@@ -1,30 +1,44 @@
 <script lang="ts">
   import { Tooltip } from '@sveltestrap/sveltestrap'
-  import { createEventDispatcher } from 'svelte'
+  import type { HTMLAttributes } from 'svelte/elements'
 
-  export let id: string
-  export let title: string
-  export let clickable: boolean = false
-  export let withTooltip: boolean = false
+  type Props = {
+    id: string
+    class?: string
+    title: string
+    clickable?: boolean
+    withTooltip?: boolean
+    onclick?: () => void
+  } & HTMLAttributes<HTMLSpanElement>
 
-  // handler
+  let {
+    id,
+    title,
+    clickable = false,
+    withTooltip = false,
+    class: className = '',
+    onclick,
+    ...rest
+  }: Props = $props()
+
   function onClick() {
-    if (clickable) {
-      dispatch('click')
-    }
+    if (!clickable) return
+
+    onclick?.()
   }
 
-  const dispatch = createEventDispatcher<{ click: null }>()
+  const role = $derived(clickable ? 'button' : 'img')
+  const classes = $derived(`${className.trim()} icon-button`.trim())
 </script>
 
 <span
-  {...$$restProps}
+  {...rest}
   {id}
-  class={`${($$props.class ?? '').trim()} icon-button`}
+  class={classes}
   data-clickable={clickable}
   aria-label={title}
-  role={clickable ? 'button' : 'img'}
-  on:click={onClick}
+  role={role}
+  onclick={onClick}
 ></span>
 {#if withTooltip}
   <Tooltip target={id} placement="bottom">

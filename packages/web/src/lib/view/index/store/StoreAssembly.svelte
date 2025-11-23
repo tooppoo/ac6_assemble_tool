@@ -214,7 +214,7 @@ ${target.description}
                       )}
                       class="bi bi-recycle"
                       clickable={true}
-                      on:click={() => onRestore(d)}
+                      onclick={() => onRestore(d)}
                     />
                   </td>
                 </tr>
@@ -228,7 +228,7 @@ ${target.description}
                       title={$i18n.t('assembly_store:storedList.apply.caption')}
                       class="bi bi-download"
                       clickable={true}
-                      on:click={() => onApply(d)}
+                      onclick={() => onApply(d)}
                     />
                     <IconButton
                       id="trash-{d.id}"
@@ -237,14 +237,14 @@ ${target.description}
                       )}
                       class="bi bi-trash"
                       clickable={true}
-                      on:click={() => onDelete(d)}
+                      onclick={() => onDelete(d)}
                     />
                     <IconButton
                       id="share-{d.id}"
                       title={$i18n.t('assembly_store:storedList.share.caption')}
                       class="bi bi-share"
                       clickable={true}
-                      on:click={() => onShare(d)}
+                      onclick={() => onShare(d)}
                     />
                   </td>
                 </tr>

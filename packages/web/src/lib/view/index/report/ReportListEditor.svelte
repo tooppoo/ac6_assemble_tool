@@ -68,21 +68,21 @@
     class="bi bi-eye me-3"
     title={$i18n.t('command.report.showAll', { ns: 'page/index' })}
     clickable={true}
-    on:click={showAll}
+    onclick={showAll}
   />
   <IconButton
     id="reset-report-status"
     class="bi bi-arrow-counterclockwise me-3"
     title={$i18n.t('command.report.reset', { ns: 'page/index' })}
     clickable={true}
-    on:click={onReset}
+    onclick={onReset}
   />
   <IconButton
     id="save-report-status"
     class="bi bi-check-square-fill text-info me-3"
     title={$i18n.t('command.report.save', { ns: 'page/index' })}
     clickable={true}
-    on:click={onSave}
+    onclick={onSave}
   />
 </div>
 <hr />
@@ -102,7 +102,7 @@
             class={`toggle-visible bi ${visibleStatus(report, $i18n).class}`}
             title={visibleStatus(report, $i18n).title}
             clickable={true}
-            on:click={() => editReport(block.id, report.toggleShow())}
+            onclick={() => editReport(block.id, report.toggleShow())}
           />
           <ReportItem
             caption={$i18n.t(report.key, { ns: 'assembly' })}

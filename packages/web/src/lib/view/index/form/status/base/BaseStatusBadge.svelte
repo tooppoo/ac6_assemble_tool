@@ -22,5 +22,5 @@
   {title}
   {clickable}
   {withTooltip}
-  on:click={onClick}
+  onclick={onClick}
 />
