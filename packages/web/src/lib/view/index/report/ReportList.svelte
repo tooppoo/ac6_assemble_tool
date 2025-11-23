@@ -7,22 +7,22 @@
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
 
-  // state
-  export let assembly: Assembly
+  type Props = {
+    assembly: Assembly
+  }
 
-  let reportAggregation = defaultReportAggregation()
-  let editing: boolean = false
+  let { assembly }: Props = $props()
+
+  let reportAggregation = $state(defaultReportAggregation())
+  let editing = $state(false)
 
   // handler
   function startEdit() {
     editing = true
   }
-  function onSave({ detail }: CustomEvent<SaveAggregation>) {
+  function onSave(detail: SaveAggregation) {
     reportAggregation = detail.target
     editing = false
-  }
-  function onReset() {
-    reportAggregation = reportAggregation
   }
 </script>
 
@@ -30,9 +30,8 @@
   <ReportListEditor
     {assembly}
     {reportAggregation}
-    on:save={onSave}
-    on:reset={onReset}
+    onSave={onSave}
   />
 {:else}
-  <ReportListViewer {assembly} {reportAggregation} on:edit={startEdit} />
+  <ReportListViewer {assembly} {reportAggregation} onEdit={startEdit} />
 {/if}

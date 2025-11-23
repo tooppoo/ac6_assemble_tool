@@ -6,17 +6,18 @@
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
   import type { EmptyObject } from '@ac6_assemble_tool/core/utils/type'
-  import { createEventDispatcher } from 'svelte'
 
-  export let assembly: Assembly
-  export let reportAggregation: ReadonlyReportAggregation
+  type Props = {
+    assembly: Assembly
+    reportAggregation: ReadonlyReportAggregation
+    onEdit?: (payload: EmptyObject) => void
+  }
+
+  let { assembly, reportAggregation, onEdit: onEditProp }: Props = $props()
 
   function onEdit() {
-    dispatch('edit', {})
+    onEditProp?.({})
   }
-  const dispatch = createEventDispatcher<{
-    edit: EmptyObject
-  }>()
 </script>
 
 <div class="d-flex justify-content-end">

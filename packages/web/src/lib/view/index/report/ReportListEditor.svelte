@@ -1,26 +1,29 @@
-<script lang="ts" context="module">
+<script lang="ts">
+  import IconButton from '$lib/components/button/IconButton.svelte'
+  import i18n, { type I18Next } from '$lib/i18n/define'
   import type {
     ReportAggregation,
     Report,
   } from '$lib/view/index/report/model/report'
-  export type SaveAggregation = Readonly<{ target: ReportAggregation }>
-</script>
-
-<script lang="ts">
-  import IconButton from '$lib/components/button/IconButton.svelte'
-  import i18n, { type I18Next } from '$lib/i18n/define'
   import ReportItem from '$lib/view/index/report/ReportItem.svelte'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
-  import type { EmptyObject } from '@ac6_assemble_tool/core/utils/type'
-  import { createEventDispatcher } from 'svelte'
 
-  // state
-  export let assembly: Assembly
-  export let reportAggregation: ReportAggregation
+  export type SaveAggregation = Readonly<{ target: ReportAggregation }>
 
-  let editingReportAggregation: ReportAggregation
-  $: editingReportAggregation = reportAggregation
+  type Props = {
+    assembly: Assembly
+    reportAggregation: ReportAggregation
+    onSave?: (payload: SaveAggregation) => void
+  }
+
+  let {
+    assembly,
+    reportAggregation,
+    onSave: onSaveProp,
+  }: Props = $props()
+
+  let editingReportAggregation = $state(reportAggregation)
 
   function visibleStatus(
     report: Report,
@@ -49,17 +52,11 @@
   }
 
   function onSave() {
-    dispatch('save', { target: editingReportAggregation })
+    onSaveProp?.({ target: editingReportAggregation })
   }
   function onReset() {
-    dispatch('reset', {})
+    editingReportAggregation = reportAggregation
   }
-
-  const dispatch = createEventDispatcher<{
-    save: SaveAggregation
-    reset: EmptyObject
-    showAll: SaveAggregation
-  }>()
 </script>
 
 <div class="d-flex justify-content-end">
