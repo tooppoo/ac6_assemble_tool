@@ -478,11 +478,11 @@
   id="share-assembly"
   open={openShare}
   assembly={() => assembly}
-  on:toggle={(e) => (openShare = e.detail.open)}
+  onToggle={(e) => (openShare = e.open)}
 >
-  <svelte:fragment slot="title">
+  {#snippet title()}
     {$i18n.t('share:caption')}
-  </svelte:fragment>
+  {/snippet}
 </ShareAssembly>
 <StoreAssembly
   id="store-assembly"

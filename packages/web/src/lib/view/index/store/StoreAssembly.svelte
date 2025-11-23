@@ -273,15 +273,15 @@ ${target.description}
     }
     return prefixForTextCopy(shareMode.target)
   }}
-  on:toggle={(e) => {
-    if (!e.detail.open) {
+  onToggle={(e) => {
+    if (!e.open) {
       shareMode = { open: false, target: null }
     }
   }}
 >
-  <svelte:fragment slot="title">
+  {#snippet title()}
     {$i18n.t('share:command.target.caption', { what: shareMode.target?.name })}
-  </svelte:fragment>
+  {/snippet}
 </ShareAssembly>
 
 <style>
