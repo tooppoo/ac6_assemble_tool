@@ -2,19 +2,20 @@
   import { Tooltip } from '@sveltestrap/sveltestrap'
   import { type Snippet } from 'svelte'
   import type { Action } from 'svelte/action'
+  import type { HTMLAttributes } from 'svelte/elements'
 
-  interface Props {
+  type Props = {
     id: string
-    class?: string
+    type?: 'button' | 'submit' | 'reset' | null
     action?: Action
     tooltipText?: string
     onclick?: () => void
-    children: Snippet
-    [key: string]: unknown
-  }
+    children?: Snippet
+  } & HTMLAttributes<HTMLButtonElement>
 
   let {
     id,
+    type = 'button',
     class: className = '',
     action = () => {},
     tooltipText = '',
@@ -26,12 +27,13 @@
 
 <button
   {id}
-  {...restProps}
+  type={type}
   class={`${className} btn btn-secondary bg-dark-subtle`}
   {onclick}
   use:action
+  {...restProps}
 >
-  {@render children()}
+  {@render children?.()}
 </button>
 {#if tooltipText}
   <Tooltip target={id}>

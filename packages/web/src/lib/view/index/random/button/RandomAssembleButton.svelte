@@ -7,14 +7,40 @@
   import { notEquipped } from '@ac6_assemble_tool/parts/types/base/category'
   import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
   import { logger } from '@ac6_assemble_tool/shared/logger'
-  import { createEventDispatcher } from 'svelte'
+  import type { Snippet } from 'svelte'
+  import type { HTMLAttributes } from 'svelte/elements'
 
-  export let id: string
-  export let lockedParts: LockedParts
-  export let initialCandidates: Candidates
-  export let candidates: Candidates
-  export let randomAssembly: RandomAssembly
-  export let tooltipText: string = ''
+  export interface ClickEvent {
+    assembly: Assembly
+  }
+  export interface ErrorEvent {
+    error: Error
+  }
+
+  type Props = {
+    id: string
+    lockedParts: LockedParts
+    initialCandidates: Candidates
+    candidates: Candidates
+    randomAssembly: RandomAssembly
+    tooltipText?: string
+    onclick?: (event: ClickEvent) => void
+    onerror?: (error: ErrorEvent) => void
+    children?: Snippet
+  } & Omit<HTMLAttributes<HTMLButtonElement>, 'onclick' | 'onerror'>
+
+  let {
+    id,
+    lockedParts,
+    initialCandidates,
+    candidates,
+    randomAssembly,
+    tooltipText = '',
+    onclick,
+    onerror,
+    children,
+    ...rest
+  }: Props = $props()
 
   // handler
   const onRandom = () => {
@@ -30,33 +56,26 @@
             { ...candidates, booster: initialCandidates.booster }
           : candidates
 
-      dispatch(
-        'click',
-        randomAssembly.assemble(actualCandidates, { lockedParts }),
-      )
+      onclick?.({
+        assembly: randomAssembly.assemble(actualCandidates, { lockedParts }),
+      })
     } catch (error) {
       logger.error('RandomAssembleButton: error onRandom', { error })
 
-      dispatch('error', error instanceof Error ? error : new Error(`${error}`))
+      onerror?.({ error: error instanceof Error ? error : new Error(`${error}`) })
     }
   }
-
-  // setup
-  const dispatch = createEventDispatcher<{
-    click: Assembly
-    error: Error
-  }>()
 </script>
 
 <TextButton
   {id}
   type="button"
   {tooltipText}
-  {...$$restProps}
   onclick={onRandom}
+  {...rest}
 >
   <i class="bi bi-shuffle"></i>
   <span class="d-none d-md-inline">
-    <slot></slot>
+    {@render children?.()}
   </span>
 </TextButton>

@@ -1,23 +1,9 @@
-<script lang="ts" context="module">
-  import type { ToggleOffCanvas } from '$lib/components/off-canvas/OffCanvas.svelte'
-
-  export type AssembleRandomly = Readonly<{
-    assembly: Assembly
-  }>
-  export type ErrorOnAssembly = Readonly<{
-    error: Error
-  }>
-  export type ApplyRandomFilter = Readonly<{
-    randomAssembly: RandomAssembly
-  }>
-</script>
-
 <script lang="ts">
   import Switch from '$lib/components/form/Switch.svelte'
-  import OffCanvas from '$lib/components/off-canvas/OffCanvas.svelte'
+  import OffCanvas, { type ToggleOffCanvas } from '$lib/components/off-canvas/OffCanvas.svelte'
   import Margin from '$lib/components/spacing/Margin.svelte'
   import i18n from '$lib/i18n/define'
-  import RandomAssembleButton from '$lib/view/index/random/button/RandomAssembleButton.svelte'
+  import RandomAssembleButton, { type ClickEvent } from '$lib/view/index/random/button/RandomAssembleButton.svelte'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
   import type { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
@@ -30,47 +16,72 @@
   } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
   import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
   import { logger } from '@ac6_assemble_tool/shared/logger'
-  import { createEventDispatcher } from 'svelte'
 
   import CoamRangeSlider from './range/CoamRangeSlider.svelte'
   import LoadRangeSlider, {
     type ToggleLock,
   } from './range/LoadRangeSlider.svelte'
+  import type { Snippet } from 'svelte'
 
-  export let open: boolean
-  export let lockedParts: LockedParts
-  export let initialCandidates: Candidates
-  export let candidates: Candidates
-  export let randomAssembly: RandomAssembly
-  export let assembly: Assembly
+  export type AssembleRandomly = Readonly<{
+    assembly: Assembly
+  }>
+  export type ErrorOnAssembly = Readonly<{
+    error: Error
+  }>
+  export type ApplyRandomFilter = Readonly<{
+    randomAssembly: RandomAssembly
+  }>
+
+  interface Props {
+    id: string
+    open: boolean
+    lockedParts: LockedParts
+    initialCandidates: Candidates
+    candidates: Candidates
+    randomAssembly: RandomAssembly
+    assembly: Assembly
+    onRandom?: (event: AssembleRandomly) => void
+    onFilter?: (event: ApplyRandomFilter) => void
+    onToggle?: (event: ToggleOffCanvas) => void
+    onLockLegs?: (event: ToggleLock) => void
+    onError?: (event: ErrorOnAssembly) => void
+    title?: Snippet
+  }
+  let {
+    id,
+    open,
+    lockedParts,
+    initialCandidates,
+    candidates,
+    randomAssembly,
+    assembly,
+    onRandom: handleRandom,
+    onFilter,
+    onToggle,
+    onLockLegs,
+    onError,
+    title: titleSnippet,
+  }: Props = $props()
 
   // handler
-  const onRandom = ({ detail: assembly }: CustomEvent<Assembly>) => {
-    dispatch('random', { assembly })
+  const onRandom = ({ assembly }: ClickEvent) => {
+    handleRandom?.({ assembly })
   }
   const onApply = (param: ApplyRandomFilter) => {
-    dispatch('filter', param)
+    onFilter?.(param)
 
     logger.debug('onApply:RandomAssemblyOffCanvas', { param })
   }
-
-  // setup
-  const dispatch = createEventDispatcher<{
-    toggle: ToggleOffCanvas
-    random: AssembleRandomly
-    error: ErrorOnAssembly
-    filter: ApplyRandomFilter
-    'lock-legs': ToggleLock
-  }>()
 </script>
 
 <OffCanvas
-  id={$$props.id || ''}
+  id={id}
   {open}
-  onToggle={(e) => dispatch('toggle', e)}
+  onToggle={(e) => onToggle?.(e)}
 >
   {#snippet title()}
-    <slot name="title" />
+    {@render titleSnippet?.()}
   {/snippet}
   {#snippet body()}
     <div
@@ -84,7 +95,8 @@
         {lockedParts}
         {randomAssembly}
         class="w-100"
-        on:click={onRandom}
+        onclick={onRandom}
+        onerror={(e) => onError?.(e)}
       >
         {$i18n.t('random:command.random.label')}
       </RandomAssembleButton>
@@ -94,7 +106,7 @@
 
     <div id="disallow-over-load">
       <Switch
-        id={`${$$props.id}-disallow-over-load`}
+        id={`${id}-disallow-over-load`}
         onEnabled={() =>
           onApply({
             randomAssembly: randomAssembly.addValidator(
@@ -114,7 +126,7 @@
     <Margin space={3} />
     <div id="disallow-arms-over-load">
       <Switch
-        id={`${$$props.id}-disallow-arms-over-load`}
+        id={`${id}-disallow-arms-over-load`}
         onEnabled={() =>
           onApply({
             randomAssembly: randomAssembly.addValidator(
@@ -157,7 +169,7 @@
             totalLoadNotOverMax(ev.detail.value),
           ),
         })}
-      on:toggle-lock={(ev) => dispatch('lock-legs', ev.detail)}
+      on:toggle-lock={(ev) => onLockLegs?.(ev.detail)}
     />
   {/snippet}
 </OffCanvas>

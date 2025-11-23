@@ -149,11 +149,11 @@
     assembly = result.assembly
     candidates = result.remainingCandidates
   }
-  const onRandom = ({ detail }: CustomEvent<AssembleRandomly>) => {
-    assembly = detail.assembly
+  const onRandom = (event: AssembleRandomly) => {
+    assembly = event.assembly
   }
-  const errorOnRandom = ({ detail }: CustomEvent<ErrorOnAssembly>) => {
-    errorMessage = assemblyErrorMessage(detail.error, $i18n)
+  const errorOnRandom = (event: ErrorOnAssembly) => {
+    errorMessage = assemblyErrorMessage(event.error, $i18n)
   }
 
   const onLock = (event: ToggleLockEvent) => {
@@ -462,17 +462,17 @@
   {lockedParts}
   {randomAssembly}
   {assembly}
-  on:toggle={(e) => (openRandomAssembly = e.detail.open)}
-  on:random={onRandom}
-  on:error={errorOnRandom}
-  on:filter={({ detail }) => {
-    randomAssembly = detail.randomAssembly
+  onToggle={(e) => (openRandomAssembly = e.open)}
+  onRandom={onRandom}
+  onError={errorOnRandom}
+  onFilter={(event) => {
+    randomAssembly = event.randomAssembly
   }}
-  on:lock-legs={onLock}
+  onLockLegs={onLock}
 >
-  <svelte:fragment slot="title">
+  {#snippet title()}
     {$i18n.t('command.random.label', { ns: 'page/index' })}
-  </svelte:fragment>
+  {/snippet}
 </RandomAssemblyOffCanvas>
 <ShareAssembly
   id="share-assembly"
