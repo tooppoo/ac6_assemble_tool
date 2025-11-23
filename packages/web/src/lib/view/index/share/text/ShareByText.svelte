@@ -43,8 +43,8 @@ ${stringifyStatus(assembly(), $i18n)}`
     {$i18n.t('share:command.text.caption')}
     <Switch
       id={`${id}-share-by-text-switch`}
-      on:enabled={() => (copyAsText = copyAsTextWithStatus)}
-      on:disabled={() => (copyAsText = defaultCopyAsText)}
+      onEnabled={() => (copyAsText = copyAsTextWithStatus)}
+      onDisabled={() => (copyAsText = defaultCopyAsText)}
     >
       {$i18n.t('share:command.text.withStatus')}
     </Switch>
@@ -55,7 +55,7 @@ ${stringifyStatus(assembly(), $i18n)}`
       class="btn btn-dark border-secondary"
       aria-label={$i18n.t('share:command.text.ariaLabel')}
       bind:this={targetButton}
-      on:click={onCopy}
+      onclick={onCopy}
     >
       <i class="bi bi-clipboard"></i>
     </button>

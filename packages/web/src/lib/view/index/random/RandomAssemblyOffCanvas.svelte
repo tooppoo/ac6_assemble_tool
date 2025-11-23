@@ -51,7 +51,7 @@
   const onApply = (param: ApplyRandomFilter) => {
     dispatch('filter', param)
 
-    logger.debug({ param })
+    logger.debug('onApply:RandomAssemblyOffCanvas', { param })
   }
 
   // setup
@@ -95,14 +95,14 @@
     <div id="disallow-over-load">
       <Switch
         id={`${$$props.id}-disallow-over-load`}
-        on:enabled={() =>
+        onEnabled={() =>
           onApply({
             randomAssembly: randomAssembly.addValidator(
               'disallow-over-load',
               disallowLoadOver(),
             ),
           })}
-        on:disabled={() =>
+        onDisabled={() =>
           onApply({
             randomAssembly:
               randomAssembly.removeValidator('disallow-over-load'),
@@ -115,14 +115,14 @@
     <div id="disallow-arms-over-load">
       <Switch
         id={`${$$props.id}-disallow-arms-over-load`}
-        on:enabled={() =>
+        onEnabled={() =>
           onApply({
             randomAssembly: randomAssembly.addValidator(
               'disallow-arms-over-load',
               disallowArmsLoadOver(),
             ),
           })}
-        on:disabled={() =>
+        onDisabled={() =>
           onApply({
             randomAssembly: randomAssembly.removeValidator(
               'disallow-arms-over-load',
