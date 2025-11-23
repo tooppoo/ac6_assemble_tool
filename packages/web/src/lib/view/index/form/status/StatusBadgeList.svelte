@@ -1,7 +1,14 @@
-<script lang="ts"></script>
+<script lang="ts">
+  import type { Snippet } from "svelte"
+
+  let {
+    class: klass = '',
+    children,
+  }: { class?: string, children?: Snippet } = $props()
+</script>
 
 <div
-  class={($$props.class || '') + ' status-badge-list d-flex align-items-center'}
+  class={`${klass} status-badge-list d-flex align-items-center`}
 >
-  <slot></slot>
+  {@render children?.()}
 </div>
