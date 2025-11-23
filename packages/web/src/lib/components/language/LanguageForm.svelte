@@ -5,18 +5,22 @@
   import { getContext, onMount } from 'svelte'
   import { SvelteURL } from 'svelte/reactivity'
 
+  interface Props {
+    onUpdate?: (search: string) => void
+  }
+
+  let {
+    onUpdate
+  }: Props = $props()
+
   const i18n = getContext<I18NextStore>('i18n')
 
   const defaultLanguage: string = 'ja'
   const languageQuery: string = 'lng'
-
-  export let onUpdate: (search: string) => void = () => {
-    /* no-op */
-  }
+  const serializeLanguage = useWithEnableState(setLanguageQuery)
 
   // state
-  let language: string = defaultLanguage
-  let serializeLanguage = useWithEnableState(setLanguageQuery)
+  let language: string = $state(defaultLanguage)
 
   onMount(() => {
     initialize()
@@ -37,15 +41,14 @@
   })()
 
   // handler
-  $: {
-    $i18n.changeLanguage(language)
-
-    serializeLanguage.run()
-  }
   function onChange(e: Event) {
     const target = e.target as HTMLInputElement
 
     language = target.value
+
+    $i18n.changeLanguage(language)
+
+    serializeLanguage.run()
   }
 
   // setup
@@ -72,7 +75,7 @@
       {$i18n.t('language.label', { ns: 'page/index' })}
     </label>
     :
-    <select id="change-language" on:change={onChange} bind:value={language}>
+    <select id="change-language" onchange={onChange} bind:value={language}>
       {#each languages as lng (lng.value)}
         <option value={lng.value} selected={lng.isSelected()}>
           {lng.label}
