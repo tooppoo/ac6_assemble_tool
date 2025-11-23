@@ -18,24 +18,35 @@
     type StoredAssemblyRepository,
   } from '@ac6_assemble_tool/core/assembly/store/stored-assembly'
   import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
-  import { createEventDispatcher, onMount } from 'svelte'
+  import { onMount } from 'svelte'
 
-  export let open: boolean
-  export let candidates: Candidates
-  export let assembly: Assembly
-
-  let repository: StoredAssemblyRepository
-
-  $: {
-    repository = new IndexedDbRepository(candidates)
+  type Props = {
+    id?: string
+    open: boolean
+    candidates: Candidates
+    assembly: Assembly
+    onToggle?: (payload: ToggleOffCanvas) => void
+    onApply?: (payload: StoredAssemblyAggregation) => void
   }
 
-  let newName: string = ''
-  let newDescription: string = ''
-  let dataList: StoredAssemblyMaybeDeleted[] = []
-  let keywords: string[] = []
-  let showDataList: StoredAssemblyMaybeDeleted[]
-  $: showDataList = filterByKeywords(keywords, dataList)
+  let {
+    id = '',
+    open,
+    candidates,
+    assembly,
+    onToggle: onToggleProp,
+    onApply: onApplyProp,
+  }: Props = $props()
+
+  let repository: StoredAssemblyRepository = $derived(
+    new IndexedDbRepository(candidates),
+  )
+
+  let newName = $state('')
+  let newDescription = $state('')
+  let dataList = $state<StoredAssemblyMaybeDeleted[]>([])
+  let keywords = $state<string[]>([])
+  let showDataList = $derived(filterByKeywords(keywords, dataList))
 
   onMount(() => {
     initialize()
@@ -50,7 +61,7 @@
         open: false
         target: null
       }
-  let shareMode: ShareMode = { open: false, target: null }
+  let shareMode = $state<ShareMode>({ open: false, target: null })
 
   const prefixForTextCopy = (target: StoredAssemblyAggregation) => `
 ${target.name}
@@ -81,7 +92,7 @@ ${target.description}
     })
   }
   function onApply(target: StoredAssemblyAggregation) {
-    dispatch('apply', target)
+    onApplyProp?.(target)
   }
   function onDelete(target: StoredAssemblyAggregation) {
     repository.delete(target)
@@ -115,20 +126,19 @@ ${target.description}
     })
   }
 
-  const dispatch = createEventDispatcher<{
-    toggle: ToggleOffCanvas
-    apply: StoredAssemblyAggregation
-  }>()
-
   type StoredAssemblyMaybeDeleted = StoredAssemblyAggregation & {
     deleted: boolean
+  }
+
+  const handleToggle = (event: ToggleOffCanvas) => {
+    onToggleProp?.(event)
   }
 </script>
 
 <OffCanvas
-  id={$$props.id || ''}
+  {id}
   {open}
-  onToggle={(e) => dispatch('toggle', e)}
+  onToggle={handleToggle}
 >
   {#snippet title()}
     {$i18n.t('assembly_store:caption')}
@@ -143,7 +153,7 @@ ${target.description}
   {/snippet}
   {#snippet body()}
     <div class="mb-3">
-      <form class="mb-3" on:submit|preventDefault={onSubmitNewAssembly}>
+      <form class="mb-3" onsubmit={onSubmitNewAssembly}>
         <div class="form-label">
           {$i18n.t('assembly_store:addNewData.title')}
         </div>
@@ -177,7 +187,7 @@ ${target.description}
           type="text"
           class="form-control"
           placeholder={$i18n.t('assembly_store:storedList.search.caption')}
-          on:input={onUpdateKeywords}
+          oninput={onUpdateKeywords}
         />
       </div>
       <div>
@@ -208,7 +218,7 @@ ${target.description}
                   </td>
                   <td>
                     <IconButton
-                      id="restore-{d.id}"
+                      id={`restore-${d.id}`}
                       title={$i18n.t(
                         'assembly_store:storedList.restore.caption',
                       )}
@@ -224,14 +234,14 @@ ${target.description}
                   <td>{d.description}</td>
                   <td>
                     <IconButton
-                      id="load-{d.id}"
+                      id={`load-${d.id}`}
                       title={$i18n.t('assembly_store:storedList.apply.caption')}
                       class="bi bi-download"
                       clickable={true}
                       onclick={() => onApply(d)}
                     />
                     <IconButton
-                      id="trash-{d.id}"
+                      id={`trash-${d.id}`}
                       title={$i18n.t(
                         'assembly_store:storedList.delete.caption',
                       )}
@@ -240,7 +250,7 @@ ${target.description}
                       onclick={() => onDelete(d)}
                     />
                     <IconButton
-                      id="share-{d.id}"
+                      id={`share-${d.id}`}
                       title={$i18n.t('assembly_store:storedList.share.caption')}
                       class="bi bi-share"
                       clickable={true}

@@ -489,8 +489,8 @@
   open={openAssemblyStore}
   candidates={initialCandidates}
   {assembly}
-  on:toggle={(e) => (openAssemblyStore = e.detail.open)}
-  on:apply={(e) => (assembly = e.detail.assembly)}
+  onToggle={(e) => (openAssemblyStore = e.open)}
+  onApply={(aggregation) => (assembly = aggregation.assembly)}
 />
 
 <ErrorModal
