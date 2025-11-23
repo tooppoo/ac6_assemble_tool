@@ -22,12 +22,12 @@
   }>()
 </script>
 
-<OffCanvas {id} {open} on:toggle={(e) => dispatch('toggle', e.detail)}>
-  <svelte:fragment slot="title">
+<OffCanvas {id} {open} onToggle={(e) => dispatch('toggle', e)}>
+  {#snippet title()}
     <slot name="title" />
-  </svelte:fragment>
-  <svelte:fragment slot="body">
+  {/snippet}
+  {#snippet body()}
     <ShareByText id="{id}-share-by-text" class="mb-3" {prefix} {assembly} />
     <ShareByUrl id="{id}-share-by-url" />
-  </svelte:fragment>
+  {/snippet}
 </OffCanvas>

@@ -67,12 +67,12 @@
 <OffCanvas
   id={$$props.id || ''}
   {open}
-  on:toggle={(e) => dispatch('toggle', e.detail)}
+  onToggle={(e) => dispatch('toggle', e)}
 >
-  <svelte:fragment slot="title">
+  {#snippet title()}
     <slot name="title" />
-  </svelte:fragment>
-  <svelte:fragment slot="body">
+  {/snippet}
+  {#snippet body()}
     <div
       id="random-assembly"
       class="d-none d-md-flex justify-content-bgein align-items-center mb-3"
@@ -159,5 +159,5 @@
         })}
       on:toggle-lock={(ev) => dispatch('lock-legs', ev.detail)}
     />
-  </svelte:fragment>
+  {/snippet}
 </OffCanvas>

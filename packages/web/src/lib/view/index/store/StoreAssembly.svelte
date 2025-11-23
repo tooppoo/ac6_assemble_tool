@@ -128,9 +128,9 @@ ${target.description}
 <OffCanvas
   id={$$props.id || ''}
   {open}
-  on:toggle={(e) => dispatch('toggle', e.detail)}
+  onToggle={(e) => dispatch('toggle', e)}
 >
-  <svelte:fragment slot="title">
+  {#snippet title()}
     {$i18n.t('assembly_store:caption')}
     <IconButton
       id="notice-for-store-assembly"
@@ -140,8 +140,8 @@ ${target.description}
       class="bi bi-info-circle"
       style="font-size: 1.125rem;"
     />
-  </svelte:fragment>
-  <svelte:fragment slot="body">
+  {/snippet}
+  {#snippet body()}
     <div class="mb-3">
       <form class="mb-3" on:submit|preventDefault={onSubmitNewAssembly}>
         <div class="form-label">
@@ -254,7 +254,7 @@ ${target.description}
         </table>
       </div>
     </div>
-  </svelte:fragment>
+  {/snippet}
 </OffCanvas>
 
 <ShareAssembly

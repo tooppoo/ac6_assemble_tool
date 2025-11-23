@@ -1,23 +1,27 @@
-<script lang="ts" context="module">
-  export type ToggleOffCanvas = { open: boolean }
-</script>
-
 <script lang="ts">
   import { Offcanvas } from '@sveltestrap/sveltestrap'
-  import { createEventDispatcher } from 'svelte'
+  import type { Snippet } from 'svelte'
 
-  export let id: string = ''
-  export let open: boolean
+  export type ToggleOffCanvas = { open: boolean }
 
-  // handler
-  const toggle = () => {
-    dispatch('toggle', { open: !open })
+  interface Props {
+    id?: string
+    open: boolean
+    title?: Snippet
+    body?: Snippet
+    onToggle?: (args: { open: boolean }) => void
   }
+  let {
+    id = '',
+    open,
+    title,
+    body,
+    onToggle
+  }: Props = $props()
 
-  // setup
-  const dispatch = createEventDispatcher<{
-    toggle: ToggleOffCanvas
-  }>()
+  const toggle = () => {
+    onToggle?.({ open: !open })
+  }
 </script>
 
 <Offcanvas
@@ -28,6 +32,6 @@
   isOpen={open}
   {toggle}
 >
-  <slot slot="header" name="title"></slot>
-  <slot name="body"></slot>
+  {@render title?.()}
+  {@render body?.()}
 </Offcanvas>
