@@ -4,22 +4,29 @@
   import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
   import { sum } from '@ac6_assemble_tool/shared/array'
   import { roundUpByRealPart } from '@ac6_assemble_tool/shared/number'
-  import { createEventDispatcher } from 'svelte'
 
   import RangeSlider from './base/RangeSlider.svelte'
 
-  export let candidates: Candidates
+  interface Props {
+    class?: string
+    candidates: Candidates
+    onchange?: (ev: { value: number }) => void
+  }
+  let {
+    class: className,
+    candidates,
+    onchange,
+  }: Props = $props()
 
   // state
   const max = getMax()
-
-  let value: number = max
+  let value: number = $state(max)
 
   // handle
-  const onChange = ({ detail }: CustomEvent<{ value: number }>) => {
-    value = detail.value
+  const onChange = (event: { value: number }) => {
+    value = event.value
 
-    dispatch('change', detail)
+    onchange?.(event)
   }
 
   // setup
@@ -46,15 +53,14 @@
 
     return roundUpByRealPart(1)(total)
   }
-  const dispatch = createEventDispatcher<{ change: { value: number } }>()
 </script>
 
 <RangeSlider
   id="coam"
-  class={$$props.class}
+  class={className}
   label={$i18n.t('random:range.coam.label')}
   {max}
   {value}
   step={1000}
-  on:change={onChange}
+  onchange={onChange}
 />

@@ -148,11 +148,11 @@
     <CoamRangeSlider
       class="my-3 w-100"
       {candidates}
-      on:change={(ev) =>
+      onchange={(ev) =>
         onApply({
           randomAssembly: randomAssembly.addValidator(
             'total-coam-limit',
-            totalCoamNotOverMax(ev.detail.value),
+            totalCoamNotOverMax(ev.value),
           ),
         })}
     />
@@ -162,14 +162,15 @@
       {candidates}
       {assembly}
       lock={lockedParts}
-      on:change={(ev) =>
+      onChange={(ev) =>
         onApply({
           randomAssembly: randomAssembly.addValidator(
             'total-load-limit',
-            totalLoadNotOverMax(ev.detail.value),
+            totalLoadNotOverMax(ev.value),
           ),
-        })}
-      on:toggle-lock={(ev) => onLockLegs?.(ev.detail)}
+        })
+      }
+      onToggleLock={(ev) => onLockLegs?.(ev)}
     />
   {/snippet}
 </OffCanvas>

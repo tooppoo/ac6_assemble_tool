@@ -1,15 +1,9 @@
-<script lang="ts" context="module">
-  import type { AssemblyKey } from '@ac6_assemble_tool/core/assembly/assembly'
-
-  export type ToggleLock = { id: AssemblyKey; value: boolean }
-</script>
-
 <script lang="ts">
   import i18n from '$lib/i18n/define'
   import LockBadge from '$lib/view/index/form/status/badge/LockBadge.svelte'
   import StatusBadgeList from '$lib/view/index/form/status/StatusBadgeList.svelte'
 
-  import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
+  import type { Assembly, AssemblyKey } from '@ac6_assemble_tool/core/assembly/assembly'
   import type { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
   import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
   import { sum } from '@ac6_assemble_tool/shared/array'
@@ -20,36 +14,50 @@
     DropdownMenu,
     DropdownToggle,
   } from '@sveltestrap/sveltestrap'
-  import { createEventDispatcher } from 'svelte'
 
   import RangeSlider from './base/RangeSlider.svelte'
 
-  // state
-  export let candidates: Candidates
-  export let assembly: Assembly
-  export let lock: LockedParts
+  export type ToggleLock = { id: AssemblyKey; value: boolean }
 
-  const { max, min } = getMinAndMax()
+  type Props = {
+    candidates: Candidates
+    assembly: Assembly
+    lock: LockedParts
+    class?: string
+    onChange?: (payload: { value: number }) => void
+    onToggleLock?: (payload: ToggleLock) => void
+  }
 
-  let value: number = max
+  let {
+    candidates,
+    assembly,
+    lock,
+    class: className = '',
+    onChange: onChangeProp,
+    onToggleLock: onToggleLockProp,
+  }: Props = $props()
+
+  let max = $derived(getMinAndMax(candidates).max)
+  let min = $derived(getMinAndMax(candidates).min)
+  let value = $derived<number>(max)
 
   // handler
-  const onChange = ({ detail }: CustomEvent<{ value: number }>) => {
-    value = detail.value
+  const onChange = (event: { value: number }) => {
+    value = event.value
 
-    dispatch('change', detail)
+    onChangeProp?.(event)
   }
   const onSetLoadLimit = () => {
     value = assembly.loadLimit
 
-    dispatch('change', { value })
+    onChangeProp?.({ value })
   }
   const onToggleLock = () => {
-    dispatch('toggle-lock', { id: 'legs', value: !lock.isLocking('legs') })
+    onToggleLockProp?.({ id: 'legs', value: !lock.isLocking('legs') })
   }
 
   // setup
-  function getMinAndMax(): { max: number; min: number } {
+  function getMinAndMax(target: Candidates): { max: number; min: number } {
     type WithWeight = Readonly<{ weight: number }>
     type Sort = <T extends WithWeight>(xs: readonly T[]) => readonly T[]
 
@@ -58,16 +66,16 @@
     const total = (s: Sort): number =>
       sum(
         [
-          s(candidates.rightArmUnit)[0],
-          s(candidates.leftArmUnit)[0],
-          s(candidates.rightBackUnit)[0],
-          s(candidates.leftBackUnit)[0],
-          s(candidates.head)[0],
-          s(candidates.core)[0],
-          s(candidates.arms)[0],
-          s(candidates.booster)[0],
-          s(candidates.fcs)[0],
-          s(candidates.generator)[0],
+          s(target.rightArmUnit)[0],
+          s(target.leftArmUnit)[0],
+          s(target.rightBackUnit)[0],
+          s(target.leftBackUnit)[0],
+          s(target.head)[0],
+          s(target.core)[0],
+          s(target.arms)[0],
+          s(target.booster)[0],
+          s(target.fcs)[0],
+          s(target.generator)[0],
         ].map((x) => x.weight),
       )
 
@@ -76,54 +84,54 @@
 
     return { max: roundUpByRealPart(2)(max), min }
   }
-  const dispatch = createEventDispatcher<{
-    change: { value: number }
-    'toggle-lock': ToggleLock
-  }>()
 </script>
 
 <RangeSlider
   id="load"
-  class={$$props.class}
+  class={className}
   label={$i18n.t('random:range.load.label')}
   {max}
   {min}
   {value}
   step={10}
-  on:change={onChange}
+  onchange={onChange}
 >
-  <StatusBadgeList class="ms-2" slot="status">
-    {#if lock.isLocking('legs')}
-      <LockBadge
-        id="load-range-slider-lock-legs"
-        titleWhenLocked={$i18n.t('lock:locking', {
-          part: $i18n.t('legs', { ns: 'assembly' }),
-        })}
-        locked={true}
-      />
-    {/if}
-  </StatusBadgeList>
-  <Dropdown slot="label" let:labelId let:text id={labelId}>
-    <DropdownToggle>
-      {text}
-    </DropdownToggle>
-    <DropdownMenu>
-      <DropdownItem on:click={onToggleLock}>
-        {#if lock.isLocking('legs')}
-          {$i18n.t('lock:unlockAt', {
+  {#snippet status()}
+    <StatusBadgeList class="ms-2">
+      {#if lock.isLocking('legs')}
+        <LockBadge
+          id="load-range-slider-lock-legs"
+          titleWhenLocked={$i18n.t('lock:locking', {
             part: $i18n.t('legs', { ns: 'assembly' }),
           })}
-        {:else}
-          {$i18n.t('lock:lockAt', {
-            part: $i18n.t('legs', { ns: 'assembly' }),
-          })}
-        {/if}
-      </DropdownItem>
-      <DropdownItem on:click={onSetLoadLimit}>
-        {$i18n.t('random:range.load.applyCurrentLegsLoadLimit')}
-      </DropdownItem>
-    </DropdownMenu>
-  </Dropdown>
+          locked={true}
+        />
+      {/if}
+    </StatusBadgeList>
+  {/snippet}
+  {#snippet labelSlot({ labelId, text })}
+    <Dropdown id={labelId}>
+      <DropdownToggle>
+        {text}
+      </DropdownToggle>
+      <DropdownMenu>
+        <DropdownItem on:click={onToggleLock}>
+          {#if lock.isLocking('legs')}
+            {$i18n.t('lock:unlockAt', {
+              part: $i18n.t('legs', { ns: 'assembly' }),
+            })}
+          {:else}
+            {$i18n.t('lock:lockAt', {
+              part: $i18n.t('legs', { ns: 'assembly' }),
+            })}
+          {/if}
+        </DropdownItem>
+        <DropdownItem on:click={onSetLoadLimit}>
+          {$i18n.t('random:range.load.applyCurrentLegsLoadLimit')}
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+  {/snippet}
 </RangeSlider>
 
 <style>

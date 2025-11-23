@@ -14,10 +14,10 @@
 
   const dispatch = createEventDispatcher<{ change: { value: number } }>()
 
-  const forwardChange = (event: CustomEvent<{ value: number }>) => {
-    dispatch('change', event.detail)
-    onChange?.(event.detail)
+  const forwardChange = (event: { value: number }) => {
+    dispatch('change', event)
+    onChange?.(event)
   }
 </script>
 
-<CoamRangeSlider {candidates} on:change={forwardChange} />
+<CoamRangeSlider {candidates} onchange={forwardChange} />

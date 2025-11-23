@@ -420,7 +420,7 @@
         tooltipText={$i18n.t('random:command.random.label')}
         aria-label={$i18n.t('random:command.random.label')}
         class="me-3"
-        on:click={({ detail: randomAssembly }) => (assembly = randomAssembly)}
+        onclick={({ assembly: randomAssembly }) => (assembly = randomAssembly)}
       />
       <TextButton
         id="reset-lock-form"
