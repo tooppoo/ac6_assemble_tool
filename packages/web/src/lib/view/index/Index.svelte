@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
   import TextButton from '$lib/components/button/TextButton.svelte'
   import LanguageForm from '$lib/components/language/LanguageForm.svelte'
@@ -57,30 +59,36 @@
   const tryLimit = 3000
 
   // state
-  export let regulation: Regulation
-  export let partsPool: PartsPoolRestrictions
+  interface Props {
+    regulation: Regulation
+    partsPool: PartsPoolRestrictions
+  }
+  let {
+    regulation,
+    partsPool,
+  }: Props = $props()
 
   const orders: Order = regulation.orders
   const version: string = regulation.version
 
-  let partsPoolState: PartsPoolRestrictions = partsPool
+  let partsPoolState = $state<PartsPoolRestrictions>(partsPool)
 
-  let initialCandidates: Candidates = partsPoolState.candidates
-  let candidates: Candidates = partsPoolState.candidates
-  // changeAssemblyはinitialCandidatesの変更に追従するようリアクティブに定義
-  $: changeAssembly = changeAssemblyCommand(initialCandidates)
-  let lockedParts: LockedParts = LockedParts.empty
-  let randomAssembly = RandomAssembly.init({ limit: tryLimit })
+  let initialCandidates = $derived<Candidates>(partsPoolState.candidates)
+  let candidates = $derived<Candidates>(partsPoolState.candidates)
+  let changeAssembly = $derived(changeAssemblyCommand(initialCandidates))
+  let lockedParts = $state<LockedParts>(LockedParts.empty)
+  let randomAssembly = $state(RandomAssembly.init({ limit: tryLimit }))
 
-  let openRandomAssembly: boolean = false
-  let openShare: boolean = false
-  let openAssemblyStore: boolean = false
-  let errorMessage: string[] = []
+  let openRandomAssembly = $state(false)
+  let openShare = $state(false)
+  let openAssemblyStore = $state(false)
+  let errorMessage = $state<string[]>([])
 
-  let orderParts: OrderParts = defineOrder(orders)
+  const orderParts: OrderParts = defineOrder(orders)
 
-  let assembly: Assembly = initializeAssembly(candidates)
-  let serializeAssembly = useWithEnableState(() => {
+  // svelte-ignore state_referenced_locally
+  let assembly = $state<Assembly>(initializeAssembly(candidates))
+  const serializeAssembly = useWithEnableState(() => {
     serializeAssemblyAsQuery()
   })
 
@@ -113,22 +121,27 @@
     serializeAssembly.enable()
   })
 
-  $: if (initialCandidates) {
+  $effect(() => {
+    if (!initialCandidates) {
+      return
+    }
     logger.debug('update candidates', { lockedParts })
 
     updateCandidates()
-  }
-  $: {
-    if (assembly && initialCandidates) {
-      if (serializeAssembly.isEnabled()) {
-        logger.debug('replace state', {
-          query: assemblyToSearchV2(assembly).toString(),
-        })
+  })
 
-        serializeAssembly.run()
-      }
+  $effect(() => {
+    if (!assembly || !initialCandidates) {
+      return
     }
-  }
+    if (serializeAssembly.isEnabled()) {
+      logger.debug('replace state', {
+        query: assemblyToSearchV2(assembly).toString(),
+      })
+
+      serializeAssembly.run()
+    }
+  })
 
   // handler
   function applyPartsPoolState(pool: PartsPoolRestrictions) {
