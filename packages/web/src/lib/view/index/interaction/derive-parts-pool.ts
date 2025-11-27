@@ -1,15 +1,26 @@
 import { parseSlotPartsParamKey } from '$lib/view/parts-list/slot/slot-utils'
 
-import {
-  CANDIDATES_KEYS,
-  type Candidates,
-  type CandidatesKey,
+import type {
+  Candidates,
+  CandidatesKey,
 } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
 
 export interface PartsPoolRestrictions {
   candidates: Candidates
   restrictedSlots: Partial<Record<CandidatesKey, readonly string[]>>
+}
+
+/**
+ * クエリ文字列からパーツプール制約を適用する純粋関数。
+ * 副作用を持たず、コンポーネント側は結果を受け取って状態を更新するだけにする。
+ */
+export const derivePartsPool = (
+  search: string,
+  base: Candidates,
+): PartsPoolRestrictions => {
+  const params = new URLSearchParams(search)
+  return applyPartsPoolRestrictions(params, base)
 }
 
 export function applyPartsPoolRestrictions(
@@ -56,9 +67,10 @@ export function applyPartsPoolRestrictions(
     }
   }
 
-  const restrictedCandidates = CANDIDATES_KEYS.reduce(
+  const restrictedCandidates = Object.keys(base).reduce(
     (acc, slot) => {
-      acc[slot] = next[slot]
+      const key = slot as CandidatesKey
+      acc[key] = next[key]
       return acc
     },
     {} as Record<CandidatesKey, Candidates[CandidatesKey]>,
@@ -69,6 +81,7 @@ export function applyPartsPoolRestrictions(
     restrictedSlots,
   }
 }
+
 function filterCandidatesById<K extends CandidatesKey>(
   candidates: Candidates[K],
   allowedIds: ReadonlySet<string>,

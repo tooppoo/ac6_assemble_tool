@@ -1,5 +1,5 @@
 import { latest as regulation } from '$lib/regulation'
-import type { PartsPoolRestrictions } from '$lib/view/index/parts-pool'
+import type { PartsPoolRestrictions } from '$lib/view/index/interaction/derive-parts-pool'
 
 import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
 
