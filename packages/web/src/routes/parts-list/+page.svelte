@@ -11,17 +11,24 @@
   import type { PageData } from './+page'
 
   import { browser } from '$app/environment'
+  import { page } from '$app/state'
+  import { branch } from 'ceiocs'
 
   // ページデータ
-  export let data: PageData
+  interface Props {
+    data: PageData
+  }
+  let { data }: Props = $props()
 
   const { regulation } = data
 
   // URLSearchParamsを取得
-  let searchParams: URLSearchParams | undefined = undefined
-  if (browser) {
-    searchParams = new URLSearchParams(window.location.search)
-  }
+  let searchParams = branch
+    .if<URLSearchParams | undefined>(browser, () =>
+      new URLSearchParams(page.url.search)
+    ).else(() =>
+      undefined
+    )
 </script>
 
 <svelte:head>
