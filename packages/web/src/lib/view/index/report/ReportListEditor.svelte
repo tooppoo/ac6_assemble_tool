@@ -17,11 +17,7 @@
     onSave?: (payload: SaveAggregation) => void
   }
 
-  let {
-    assembly,
-    reportAggregation,
-    onSave: onSaveProp,
-  }: Props = $props()
+  let { assembly, reportAggregation, onSave: onSaveProp }: Props = $props()
 
   let editingReportAggregation = $state(reportAggregation)
 

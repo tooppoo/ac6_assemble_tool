@@ -37,7 +37,7 @@
   class={classes}
   data-clickable={clickable}
   aria-label={title}
-  role={role}
+  {role}
   onclick={onClick}
 ></span>
 {#if withTooltip}

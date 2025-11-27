@@ -27,11 +27,7 @@
 </script>
 
 {#if editing}
-  <ReportListEditor
-    {assembly}
-    {reportAggregation}
-    onSave={onSave}
-  />
+  <ReportListEditor {assembly} {reportAggregation} {onSave} />
 {:else}
   <ReportListViewer {assembly} {reportAggregation} onEdit={startEdit} />
 {/if}

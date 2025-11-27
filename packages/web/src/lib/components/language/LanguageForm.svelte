@@ -9,9 +9,7 @@
     onUpdate?: (search: string) => void
   }
 
-  let {
-    onUpdate
-  }: Props = $props()
+  let { onUpdate }: Props = $props()
 
   const i18n = getContext<I18NextStore>('i18n')
 

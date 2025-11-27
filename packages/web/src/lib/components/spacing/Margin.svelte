@@ -3,10 +3,7 @@
     space: number
     class?: string
   }
-  let {
-    space,
-    class: className = '',
-  }: Props = $props()
+  let { space, class: className = '' }: Props = $props()
 
   const klass = [className, `mt-${space}`, 'margin'].join(' ')
 </script>

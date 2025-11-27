@@ -1,9 +1,13 @@
 <script lang="ts">
   import Switch from '$lib/components/form/Switch.svelte'
-  import OffCanvas, { type ToggleOffCanvas } from '$lib/components/off-canvas/OffCanvas.svelte'
+  import OffCanvas, {
+    type ToggleOffCanvas,
+  } from '$lib/components/off-canvas/OffCanvas.svelte'
   import Margin from '$lib/components/spacing/Margin.svelte'
   import i18n from '$lib/i18n/define'
-  import RandomAssembleButton, { type ClickEvent } from '$lib/view/index/random/button/RandomAssembleButton.svelte'
+  import RandomAssembleButton, {
+    type ClickEvent,
+  } from '$lib/view/index/random/button/RandomAssembleButton.svelte'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
   import type { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
@@ -16,12 +20,12 @@
   } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
   import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
   import { logger } from '@ac6_assemble_tool/shared/logger'
+  import type { Snippet } from 'svelte'
 
   import CoamRangeSlider from './range/CoamRangeSlider.svelte'
   import LoadRangeSlider, {
     type ToggleLock,
   } from './range/LoadRangeSlider.svelte'
-  import type { Snippet } from 'svelte'
 
   export type AssembleRandomly = Readonly<{
     assembly: Assembly
@@ -75,11 +79,7 @@
   }
 </script>
 
-<OffCanvas
-  id={id}
-  {open}
-  onToggle={(e) => onToggle?.(e)}
->
+<OffCanvas {id} {open} onToggle={(e) => onToggle?.(e)}>
   {#snippet title()}
     {@render titleSnippet?.()}
   {/snippet}
@@ -168,8 +168,7 @@
             'total-load-limit',
             totalLoadNotOverMax(ev.value),
           ),
-        })
-      }
+        })}
       onToggleLock={(ev) => onLockLegs?.(ev)}
     />
   {/snippet}

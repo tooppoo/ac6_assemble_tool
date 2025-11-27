@@ -10,20 +10,15 @@
     timeout?: number
     children?: Snippet
   }
-  let {
-    target,
-    timeout = 3000,
-    children,
-  }: Props = $props()
+  let { target, timeout = 3000, children }: Props = $props()
 
   /** Tooltipコンポーネント内部のON/OFF状態 */
   let tooltipState: boolean = $state(false)
-  let tooltipTimer: ReturnType<typeof setTimeout> | undefined = $state(undefined)
+  let tooltipTimer: ReturnType<typeof setTimeout> | undefined =
+    $state(undefined)
 
   const targetEl: HTMLElement | null = $derived(
-    typeof target === 'string'
-      ? document.getElementById(target)
-      : target
+    typeof target === 'string' ? document.getElementById(target) : target,
   )
 
   // handler
@@ -45,7 +40,7 @@
 </script>
 
 {#if targetEl !== null && tooltipState}
-<Tooltip target={targetEl} bind:isOpen={tooltipState}>
-  {@render children?.()}
-</Tooltip>
+  <Tooltip target={targetEl} bind:isOpen={tooltipState}>
+    {@render children?.()}
+  </Tooltip>
 {/if}

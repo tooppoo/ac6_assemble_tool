@@ -3,7 +3,10 @@
   import LockBadge from '$lib/view/index/form/status/badge/LockBadge.svelte'
   import StatusBadgeList from '$lib/view/index/form/status/StatusBadgeList.svelte'
 
-  import type { Assembly, AssemblyKey } from '@ac6_assemble_tool/core/assembly/assembly'
+  import type {
+    Assembly,
+    AssemblyKey,
+  } from '@ac6_assemble_tool/core/assembly/assembly'
   import type { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
   import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
   import { sum } from '@ac6_assemble_tool/shared/array'

@@ -10,21 +10,14 @@
     withTooltip?: boolean
     onclick?: () => void
   } & HTMLAttributes<HTMLButtonElement>
-  let {
-    id,
-    title,
-    clickable,
-    withTooltip,
-    onclick,
-    ...rest
-  }: Props = $props()
+  let { id, title, clickable, withTooltip, onclick, ...rest }: Props = $props()
 </script>
 
 <IconButton
-  id={id}
+  {id}
   class={`${rest.class} status-badge`}
   {title}
   {clickable}
   {withTooltip}
-  onclick={onclick}
+  {onclick}
 />

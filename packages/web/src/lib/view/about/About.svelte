@@ -17,7 +17,6 @@
     tocNavigationLabel = 'Page navigation',
     tocHeadingLabel = 'Sections',
   }: Props = $props()
-
 </script>
 
 <InfoPageLayout

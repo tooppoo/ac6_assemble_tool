@@ -15,14 +15,7 @@
     button?: Snippet
     onClose?: () => void
   }
-  let {
-    id,
-    open,
-    title,
-    children,
-    button,
-    onClose,
-  }: Props = $props()
+  let { id, open, title, children, button, onClose }: Props = $props()
 
   const labelId = `${id}-label`
 </script>
@@ -39,11 +32,7 @@
     <h1 class="modal-title fs-5" id={labelId}>
       {@render title?.()}
     </h1>
-    <button
-      type="button"
-      class="btn-close"
-      onclick={onClose}
-      aria-label="Close"
+    <button type="button" class="btn-close" onclick={onClose} aria-label="Close"
     ></button>
   </ModalHeader>
   <ModalBody>

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { AssemblyKey } from '@ac6_assemble_tool/core/assembly/assembly'
-  import type { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
-  import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
-
   import i18n from '$lib/i18n/define'
   import LockBadge from '$lib/view/index/form/status/badge/LockBadge.svelte'
   import StatusBadgeList from '$lib/view/index/form/status/StatusBadgeList.svelte'
+
+  import type { AssemblyKey } from '@ac6_assemble_tool/core/assembly/assembly'
+  import type { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
+  import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 
   export type ChangePartsEvent = Readonly<{
     id: AssemblyKey

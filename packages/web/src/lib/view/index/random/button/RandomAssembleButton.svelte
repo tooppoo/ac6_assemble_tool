@@ -62,18 +62,14 @@
     } catch (error) {
       logger.error('RandomAssembleButton: error onRandom', { error })
 
-      onerror?.({ error: error instanceof Error ? error : new Error(`${error}`) })
+      onerror?.({
+        error: error instanceof Error ? error : new Error(`${error}`),
+      })
     }
   }
 </script>
 
-<TextButton
-  {id}
-  type="button"
-  {tooltipText}
-  onclick={onRandom}
-  {...rest}
->
+<TextButton {id} type="button" {tooltipText} onclick={onRandom} {...rest}>
   <i class="bi bi-shuffle"></i>
   <span class="d-none d-md-inline">
     {@render children?.()}

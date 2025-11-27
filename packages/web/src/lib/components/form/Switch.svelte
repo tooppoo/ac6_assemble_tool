@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Snippet } from "svelte"
+  import type { Snippet } from 'svelte'
 
   interface Props {
     id: string
@@ -8,12 +8,7 @@
     onDisabled?: (args: { on: false }) => void
   }
 
-  let {
-    id,
-    children,
-    onEnabled,
-    onDisabled,
-  }: Props = $props()
+  let { id, children, onEnabled, onDisabled }: Props = $props()
 
   // handler
   const onChange = (e: Event) => {

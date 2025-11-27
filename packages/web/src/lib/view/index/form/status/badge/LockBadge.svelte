@@ -1,5 +1,6 @@
 <script lang="ts">
   import BaseStatusBadge from '$lib/view/index/form/status/base/BaseStatusBadge.svelte'
+
   import type { HTMLAttributes } from 'svelte/elements'
 
   type Props = {
@@ -23,15 +24,17 @@
 
   // state
   let title: string = $derived(locked ? titleWhenLocked : titleWhenUnlocked)
-  let classes: string = $derived(['bi'].concat(locked ? 'bi-lock-fill' : 'bi-unlock').join(' '))
+  let classes: string = $derived(
+    ['bi'].concat(locked ? 'bi-lock-fill' : 'bi-unlock').join(' '),
+  )
 </script>
 
 <BaseStatusBadge
-  id={id}
+  {id}
   class={`${rest.class || ''} ${classes}`}
   data-clickable={clickable}
   {title}
   {clickable}
   withTooltip={true}
-  onclick={onclick}
+  {onclick}
 />

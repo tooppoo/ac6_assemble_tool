@@ -10,7 +10,7 @@
     min?: number
     value: number
     step?: number
-    labelSlot?: Snippet<[{ labelId: string, text: string }]>
+    labelSlot?: Snippet<[{ labelId: string; text: string }]>
     status?: Snippet
     onchange?: (ev: { value: number }) => void
   }

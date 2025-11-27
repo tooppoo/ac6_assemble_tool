@@ -17,12 +17,7 @@
     class?: string
   } & Omit<HTMLAttributes<HTMLElement>, 'class' | 'id' | 'prefix'>
 
-  let {
-    id,
-    assembly,
-    prefix,
-    class: className = '',
-  }: Props = $props()
+  let { id, assembly, prefix, class: className = '' }: Props = $props()
 
   let copyAsText = $state<() => void>(defaultCopyAsText)
   let targetButton: HTMLButtonElement | undefined = $state(undefined)

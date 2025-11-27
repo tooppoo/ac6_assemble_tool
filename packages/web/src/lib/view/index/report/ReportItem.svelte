@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ReportStatus } from '$lib/view/index/report/model/report'
+
   import type { HTMLAttributes } from 'svelte/elements'
 
   type Props = {

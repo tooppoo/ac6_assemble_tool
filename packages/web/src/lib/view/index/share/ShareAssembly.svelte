@@ -1,11 +1,13 @@
 <script lang="ts">
-  import OffCanvas, { type ToggleOffCanvas } from '$lib/components/off-canvas/OffCanvas.svelte'
+  import OffCanvas, {
+    type ToggleOffCanvas,
+  } from '$lib/components/off-canvas/OffCanvas.svelte'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
+  import type { Snippet } from 'svelte'
 
   import ShareByText from './text/ShareByText.svelte'
   import ShareByUrl from './url/ShareByUrl.svelte'
-  import type { Snippet } from 'svelte'
 
   type Props = {
     id: string
@@ -36,7 +38,7 @@
     {@render titleSnippet?.()}
   {/snippet}
   {#snippet body()}
-    <ShareByText id="{id}-share-by-text" class="mb-3" prefix={prefix} {assembly} />
+    <ShareByText id="{id}-share-by-text" class="mb-3" {prefix} {assembly} />
     <ShareByUrl id="{id}-share-by-url" />
   {/snippet}
 </OffCanvas>

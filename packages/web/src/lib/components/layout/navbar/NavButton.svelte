@@ -1,5 +1,6 @@
 <script lang="ts">
   import TextButton from '$lib/components/button/TextButton.svelte'
+
   import type { Snippet } from 'svelte'
 
   interface Props {
@@ -47,12 +48,7 @@
     {@render children?.()}
   </a>
 {:else}
-  <TextButton
-    {id}
-    class={`${className}`}
-    aria-label={title}
-    onclick={onClick}
-  >
+  <TextButton {id} class={`${className}`} aria-label={title} onclick={onClick}>
     {@render icon?.()}
     {@render children?.()}
   </TextButton>

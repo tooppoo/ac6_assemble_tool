@@ -135,11 +135,7 @@ ${target.description}
   }
 </script>
 
-<OffCanvas
-  {id}
-  {open}
-  onToggle={handleToggle}
->
+<OffCanvas {id} {open} onToggle={handleToggle}>
   {#snippet title()}
     {$i18n.t('assembly_store:caption')}
     <IconButton

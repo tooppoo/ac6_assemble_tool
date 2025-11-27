@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Snippet } from "svelte"
+  import type { Snippet } from 'svelte'
 
   interface Props {
     id?: string
@@ -10,7 +10,7 @@
 </script>
 
 <section
-  id={id}
+  {id}
   class={className +
     ' py-4 px-2 px-sm-4 px-md-5 border border-secondary bg-dark-subtle'}
 >

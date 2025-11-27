@@ -27,7 +27,7 @@
 
 <button
   {id}
-  type={type}
+  {type}
   class={`${className} btn btn-secondary bg-dark-subtle`}
   {onclick}
   use:action

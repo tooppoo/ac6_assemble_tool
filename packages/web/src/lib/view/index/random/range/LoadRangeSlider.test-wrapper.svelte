@@ -29,9 +29,7 @@
     onChange?.(event)
   }
 
-  const forwardToggleLock = (
-    event: { id: string; value: boolean },
-  ) => {
+  const forwardToggleLock = (event: { id: string; value: boolean }) => {
     dispatch('toggle-lock', event)
     onToggleLock?.(event)
   }

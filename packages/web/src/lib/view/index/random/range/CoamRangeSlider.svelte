@@ -12,11 +12,7 @@
     candidates: Candidates
     onchange?: (ev: { value: number }) => void
   }
-  let {
-    class: className,
-    candidates,
-    onchange,
-  }: Props = $props()
+  let { class: className, candidates, onchange }: Props = $props()
 
   // state
   const max = getMax()
