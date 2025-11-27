@@ -6,6 +6,7 @@
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import ErrorModal from '$lib/components/modal/ErrorModal.svelte'
   import i18n from '$lib/i18n/define'
+  import { useWithEnableState } from '$lib/ssg/safety-reference'
 
   import {
     type Assembly,
@@ -37,8 +38,11 @@
   } from './form/PartsSelectForm.svelte'
   import PartsSelectForm from './form/PartsSelectForm.svelte'
   import { assemblyErrorMessage } from './interaction/error-message'
-  import { initializeAssembly } from './interaction/initialize/initialize-assembly'
-
+  import { initializeAssembly } from './interaction/initialize'
+  import {
+    applyPartsPoolRestrictions,
+    type PartsPoolRestrictions,
+  } from './parts-pool'
   import RandomAssembleButton from './random/button/RandomAssembleButton.svelte'
   import RandomAssemblyOffCanvas, {
     type AssembleRandomly,
@@ -50,60 +54,62 @@
 
   import { afterNavigate, goto } from '$app/navigation'
   import { page } from '$app/state'
-  import { useWithEnableState } from '$lib/ssg/safety-reference'
-  import type { PartsPoolRestrictions } from './interaction/parts-pool'
 
   const tryLimit = 3000
 
   // state
-  interface Props {
-    regulation: Regulation
-    partsPool: PartsPoolRestrictions
-  }
-  let {
-    regulation,
-    partsPool,
-  }: Props = $props()
+  export let regulation: Regulation
+  export let partsPool: PartsPoolRestrictions
 
   const orders: Order = regulation.orders
   const version: string = regulation.version
 
-  let initialCandidates: Candidates = $state(partsPool.candidates)
-  let candidates: Candidates = $state(partsPool.candidates)
-  let changeAssembly = $derived(changeAssemblyCommand(initialCandidates))
-  let lockedParts: LockedParts = $state(LockedParts.empty)
-  let randomAssembly = $state(RandomAssembly.init({ limit: tryLimit }))
+  let partsPoolState: PartsPoolRestrictions = partsPool
+  let previousPartsPool: PartsPoolRestrictions = partsPool
 
-  let openRandomAssembly: boolean = $state(false)
-  let openShare: boolean = $state(false)
-  let openAssemblyStore: boolean = $state(false)
-  let errorMessage: string[] = $state([])
-  let browserBacking: boolean = $state(false)
-  let orderParts: OrderParts = $derived(defineOrder(orders))
+  let initialCandidates: Candidates = partsPoolState.candidates
+  let candidates: Candidates = partsPoolState.candidates
+  // changeAssemblyはinitialCandidatesの変更に追従するようリアクティブに定義
+  $: changeAssembly = changeAssemblyCommand(initialCandidates)
+  let lockedParts: LockedParts = LockedParts.empty
+  let randomAssembly = RandomAssembly.init({ limit: tryLimit })
 
-  let assembly: Assembly = $state(initializeAssembly(candidates))
+  let openRandomAssembly: boolean = false
+  let openShare: boolean = false
+  let openAssemblyStore: boolean = false
+  let errorMessage: string[] = []
+  let browserBacking: boolean = false
 
-  const serializeAssembly = useWithEnableState(() => {
+  let orderParts: OrderParts = defineOrder(orders)
+
+  let assembly: Assembly = initializeAssembly(candidates)
+  let serializeAssembly = useWithEnableState(() => {
     serializeAssemblyAsQuery()
   })
+
+  $: if (partsPool !== previousPartsPool) {
+    // props由来の母集団が差し替わった場合のみ再同期する
+    previousPartsPool = partsPool
+    applyPartsPoolState(partsPool)
+  }
 
   afterNavigate(() => {
     if (page.state.initialized) {
       return
     }
-
+    updatePartsPoolFromUrl()
     initialize()
 
     serializeAssembly.enable()
   })
 
-  $effect(() => {
+  $: if (initialCandidates) {
     logger.debug('update candidates', { lockedParts })
 
     updateCandidates()
-  })
-  $effect(() => {
-    if (!browserBacking) {
+  }
+  $: {
+    if (assembly && initialCandidates && !browserBacking) {
       if (serializeAssembly.isEnabled()) {
         logger.debug('replace state', {
           query: assemblyToSearchV2(assembly).toString(),
@@ -114,10 +120,24 @@
     }
 
     browserBacking = false
-
-  })
+  }
 
   // handler
+  function applyPartsPoolState(pool: PartsPoolRestrictions) {
+    partsPoolState = pool
+    initialCandidates = pool.candidates
+    candidates = pool.candidates
+    lockedParts = LockedParts.empty
+    randomAssembly = RandomAssembly.init({ limit: tryLimit })
+
+    if (typeof window !== 'undefined') {
+      browserBacking = true
+      buildAssemblyFromQuery()
+    } else {
+      assembly = initializeAssembly(candidates)
+    }
+  }
+
   const onChangeParts = (event: ChangePartsEvent) => {
     const result = changeAssembly(
       event.id,
@@ -240,7 +260,53 @@
 
   const onPopstate = () => {
     browserBacking = true
+    updatePartsPoolFromUrl()
     buildAssemblyFromQuery()
+  }
+
+  function updatePartsPoolFromUrl() {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    const restricted = applyPartsPoolRestrictions(
+      new URLSearchParams(window.location.search),
+      partsPool.candidates,
+    )
+
+    if (isSameRestriction(partsPoolState, restricted)) {
+      return
+    }
+
+    applyPartsPoolState(restricted)
+  }
+
+  function isSameRestriction(
+    current: PartsPoolRestrictions,
+    next: PartsPoolRestrictions,
+  ): boolean {
+    const currentSlots = current.restrictedSlots
+    const nextSlots = next.restrictedSlots
+
+    const currentKeys = Object.keys(currentSlots) as Array<
+      keyof typeof currentSlots
+    >
+    const nextKeys = Object.keys(nextSlots) as Array<keyof typeof nextSlots>
+
+    if (currentKeys.length !== nextKeys.length) {
+      return false
+    }
+
+    return currentKeys.every((slot) => {
+      const currentIds = currentSlots[slot]
+      const nextIds = nextSlots[slot]
+
+      if (!currentIds || !nextIds || currentIds.length !== nextIds.length) {
+        return false
+      }
+
+      return currentIds.every((id, index) => id === nextIds[index])
+    })
   }
 
   const navigateToPartsList = () => {
