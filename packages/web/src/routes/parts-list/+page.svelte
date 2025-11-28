@@ -8,11 +8,12 @@
   import LanguageForm from '$lib/components/language/LanguageForm.svelte'
   import PartsListView from '$lib/view/parts-list/PartsListView.svelte'
 
+  import { branch } from 'ceiocs'
+
   import type { PageData } from './+page'
 
   import { browser } from '$app/environment'
   import { page } from '$app/state'
-  import { branch } from 'ceiocs'
 
   // ページデータ
   interface Props {
@@ -24,11 +25,10 @@
 
   // URLSearchParamsを取得
   let searchParams = branch
-    .if<URLSearchParams | undefined>(browser, () =>
-      new URLSearchParams(page.url.search)
-    ).else(() =>
-      undefined
-    )
+    .if<
+      URLSearchParams | undefined
+    >(browser, () => new URLSearchParams(page.url.search))
+    .else(() => undefined)
 </script>
 
 <svelte:head>

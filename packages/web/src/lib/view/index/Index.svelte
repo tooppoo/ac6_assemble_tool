@@ -63,10 +63,7 @@
     regulation: Regulation
     partsPool: PartsPoolRestrictions
   }
-  let {
-    regulation,
-    partsPool,
-  }: Props = $props()
+  let { regulation, partsPool }: Props = $props()
 
   const orders: Order = regulation.orders
   const version: string = regulation.version
