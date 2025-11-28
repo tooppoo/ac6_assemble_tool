@@ -34,16 +34,10 @@
     ToggleLockEvent,
   } from './form/PartsSelectForm.svelte'
   import PartsSelectForm from './form/PartsSelectForm.svelte'
-  import {
-    buildAssemblyFromQuery,
-    mergeAssemblyParams,
-  } from './interaction/assembly-from-query'
-  import {
-    derivePartsPool,
-    type PartsPoolRestrictions,
-  } from './interaction/derive-parts-pool'
   import { assemblyErrorMessage } from './interaction/error-message'
+  import { bootstrap } from './interaction/bootstrap'
   import { initializeAssembly } from './interaction/initialize'
+  import type { PartsPoolRestrictions } from './interaction/derive-parts-pool'
   import RandomAssembleButton from './random/button/RandomAssembleButton.svelte'
   import RandomAssemblyOffCanvas, {
     type AssembleRandomly,
@@ -55,6 +49,7 @@
 
   import { goto } from '$app/navigation'
   import { page } from '$app/state'
+  import { mergeAssemblyParams } from './interaction/assembly-from-query'
 
   const tryLimit = 3000
 
@@ -90,20 +85,16 @@
   })
 
   onMount(() => {
-    const search = page.url.search
-    const derivedPool = derivePartsPool(search, partsPool.candidates)
-    applyPartsPoolState(derivedPool)
-
-    const { assembly: builtAssembly, migratedParams } = buildAssemblyFromQuery(
-      new URLSearchParams(search),
-      derivedPool.candidates,
+    const result = bootstrap(
+      page.url,
+      partsPool.candidates,
     )
-    assembly = builtAssembly
 
-    if (migratedParams) {
-      const url = new URL(window.location.href)
-      mergeAssemblyParams(url.searchParams, migratedParams)
-      void goto(url, {
+    applyPartsPoolState(result.partsPool)
+    assembly = result.assembly
+
+    if (result.migratedUrl) {
+      void goto(result.migratedUrl, {
         replaceState: true,
         keepFocus: true,
         noScroll: true,
