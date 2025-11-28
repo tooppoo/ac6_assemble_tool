@@ -128,9 +128,8 @@
   })
 
   $effect(() => {
-    if (!assembly || !initialCandidates) {
-      return
-    }
+    assembly // watch assembly changes
+
     if (serializeAssembly.isEnabled()) {
       logger.debug('replace state', {
         query: assemblyToSearchV2(assembly).toString(),
@@ -193,7 +192,7 @@
     mergeAssemblyParams(url.searchParams, assemblyQuery)
 
     goto(url, {
-      replaceState: true,
+      replaceState: false,
       keepFocus: true,
       noScroll: true,
       invalidateAll: true,
