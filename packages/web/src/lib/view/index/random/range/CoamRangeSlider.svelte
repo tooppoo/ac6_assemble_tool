@@ -15,8 +15,8 @@
   let { class: className, candidates, onchange }: Props = $props()
 
   // state
-  const max = getMax()
-  let value: number = $state(max)
+  let max = $derived(getMax(candidates))
+  let value: number = $derived(max)
 
   // handle
   const onChange = (event: { value: number }) => {
@@ -26,24 +26,24 @@
   }
 
   // setup
-  function getMax(): number {
+  function getMax(c: Candidates): number {
     type WithPrice = Readonly<{ price: number }>
     const sortDesc = <T extends WithPrice>(xs: readonly T[]): readonly T[] =>
       xs.toSorted((a: WithPrice, b: WithPrice) => b.price - a.price)
 
     const total = sum(
       [
-        sortDesc(candidates.rightArmUnit)[0],
-        sortDesc(candidates.leftArmUnit)[0],
-        sortDesc(candidates.rightBackUnit)[0],
-        sortDesc(candidates.leftBackUnit)[0],
-        sortDesc(candidates.head)[0],
-        sortDesc(candidates.core)[0],
-        sortDesc(candidates.arms)[0],
-        sortDesc(candidates.legs)[0],
-        sortDesc(candidates.booster)[0],
-        sortDesc(candidates.fcs)[0],
-        sortDesc(candidates.generator)[0],
+        sortDesc(c.rightArmUnit)[0],
+        sortDesc(c.leftArmUnit)[0],
+        sortDesc(c.rightBackUnit)[0],
+        sortDesc(c.leftBackUnit)[0],
+        sortDesc(c.head)[0],
+        sortDesc(c.core)[0],
+        sortDesc(c.arms)[0],
+        sortDesc(c.legs)[0],
+        sortDesc(c.booster)[0],
+        sortDesc(c.fcs)[0],
+        sortDesc(c.generator)[0],
       ].map((p) => p.price),
     )
 
