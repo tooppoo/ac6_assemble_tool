@@ -90,7 +90,11 @@
       partsPool.candidates,
     )
 
-    applyPartsPoolState(result.partsPool)
+    partsPoolState = result.partsPool
+    initialCandidates = result.partsPool.candidates
+    candidates = result.partsPool.candidates
+    lockedParts = LockedParts.empty
+    randomAssembly = RandomAssembly.init({ limit: tryLimit })
     assembly = result.assembly
 
     if (result.migratedUrl) {
@@ -131,14 +135,6 @@
   })
 
   // handler
-  function applyPartsPoolState(pool: PartsPoolRestrictions) {
-    partsPoolState = pool
-    initialCandidates = pool.candidates
-    candidates = pool.candidates
-    lockedParts = LockedParts.empty
-    randomAssembly = RandomAssembly.init({ limit: tryLimit })
-  }
-
   const onChangeParts = (event: ChangePartsEvent) => {
     const result = changeAssembly(
       event.id,
