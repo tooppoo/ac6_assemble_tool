@@ -1,11 +1,7 @@
-<script lang="ts" context="module">
-  import type { ToggleOffCanvas } from '$lib/components/off-canvas/OffCanvas.svelte'
-</script>
-
 <script lang="ts">
   import IconButton from '$lib/components/button/IconButton.svelte'
   import TextButton from '$lib/components/button/TextButton.svelte'
-  import OffCanvas from '$lib/components/off-canvas/OffCanvas.svelte'
+  import OffCanvas, { type ToggleOffCanvas } from '$lib/components/off-canvas/OffCanvas.svelte'
   import i18n from '$lib/i18n/define'
   import ShareAssembly from '$lib/view/index/share/ShareAssembly.svelte'
 
