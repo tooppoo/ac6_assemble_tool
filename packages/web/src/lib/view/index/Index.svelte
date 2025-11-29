@@ -99,8 +99,6 @@
       partsPoolState = result.partsPool
       initialCandidates = result.partsPool.candidates
       candidates = result.partsPool.candidates
-      lockedParts = LockedParts.empty
-      randomAssembly = RandomAssembly.init({ limit: tryLimit })
       assembly = result.assembly
 
       if (result.migratedUrl) {
