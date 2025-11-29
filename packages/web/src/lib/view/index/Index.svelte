@@ -169,7 +169,7 @@
       return
     }
 
-    const url = new URL(location.href)
+    const url = page.url
     const assemblyQuery = assemblyToSearchV2(assembly)
 
     // 既存の非アセンブリパラメータ（lng等）を保持
@@ -191,7 +191,7 @@
       return
     }
 
-    const search = window.location.search
+    const search = page.url.search
     const target = `/parts-list${search}`
 
     void goto(target, { keepFocus: true }).catch((error) => {
