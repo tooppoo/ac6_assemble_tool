@@ -19,7 +19,7 @@
 
   let { assembly, reportAggregation, onSave: onSaveProp }: Props = $props()
 
-  let editingReportAggregation = $state(reportAggregation)
+  let editingReportAggregation = $derived(reportAggregation)
 
   function visibleStatus(
     report: Report,
