@@ -219,7 +219,9 @@ describe('bootstrap', () => {
       expect(result.migratedUrl).toBeDefined()
       expect(result.migratedUrl?.searchParams.get('v')).toBe('2')
 
-      expect(result.migratedUrl?.searchParams.get('head_parts')).toBe(`${allowedHeads.map((p) => p.id).join(',')}`)
+      expect(result.migratedUrl?.searchParams.get('head_parts')).toBe(
+        `${allowedHeads.map((p) => p.id).join(',')}`,
+      )
     })
   })
 })

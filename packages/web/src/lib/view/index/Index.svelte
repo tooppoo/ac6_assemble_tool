@@ -85,10 +85,7 @@
   })
 
   onMount(() => {
-    const result = bootstrap(
-      page.url,
-      partsPool.candidates,
-    )
+    const result = bootstrap(page.url, partsPool.candidates)
 
     partsPoolState = result.partsPool
     initialCandidates = result.partsPool.candidates

@@ -1,8 +1,14 @@
 import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 
-import { buildAssemblyFromQuery, mergeAssemblyParams } from './assembly-from-query'
-import { derivePartsPool, type PartsPoolRestrictions } from './derive-parts-pool'
+import {
+  buildAssemblyFromQuery,
+  mergeAssemblyParams,
+} from './assembly-from-query'
+import {
+  derivePartsPool,
+  type PartsPoolRestrictions,
+} from './derive-parts-pool'
 
 /**
  * ページ初期化処理の結果型
@@ -45,8 +51,7 @@ export function bootstrap(
       const url = new URL(currentUrl)
       mergeAssemblyParams(url.searchParams, migratedParams)
       return url
-    }
-    else {
+    } else {
       return undefined
     }
   })()
