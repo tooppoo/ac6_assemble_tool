@@ -75,6 +75,8 @@
   let openAssemblyStore = $state(false)
   let errorMessage = $state<string[]>([])
 
+  let navToPartsList = $derived(`/parts-list${page.url.search}`)
+
   const orderParts: OrderParts = defineOrder(orders)
 
   // svelte-ignore state_referenced_locally
@@ -164,11 +166,6 @@
   }
 
   function serializeAssemblyAsQuery() {
-    if (typeof window === 'undefined') {
-      // SSR時はデフォルトアセンブリを使用
-      return
-    }
-
     const url = page.url
     const assemblyQuery = assemblyToSearchV2(assembly)
 
@@ -183,21 +180,6 @@
       state: {
         initialized: true,
       },
-    })
-  }
-
-  const navigateToPartsList = () => {
-    if (typeof window === 'undefined') {
-      return
-    }
-
-    const search = page.url.search
-    const target = `/parts-list${search}`
-
-    void goto(target, { keepFocus: true }).catch((error) => {
-      logger.error('パーツ一覧ページへの遷移に失敗しました', {
-        error: error instanceof Error ? error.message : String(error),
-      })
     })
   }
 </script>
@@ -219,8 +201,8 @@
   <NavButton
     id="open-parts-list"
     class="me-3"
+    href={navToPartsList}
     title={$i18n.t('command.partsList.description', { ns: 'page/index' })}
-    onclick={navigateToPartsList}
   >
     {#snippet icon()}
       <i class="bi bi-funnel"></i>
