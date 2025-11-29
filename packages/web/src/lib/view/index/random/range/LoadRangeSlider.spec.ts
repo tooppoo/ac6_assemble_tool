@@ -8,7 +8,7 @@ import { fireEvent, render } from '@testing-library/svelte'
 import { tick } from 'svelte'
 import { describe, expect, it, vi } from 'vitest'
 
-import { initializeAssembly } from '../../interaction/initialize'
+import { initializeAssembly } from '../../interaction/assembly'
 
 import LoadRangeSlider from './LoadRangeSlider.test-wrapper.svelte'
 

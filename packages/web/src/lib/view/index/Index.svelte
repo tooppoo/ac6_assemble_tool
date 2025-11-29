@@ -1,4 +1,3 @@
-<svelte:options runes={true} />
 
 <script lang="ts">
   import TextButton from '$lib/components/button/TextButton.svelte'
@@ -34,11 +33,11 @@
     ToggleLockEvent,
   } from './form/PartsSelectForm.svelte'
   import PartsSelectForm from './form/PartsSelectForm.svelte'
+  import { initializeAssembly } from './interaction/assembly'
   import { mergeAssemblyParams } from './interaction/assembly-from-query'
   import { bootstrap } from './interaction/bootstrap'
   import type { PartsPoolRestrictions } from './interaction/derive-parts-pool'
   import { assemblyErrorMessage } from './interaction/error-message'
-  import { initializeAssembly } from './interaction/initialize'
   import RandomAssembleButton from './random/button/RandomAssembleButton.svelte'
   import RandomAssemblyOffCanvas, {
     type AssembleRandomly,
