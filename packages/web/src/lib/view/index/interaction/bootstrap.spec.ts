@@ -1,11 +1,10 @@
 import { latest as regulation } from '$lib/regulation'
 
 import { assemblyToSearchV2 } from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
-import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { bootstrap } from './bootstrap'
 import { initializeAssembly } from './initialize'
-import { base } from '$service-worker'
 
 describe('bootstrap', () => {
   const candidates = regulation.candidates

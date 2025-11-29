@@ -22,8 +22,7 @@ export interface PageBootstrapResult {
  * URLクエリからパーツプール制約を導出し、アセンブリを構築する。
  * 必要に応じてクエリパラメータをマイグレーションする。
  *
- * @param search - URLSearchParams の文字列表現（例: "?lng=ja&r_arm=..."）
- * @param currentUrl - 現在のURL（マイグレーション時の基底URL）
+ * @param currentUrl - 現在のURL（クエリパラメータとマイグレーション時の基底URLを含む）
  * @param basePartsPool - ベースとなるパーツプール候補
  * @returns 初期化結果（アセンブリ、パーツプール、マイグレーション後URL）
  */
@@ -31,14 +30,12 @@ export function bootstrap(
   currentUrl: URL,
   basePartsPool: Candidates,
 ): PageBootstrapResult {
-  const search = currentUrl.search
   // 1. パーツプール制約の導出
-  const derivedPool = derivePartsPool(search, basePartsPool)
+  const derivedPool = derivePartsPool(currentUrl.search, basePartsPool)
 
   // 2. アセンブリの構築（マイグレーション含む）
-  const params = new URLSearchParams(search)
   const { assembly, migratedParams } = buildAssemblyFromQuery(
-    params,
+    currentUrl.searchParams,
     derivedPool.candidates,
   )
 
