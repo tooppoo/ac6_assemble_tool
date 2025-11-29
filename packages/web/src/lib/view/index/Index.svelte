@@ -33,7 +33,7 @@
   } from './form/PartsSelectForm.svelte'
   import PartsSelectForm from './form/PartsSelectForm.svelte'
   import { initializeAssembly } from './interaction/assembly'
-  import { mergeAssemblyParams } from './interaction/assembly-from-query'
+  import { buildAssemblyFromQuery, mergeAssemblyParams } from './interaction/assembly-from-query'
   import { bootstrap } from './interaction/bootstrap'
   import type { PartsPoolRestrictions } from './interaction/derive-parts-pool'
   import { assemblyErrorMessage } from './interaction/error-message'
@@ -85,32 +85,43 @@
     navToPartsList = `/parts-list?${page.url.search}`
   })
 
-  afterNavigate(() => {
-    const result = bootstrap(page.url, partsPool.candidates)
+  let shouldSerializeAssembly = true
 
-    partsPoolState = result.partsPool
-    initialCandidates = result.partsPool.candidates
-    candidates = result.partsPool.candidates
-    lockedParts = LockedParts.empty
-    randomAssembly = RandomAssembly.init({ limit: tryLimit })
-    assembly = result.assembly
+  afterNavigate(({ type }) => {
+    logger.debug('afterNavigate: type', { type })
 
-    if (result.migratedUrl) {
-      logger.debug('migrated url', { bootstrapResult: result })
+    if (type === 'enter') {
+      // initialization on first load
+      const result = bootstrap(page.url, partsPool.candidates)
 
-      pushState(result.migratedUrl, {})
+      partsPoolState = result.partsPool
+      initialCandidates = result.partsPool.candidates
+      candidates = result.partsPool.candidates
+      lockedParts = LockedParts.empty
+      randomAssembly = RandomAssembly.init({ limit: tryLimit })
+      assembly = result.assembly
+
+      if (result.migratedUrl) {
+        logger.debug('migrated url', { bootstrapResult: result })
+
+        pushState(result.migratedUrl, {})
+      }
+
+      logger.debug('initialized')
+      serializeAssembly.enable()
     }
-
-    logger.debug('initialized', assembly)
-    serializeAssembly.enable()
   })
 
   $effect(() => {
-    logger.debug('serialize assembly', {
-      query: assemblyToSearchV2(assembly).toString(),
-    })
+    assembly // watch assembly changes
 
-    serializeAssembly.run()
+    if (shouldSerializeAssembly) {
+      logger.debug('assembly changed, serialize to URL')
+      serializeAssembly.run()
+    }
+    else {
+      shouldSerializeAssembly = true
+    }
   })
 
   // handler
@@ -142,16 +153,37 @@
     }
   }
 
+  const onPopstate = () => {
+    shouldSerializeAssembly = false
+
+    // re-create from URL state on back/forward navigation
+    logger.debug('on popstate', {
+      search: page.url.search,
+    })
+    const result = buildAssemblyFromQuery(
+      page.url.searchParams,
+      partsPoolState.candidates,
+    )
+
+    assembly = result.assembly
+  }
+
   function serializeAssemblyAsQuery() {
-    const url = page.url
+    const url = new URL(page.url)
     const assemblyQuery = assemblyToSearchV2(assembly)
 
     // 既存の非アセンブリパラメータ（lng等）を保持
     mergeAssemblyParams(url.searchParams, assemblyQuery)
 
+    logger.debug('serializeAssemblyAsQuery', {
+      url: url.toString(),
+    })
+
     pushState(url, {})
   }
 </script>
+
+<svelte:window onpopstate={onPopstate} />
 
 <Navbar>
   <NavButton
