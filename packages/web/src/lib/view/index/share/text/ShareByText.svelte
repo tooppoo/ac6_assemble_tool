@@ -8,13 +8,19 @@
   } from '$lib/view/index/interaction/share'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
+  import type { HTMLAttributes } from 'svelte/elements'
 
-  export let id: string
-  export let assembly: () => Assembly
-  export let prefix: () => string
+  type Props = {
+    id: string
+    assembly: () => Assembly
+    prefix: () => string
+    class?: string
+  } & Omit<HTMLAttributes<HTMLElement>, 'class' | 'id' | 'prefix'>
 
-  let copyAsText: () => void = defaultCopyAsText
-  let targetButton: HTMLButtonElement
+  let { id, assembly, prefix, class: className = '' }: Props = $props()
+
+  let copyAsText = $state<() => void>(defaultCopyAsText)
+  let targetButton: HTMLButtonElement | undefined = $state(undefined)
 
   // handler
   function onCopy() {
@@ -37,25 +43,25 @@ ${stringifyStatus(assembly(), $i18n)}`
 
 <div
   {id}
-  class="d-flex justify-content-begin align-items-center {$$props.class}"
+  class={`d-flex justify-content-begin align-items-center ${className}`.trim()}
 >
   <div class="share-label me-3">
     {$i18n.t('share:command.text.caption')}
     <Switch
       id={`${id}-share-by-text-switch`}
-      on:enabled={() => (copyAsText = copyAsTextWithStatus)}
-      on:disabled={() => (copyAsText = defaultCopyAsText)}
+      onEnabled={() => (copyAsText = copyAsTextWithStatus)}
+      onDisabled={() => (copyAsText = defaultCopyAsText)}
     >
       {$i18n.t('share:command.text.withStatus')}
     </Switch>
   </div>
   <div class="share-button">
     <button
-      id="{id}-share-assembly-as-text"
+      id={`${id}-share-assembly-as-text`}
       class="btn btn-dark border-secondary"
       aria-label={$i18n.t('share:command.text.ariaLabel')}
       bind:this={targetButton}
-      on:click={onCopy}
+      onclick={onCopy}
     >
       <i class="bi bi-clipboard"></i>
     </button>

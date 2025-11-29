@@ -1,26 +1,25 @@
-<script lang="ts" context="module">
+<script lang="ts">
+  import IconButton from '$lib/components/button/IconButton.svelte'
+  import i18n, { type I18Next } from '$lib/i18n/define'
   import type {
     ReportAggregation,
     Report,
   } from '$lib/view/index/report/model/report'
-  export type SaveAggregation = Readonly<{ target: ReportAggregation }>
-</script>
-
-<script lang="ts">
-  import IconButton from '$lib/components/button/IconButton.svelte'
-  import i18n, { type I18Next } from '$lib/i18n/define'
   import ReportItem from '$lib/view/index/report/ReportItem.svelte'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
-  import type { EmptyObject } from '@ac6_assemble_tool/core/utils/type'
-  import { createEventDispatcher } from 'svelte'
 
-  // state
-  export let assembly: Assembly
-  export let reportAggregation: ReportAggregation
+  export type SaveAggregation = Readonly<{ target: ReportAggregation }>
 
-  let editingReportAggregation: ReportAggregation
-  $: editingReportAggregation = reportAggregation
+  type Props = {
+    assembly: Assembly
+    reportAggregation: ReportAggregation
+    onSave?: (payload: SaveAggregation) => void
+  }
+
+  let { assembly, reportAggregation, onSave: onSaveProp }: Props = $props()
+
+  let editingReportAggregation = $derived(reportAggregation)
 
   function visibleStatus(
     report: Report,
@@ -49,17 +48,11 @@
   }
 
   function onSave() {
-    dispatch('save', { target: editingReportAggregation })
+    onSaveProp?.({ target: editingReportAggregation })
   }
   function onReset() {
-    dispatch('reset', {})
+    editingReportAggregation = reportAggregation
   }
-
-  const dispatch = createEventDispatcher<{
-    save: SaveAggregation
-    reset: EmptyObject
-    showAll: SaveAggregation
-  }>()
 </script>
 
 <div class="d-flex justify-content-end">
@@ -68,21 +61,21 @@
     class="bi bi-eye me-3"
     title={$i18n.t('command.report.showAll', { ns: 'page/index' })}
     clickable={true}
-    on:click={showAll}
+    onclick={showAll}
   />
   <IconButton
     id="reset-report-status"
     class="bi bi-arrow-counterclockwise me-3"
     title={$i18n.t('command.report.reset', { ns: 'page/index' })}
     clickable={true}
-    on:click={onReset}
+    onclick={onReset}
   />
   <IconButton
     id="save-report-status"
     class="bi bi-check-square-fill text-info me-3"
     title={$i18n.t('command.report.save', { ns: 'page/index' })}
     clickable={true}
-    on:click={onSave}
+    onclick={onSave}
   />
 </div>
 <hr />
@@ -102,7 +95,7 @@
             class={`toggle-visible bi ${visibleStatus(report, $i18n).class}`}
             title={visibleStatus(report, $i18n).title}
             clickable={true}
-            on:click={() => editReport(block.id, report.toggleShow())}
+            onclick={() => editReport(block.id, report.toggleShow())}
           />
           <ReportItem
             caption={$i18n.t(report.key, { ns: 'assembly' })}

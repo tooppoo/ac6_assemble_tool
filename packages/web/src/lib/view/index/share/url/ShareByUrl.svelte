@@ -2,9 +2,16 @@
   import ClickToggleTooltip from '$lib/components/tooltip/ClickToggleTooltip.svelte'
   import i18n from '$lib/i18n/define'
 
-  export let id: string
+  import type { HTMLAttributes } from 'svelte/elements'
 
-  let targetButton: HTMLElement
+  type Props = {
+    id: string
+    class?: string
+  } & Omit<HTMLAttributes<HTMLElement>, 'class' | 'id'>
+
+  let { id, class: className = '' }: Props = $props()
+
+  let targetButton: HTMLButtonElement | undefined = $state(undefined)
 
   function onClick() {
     navigator.clipboard.writeText(location.href)
@@ -13,18 +20,18 @@
 
 <div
   {id}
-  class="d-flex justify-content-begin align-items-center {$$props.class}"
+  class={`d-flex justify-content-begin align-items-center ${className}`.trim()}
 >
   <div class="share-label me-3">
     {$i18n.t('share:command.url.caption')}
   </div>
   <div class="share-button">
     <button
-      id="{id}-share-assembly-as-link"
+      id={`${id}-share-assembly-as-link`}
       class="btn btn-dark border-secondary"
       aria-label={$i18n.t('share:command.url.ariaLabel')}
       bind:this={targetButton}
-      on:click={onClick}
+      onclick={onClick}
     >
       <i class="bi bi-link"></i>
     </button>

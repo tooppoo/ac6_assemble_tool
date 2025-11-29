@@ -1,10 +1,9 @@
 ---
 name: ui-designer
 description: For implementing Web UIs requiring accessibility compliance, mobile-first responsive design, or internationalization support
-model: sonnet
+model: haiku
 color: blue
 ---
-
 
 # UI Design Subagent
 

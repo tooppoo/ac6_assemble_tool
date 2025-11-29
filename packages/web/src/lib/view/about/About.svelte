@@ -3,12 +3,20 @@
     type InfoTocItem,
   } from '$lib/view/info/Information.svelte'
 
-  export let tocItems: readonly InfoTocItem[]
-  export let heroTitle: string
-  export let heroLead: string
-
-  export let tocNavigationLabel: string = 'Page navigation'
-  export let tocHeadingLabel: string = 'Sections'
+  interface Props {
+    tocItems: readonly InfoTocItem[]
+    heroTitle: string
+    heroLead: string
+    tocNavigationLabel?: string
+    tocHeadingLabel?: string
+  }
+  let {
+    tocItems,
+    heroTitle,
+    heroLead,
+    tocNavigationLabel = 'Page navigation',
+    tocHeadingLabel = 'Sections',
+  }: Props = $props()
 </script>
 
 <InfoPageLayout

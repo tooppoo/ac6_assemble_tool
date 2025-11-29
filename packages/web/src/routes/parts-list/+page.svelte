@@ -11,17 +11,20 @@
   import type { PageData } from './+page'
 
   import { browser } from '$app/environment'
+  import { page } from '$app/state'
 
   // ページデータ
-  export let data: PageData
+  interface Props {
+    data: PageData
+  }
+  let { data }: Props = $props()
 
   const { regulation } = data
 
   // URLSearchParamsを取得
-  let searchParams: URLSearchParams | undefined = undefined
-  if (browser) {
-    searchParams = new URLSearchParams(window.location.search)
-  }
+  let searchParams = $derived(
+    browser ? new URLSearchParams(page.url.search) : undefined,
+  )
 </script>
 
 <svelte:head>

@@ -1,23 +1,39 @@
 <script lang="ts">
   import { Tooltip } from '@sveltestrap/sveltestrap'
-  import { createEventDispatcher } from 'svelte'
+  import { type Snippet } from 'svelte'
   import type { Action } from 'svelte/action'
+  import type { HTMLAttributes } from 'svelte/elements'
 
-  export let id: string
-  export let action: Action = () => {}
-  export let tooltipText: string = ''
+  type Props = {
+    id: string
+    type?: 'button' | 'submit' | 'reset' | null
+    action?: Action
+    tooltipText?: string
+    onclick?: () => void
+    children?: Snippet
+  } & HTMLAttributes<HTMLButtonElement>
 
-  const dispatch = createEventDispatcher<{ click: null }>()
+  let {
+    id,
+    type = 'button',
+    class: className = '',
+    action = () => {},
+    tooltipText = '',
+    children,
+    onclick,
+    ...restProps
+  }: Props = $props()
 </script>
 
 <button
   {id}
-  {...$$restProps}
-  class={`${$$props.class || ''} btn btn-secondary bg-dark-subtle`}
-  on:click={() => dispatch('click')}
+  {type}
+  class={`${className} btn btn-secondary bg-dark-subtle`}
+  {onclick}
   use:action
+  {...restProps}
 >
-  <slot></slot>
+  {@render children?.()}
 </button>
 {#if tooltipText}
   <Tooltip target={id}>

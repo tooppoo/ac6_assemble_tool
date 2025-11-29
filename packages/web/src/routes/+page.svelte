@@ -4,7 +4,10 @@
 
   import { type PageData } from './+page'
 
-  export let data: PageData
+  interface Props {
+    data: PageData
+  }
+  let { data }: Props = $props()
 
   const { regulation, partsPool } = data
 </script>

@@ -24,16 +24,14 @@
     'toggle-lock': { id: string; value: boolean }
   }>()
 
-  const forwardChange = (event: CustomEvent<{ value: number }>) => {
-    dispatch('change', event.detail)
-    onChange?.(event.detail)
+  const forwardChange = (event: { value: number }) => {
+    dispatch('change', event)
+    onChange?.(event)
   }
 
-  const forwardToggleLock = (
-    event: CustomEvent<{ id: string; value: boolean }>,
-  ) => {
-    dispatch('toggle-lock', event.detail)
-    onToggleLock?.(event.detail)
+  const forwardToggleLock = (event: { id: string; value: boolean }) => {
+    dispatch('toggle-lock', event)
+    onToggleLock?.(event)
   }
 </script>
 
@@ -41,6 +39,6 @@
   {candidates}
   {assembly}
   {lock}
-  on:change={forwardChange}
-  on:toggle-lock={forwardToggleLock}
+  onChange={forwardChange}
+  onToggleLock={forwardToggleLock}
 />
