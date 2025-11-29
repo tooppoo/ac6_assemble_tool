@@ -24,10 +24,11 @@
   // handler
   $effect(() => {
     targetEl?.addEventListener('click', handleClickTargetElement)
-  })
-  onDestroy(() => {
-    targetEl?.removeEventListener('click', handleClickTargetElement)
-    clearTimeout(tooltipTimer)
+
+    return () => {
+      targetEl?.removeEventListener('click', handleClickTargetElement)
+      clearTimeout(tooltipTimer)
+    }
   })
 
   function handleClickTargetElement() {
