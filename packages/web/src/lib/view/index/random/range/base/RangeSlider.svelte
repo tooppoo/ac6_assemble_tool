@@ -38,9 +38,7 @@
   })
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (ev) => {
-    value = parseInt(ev.currentTarget.value)
-
-    onchange?.({ value })
+    onchange?.({ value: parseInt(ev.currentTarget.value) })
   }
 </script>
 

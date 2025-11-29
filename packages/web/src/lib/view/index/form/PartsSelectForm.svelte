@@ -76,7 +76,7 @@
       id={`select-${id}`}
       class="col-12 col-sm-7 fs-4"
       disabled={lock.isLocking(id)}
-      bind:value={selected}
+      value={selected}
       onchange={onChange}
     >
       {#each parts as p (p.name)}
