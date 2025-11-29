@@ -22,7 +22,9 @@
   const { regulation } = data
 
   // URLSearchParamsを取得
-  let searchParams = $derived(browser ? new URLSearchParams(page.url.search) : undefined)
+  let searchParams = $derived(
+    browser ? new URLSearchParams(page.url.search) : undefined,
+  )
 </script>
 
 <svelte:head>

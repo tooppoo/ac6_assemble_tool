@@ -1,4 +1,3 @@
-
 <script lang="ts">
   import TextButton from '$lib/components/button/TextButton.svelte'
   import LanguageForm from '$lib/components/language/LanguageForm.svelte'
@@ -33,7 +32,10 @@
   } from './form/PartsSelectForm.svelte'
   import PartsSelectForm from './form/PartsSelectForm.svelte'
   import { initializeAssembly } from './interaction/assembly'
-  import { buildAssemblyFromQuery, mergeAssemblyParams } from './interaction/assembly-from-query'
+  import {
+    buildAssemblyFromQuery,
+    mergeAssemblyParams,
+  } from './interaction/assembly-from-query'
   import { bootstrap } from './interaction/bootstrap'
   import type { PartsPoolRestrictions } from './interaction/derive-parts-pool'
   import { assemblyErrorMessage } from './interaction/error-message'
@@ -113,14 +115,13 @@
   })
 
   $effect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     assembly // watch assembly changes
 
     if (shouldSerializeAssembly) {
       logger.debug('assembly changed, serialize to URL')
       serializeAssembly.run()
-    }
-    else {
+    } else {
       shouldSerializeAssembly = true
     }
   })

@@ -2,7 +2,7 @@
   // Clickで表示/非表示が切り替わるTooltip
 
   import { Tooltip } from '@sveltestrap/sveltestrap'
-  import { onDestroy, type Snippet } from 'svelte'
+  import { type Snippet } from 'svelte'
 
   interface Props {
     target: HTMLElement | string
