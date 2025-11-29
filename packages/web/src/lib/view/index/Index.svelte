@@ -26,7 +26,6 @@
   } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import { logger } from '@ac6_assemble_tool/shared/logger'
-  import { onMount } from 'svelte'
 
   import type {
     ChangePartsEvent,
@@ -47,7 +46,7 @@
   import ShareAssembly from './share/ShareAssembly.svelte'
   import StoreAssembly from './store/StoreAssembly.svelte'
 
-  import { goto } from '$app/navigation'
+  import { afterNavigate, pushState } from '$app/navigation'
   import { page } from '$app/state'
 
   const tryLimit = 3000
@@ -75,7 +74,7 @@
   let openAssemblyStore = $state(false)
   let errorMessage = $state<string[]>([])
 
-  let navToPartsList = $derived(`/parts-list${page.url.search}`)
+  let navToPartsList = $state(`/parts-list`)
 
   const orderParts: OrderParts = defineOrder(orders)
 
@@ -83,9 +82,10 @@
   let assembly = $state<Assembly>(initializeAssembly(candidates))
   const serializeAssembly = useWithEnableState(() => {
     serializeAssemblyAsQuery()
+    navToPartsList = `/parts-list?${page.url.search}`
   })
 
-  onMount(() => {
+  afterNavigate(() => {
     const result = bootstrap(page.url, partsPool.candidates)
 
     partsPoolState = result.partsPool
@@ -96,15 +96,9 @@
     assembly = result.assembly
 
     if (result.migratedUrl) {
-      void goto(result.migratedUrl, {
-        replaceState: true,
-        keepFocus: true,
-        noScroll: true,
-        invalidateAll: true,
-        state: {
-          initialized: true,
-        },
-      })
+      logger.debug('migrated url', { bootstrapResult: result })
+
+      pushState(result.migratedUrl, {})
     }
 
     logger.debug('initialized', assembly)
@@ -112,25 +106,11 @@
   })
 
   $effect(() => {
-    if (!initialCandidates) {
-      return
-    }
-    logger.debug('update candidates', { lockedParts })
+    logger.debug('serialize assembly', {
+      query: assemblyToSearchV2(assembly).toString(),
+    })
 
-    updateCandidates()
-  })
-
-  $effect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    assembly // watch assembly changes
-
-    if (serializeAssembly.isEnabled()) {
-      logger.debug('replace state', {
-        query: assemblyToSearchV2(assembly).toString(),
-      })
-
-      serializeAssembly.run()
-    }
+    serializeAssembly.run()
   })
 
   // handler
@@ -156,12 +136,9 @@
     lockedParts = event.value
       ? lockedParts.lock(event.id, assembly[event.id])
       : lockedParts.unlock(event.id)
-  }
 
-  const updateCandidates = () => {
-    const filtered = lockedParts.filter(initialCandidates)
     candidates = {
-      ...filtered,
+      ...lockedParts.filter(initialCandidates),
     }
   }
 
@@ -172,15 +149,7 @@
     // 既存の非アセンブリパラメータ（lng等）を保持
     mergeAssemblyParams(url.searchParams, assemblyQuery)
 
-    goto(url, {
-      replaceState: false,
-      keepFocus: true,
-      noScroll: true,
-      invalidateAll: true,
-      state: {
-        initialized: true,
-      },
-    })
+    pushState(url, {})
   }
 </script>
 
