@@ -71,7 +71,9 @@ ${target.description}
 `
 
   // handler
-  function onSubmitNewAssembly() {
+  function onSubmitNewAssembly(event: Event) {
+    event.preventDefault()
+
     const aggregation = createAggregation({
       name: newName,
       description: newDescription,
