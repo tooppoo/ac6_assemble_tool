@@ -8,8 +8,6 @@
   import LanguageForm from '$lib/components/language/LanguageForm.svelte'
   import PartsListView from '$lib/view/parts-list/PartsListView.svelte'
 
-  import { branch } from 'ceiocs'
-
   import type { PageData } from './+page'
 
   import { browser } from '$app/environment'
@@ -24,11 +22,7 @@
   const { regulation } = data
 
   // URLSearchParamsを取得
-  let searchParams = branch
-    .if<
-      URLSearchParams | undefined
-    >(browser, () => new URLSearchParams(page.url.search))
-    .else(() => undefined)
+  let searchParams = $derived(browser ? new URLSearchParams(page.url.search) : undefined)
 </script>
 
 <svelte:head>

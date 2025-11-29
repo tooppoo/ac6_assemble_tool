@@ -6,7 +6,7 @@
     class?: string
     children?: Snippet
   }
-  let { id, class: className, children }: Props = $props()
+  let { id, class: className = '', children }: Props = $props()
 </script>
 
 <section
