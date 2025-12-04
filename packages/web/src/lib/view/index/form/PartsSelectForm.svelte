@@ -76,11 +76,11 @@
       id={`select-${id}`}
       class="col-12 col-sm-7 fs-4"
       disabled={lock.isLocking(id)}
-      value={selected}
+      bind:value={selected}
       onchange={onChange}
     >
       {#each parts as p (p.name)}
-        <option value={p} selected={selected.name === p.name}>{p.name}</option>
+        <option value={p}>{p.name}</option>
       {/each}
     </select>
   </div>

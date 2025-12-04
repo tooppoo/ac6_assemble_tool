@@ -78,6 +78,8 @@
 
   let navToPartsList = $state(`/parts-list`)
 
+  let queuedUrl: URL | null = null
+
   const orderParts: OrderParts = defineOrder(orders)
 
   // svelte-ignore state_referenced_locally
@@ -85,6 +87,10 @@
   const serializeAssembly = useWithEnableState(() => {
     serializeAssemblyAsQuery()
     navToPartsList = `/parts-list?${page.url.search}`
+    if (queuedUrl) {
+      pushState(queuedUrl, {})
+      queuedUrl = null
+    }
   })
 
   let shouldSerializeAssembly = true
@@ -104,7 +110,11 @@
       if (result.migratedUrl) {
         logger.debug('migrated url', { bootstrapResult: result })
 
-        pushState(result.migratedUrl, {})
+        if (serializeAssembly.isEnabled()) {
+          serializeAssembly.run()
+        } else {
+          queuedUrl = result.migratedUrl
+        }
       }
 
       logger.debug('initialized')
