@@ -77,7 +77,7 @@ export function deriveAvailableCandidates({
 }
 
 function assertNonEmpty(candidates: Candidates) {
-  (Object.keys(candidates) as Array<keyof Candidates>).forEach((key) => {
+  ;(Object.keys(candidates) as Array<keyof Candidates>).forEach((key) => {
     if (candidates[key]?.length === 0) {
       throw new Error(`${ERROR_EMPTY}: ${String(key)}`)
     }

@@ -1,4 +1,3 @@
-
 import { createAssembly } from '#core/assembly/assembly'
 import { LockedParts } from '#core/assembly/random/lock'
 
@@ -12,7 +11,7 @@ import { deriveAvailableCandidates } from './derive-candidates'
 
 const equippedBooster = initialCandidates.booster.find(
   (b): b is Booster => b.classification !== notEquipped,
-)!;
+)!
 
 const sampleAssembly = createAssembly({
   rightArmUnit: initialCandidates.rightArmUnit[0]!,
@@ -45,9 +44,7 @@ describe('deriveAvailableCandidates', () => {
 
     expect(candidates.booster).toHaveLength(1)
     expect(candidates.booster[0]?.classification).toBe(notEquipped)
-    expect(
-      candidates.legs.some((l) => l.category === 'tank'),
-    ).toBe(true)
+    expect(candidates.legs.some((l) => l.category === 'tank')).toBe(true)
   })
 
   it('ブースターNotEquippedがロックされている場合、脚候補はタンクのみ', () => {
@@ -63,15 +60,15 @@ describe('deriveAvailableCandidates', () => {
   })
 
   it('ブースターNotEquippedが非ロックの場合、脚候補は全脚', () => {
-  const boosterFree = createAssembly({
-    ...sampleAssembly,
-    legs: initialCandidates.legs.find((l) => l.category === 'tank')!,
-    booster: boosterNotEquipped,
-  })
+    const boosterFree = createAssembly({
+      ...sampleAssembly,
+      legs: initialCandidates.legs.find((l) => l.category === 'tank')!,
+      booster: boosterNotEquipped,
+    })
 
-  const candidates = deriveAvailableCandidates({
-    assembly: boosterFree,
-    lockedParts: LockedParts.empty,
+    const candidates = deriveAvailableCandidates({
+      assembly: boosterFree,
+      lockedParts: LockedParts.empty,
       initialCandidates,
     })
 

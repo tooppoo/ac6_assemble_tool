@@ -7,6 +7,7 @@ import { it, fc, test } from '@fast-check/vitest'
 import { describe, expect } from 'vitest'
 
 import { deriveAvailableCandidates } from '../availability/derive-candidates'
+
 import { LockedParts } from './lock'
 
 import {
@@ -96,9 +97,7 @@ describe(LockedParts.name, () => {
     describe('with not-equipped', () => {
       it.prop([
         genLockedParts(),
-        genCandidates().filter((c) =>
-          c.legs.some((l) => l.category === tank),
-        ),
+        genCandidates().filter((c) => c.legs.some((l) => l.category === tank)),
       ])(
         'restrict legs to tank and booster to not-equipped',
         ({ lockedParts }, candidates) => {
@@ -119,9 +118,7 @@ describe(LockedParts.name, () => {
     describe('with equipped', () => {
       it.prop([
         genLockedParts(),
-        genCandidates().filter((c) =>
-          c.legs.some((l) => l.category !== tank),
-        ),
+        genCandidates().filter((c) => c.legs.some((l) => l.category !== tank)),
       ])(
         'allow non-tank legs and equipped boosters only',
         ({ lockedParts }, candidates) => {
@@ -191,24 +188,19 @@ describe(LockedParts.name, () => {
       it.prop([
         fc.constant({ lockedParts: LockedParts.empty }),
         genLeg().filter((l) => l.category === 'tank'),
-        genCandidates().filter((c) =>
-          c.legs.some((l) => l.category === tank),
-        ),
-      ])(
-        'booster should not be equipped',
-        (_ctx, legs, candidates) => {
-          const filtered = deriveAvailableCandidates({
-            assembly: { legs },
-            lockedParts: LockedParts.empty.lock('legs', legs),
-            initialCandidates: candidates,
-          })
+        genCandidates().filter((c) => c.legs.some((l) => l.category === tank)),
+      ])('booster should not be equipped', (_ctx, legs, candidates) => {
+        const filtered = deriveAvailableCandidates({
+          assembly: { legs },
+          lockedParts: LockedParts.empty.lock('legs', legs),
+          initialCandidates: candidates,
+        })
 
-          expect(filtered).toMatchObject({
-            ...candidates,
-            booster: [boosterNotEquipped],
-          })
-        },
-      )
+        expect(filtered).toMatchObject({
+          ...candidates,
+          booster: [boosterNotEquipped],
+        })
+      })
     })
     describe('with not tank', () => {
       it.prop([
@@ -219,23 +211,20 @@ describe(LockedParts.name, () => {
             c.legs.some((l) => l.category !== 'tank') &&
             c.booster.some((b) => b.classification !== notEquipped),
         ),
-      ])(
-        'booster should not be equipped',
-        (_ctx, legs, candidates) => {
-          const filtered = deriveAvailableCandidates({
-            assembly: { legs },
-            lockedParts: LockedParts.empty.lock('legs', legs),
-            initialCandidates: candidates,
-          })
+      ])('booster should not be equipped', (_ctx, legs, candidates) => {
+        const filtered = deriveAvailableCandidates({
+          assembly: { legs },
+          lockedParts: LockedParts.empty.lock('legs', legs),
+          initialCandidates: candidates,
+        })
 
-          expect(filtered).toMatchObject({
-            ...candidates,
-            booster: candidates.booster.filter(
-              (b) => b.classification !== notEquipped,
-            ),
-          })
-        },
-      )
+        expect(filtered).toMatchObject({
+          ...candidates,
+          booster: candidates.booster.filter(
+            (b) => b.classification !== notEquipped,
+          ),
+        })
+      })
     })
   })
 })

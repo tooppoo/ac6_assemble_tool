@@ -75,7 +75,11 @@ export class RandomAssembly {
     const opt = { ...defaultRandomBuildOption, ...option }
 
     try {
-      for (this.tryCount = 0; this.tryCount < this.config.limit; this.tryCount += 1) {
+      for (
+        this.tryCount = 0;
+        this.tryCount < this.config.limit;
+        this.tryCount += 1
+      ) {
         const built = randomBuild(candidates, opt)
         const validated = this.validate(built)
 

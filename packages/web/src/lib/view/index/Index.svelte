@@ -13,6 +13,7 @@
     assemblyKeys,
     spaceByWord,
   } from '@ac6_assemble_tool/core/assembly/assembly'
+  import { deriveAvailableCandidates } from '@ac6_assemble_tool/core/assembly/availability/derive-candidates'
   import { changeAssemblyCommand } from '@ac6_assemble_tool/core/assembly/command/change-assembly'
   import { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
   import { RandomAssembly } from '@ac6_assemble_tool/core/assembly/random/random-assembly'
@@ -25,7 +26,6 @@
   } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import { logger } from '@ac6_assemble_tool/shared/logger'
-  import { deriveAvailableCandidates } from '@ac6_assemble_tool/core/assembly/availability/derive-candidates'
 
   import type {
     ChangePartsEvent,

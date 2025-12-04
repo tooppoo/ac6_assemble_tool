@@ -1,9 +1,7 @@
 import type { AssemblyKey, RawAssembly } from '#core/assembly/assembly'
 
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
-import {
-  notEquipped,
-} from '@ac6_assemble_tool/parts/types/base/classification'
+import { notEquipped } from '@ac6_assemble_tool/parts/types/base/classification'
 
 type LockedPartsMap = {
   [P in AssemblyKey]?: RawAssembly[P]
@@ -76,7 +74,9 @@ export class LockedParts {
     const boosterIsNotEquipped = boosterPart.classification === notEquipped
     const legsIsTank = legsPart.category === tank
 
-    return (boosterIsNotEquipped && legsIsTank) || (!boosterIsNotEquipped && !legsIsTank)
+    return (
+      (boosterIsNotEquipped && legsIsTank) ||
+      (!boosterIsNotEquipped && !legsIsTank)
+    )
   }
-
 }

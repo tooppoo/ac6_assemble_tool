@@ -11,6 +11,7 @@ import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 import { random } from '@ac6_assemble_tool/shared/array'
 
 import { deriveAvailableCandidates } from '../availability/derive-candidates'
+
 import { LockedParts } from './lock'
 
 export type RandomBuildOption = Readonly<{
