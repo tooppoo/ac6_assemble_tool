@@ -1,6 +1,5 @@
 import type { AssemblyKey, RawAssembly } from '#core/assembly/assembly'
 
-import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import {
   notEquipped,
