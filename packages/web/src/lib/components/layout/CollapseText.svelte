@@ -2,17 +2,15 @@
   import type { Snippet } from 'svelte'
 
   interface Props {
-    summary?: string
+    summary: string
     children: Snippet
   }
 
-  let { summary = '', children }: Props = $props()
+  let { summary, children }: Props = $props()
 </script>
 
 <details>
-  {#if summary.length > 0}
-    <summary>{summary}</summary>
-  {/if}
+  <summary>{summary}</summary>
 
   {@render children()}
 </details>
