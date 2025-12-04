@@ -186,7 +186,7 @@
           </a>
         </div>
         <div>
-          Source on 
+          Source on
           <a
             id="link-to-src"
             href="https://github.com/tooppoo/ac6_assemble_tool/"

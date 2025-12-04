@@ -1,9 +1,8 @@
 # @ac6_assemble_tool/core
 
 ## 1.3.0
+
 ### Minor Changes
-
-
 
 - [#956](https://github.com/tooppoo/ac6_assemble_tool/pull/956) [`5cd41c5`](https://github.com/tooppoo/ac6_assemble_tool/commit/5cd41c5ee5ce089e5591c2278b4b519cd0c01e03) Thanks [@tooppoo](https://github.com/tooppoo)! - fix parts locking bug
 
