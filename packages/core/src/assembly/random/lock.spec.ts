@@ -56,18 +56,40 @@ describe(LockedParts.name, () => {
   })
 
   describe('when lock booster', () => {
-    const genBooster = () =>
-      fc.oneof(
-        fc
-          .integer({ min: 0, max: candidates.booster.length - 1 })
-          .map((i) => candidates.booster[i]),
-      )
+    const tankLeg = candidates.legs.find((l) => l.category === tank)!
+    const notTankLeg = candidates.legs.find((l) => l.category !== tank)!
+    const equippedBooster = candidates.booster.find(
+      (b) => b.classification !== notEquipped,
+    )!
 
-    it.prop([
-      genLockedParts(),
-      fc.oneof(fc.constant(boosterNotEquipped), genBooster()),
-    ])('not lock legs', ({ lockedParts }, booster) => {
-      expect(lockedParts.lock('booster', booster).isLocking('legs')).toBe(false)
+    it('keeps compatible legs lock when booster is not equipped', () => {
+      const withLeg = LockedParts.empty.lock('legs', tankLeg)
+      const result = withLeg.lock('booster', boosterNotEquipped)
+
+      expect(result.isLocking('legs')).toBe(true)
+      expect(result.get('legs', () => notTankLeg)).toEqual(tankLeg)
+    })
+
+    it('drops incompatible legs lock when booster is not equipped', () => {
+      const withLeg = LockedParts.empty.lock('legs', notTankLeg)
+      const result = withLeg.lock('booster', boosterNotEquipped)
+
+      expect(result.isLocking('legs')).toBe(false)
+    })
+
+    it('keeps compatible legs lock when booster is equipped', () => {
+      const withLeg = LockedParts.empty.lock('legs', notTankLeg)
+      const result = withLeg.lock('booster', equippedBooster)
+
+      expect(result.isLocking('legs')).toBe(true)
+      expect(result.get('legs', () => tankLeg)).toEqual(notTankLeg)
+    })
+
+    it('drops incompatible legs lock when booster is equipped', () => {
+      const withLeg = LockedParts.empty.lock('legs', tankLeg)
+      const result = withLeg.lock('booster', equippedBooster)
+
+      expect(result.isLocking('legs')).toBe(false)
     })
 
     describe('with not-equipped', () => {
@@ -110,12 +132,38 @@ describe(LockedParts.name, () => {
           .map((i) => candidates.legs[i]),
       )
 
-    it.prop([genLockedParts(), genLeg()])(
-      'not lock booster',
-      ({ lockedParts }, legs) => {
-        expect(lockedParts.lock('legs', legs).isLocking('booster')).toBe(false)
-      },
-    )
+    const tankLeg = candidates.legs.find((l) => l.category === 'tank')!
+    const notTankLeg = candidates.legs.find((l) => l.category !== 'tank')!
+    const equippedBooster = candidates.booster.find(
+      (b) => b.classification !== notEquipped,
+    )!
+
+    it('drops incompatible booster lock when locking tank legs', () => {
+      const withBooster = LockedParts.empty.lock('booster', equippedBooster)
+      const result = withBooster.lock('legs', tankLeg)
+
+      expect(result.isLocking('booster')).toBe(false)
+    })
+
+    it('keeps compatible booster lock when locking tank legs', () => {
+      const withBooster = LockedParts.empty.lock('booster', boosterNotEquipped)
+      const result = withBooster.lock('legs', tankLeg)
+
+      expect(result.isLocking('booster')).toBe(true)
+      expect(result.get('booster', () => equippedBooster)).toEqual(
+        boosterNotEquipped,
+      )
+    })
+
+    it('keeps compatible booster lock when locking non-tank legs', () => {
+      const withBooster = LockedParts.empty.lock('booster', equippedBooster)
+      const result = withBooster.lock('legs', notTankLeg)
+
+      expect(result.isLocking('booster')).toBe(true)
+      expect(result.get('booster', () => boosterNotEquipped)).toEqual(
+        equippedBooster,
+      )
+    })
 
     describe('with tank', () => {
       it.prop([

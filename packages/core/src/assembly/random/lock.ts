@@ -3,7 +3,6 @@ import type { AssemblyKey, RawAssembly } from '#core/assembly/assembly'
 import { boosterNotEquipped } from '@ac6_assemble_tool/parts/not-equipped'
 import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import {
-  booster,
   notEquipped,
 } from '@ac6_assemble_tool/parts/types/base/classification'
 import {
@@ -20,7 +19,7 @@ type Filter = (c: Candidates) => Candidates
 
 export class LockedParts {
   static get empty(): LockedParts {
-    return new LockedParts({}, (_) => _)
+    return LockedParts.create({})
   }
 
   constructor(
@@ -39,62 +38,16 @@ export class LockedParts {
   }
 
   lock<K extends AssemblyKey>(target: K, item: RawAssembly[K]): LockedParts {
-    if (target === 'booster') {
-      switch (item.classification) {
-        case notEquipped:
-          // ブースター未装備はタンク限定なので、
-          // ブースター未装備にロックする場合は脚部のロックを強制解除 + タンク限定
-          return this.unlock('legs')
-            .withFilter((c) => ({
-              ...c,
-              legs: onlyTank(c.legs),
-            }))
-            .writeMap(target, item)
-        case booster:
-          // ブースター装備はタンク以外限定なので、
-          // ブースター装備で固定する場合は脚部のロックを強制解除 + タンク以外に限定
-          return this.unlock('legs')
-            .withFilter((c) => ({
-              ...c,
-              legs: notTank(c.legs),
-            }))
-            .writeMap(target, item)
-      }
-    }
-    if (target === 'legs') {
-      switch (item.category) {
-        case tank:
-          // タンクはブースター装備不可なので、
-          // タンクにロックする場合はブースターのロックを強制解除 + ブースター未装備限定
-          return this.unlock('booster')
-            .withFilter((c) => ({
-              ...c,
-              booster: [boosterNotEquipped],
-            }))
-            .writeMap(target, item)
-        default:
-          // タンク以外はブースター装備必須なので、
-          // タンク以外の脚にロックする場合はブースターのロックを強制解除 + ブースター装備限定
-          return this.unlock('booster')
-            .withFilter((c) => ({
-              ...c,
-              booster: excludeNotEquipped(c.booster),
-            }))
-            .writeMap(target, item)
-      }
-    }
+    const nextMap = { ...this.map, [target]: item }
+    const normalized = LockedParts.normalize(nextMap, target)
 
-    return this.writeMap(target, item)
+    return LockedParts.create(normalized)
   }
   unlock<K extends AssemblyKey>(target: K): LockedParts {
     const copyMap = { ...this.map }
     delete copyMap[target]
 
-    if (!copyMap.legs && !copyMap.booster) {
-      return this.withMap(copyMap).clearFilter()
-    } else {
-      return this.withMap(copyMap)
-    }
+    return LockedParts.create(copyMap)
   }
   isLocking(key: AssemblyKey): boolean {
     return !!this.map[key]
@@ -107,19 +60,63 @@ export class LockedParts {
     return Object.values(this.map)
   }
 
-  private writeMap<K extends AssemblyKey>(
-    target: K,
-    item: NonNullable<LockedPartsMap[K]>,
-  ) {
-    return this.withMap({ ...this.map, [target]: item })
+  private static create(map: LockedPartsMap) {
+    return new LockedParts(map, LockedParts.deriveFilter(map))
   }
-  private withMap(map: LockedPartsMap) {
-    return new LockedParts(map, this.candidatesFilter)
+
+  private static normalize(
+    map: LockedPartsMap,
+    lastChanged: AssemblyKey,
+  ): LockedPartsMap {
+    if (!map.booster || !map.legs) return map
+
+    const compatible = LockedParts.isCompatible(map.booster, map.legs)
+    if (compatible) return map
+
+    const copy = { ...map }
+    const toDelete = lastChanged === 'booster' ? 'legs' : 'booster'
+    delete copy[toDelete]
+
+    return copy
   }
-  private withFilter(filter: Filter) {
-    return new LockedParts(this.map, filter)
+
+  private static isCompatible(
+    boosterPart: NonNullable<LockedPartsMap['booster']>,
+    legsPart: NonNullable<LockedPartsMap['legs']>,
+  ): boolean {
+    const boosterIsNotEquipped = boosterPart.classification === notEquipped
+    const legsIsTank = legsPart.category === tank
+
+    return (boosterIsNotEquipped && legsIsTank) || (!boosterIsNotEquipped && !legsIsTank)
   }
-  private clearFilter() {
-    return this.withFilter((_) => _)
+
+  private static deriveFilter(map: LockedPartsMap): Filter {
+    const boosterPart = map.booster
+    const legsPart = map.legs
+
+    const requiresTank =
+      boosterPart?.classification === notEquipped || legsPart?.category === tank
+    const requiresNonTank =
+      boosterPart?.classification !== undefined && boosterPart.classification !== notEquipped
+        ? true
+        : legsPart?.category !== undefined && legsPart.category !== tank
+
+    if (requiresTank) {
+      return (c) => ({
+        ...c,
+        legs: onlyTank(c.legs),
+        booster: [boosterNotEquipped],
+      })
+    }
+
+    if (requiresNonTank) {
+      return (c) => ({
+        ...c,
+        legs: notTank(c.legs),
+        booster: excludeNotEquipped(c.booster),
+      })
+    }
+
+    return (c) => c
   }
 }
