@@ -188,17 +188,13 @@ describe(LockedParts.name, () => {
       it.prop([
         fc.constant({ lockedParts: LockedParts.empty }),
         genLeg().filter((l) => l.category === 'tank'),
-        genCandidates().filter((c) =>
-          c.legs.some((l) => l.category === tank),
-        ),
-      ])(
-        'booster must be equipped',
-        (_ctx, legs, candidates) => {
-          const filtered = deriveAvailableCandidates({
-            assembly: { legs },
-            lockedParts: LockedParts.empty.lock('legs', legs),
-            initialCandidates: candidates,
-          })
+        genCandidates().filter((c) => c.legs.some((l) => l.category === tank)),
+      ])('booster must be equipped', (_ctx, legs, candidates) => {
+        const filtered = deriveAvailableCandidates({
+          assembly: { legs },
+          lockedParts: LockedParts.empty.lock('legs', legs),
+          initialCandidates: candidates,
+        })
 
         expect(filtered).toMatchObject({
           ...candidates,
