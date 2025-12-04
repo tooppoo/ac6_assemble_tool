@@ -37,6 +37,10 @@
   }: Props = $props()
 
   $effect(() => {
+    if (parts.length === 0) {
+      throw new Error(`パーツ候補が0件です: ${id}`)
+    }
+
     if (!parts.find((p) => p.name === selected.name)) {
       onchange?.({ id, selected: parts[0]! })
     }
@@ -76,11 +80,11 @@
       id={`select-${id}`}
       class="col-12 col-sm-7 fs-4"
       disabled={lock.isLocking(id)}
-      value={selected}
+      bind:value={selected}
       onchange={onChange}
     >
       {#each parts as p (p.name)}
-        <option value={p} selected={selected.name === p.name}>{p.name}</option>
+        <option value={p}>{p.name}</option>
       {/each}
     </select>
   </div>

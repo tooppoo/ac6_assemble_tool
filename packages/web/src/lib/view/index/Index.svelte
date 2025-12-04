@@ -13,6 +13,7 @@
     assemblyKeys,
     spaceByWord,
   } from '@ac6_assemble_tool/core/assembly/assembly'
+  import { deriveAvailableCandidates } from '@ac6_assemble_tool/core/assembly/availability/derive-candidates'
   import { changeAssemblyCommand } from '@ac6_assemble_tool/core/assembly/command/change-assembly'
   import { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
   import { RandomAssembly } from '@ac6_assemble_tool/core/assembly/random/random-assembly'
@@ -78,6 +79,8 @@
 
   let navToPartsList = $state(`/parts-list`)
 
+  let queuedUrl: URL | null = null
+
   const orderParts: OrderParts = defineOrder(orders)
 
   // svelte-ignore state_referenced_locally
@@ -85,6 +88,10 @@
   const serializeAssembly = useWithEnableState(() => {
     serializeAssemblyAsQuery()
     navToPartsList = `/parts-list?${page.url.search}`
+    if (queuedUrl) {
+      pushState(queuedUrl, {})
+      queuedUrl = null
+    }
   })
 
   let shouldSerializeAssembly = true
@@ -98,15 +105,21 @@
 
       partsPoolState = result.partsPool
       initialCandidates = result.partsPool.candidates
-      candidates = result.partsPool.candidates
-      lockedParts = LockedParts.empty
-      randomAssembly = RandomAssembly.init({ limit: tryLimit })
       assembly = result.assembly
+      candidates = deriveAvailableCandidates({
+        assembly,
+        lockedParts,
+        initialCandidates,
+      })
 
       if (result.migratedUrl) {
         logger.debug('migrated url', { bootstrapResult: result })
 
-        pushState(result.migratedUrl, {})
+        if (serializeAssembly.isEnabled()) {
+          serializeAssembly.run()
+        } else {
+          queuedUrl = result.migratedUrl
+        }
       }
 
       logger.debug('initialized')
@@ -128,18 +141,27 @@
 
   // handler
   const onChangeParts = (event: ChangePartsEvent) => {
-    const result = changeAssembly(
+    const { assembly: nextAssembly, remainingCandidates } = changeAssembly(
       event.id,
       event.selected,
       assembly,
       candidates,
     )
 
-    assembly = result.assembly
-    candidates = result.remainingCandidates
+    assembly = nextAssembly
+    candidates = deriveAvailableCandidates({
+      assembly,
+      lockedParts,
+      initialCandidates: remainingCandidates,
+    })
   }
   const onRandom = (event: AssembleRandomly) => {
     assembly = event.assembly
+    candidates = deriveAvailableCandidates({
+      assembly,
+      lockedParts,
+      initialCandidates,
+    })
   }
   const errorOnRandom = (event: ErrorOnAssembly) => {
     errorMessage = assemblyErrorMessage(event.error, $i18n)
@@ -150,9 +172,11 @@
       ? lockedParts.lock(event.id, assembly[event.id])
       : lockedParts.unlock(event.id)
 
-    candidates = {
-      ...lockedParts.filter(initialCandidates),
-    }
+    candidates = deriveAvailableCandidates({
+      assembly,
+      lockedParts,
+      initialCandidates,
+    })
   }
 
   const onPopstate = () => {
@@ -168,6 +192,11 @@
     )
 
     assembly = result.assembly
+    candidates = deriveAvailableCandidates({
+      assembly,
+      lockedParts,
+      initialCandidates,
+    })
   }
 
   function serializeAssemblyAsQuery() {
