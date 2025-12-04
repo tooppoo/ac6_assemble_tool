@@ -1,5 +1,15 @@
 # @ac6_assemble_tool/web
 
+## 3.2.1
+### Patch Changes
+
+
+
+- [#956](https://github.com/tooppoo/ac6_assemble_tool/pull/956) [`5cd41c5`](https://github.com/tooppoo/ac6_assemble_tool/commit/5cd41c5ee5ce089e5591c2278b4b519cd0c01e03) Thanks [@tooppoo](https://github.com/tooppoo)! - fix parts locking bug
+
+- Updated dependencies [[`5cd41c5`](https://github.com/tooppoo/ac6_assemble_tool/commit/5cd41c5ee5ce089e5591c2278b4b519cd0c01e03)]:
+  - @ac6_assemble_tool/core@1.3.0
+
 ## 3.2.0
 
 ### Minor Changes
