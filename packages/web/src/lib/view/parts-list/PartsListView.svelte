@@ -395,7 +395,7 @@
   }
 </script>
 
-<articles class="parts-list-view text-center">
+<article class="parts-list-view text-center">
   <div class="py-1">
     <SlotSelector {currentSlot} onslotchange={handleSlotChange} />
   </div>
@@ -459,15 +459,9 @@
     />
   </div>
 
-  <CollapseText summary="このアプリについて">
-    <p>
-      PARTS LISTは、ARMORED CORE Ⅵ FIRES OF RUBICON に登場する全パーツを、場所を選ばず閲覧できる非公式の検索・絞り込みツールです。ステータス値、パーツ名、カテゴリ、属性など複数の条件を組み合わせて柔軟にフィルタでき、目的に合うパーツを素早く探せるよう設計しています。各項目ごとのソートにも対応しているため、特定のステータスが高い順・低い順で比較したい場合にも便利です。
-    </p>
-    <p>
-      また、アセンツールとの連携機能により、絞り込んだパーツのみを使ってそのまま機体構築に進むことができます。膨大なパーツ群から候補を整理し、戦闘スタイルに適した装備を効率的に選び出せるため、ビルド検討の補助として活用できます。
-    </p>
-    <p>
-      本ツールは FromSoftware およびバンダイナムコエンターテインメントとは関係のないファンメイドの非公式ツールであり、AC6 のプレイをより楽しむための補助として提供されています。
-    </p>
+  <CollapseText summary={$i18n.t('page/parts-list:aboutSection.summary')}>
+    <p>{$i18n.t('page/parts-list:aboutSection.body.p1')}</p>
+    <p>{$i18n.t('page/parts-list:aboutSection.body.p2')}</p>
+    <p>{$i18n.t('page/parts-list:aboutSection.body.p3')}</p>
   </CollapseText>
-</articles>
+</article>
