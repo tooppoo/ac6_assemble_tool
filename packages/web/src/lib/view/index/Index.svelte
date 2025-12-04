@@ -2,6 +2,7 @@
   import TextButton from '$lib/components/button/TextButton.svelte'
   import LanguageForm from '$lib/components/language/LanguageForm.svelte'
   import NavButton from '$lib/components/layout/navbar/NavButton.svelte'
+  import CollapseText from '$lib/components/layout/CollapseText.svelte'
   import Navbar from '$lib/components/layout/Navbar.svelte'
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import ErrorModal from '$lib/components/modal/ErrorModal.svelte'
@@ -341,6 +342,18 @@
   <ToolSection id="assembly-report" class="container mw-100 mx-0 my-4 w-100">
     <ReportList {assembly} />
   </ToolSection>
+
+  <CollapseText summary="このアプリについて">
+    <p>
+      AC6 ASSEMBLE TOOL は、ARMORED CORE Ⅵ FIRES OF RUBICON のアセンブル構築を手軽に行うために設計された非公式の Web アプリケーションです。機体パーツを自由に入れ替えながら、最終的なステータスを即座に確認できるシンプルな構造を採用しており、複雑な比較機能や高度な最適化ではなく「どこでもすぐにアセンできる」体験を重視しています。モバイル環境でも快適に操作できることを目標にしており、隙間時間でも気軽にビルド案を試せる点が特徴です。
+    </p>
+    <p>
+      アセン機能は直感的な操作に焦点を当てていますが、より詳細なパーツ絞り込みや一覧の確認が必要な場合は、別途提供しているパーツリスト機能を活用できます。これにより、プレイスタイルに合わせた機体構築の検討を効率的に進められます。
+    </p>
+    <p>
+      本ツールは FromSoftware およびバンダイナムコエンターテインメントとは関係のないファンメイドの非公式ツールであり、ゲームプレイの補助として自由にご利用いただけます。
+    </p>
+  </CollapseText>
 </article>
 
 <RandomAssemblyOffCanvas
