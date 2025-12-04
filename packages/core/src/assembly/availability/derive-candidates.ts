@@ -65,7 +65,6 @@ export function deriveAvailableCandidates({
   } else if (
     boosterContext?.classification !== notEquipped
   ) {
-    base.legs = notTank(base.legs)
     base.booster = excludeNotEquipped(base.booster)
   } else {
     base.booster = excludeNotEquipped(base.booster)
