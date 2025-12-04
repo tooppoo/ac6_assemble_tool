@@ -6,6 +6,7 @@
    * URLパラメータ/LocalStorageと同期します。
    */
 
+  import CollapseText from '$lib/components/layout/CollapseText.svelte'
   import type { I18NextStore } from '$lib/i18n/define'
 
   import { getAttributesForSlot } from '@ac6_assemble_tool/parts/attributes-utils'
@@ -394,7 +395,7 @@
   }
 </script>
 
-<div class="parts-list-view">
+<article class="parts-list-view text-center">
   <div class="py-1">
     <SlotSelector {currentSlot} onslotchange={handleSlotChange} />
   </div>
@@ -457,4 +458,10 @@
       ontogglefavorite={handleToggleFavorite}
     />
   </div>
-</div>
+
+  <CollapseText summary={$i18n.t('page/parts-list:aboutSection.summary')}>
+    <p>{$i18n.t('page/parts-list:aboutSection.body.p1')}</p>
+    <p>{$i18n.t('page/parts-list:aboutSection.body.p2')}</p>
+    <p>{$i18n.t('page/parts-list:aboutSection.body.p3')}</p>
+  </CollapseText>
+</article>

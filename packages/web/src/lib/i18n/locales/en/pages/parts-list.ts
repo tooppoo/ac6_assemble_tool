@@ -77,4 +77,12 @@ export const enPartsListPage = {
       'Clear filters to start from the default list.',
     ],
   },
+  aboutSection: {
+    summary: 'About This App',
+    body: {
+      p1: 'PARTS LIST is an unofficial search and filtering tool that lets you browse every part from ARMORED CORE VI FIRES OF RUBICON wherever you are. You can flexibly combine multiple conditions—stats, part name, category, attributes—to quickly narrow down candidates, and per-column sorting helps when you want to compare by highest or lowest values.',
+      p2: 'The app links with the assembly tool so you can move straight into building with only the filtered parts. It helps you trim the huge part pool and efficiently pick equipment that fits your combat style, supporting your build exploration.',
+      p3: 'This tool is an unofficial fan-made project and is not affiliated with FromSoftware or Bandai Namco Entertainment. It is offered as a helper to enjoy AC6 more.',
+    },
+  },
 } as const

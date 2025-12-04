@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="WX1L6AwVvxxFGi9P_84yqTu2_zygX_-_8vYjQSMAzgY" />
+    <title>AC6 PARTS LIST | AC6 ASSEMBLE TOOL(UNOFFICIAL)</title>
+    <meta name="description" content="AC6のパーツを一覧表示、フィルタリング、並び替えできる探索的UIページ">
+
+    <link id="canonical-link" rel="canonical" href="https://ac6-assemble-tool.philomagi.dev/parts-list">
+    <meta id="redirect-meta" http-equiv="refresh">
+
+    <script>
+        const base = 'https://ac6-assemble-tool.philomagi.dev/parts-list'
+        const redirectUrl = `${base}${window.location.search}${window.location.hash}`
+        document.getElementById('canonical-link').setAttribute('href', redirectUrl)
+        document.getElementById('redirect-meta').setAttribute('content', `0;url=${redirectUrl}`)
+        window.location.replace(redirectUrl)
+    </script>
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="AC6 PARTS LIST | AC6 ASSEMBLE TOOL(UNOFFICIAL)">
+    <meta property="og:description" content="AC6のパーツを一覧表示、フィルタリング、並び替えできる探索的UIページ">
+    <meta property="og:url" content="https://ac6-assemble-tool.philomagi.dev/parts-list">
+    <meta property="og:type" content="website">
+
+    <!-- 構造化データで移転を明示 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "url": "https://tooppoo.github.io/ac6_assemble_tool/parts-list.html",
+      "mainEntity": {
+        "@type": "WebPage",
+        "url": "https://ac6-assemble-tool.philomagi.dev/parts-list",
+        "name": "PARTS LIST",
+        "description": "ARMORED CORE Ⅵ FIRES OF RUBICON 用 非公式パーツ検索・絞り込みツール"
+      }
+    }
+    </script>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            text-align: center;
+            padding: 50px 20px;
+            background: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+        }
+        .notice {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #2d2d2d;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #ff6b35;
+            margin-bottom: 20px;
+            font-size: 2.2em;
+        }
+        .redirect-link {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .redirect-link:hover {
+            text-decoration: underline;
+        }
+        .subtitle {
+            color: #cccccc;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .loading {
+            margin-top: 30px;
+        }
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ff6b35;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="notice">
+        <h1>🧭 PARTS LIST</h1>
+        <p class="subtitle">ARMORED CORE Ⅵ FIRES OF RUBICON<br>非公式パーツ検索・絞り込みツール</p>
+
+        <p>パーツ一覧ツールは移転しました：</p>
+        <p><a href="https://ac6-assemble-tool.philomagi.dev/parts-list" class="redirect-link">
+            https://ac6-assemble-tool.philomagi.dev/parts-list
+        </a></p>
+
+        <div class="loading">
+            <div class="spinner"></div>
+            <p><small>自動的に移転先に移動しています...</small></p>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 <script lang="ts">
   import TextButton from '$lib/components/button/TextButton.svelte'
   import LanguageForm from '$lib/components/language/LanguageForm.svelte'
+  import CollapseText from '$lib/components/layout/CollapseText.svelte'
   import NavButton from '$lib/components/layout/navbar/NavButton.svelte'
   import Navbar from '$lib/components/layout/Navbar.svelte'
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
@@ -341,6 +342,12 @@
   <ToolSection id="assembly-report" class="container mw-100 mx-0 my-4 w-100">
     <ReportList {assembly} />
   </ToolSection>
+
+  <CollapseText summary={$i18n.t('page/index:aboutSection.summary')}>
+    <p>{$i18n.t('page/index:aboutSection.body.p1')}</p>
+    <p>{$i18n.t('page/index:aboutSection.body.p2')}</p>
+    <p>{$i18n.t('page/index:aboutSection.body.p3')}</p>
+  </CollapseText>
 </article>
 
 <RandomAssemblyOffCanvas

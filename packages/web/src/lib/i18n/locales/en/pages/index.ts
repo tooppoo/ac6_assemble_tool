@@ -45,4 +45,12 @@ export const enPageIndex = {
   language: {
     label: 'Language',
   },
+  aboutSection: {
+    summary: 'About This App',
+    body: {
+      p1: 'AC6 ASSEMBLE TOOL is an unofficial web app designed to make building assemblies for ARMORED CORE VI FIRES OF RUBICON quick and effortless. It favors a simple flow where you swap parts freely and instantly see the resulting stats, prioritizing a “assemble anywhere right away” experience over complex comparisons or heavy optimization. The interface is tuned for comfortable use on mobile so you can try builds in short breaks.',
+      p2: 'While assembly focuses on intuitive manipulation, you can lean on the dedicated parts list feature when you need deeper filtering or a comprehensive overview. This helps you explore and shortlist parts efficiently for your preferred play style.',
+      p3: 'This tool is an unofficial fan-made project and is not affiliated with FromSoftware or Bandai Namco Entertainment. Feel free to use it as a companion for your gameplay.',
+    },
+  },
 }
