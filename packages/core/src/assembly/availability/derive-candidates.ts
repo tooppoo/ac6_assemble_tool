@@ -63,8 +63,7 @@ export function deriveAvailableCandidates({
   } else if (legsIsTank || legsLockedTank) {
     base.booster = [boosterNotEquipped]
   } else if (
-    boosterContext?.classification !== undefined &&
-    boosterContext.classification !== notEquipped
+    boosterContext?.classification !== notEquipped
   ) {
     base.legs = notTank(base.legs)
     base.booster = excludeNotEquipped(base.booster)
