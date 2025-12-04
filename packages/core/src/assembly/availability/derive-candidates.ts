@@ -21,7 +21,8 @@ type Mutable<T> = {
 type MutableArray<T> = T extends readonly (infer U)[] ? U[] : T
 
 type ConstraintContext = {
-  assembly: Assembly
+  // legs / booster の現在選択状態。未指定ならロック状態のみで制約を判定する。
+  assembly?: Partial<Pick<Assembly, 'legs' | 'booster'>> | null
   lockedParts: LockedParts
   initialCandidates: Candidates
 }
@@ -46,25 +47,28 @@ export function deriveAvailableCandidates({
     expansion: [...initialCandidates.expansion],
   }
 
-  const legsContext = lockedParts.get('legs', () => assembly.legs)
-  const boosterContext = lockedParts.get('booster', () => assembly.booster)
+  const legsContext = lockedParts.peek('legs') ?? assembly?.legs
+  const boosterContext = lockedParts.peek('booster') ?? assembly?.booster
 
   const legsIsTank = legsContext?.category === tank
   const legsLockedTank =
     lockedParts.isLocking('legs') && legsContext?.category === tank
   const boosterLockedNotEquipped =
-    lockedParts.isLocking('booster') && boosterContext?.classification === notEquipped
+    lockedParts.isLocking('booster') &&
+    boosterContext?.classification === notEquipped
 
-  if (legsIsTank || legsLockedTank) {
-    base.booster = [boosterNotEquipped]
-  } else if (boosterLockedNotEquipped) {
+  if (boosterLockedNotEquipped) {
     base.legs = onlyTank(base.legs)
+    base.booster = [boosterNotEquipped]
+  } else if (legsIsTank || legsLockedTank) {
     base.booster = [boosterNotEquipped]
   } else if (
     boosterContext?.classification !== undefined &&
     boosterContext.classification !== notEquipped
   ) {
-    // base.legs = notTank(base.legs)
+    base.legs = notTank(base.legs)
+    base.booster = excludeNotEquipped(base.booster)
+  } else {
     base.booster = excludeNotEquipped(base.booster)
   }
 

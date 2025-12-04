@@ -6,6 +6,7 @@ import { random } from '@ac6_assemble_tool/shared/array'
 import { it, fc, test } from '@fast-check/vitest'
 import { describe, expect } from 'vitest'
 
+import { deriveAvailableCandidates } from '../availability/derive-candidates'
 import { LockedParts } from './lock'
 
 import {
@@ -93,31 +94,52 @@ describe(LockedParts.name, () => {
     })
 
     describe('with not-equipped', () => {
-      it.prop([genLockedParts(), genCandidates()])(
-        'filter only tank legs',
+      it.prop([
+        genLockedParts(),
+        genCandidates().filter((c) =>
+          c.legs.some((l) => l.category === tank),
+        ),
+      ])(
+        'restrict legs to tank and booster to not-equipped',
         ({ lockedParts }, candidates) => {
-          const filtered = lockedParts
-            .lock('booster', boosterNotEquipped)
-            .filter(candidates)
+          const filtered = deriveAvailableCandidates({
+            assembly: null,
+            lockedParts: lockedParts.lock('booster', boosterNotEquipped),
+            initialCandidates: candidates,
+          })
 
           expect(filtered).toMatchObject({
             ...candidates,
             legs: candidates.legs.filter((l) => l.category === tank),
+            booster: [boosterNotEquipped],
           })
         },
       )
     })
     describe('with equipped', () => {
-      it.prop([genLockedParts(), genCandidates()])(
-        'filter only two, four or reverse joint legs',
+      it.prop([
+        genLockedParts(),
+        genCandidates().filter((c) =>
+          c.legs.some((l) => l.category !== tank),
+        ),
+      ])(
+        'allow non-tank legs and equipped boosters only',
         ({ lockedParts }, candidates) => {
-          const filtered = lockedParts
-            .lock('booster', random(candidates.booster))
-            .filter(candidates)
+          const equipped = random(
+            candidates.booster.filter((b) => b.classification !== notEquipped),
+          )
+          const filtered = deriveAvailableCandidates({
+            assembly: null,
+            lockedParts: lockedParts.lock('booster', equipped),
+            initialCandidates: candidates,
+          })
 
           expect(filtered).toMatchObject({
             ...candidates,
             legs: candidates.legs.filter((l) => l.category !== tank),
+            booster: candidates.booster.filter(
+              (b) => b.classification !== notEquipped,
+            ),
           })
         },
       )
@@ -167,13 +189,19 @@ describe(LockedParts.name, () => {
 
     describe('with tank', () => {
       it.prop([
-        genLockedParts(),
+        fc.constant({ lockedParts: LockedParts.empty }),
         genLeg().filter((l) => l.category === 'tank'),
-        genCandidates(),
+        genCandidates().filter((c) =>
+          c.legs.some((l) => l.category === tank),
+        ),
       ])(
         'booster should not be equipped',
-        ({ lockedParts }, legs, candidates) => {
-          const filtered = lockedParts.lock('legs', legs).filter(candidates)
+        (_ctx, legs, candidates) => {
+          const filtered = deriveAvailableCandidates({
+            assembly: { legs },
+            lockedParts: LockedParts.empty.lock('legs', legs),
+            initialCandidates: candidates,
+          })
 
           expect(filtered).toMatchObject({
             ...candidates,
@@ -184,13 +212,21 @@ describe(LockedParts.name, () => {
     })
     describe('with not tank', () => {
       it.prop([
-        genLockedParts(),
+        fc.constant({ lockedParts: LockedParts.empty }),
         genLeg().filter((l) => l.category !== 'tank'),
-        genCandidates(),
+        genCandidates().filter(
+          (c) =>
+            c.legs.some((l) => l.category !== 'tank') &&
+            c.booster.some((b) => b.classification !== notEquipped),
+        ),
       ])(
         'booster should not be equipped',
-        ({ lockedParts }, legs, candidates) => {
-          const filtered = lockedParts.lock('legs', legs).filter(candidates)
+        (_ctx, legs, candidates) => {
+          const filtered = deriveAvailableCandidates({
+            assembly: { legs },
+            lockedParts: LockedParts.empty.lock('legs', legs),
+            initialCandidates: candidates,
+          })
 
           expect(filtered).toMatchObject({
             ...candidates,

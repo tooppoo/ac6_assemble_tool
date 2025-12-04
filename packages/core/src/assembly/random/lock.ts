@@ -5,17 +5,10 @@ import { tank } from '@ac6_assemble_tool/parts/types/base/category'
 import {
   notEquipped,
 } from '@ac6_assemble_tool/parts/types/base/classification'
-import {
-  type Candidates,
-  excludeNotEquipped,
-  notTank,
-  onlyTank,
-} from '@ac6_assemble_tool/parts/types/candidates'
 
 type LockedPartsMap = {
   [P in AssemblyKey]?: RawAssembly[P]
 }
-type Filter = (c: Candidates) => Candidates
 
 export class LockedParts {
   static get empty(): LockedParts {
@@ -30,8 +23,8 @@ export class LockedParts {
   ): NonNullable<LockedPartsMap[K]> {
     return this.map[target] || fallback()
   }
-  filter(candidates: Candidates, assembly?: { legs: RawAssembly['legs']; booster: RawAssembly['booster'] }): Candidates {
-    return LockedParts.deriveFilter(this.map, assembly)(candidates)
+  peek<K extends AssemblyKey>(target: K): LockedPartsMap[K] | undefined {
+    return this.map[target]
   }
 
   lock<K extends AssemblyKey>(target: K, item: RawAssembly[K]): LockedParts {
@@ -87,36 +80,4 @@ export class LockedParts {
     return (boosterIsNotEquipped && legsIsTank) || (!boosterIsNotEquipped && !legsIsTank)
   }
 
-  private static deriveFilter(
-    map: LockedPartsMap,
-    assembly?: { legs: RawAssembly['legs']; booster: RawAssembly['booster'] },
-  ): Filter {
-    const boosterPart = map.booster ?? assembly?.booster
-    const legsPart = map.legs ?? assembly?.legs
-
-    const requiresTank =
-      boosterPart?.classification === notEquipped || legsPart?.category === tank
-    const requiresNonTank =
-      boosterPart?.classification !== undefined && boosterPart.classification !== notEquipped
-        ? true
-        : legsPart?.category !== undefined && legsPart.category !== tank
-
-    if (requiresTank) {
-      return (c) => ({
-        ...c,
-        legs: onlyTank(c.legs),
-        booster: [boosterNotEquipped],
-      })
-    }
-
-    if (requiresNonTank) {
-      return (c) => ({
-        ...c,
-        legs: notTank(c.legs),
-        booster: excludeNotEquipped(c.booster),
-      })
-    }
-
-    return (c) => c
-  }
 }
