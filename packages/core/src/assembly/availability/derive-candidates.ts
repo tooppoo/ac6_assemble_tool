@@ -32,20 +32,11 @@ export function deriveAvailableCandidates({
   lockedParts,
   initialCandidates,
 }: ConstraintContext): Candidates {
-  const base: Mutable<Candidates> = {
-    rightArmUnit: [...initialCandidates.rightArmUnit],
-    leftArmUnit: [...initialCandidates.leftArmUnit],
-    rightBackUnit: [...initialCandidates.rightBackUnit],
-    leftBackUnit: [...initialCandidates.leftBackUnit],
-    head: [...initialCandidates.head],
-    core: [...initialCandidates.core],
-    arms: [...initialCandidates.arms],
+  const base = {
+    ...initialCandidates,
     legs: [...initialCandidates.legs],
     booster: [...initialCandidates.booster],
-    fcs: [...initialCandidates.fcs],
-    generator: [...initialCandidates.generator],
-    expansion: [...initialCandidates.expansion],
-  }
+  } as Mutable<Candidates>
 
   const legsContext = lockedParts.peek('legs') ?? assembly?.legs
   const boosterContext = lockedParts.peek('booster') ?? assembly?.booster
@@ -56,15 +47,17 @@ export function deriveAvailableCandidates({
   const boosterLockedNotEquipped =
     lockedParts.isLocking('booster') &&
     boosterContext?.classification === notEquipped
+  const boosterLockedEquipped =
+    lockedParts.isLocking('booster') &&
+    boosterContext?.classification !== notEquipped
 
   if (boosterLockedNotEquipped) {
     base.legs = onlyTank(base.legs)
     base.booster = [boosterNotEquipped]
   } else if (legsIsTank || legsLockedTank) {
     base.booster = [boosterNotEquipped]
-  } else if (
-    boosterContext?.classification !== notEquipped
-  ) {
+  } else if (boosterLockedEquipped) {
+    base.legs = notTank(base.legs)
     base.booster = excludeNotEquipped(base.booster)
   } else {
     base.booster = excludeNotEquipped(base.booster)

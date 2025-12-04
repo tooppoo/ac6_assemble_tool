@@ -141,7 +141,7 @@
 
   // handler
   const onChangeParts = (event: ChangePartsEvent) => {
-    const { assembly: nextAssembly } = changeAssembly(
+    const { assembly: nextAssembly, remainingCandidates } = changeAssembly(
       event.id,
       event.selected,
       assembly,
@@ -152,7 +152,7 @@
     candidates = deriveAvailableCandidates({
       assembly,
       lockedParts,
-      initialCandidates,
+      initialCandidates: remainingCandidates,
     })
   }
   const onRandom = (event: AssembleRandomly) => {

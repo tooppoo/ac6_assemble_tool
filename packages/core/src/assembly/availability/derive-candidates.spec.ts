@@ -29,7 +29,7 @@ const sampleAssembly = createAssembly({
 })
 
 describe('deriveAvailableCandidates', () => {
-  it('タンク脚選択時はブースターをNotEquippedに固定し脚候補はタンクのみ', () => {
+  it('タンク脚選択時はブースター候補をNotEquippedに固定する', () => {
     const tankAssembly = createAssembly({
       ...sampleAssembly,
       legs: initialCandidates.legs.find((l) => l.category === 'tank')!,
@@ -44,7 +44,7 @@ describe('deriveAvailableCandidates', () => {
 
     expect(candidates.booster).toHaveLength(1)
     expect(candidates.booster[0]?.classification).toBe(notEquipped)
-    expect(candidates.legs.some((l) => l.category === 'tank')).toBe(true)
+    expect(candidates.legs.length).toBe(initialCandidates.legs.length)
   })
 
   it('ブースターNotEquippedがロックされている場合、脚候補はタンクのみ', () => {
@@ -59,7 +59,7 @@ describe('deriveAvailableCandidates', () => {
     expect(candidates.legs.every((l) => l.category === 'tank')).toBe(true)
   })
 
-  it('ブースターNotEquippedが非ロックの場合、脚候補は全脚', () => {
+  it('タンク脚が選択されているがロックされていない場合、脚候補は全脚種となる', () => {
     const boosterFree = createAssembly({
       ...sampleAssembly,
       legs: initialCandidates.legs.find((l) => l.category === 'tank')!,
@@ -73,6 +73,21 @@ describe('deriveAvailableCandidates', () => {
     })
 
     expect(candidates.legs.length).toBe(initialCandidates.legs.length)
+  })
+
+  it('ブースター装備がロックされている場合、脚候補は非タンクのみ', () => {
+    const locked = LockedParts.empty.lock('booster', equippedBooster)
+
+    const candidates = deriveAvailableCandidates({
+      assembly: null,
+      lockedParts: locked,
+      initialCandidates,
+    })
+
+    expect(candidates.legs.every((l) => l.category !== 'tank')).toBe(true)
+    expect(
+      candidates.booster.every((b) => b.classification !== notEquipped),
+    ).toBe(true)
   })
 
   it('候補が0件なら例外を投げる', () => {
