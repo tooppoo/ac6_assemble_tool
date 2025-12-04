@@ -1,5 +1,12 @@
 # @ac6_assemble_tool/web
 
+## 3.2.3
+### Patch Changes
+
+
+
+- [#960](https://github.com/tooppoo/ac6_assemble_tool/pull/960) [`de39e64`](https://github.com/tooppoo/ac6_assemble_tool/commit/de39e64e24536eba28c52cf1d232927724accf4c) Thanks [@tooppoo](https://github.com/tooppoo)! - setup github pages sitemap
+
 ## 3.2.2
 
 ### Patch Changes
