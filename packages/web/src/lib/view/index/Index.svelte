@@ -25,6 +25,7 @@
   } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import { logger } from '@ac6_assemble_tool/shared/logger'
+  import { deriveAvailableCandidates } from '@ac6_assemble_tool/core/assembly/availability/derive-candidates'
 
   import type {
     ChangePartsEvent,
@@ -104,8 +105,12 @@
 
       partsPoolState = result.partsPool
       initialCandidates = result.partsPool.candidates
-      candidates = result.partsPool.candidates
       assembly = result.assembly
+      candidates = deriveAvailableCandidates({
+        assembly,
+        lockedParts,
+        initialCandidates,
+      })
 
       if (result.migratedUrl) {
         logger.debug('migrated url', { bootstrapResult: result })
@@ -136,18 +141,27 @@
 
   // handler
   const onChangeParts = (event: ChangePartsEvent) => {
-    const result = changeAssembly(
+    const { assembly: nextAssembly } = changeAssembly(
       event.id,
       event.selected,
       assembly,
       candidates,
     )
 
-    assembly = result.assembly
-    candidates = result.remainingCandidates
+    assembly = nextAssembly
+    candidates = deriveAvailableCandidates({
+      assembly,
+      lockedParts,
+      initialCandidates,
+    })
   }
   const onRandom = (event: AssembleRandomly) => {
     assembly = event.assembly
+    candidates = deriveAvailableCandidates({
+      assembly,
+      lockedParts,
+      initialCandidates,
+    })
   }
   const errorOnRandom = (event: ErrorOnAssembly) => {
     errorMessage = assemblyErrorMessage(event.error, $i18n)
@@ -158,9 +172,11 @@
       ? lockedParts.lock(event.id, assembly[event.id])
       : lockedParts.unlock(event.id)
 
-    candidates = {
-      ...lockedParts.filter(initialCandidates),
-    }
+    candidates = deriveAvailableCandidates({
+      assembly,
+      lockedParts,
+      initialCandidates,
+    })
   }
 
   const onPopstate = () => {
@@ -176,6 +192,11 @@
     )
 
     assembly = result.assembly
+    candidates = deriveAvailableCandidates({
+      assembly,
+      lockedParts,
+      initialCandidates,
+    })
   }
 
   function serializeAssemblyAsQuery() {

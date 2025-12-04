@@ -22,10 +22,7 @@ export class LockedParts {
     return LockedParts.create({})
   }
 
-  constructor(
-    private readonly map: LockedPartsMap,
-    private readonly candidatesFilter: Filter,
-  ) {}
+  constructor(private readonly map: LockedPartsMap) {}
 
   get<K extends AssemblyKey>(
     target: K,
@@ -33,8 +30,8 @@ export class LockedParts {
   ): NonNullable<LockedPartsMap[K]> {
     return this.map[target] || fallback()
   }
-  filter(candidates: Candidates): Candidates {
-    return this.candidatesFilter(candidates)
+  filter(candidates: Candidates, assembly?: { legs: RawAssembly['legs']; booster: RawAssembly['booster'] }): Candidates {
+    return LockedParts.deriveFilter(this.map, assembly)(candidates)
   }
 
   lock<K extends AssemblyKey>(target: K, item: RawAssembly[K]): LockedParts {
@@ -61,7 +58,7 @@ export class LockedParts {
   }
 
   private static create(map: LockedPartsMap) {
-    return new LockedParts(map, LockedParts.deriveFilter(map))
+    return new LockedParts(map)
   }
 
   private static normalize(
@@ -90,9 +87,12 @@ export class LockedParts {
     return (boosterIsNotEquipped && legsIsTank) || (!boosterIsNotEquipped && !legsIsTank)
   }
 
-  private static deriveFilter(map: LockedPartsMap): Filter {
-    const boosterPart = map.booster
-    const legsPart = map.legs
+  private static deriveFilter(
+    map: LockedPartsMap,
+    assembly?: { legs: RawAssembly['legs']; booster: RawAssembly['booster'] },
+  ): Filter {
+    const boosterPart = map.booster ?? assembly?.booster
+    const legsPart = map.legs ?? assembly?.legs
 
     const requiresTank =
       boosterPart?.classification === notEquipped || legsPart?.category === tank

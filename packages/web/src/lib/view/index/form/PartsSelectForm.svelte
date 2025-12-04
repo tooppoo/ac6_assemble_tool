@@ -37,6 +37,10 @@
   }: Props = $props()
 
   $effect(() => {
+    if (parts.length === 0) {
+      throw new Error(`パーツ候補が0件です: ${id}`)
+    }
+
     if (!parts.find((p) => p.name === selected.name)) {
       onchange?.({ id, selected: parts[0]! })
     }
