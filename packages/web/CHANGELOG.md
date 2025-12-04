@@ -1,5 +1,12 @@
 # @ac6_assemble_tool/web
 
+## 3.2.2
+### Patch Changes
+
+
+
+- [#958](https://github.com/tooppoo/ac6_assemble_tool/pull/958) [`a9c0f76`](https://github.com/tooppoo/ac6_assemble_tool/commit/a9c0f768bf5e96ba7c31e07d57031d09de7cfa72) Thanks [@tooppoo](https://github.com/tooppoo)! - add text on each app page, and update footer layout
+
 ## 3.2.1
 
 ### Patch Changes
