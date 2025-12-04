@@ -117,6 +117,8 @@
 <div class="font-monospace" data-testid="layout-root">
   {@render children()}
 
+  <hr class="my-3" />
+
   <ToolSection
     id="development-report"
     class="container mx-auto my-4 w-100 text-center d-flex flex-column align-items-center"
@@ -148,57 +150,61 @@
 
   <hr class="my-3" />
 
-  <footer class="text-center mb-3">
-    <div>
-      <a href={`/${pageQuery}`}>ASSEMBLE TOOL</a>
-    </div>
-    <div>
-      <a href={`/parts-list${pageQuery}`}>PARTS LIST</a>
-    </div>
-    <hr class="w-25 mx-auto" />
-    <div>
-      <a href={`/about/ja${pageQuery}`}>このアプリについて</a> /
-      <a href={`/about/en${pageQuery}`}>About This App</a>
-    </div>
-    <div>
-      <a href={`/rule/ja${pageQuery}`}>利用規約</a> /
-      <a href={`/rule/en${pageQuery}`}>Terms of Use</a>
-    </div>
-    <div>
-      <a href={`/privacy/ja${pageQuery}`}>プライバシーポリシー</a> /
-      <a href={`/privacy/en${pageQuery}`}>Privacy Policy</a>
-    </div>
-    <hr class="w-25 mx-auto" />
-    <div>
-      Created by
-      <a
-        id="link-to-twitter"
-        href="https://twitter.com/Philomagi"
-        rel="external noopener noreferrer"
-        target="_blank"
-      >
-        Philomagi
-      </a>
-    </div>
-    <div>
-      My Page:
-      <a id="link-to-website" href="https://philomagi.dev" target="_blank">
-        https://philomagi.dev
-      </a>
-    </div>
-    <div>
-      Source code is managed at
-      <a
-        id="link-to-src"
-        href="https://github.com/tooppoo/ac6_assemble_tool/"
-        rel="external noopener noreferrer"
-        target="_blank"
-      >
-        Github
-      </a>
-    </div>
-    <div>
-      App Version v{appVersion}
+  <footer class="container text-center">
+    <div class="row align-items-center">
+      <section class="col mb-3">
+        <div>
+          <a href={`/${pageQuery}`}>ASSEMBLE TOOL</a>
+        </div>
+        <div>
+          <a href={`/parts-list${pageQuery}`}>PARTS LIST</a>
+        </div>
+      </section>
+
+      <section class="col mb-3">
+        <div>
+          <a href={`/about${pageQuery}`}>About</a>
+        </div>
+        <div>
+          <a href={`/rule${pageQuery}`}>Terms of Use</a>
+        </div>
+        <div>
+          <a href={`/privacy${pageQuery}`}>Privacy Policy</a>
+        </div>
+      </section>
+
+      <section class="col mb-3">
+        <div>
+          Created by
+          <a
+            id="link-to-twitter"
+            href="https://twitter.com/Philomagi"
+            rel="external noopener noreferrer"
+            target="_blank"
+          >
+            Philomagi
+          </a>
+        </div>
+        <div>
+          Source on 
+          <a
+            id="link-to-src"
+            href="https://github.com/tooppoo/ac6_assemble_tool/"
+            rel="external noopener noreferrer"
+            target="_blank"
+          >
+            Github
+          </a>
+        </div>
+        <div>
+          <a id="link-to-website" href="https://philomagi.dev" target="_blank">
+            https://philomagi.dev
+          </a>
+        </div>
+        <div>
+          v{appVersion}
+        </div>
+      </section>
     </div>
   </footer>
 </div>
