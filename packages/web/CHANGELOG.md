@@ -1,5 +1,12 @@
 # @ac6_assemble_tool/web
 
+## 3.2.5
+### Patch Changes
+
+
+
+- [#964](https://github.com/tooppoo/ac6_assemble_tool/pull/964) [`258ca07`](https://github.com/tooppoo/ac6_assemble_tool/commit/258ca0775d0feb8b5dd5d75c77f816a50b827aae) Thanks [@tooppoo](https://github.com/tooppoo)! - fix contents layout
+
 ## 3.2.4
 
 ### Patch Changes
