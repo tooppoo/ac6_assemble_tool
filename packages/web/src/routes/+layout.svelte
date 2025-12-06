@@ -172,10 +172,11 @@
             <a href={`/about${pageQuery}`}>About</a>
           </ListItem>
           <ListItem>
-            <a href={`/rule${pageQuery}`}>Terms of Use</a>
+            <a href={`/rule${pageQuery}`} rel="terms-of-service">Terms of Use</a
+            >
           </ListItem>
           <ListItem>
-            <a href={`/privacy${pageQuery}`}>Privacy</a>
+            <a href={`/privacy${pageQuery}`} rel="privacy-policy">Privacy</a>
           </ListItem>
         </FlushList>
       </FooterSection>
@@ -206,6 +207,7 @@
             <a
               id="link-to-website"
               href="https://philomagi.dev"
+              rel="external noopener noreferrer"
               target="_blank"
             >
               https://philomagi.dev
