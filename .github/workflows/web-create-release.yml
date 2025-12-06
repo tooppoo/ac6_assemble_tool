@@ -19,7 +19,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4
       - name: Setup Node.js
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6
         with:
           node-version-file: ".node-version"
           cache: "pnpm"
@@ -65,7 +65,7 @@ jobs:
           git push origin "web/v${{ steps.version.outputs.version }}"
 
       - name: Release
-        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2
         with:
           tag_name: "web/v${{ steps.version.outputs.version }}"
           generate_release_notes: true
