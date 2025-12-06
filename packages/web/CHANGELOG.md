@@ -1,16 +1,14 @@
 # @ac6_assemble_tool/web
 
 ## 3.2.4
+
 ### Patch Changes
-
-
 
 - [#962](https://github.com/tooppoo/ac6_assemble_tool/pull/962) [`1ed9e9c`](https://github.com/tooppoo/ac6_assemble_tool/commit/1ed9e9c40b916196b91720157df21355971990ee) Thanks [@tooppoo](https://github.com/tooppoo)! - deploy both of github pages and cloudflare pages
 
 ## 3.2.3
+
 ### Patch Changes
-
-
 
 - [#960](https://github.com/tooppoo/ac6_assemble_tool/pull/960) [`de39e64`](https://github.com/tooppoo/ac6_assemble_tool/commit/de39e64e24536eba28c52cf1d232927724accf4c) Thanks [@tooppoo](https://github.com/tooppoo)! - setup github pages sitemap
 
