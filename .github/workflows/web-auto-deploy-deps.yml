@@ -78,7 +78,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy packages/web/dist --project-name=ac6-assemble-tool --commit-dirty=true
 
-  # google評価以降後は削除
+  # google評価移行後は削除
   deploy-github-pages:
     needs: check-and-deploy
     if: needs.check-and-deploy.outputs.is_dep_update == 'true'
