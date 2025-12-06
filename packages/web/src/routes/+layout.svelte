@@ -1,7 +1,10 @@
 <script lang="ts">
   import './app.scss'
   import { appUrl, publicPath } from '$lib/app-url'
+  import FooterSection from '$lib/components/layout/footer/FooterSection.svelte'
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
+  import FlushList from '$lib/components/list/FlushList.svelte'
+  import ListItem from '$lib/components/list/ListItem.svelte'
   import Margin from '$lib/components/spacing/Margin.svelte'
   import i18n from '$lib/i18n/define'
   import { extractChars } from '$lib/i18n/extract-chars'
@@ -151,60 +154,70 @@
   <hr class="my-3" />
 
   <footer class="container text-center">
-    <div class="row align-items-center">
-      <section class="col mb-3">
-        <div>
-          <a href={`/${pageQuery}`}>ASSEMBLE TOOL</a>
-        </div>
-        <div>
-          <a href={`/parts-list${pageQuery}`}>PARTS LIST</a>
-        </div>
-      </section>
+    <div class="row align-items-start">
+      <FooterSection caption="TOOLS" class="col">
+        <FlushList>
+          <ListItem>
+            <a href={`/${pageQuery}`}>ASSEMBLY TOOL</a>
+          </ListItem>
+          <ListItem>
+            <a href={`/parts-list${pageQuery}`}>PARTS LIST</a>
+          </ListItem>
+        </FlushList>
+      </FooterSection>
 
-      <section class="col mb-3">
-        <div>
-          <a href={`/about${pageQuery}`}>About</a>
-        </div>
-        <div>
-          <a href={`/rule${pageQuery}`}>Terms of Use</a>
-        </div>
-        <div>
-          <a href={`/privacy${pageQuery}`}>Privacy Policy</a>
-        </div>
-      </section>
+      <FooterSection caption="CONTENTS" class="col">
+        <FlushList>
+          <ListItem>
+            <a href={`/about${pageQuery}`}>About</a>
+          </ListItem>
+          <ListItem>
+            <a href={`/rule${pageQuery}`} rel="terms-of-service">Terms of Use</a
+            >
+          </ListItem>
+          <ListItem>
+            <a href={`/privacy${pageQuery}`} rel="privacy-policy">Privacy</a>
+          </ListItem>
+        </FlushList>
+      </FooterSection>
 
-      <section class="col mb-3">
-        <div>
-          Created by
-          <a
-            id="link-to-twitter"
-            href="https://twitter.com/Philomagi"
-            rel="external noopener noreferrer"
-            target="_blank"
-          >
-            Philomagi
-          </a>
-        </div>
-        <div>
-          Source on
-          <a
-            id="link-to-src"
-            href="https://github.com/tooppoo/ac6_assemble_tool/"
-            rel="external noopener noreferrer"
-            target="_blank"
-          >
-            Github
-          </a>
-        </div>
-        <div>
-          <a id="link-to-website" href="https://philomagi.dev" target="_blank">
-            https://philomagi.dev
-          </a>
-        </div>
-        <div>
-          v{appVersion}
-        </div>
-      </section>
+      <FooterSection caption="LINKS" class="col">
+        <FlushList>
+          <ListItem>
+            <a
+              id="link-to-twitter"
+              href="https://twitter.com/Philomagi"
+              rel="external noopener noreferrer"
+              target="_blank"
+            >
+              Twitter
+            </a>
+          </ListItem>
+          <ListItem>
+            <a
+              id="link-to-src"
+              href="https://github.com/tooppoo/ac6_assemble_tool/"
+              rel="external noopener noreferrer"
+              target="_blank"
+            >
+              Github
+            </a>
+          </ListItem>
+          <ListItem>
+            <a
+              id="link-to-website"
+              href="https://philomagi.dev"
+              rel="external noopener noreferrer"
+              target="_blank"
+            >
+              https://philomagi.dev
+            </a>
+          </ListItem>
+        </FlushList>
+      </FooterSection>
+    </div>
+    <div class="my-3">
+      v{appVersion}
     </div>
   </footer>
 </div>

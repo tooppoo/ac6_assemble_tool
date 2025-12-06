@@ -1,7 +1,7 @@
 ---
 name: code-reviewer
 description: Use this agent when you have just completed writing or modifying a logical chunk of code and need it reviewed for quality, adherence to project standards, and potential issues. This agent should be invoked proactively after implementing features, fixing bugs, or making significant changes. Examples:\n\n- User: "I've just implemented the user authentication module"\n  Assistant: "Let me use the code-reviewer agent to review the authentication code you've written."\n  [Uses Task tool to launch code-reviewer agent]\n\n- User: "Here's the new API endpoint for fetching parts by unique ID"\n  Assistant: "I'll have the code-reviewer agent examine this endpoint implementation for compliance with our standards."\n  [Uses Task tool to launch code-reviewer agent]\n\n- User: "I've refactored the database connection logic"\n  Assistant: "Let me invoke the code-reviewer agent to ensure the refactoring maintains quality and follows our patterns."\n  [Uses Task tool to launch code-reviewer agent]
-model: sonnet
+model: haiku
 color: green
 ---
 

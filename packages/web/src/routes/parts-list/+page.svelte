@@ -37,11 +37,12 @@
 
 <main class="parts-list-page py-4">
   <div class="container">
-    <h1 class="py-2 d-flex justify-content-center">
-      ARMORED CORE Ⅵ PARTS LIST
+    <h1 class="py-2 text-center">
+      ARMORED CORE Ⅵ<br class="d-block d-md-none" />
+      PARTS LIST
     </h1>
 
-    <h2 class="py-2 d-flex justify-content-center">
+    <h2 class="py-2 text-center">
       Regulation for {regulation.version}
     </h2>
 
