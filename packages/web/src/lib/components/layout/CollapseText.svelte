@@ -3,13 +3,14 @@
 
   interface Props {
     summary: string
+    class?: string
     children: Snippet
   }
 
-  let { summary, children }: Props = $props()
+  let { summary, class: className, children }: Props = $props()
 </script>
 
-<details>
+<details class={className}>
   <summary>{summary}</summary>
 
   {@render children()}

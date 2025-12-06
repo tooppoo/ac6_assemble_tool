@@ -343,7 +343,10 @@
     <ReportList {assembly} />
   </ToolSection>
 
-  <CollapseText summary={$i18n.t('page/index:aboutSection.summary')}>
+  <CollapseText
+    summary={$i18n.t('page/index:aboutSection.summary')}
+    class="my-4 text-start"
+  >
     <p>{$i18n.t('page/index:aboutSection.body.p1')}</p>
     <p>{$i18n.t('page/index:aboutSection.body.p2')}</p>
     <p>{$i18n.t('page/index:aboutSection.body.p3')}</p>

@@ -395,7 +395,7 @@
   }
 </script>
 
-<article class="parts-list-view text-center">
+<article class="parts-list-view">
   <div class="py-1">
     <SlotSelector {currentSlot} onslotchange={handleSlotChange} />
   </div>
@@ -459,7 +459,10 @@
     />
   </div>
 
-  <CollapseText summary={$i18n.t('page/parts-list:aboutSection.summary')}>
+  <CollapseText
+    summary={$i18n.t('page/parts-list:aboutSection.summary')}
+    class="my-4 text-start"
+  >
     <p>{$i18n.t('page/parts-list:aboutSection.body.p1')}</p>
     <p>{$i18n.t('page/parts-list:aboutSection.body.p2')}</p>
     <p>{$i18n.t('page/parts-list:aboutSection.body.p3')}</p>
