@@ -9,7 +9,7 @@
   }
   let { data }: Props = $props()
 
-  const { regulation, partsPool } = data
+  let { regulation, partsPool } = $derived(data)
 </script>
 
 <svelte:head>

@@ -50,11 +50,12 @@
   import { browser } from '$app/environment'
   import { goto, replaceState } from '$app/navigation'
 
-  let favoriteStore: FavoriteStore | null = null
-
-  if (browser && favoriteStore === null) {
-    favoriteStore = new FavoriteStore()
-  }
+  let favoriteStore: FavoriteStore | null = $derived.by(() => {
+    if (browser) {
+      return new FavoriteStore()
+    }
+    return null
+  })
 
   // Props
   interface Props {
@@ -133,7 +134,11 @@
     })
   })
 
-  if (browser && initialSearchParams) {
+  $effect(() => {
+    if (!browser || !initialSearchParams) {
+      return
+    }
+
     void (async () => {
       const result = await deserializeFromURL(initialSearchParams)
       if (Result.isSuccess(result)) {
@@ -161,7 +166,7 @@
         }
       }
     })()
-  }
+  })
 
   // お気に入りの初期化（ブラウザ環境でのみ実行）
   $effect(() => {

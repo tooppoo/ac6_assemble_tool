@@ -62,10 +62,10 @@
   }
   let { regulation, partsPool }: Props = $props()
 
-  const orders: Order = regulation.orders
-  const version: string = regulation.version
+  const orders: Order = $derived(regulation.orders)
+  const version: string = $derived(regulation.version)
 
-  let partsPoolState = $state<PartsPoolRestrictions>(partsPool)
+  let partsPoolState = $derived(partsPool)
 
   let initialCandidates = $derived<Candidates>(partsPoolState.candidates)
   let candidates = $derived<Candidates>(partsPoolState.candidates)
@@ -82,7 +82,7 @@
 
   let queuedUrl: URL | null = null
 
-  const orderParts: OrderParts = defineOrder(orders)
+  const orderParts: OrderParts = $derived(defineOrder(orders))
 
   // svelte-ignore state_referenced_locally
   let assembly = $state<Assembly>(initializeAssembly(candidates))

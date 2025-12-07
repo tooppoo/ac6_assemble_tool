@@ -17,7 +17,7 @@
   }
   let { id, open, title, children, button, onClose }: Props = $props()
 
-  const labelId = `${id}-label`
+  let labelId = $derived(`${id}-label`)
 </script>
 
 <Modal
