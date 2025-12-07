@@ -1,6 +1,6 @@
 {
   "name": "Node + TypeScript",
-  "image": "node:22.21.1-bookworm",
+  "image": "node:24.11.1-bookworm",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
       "username": "vscode",
