@@ -295,7 +295,7 @@ flowchart TD
 ## Requirements Traceability
 
 | Requirement | Summary | Components | Interfaces | Flows |
-|-------------|---------|------------|------------|-------|
+| ------------- | --------- | ------------ | ------------ | ------- |
 | 1.1, 1.2 | スロット固有属性の提供 | attributes-utils, PartsListView | getAttributesForSlot() | User Interaction Flow |
 | 1.3 | 属性表示順序の維持 | attributes-utils | getAttributesForSlot() | - |
 | 2.1, 2.2 | 数値属性フィルター | FilterPanel, filters-application | buildPropertyFilter() | Filter Application Flow |
@@ -474,7 +474,7 @@ interface FilterPanelProps {
 **UI Contract**:
 
 | Attribute valueType | UI Component | Input Method | Data Source |
-|---------------------|--------------|--------------|-------------|
+| --------------------- | -------------- | -------------- | ------------- |
 | numeric | Operator dropdown + Number input | 演算子選択（>=, <=, ==, !=, >, <） + 数値入力フィールド | - |
 | array | Checkbox group or Dropdown | 選択肢から複数選択可能（カテゴリ、製造企業など） | AttributeDefinition.candidates から選択肢を動的生成 |
 | literal | （対象外） | フィルター不可 | - |

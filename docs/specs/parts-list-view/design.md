@@ -487,7 +487,7 @@ flowchart LR
 ## Requirements Traceability
 
 | Requirement | 要件概要 | Components | Interfaces | Flows |
-|-------------|---------|------------|-----------|-------|
+| ------------- | --------- | ------------ | ----------- | ------- |
 | 1.1 | 初期表示で1スロット選択 | PartsListView, SlotSelector | `currentSlot: $state<SlotType>` | - |
 | 1.2 | スロット選択でパーツ一覧表示 | PartsListView, PartsGrid, Candidates | `filteredParts: $derived<ACParts[]>` | Sequence Diagram |
 | 1.3 | スロット切替で文脈切替 | PartsListView, FilterPanel, FavoriteStore | `switchSlot(slot: SlotType)` | Process Flow |
