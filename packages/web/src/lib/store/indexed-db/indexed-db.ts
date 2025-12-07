@@ -1,6 +1,5 @@
-import type { StoredAssemblyDto } from '#core/assembly/store/repository/data-transfer-object'
-import { VersionMigration } from '#core/assembly/version-migration'
-
+import type { StoredAssemblyDto } from '@ac6_assemble_tool/core/assembly/store/repository/data-transfer-object'
+import { VersionMigration } from '@ac6_assemble_tool/core/assembly/version-migration'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Dexie, type EntityTable } from 'dexie'

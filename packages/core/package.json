@@ -27,15 +27,13 @@
   "devDependencies": {
     "@ac6_assemble_tool/eslint": "workspace:1.0.0",
     "@ac6_assemble_tool/spec": "workspace:1.0.0",
-    "@ac6_assemble_tool/tsconfig": "workspace:1.0.0",
-    "fake-indexeddb": "6.2.5"
+    "@ac6_assemble_tool/tsconfig": "workspace:1.0.0"
   },
   "dependencies": {
     "@ac6_assemble_tool/parts": "workspace:1.8.1",
     "@ac6_assemble_tool/shared": "workspace:1.0.0",
     "@philomagi/base-error.js": "0.0.2",
     "@praha/byethrow": "0.8.1",
-    "dexie": "4.2.1",
     "ulid": "3.0.2",
     "zod": "4.1.13"
   }
