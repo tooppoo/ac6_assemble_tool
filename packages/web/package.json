@@ -54,7 +54,7 @@
     "i18next": "25.6.1",
     "svelte": "5.43.12",
     "svelte-i18next": "2.2.2",
-    "ulid": "3.0.1"
+    "ulid": "3.0.2"
   },
   "optionalDependencies": {
     "sass-embedded-darwin-arm64": "1.93.3",

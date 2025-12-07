@@ -36,7 +36,7 @@
     "@philomagi/base-error.js": "0.0.2",
     "@praha/byethrow": "0.8.1",
     "dexie": "4.2.1",
-    "ulid": "3.0.1",
+    "ulid": "3.0.2",
     "zod": "4.1.12"
   }
 }
