@@ -14,10 +14,7 @@ import type {
 } from '@ac6_assemble_tool/core/assembly/store/stored-assembly'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 
-import {
-  type DataBase,
-  setupDataBase,
-} from './indexed-db'
+import { type DataBase, setupDataBase } from './indexed-db'
 
 export class IndexedDbRepository
   implements StoredAssemblyRepository, ClearableStoredAssemblyRepository

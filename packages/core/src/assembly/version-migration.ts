@@ -7,9 +7,7 @@ import type { StoredAssemblyDto } from '#core/assembly/store/repository/data-tra
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
 type IndexedDbTransaction = {
-  table: (
-    name: string,
-  ) => {
+  table: (name: string) => {
     update: (key: string, changes: Record<string, unknown>) => Promise<number>
   }
 }

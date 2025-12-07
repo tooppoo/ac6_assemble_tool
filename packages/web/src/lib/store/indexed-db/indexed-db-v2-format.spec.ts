@@ -1,4 +1,7 @@
-import { createAssembly, type RawAssembly } from '@ac6_assemble_tool/core/assembly/assembly'
+import {
+  createAssembly,
+  type RawAssembly,
+} from '@ac6_assemble_tool/core/assembly/assembly'
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import { ulid } from 'ulid'
 import { describe, it, expect, beforeEach } from 'vitest'
