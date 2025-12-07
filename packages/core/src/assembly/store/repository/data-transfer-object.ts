@@ -1,17 +1,34 @@
-import { z } from 'zod'
+import {
+  date,
+  maxLength,
+  minLength,
+  object,
+  pipe,
+  readonly,
+  regex,
+  required,
+  safeParse,
+  string,
+  ulid,
+  type InferOutput,
+} from 'valibot'
 
-export const storedAssemblyDtoScheme = z
-  .object({
-    id: z.string().ulid().readonly(),
-    name: z.string().min(1).max(30).readonly(),
-    description: z.string().min(0).max(140).readonly(),
-    assembly: z
-      .string()
-      .min(1)
-      .regex(/([a-z]+=[\dA-Z]+&?)+/)
-      .readonly(),
-    createdAt: z.date().readonly(),
-    updatedAt: z.date().readonly(),
-  })
-  .required()
-export type StoredAssemblyDto = z.infer<typeof storedAssemblyDtoScheme>
+export const storedAssemblyDtoScheme = required(
+  object({
+    id: pipe(string(), ulid(), readonly()),
+    name: pipe(string(), minLength(1), maxLength(30), readonly()),
+    description: pipe(string(), minLength(0), maxLength(140), readonly()),
+    assembly: pipe(
+      string(),
+      minLength(1),
+      regex(/([a-z]+=[\dA-Z]+&?)+/),
+      readonly(),
+    ),
+    createdAt: pipe(date(), readonly()),
+    updatedAt: pipe(date(), readonly()),
+  }),
+)
+export const parseStoredAssemblyDto = (input: unknown) =>
+  safeParse(storedAssemblyDtoScheme, input)
+
+export type StoredAssemblyDto = InferOutput<typeof storedAssemblyDtoScheme>

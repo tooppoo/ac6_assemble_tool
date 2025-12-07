@@ -19,7 +19,7 @@
   }
   let { data }: Props = $props()
 
-  const { regulation } = data
+  const { regulation } = $derived(data)
 
   // URLSearchParamsを取得
   let searchParams = $derived(

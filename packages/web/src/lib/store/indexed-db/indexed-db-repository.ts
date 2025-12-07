@@ -1,23 +1,20 @@
-import { createAssembly } from '#core/assembly/assembly'
-import { assemblyToSearchV2 } from '#core/assembly/serialize/as-query-v2'
-import { deserializeAssembly } from '#core/assembly/serialize/deserialize-assembly'
+import { createAssembly } from '@ac6_assemble_tool/core/assembly/assembly'
+import { assemblyToSearchV2 } from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
+import { deserializeAssembly } from '@ac6_assemble_tool/core/assembly/serialize/deserialize-assembly'
 import {
+  parseStoredAssemblyDto,
   type StoredAssemblyDto,
-  storedAssemblyDtoScheme,
-} from '#core/assembly/store/repository/data-transfer-object'
-import {
-  type DataBase,
-  setupDataBase,
-} from '#core/assembly/store/repository/indexed-db/indexed-db'
+} from '@ac6_assemble_tool/core/assembly/store/repository/data-transfer-object'
 import type {
   ClearableStoredAssemblyRepository,
   NewAssemblyAggregation,
   StoredAssemblyAggregation,
   StoredAssemblyRepository,
   UpdatedAssemblyAggregation,
-} from '#core/assembly/store/stored-assembly'
-
+} from '@ac6_assemble_tool/core/assembly/store/stored-assembly'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
+
+import { type DataBase, setupDataBase } from './indexed-db'
 
 export class IndexedDbRepository
   implements StoredAssemblyRepository, ClearableStoredAssemblyRepository
@@ -129,31 +126,31 @@ function aggregationToDto(
     updatedAt: aggregation.updatedAt,
   }
 
-  const result = storedAssemblyDtoScheme.safeParse(dto)
+  const result = parseStoredAssemblyDto(dto)
 
   return result.success
     ? { data: dto, error: null }
-    : { data: null, error: result.error }
+    : { data: null, error: new Error(JSON.stringify(result.issues)) }
 }
 
 function dtoToAggregation(
   dto: StoredAssemblyDto,
   candidates: Candidates,
 ): TransformResult<StoredAssemblyAggregation> {
-  const result = storedAssemblyDtoScheme.safeParse(dto)
+  const result = parseStoredAssemblyDto(dto)
 
   return result.success
     ? {
         data: {
-          ...result.data,
+          ...result.output,
           assembly: createAssembly(
             deserializeAssembly(
-              new URLSearchParams(result.data.assembly),
+              new URLSearchParams(result.output.assembly),
               candidates,
             ),
           ),
         },
         error: null,
       }
-    : { data: null, error: result.error }
+    : { data: null, error: new Error(JSON.stringify(result.issues)) }
 }

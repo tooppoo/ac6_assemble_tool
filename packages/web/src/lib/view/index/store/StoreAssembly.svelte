@@ -5,11 +5,11 @@
     type ToggleOffCanvas,
   } from '$lib/components/off-canvas/OffCanvas.svelte'
   import i18n from '$lib/i18n/define'
+  import { IndexedDbRepository } from '$lib/store/indexed-db/indexed-db-repository'
   import ShareAssembly from '$lib/view/index/share/ShareAssembly.svelte'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
   import { filterByKeywords } from '@ac6_assemble_tool/core/assembly/store/filter'
-  import { IndexedDbRepository } from '@ac6_assemble_tool/core/assembly/store/repository/indexed-db/indexed-db-repository'
   import {
     createAggregation,
     type StoredAssemblyAggregation,
