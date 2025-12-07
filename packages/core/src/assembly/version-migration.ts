@@ -6,7 +6,13 @@ import type { StoredAssemblyDto } from '#core/assembly/store/repository/data-tra
 
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 import { logger } from '@ac6_assemble_tool/shared/logger'
-import type { Transaction } from 'dexie'
+type IndexedDbTransaction = {
+  table: (
+    name: string,
+  ) => {
+    update: (key: string, changes: Record<string, unknown>) => Promise<number>
+  }
+}
 
 /**
  * v1形式のマイグレーション処理群
@@ -17,7 +23,7 @@ export const V1 = {
    */
   async migrateIndexedDB(
     dto: StoredAssemblyDto,
-    tx: Transaction,
+    tx: IndexedDbTransaction,
     candidates: Candidates,
   ): Promise<void> {
     const assembly = createAssembly(

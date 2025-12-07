@@ -35,6 +35,6 @@
     "@philomagi/base-error.js": "0.0.2",
     "@praha/byethrow": "0.8.1",
     "ulid": "3.0.2",
-    "zod": "4.1.13"
+    "valibot": "1.2.0"
   }
 }

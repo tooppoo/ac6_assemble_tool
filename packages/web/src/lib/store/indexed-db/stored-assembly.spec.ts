@@ -1,18 +1,15 @@
-import { createAssembly } from '#core/assembly/assembly'
-
+import { createAssembly } from '@ac6_assemble_tool/core/assembly/assembly'
+import type {
+  ClearableStoredAssemblyRepository,
+  StoredAssemblyRepository,
+} from '@ac6_assemble_tool/core/assembly/store/stored-assembly'
+import { genAssembly } from '@ac6_assemble_tool/core/spec-helper/property-generator'
 import { candidates } from '@ac6_assemble_tool/parts/versions/v1.06.1'
 import { it } from '@fast-check/vitest'
 import { ulid } from 'ulid'
 import { describe, expect } from 'vitest'
 
-import type {
-  ClearableStoredAssemblyRepository,
-  StoredAssemblyRepository,
-} from '../../stored-assembly'
-
 import { IndexedDbRepository } from './indexed-db-repository'
-
-import { genAssembly } from '#spec-helper/property-generator'
 
 describe('repository', () => {
   describe.each([

@@ -1,3 +1,4 @@
+import { safeParse } from 'valibot'
 import { describe, it, expect } from 'vitest'
 
 import { storedAssemblyDtoScheme } from './data-transfer-object'
@@ -18,7 +19,7 @@ describe('StoredAssemblyDto スキーマ', () => {
         assembly: 'h=0&c=1&a=2&l=3&b=0&f=0&g=0&e=0&rau=0&lau=0&rbu=0&lbu=0',
       }
 
-      const result = storedAssemblyDtoScheme.safeParse(dto)
+      const result = safeParse(storedAssemblyDtoScheme, dto)
 
       expect(result.success).toBe(true)
     })
@@ -30,7 +31,7 @@ describe('StoredAssemblyDto スキーマ', () => {
           'v=2&h=HD001&c=CR001&a=AR001&l=LG001&b=BS001&f=FCS001&g=GN001&e=EXP001&rau=AU001&lau=AU001&rbu=BU001&lbu=BU001',
       }
 
-      const result = storedAssemblyDtoScheme.safeParse(dto)
+      const result = safeParse(storedAssemblyDtoScheme, dto)
 
       expect(result.success).toBe(true)
     })
@@ -41,7 +42,7 @@ describe('StoredAssemblyDto スキーマ', () => {
         assembly: '',
       }
 
-      const result = storedAssemblyDtoScheme.safeParse(dto)
+      const result = safeParse(storedAssemblyDtoScheme, dto)
 
       expect(result.success).toBe(false)
     })
@@ -52,7 +53,7 @@ describe('StoredAssemblyDto スキーマ', () => {
         assembly: 'invalid format',
       }
 
-      const result = storedAssemblyDtoScheme.safeParse(dto)
+      const result = safeParse(storedAssemblyDtoScheme, dto)
 
       expect(result.success).toBe(false)
     })
