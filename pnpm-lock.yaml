@@ -118,8 +118,8 @@ importers:
         specifier: 4.2.1
         version: 4.2.1
       ulid:
-        specifier: 3.0.1
-        version: 3.0.1
+        specifier: 3.0.2
+        version: 3.0.2
       zod:
         specifier: 4.1.12
         version: 4.1.12
@@ -228,8 +228,8 @@ importers:
         specifier: 2.2.2
         version: 2.2.2(i18next@25.6.1(typescript@5.9.3))(svelte@5.43.12)
       ulid:
-        specifier: 3.0.1
-        version: 3.0.1
+        specifier: 3.0.2
+        version: 3.0.2
     devDependencies:
       '@ac6_assemble_tool/eslint':
         specifier: workspace:*
@@ -3380,8 +3380,8 @@ packages:
   uc.micro@2.1.0:
     resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
 
-  ulid@3.0.1:
-    resolution: {integrity: sha512-dPJyqPzx8preQhqq24bBG1YNkvigm87K8kVEHCD+ruZg24t6IFEFv00xMWfxcC4djmFtiTLdFuADn4+DOz6R7Q==}
+  ulid@3.0.2:
+    resolution: {integrity: sha512-yu26mwteFYzBAot7KVMqFGCVpsF6g8wXfJzQUHvu1no3+rRRSFcSV2nKeYvNPLD2J4b08jYBDhHUjeH0ygIl9w==}
     hasBin: true
 
   unbox-primitive@1.1.0:
@@ -6897,7 +6897,7 @@ snapshots:
 
   uc.micro@2.1.0: {}
 
-  ulid@3.0.1: {}
+  ulid@3.0.2: {}
 
   unbox-primitive@1.1.0:
     dependencies:
