@@ -1,9 +1,8 @@
 # @ac6_assemble_tool/core
 
 ## 1.3.1
+
 ### Patch Changes
-
-
 
 - [#988](https://github.com/tooppoo/ac6_assemble_tool/pull/988) [`0576984`](https://github.com/tooppoo/ac6_assemble_tool/commit/057698404ef52b5d5a968fe6551c54bffa68a582) Thanks [@tooppoo](https://github.com/tooppoo)! - use valibot instead of zod
 
