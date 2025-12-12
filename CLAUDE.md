@@ -96,6 +96,9 @@ Managed by `/kiro:steering` command. Updates here reflect command changes.
   Pattern: File patterns for Conditional mode
 -->
 
+- `dependencies.md`: Always - パッケージ・モジュール依存関係の可視化と一方向依存の検証
+- `components.md`: Always - Svelteコンポーネント・モジュール依存関係の可視化とrune API活用ガイドライン
+
 ### Inclusion Modes
 
 - **Always**: Loaded in every interaction (default)
