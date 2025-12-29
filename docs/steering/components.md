@@ -1,8 +1,7 @@
 # Components Architecture
 
 <!-- Inclusion Mode: Always -->
-
-_Last Updated: 2025-12-12_
+<!-- Last Updated: 2025-12-12 -->
 
 ## 目的
 

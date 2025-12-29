@@ -4,6 +4,7 @@ import { assemblyToSearchV2 } from '@ac6_assemble_tool/core/assembly/serialize/a
 import { mergeAssemblyParams } from './query-merge'
 
 import { pushState } from '$app/navigation'
+import { browser } from '$app/environment'
 import { page } from '$app/state'
 
 /**
@@ -16,7 +17,10 @@ import { page } from '$app/state'
  */
 export function buildQueryFromAssembly(assembly: Assembly): URLSearchParams {
   const assemblyParams = assemblyToSearchV2(assembly)
-  const mergedParams = new URLSearchParams(page.url.searchParams)
+  // SSR時はpage.urlにアクセスできないため、空のパラメータを使用
+  const mergedParams = browser
+    ? new URLSearchParams(page.url.searchParams)
+    : new URLSearchParams()
   mergeAssemblyParams(mergedParams, assemblyParams)
 
   return mergedParams
