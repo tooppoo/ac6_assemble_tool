@@ -1,4 +1,5 @@
 import _i18next from 'i18next'
+import { SvelteURL } from 'svelte/reactivity'
 
 import { pushState } from '$app/navigation'
 import { page } from '$app/state'
@@ -44,7 +45,7 @@ export function changeLanguage(lng: string): void {
   _i18next.changeLanguage(lng)
 
   // URLクエリパラメータに反映
-  const url = new URL(page.url)
+  const url = new SvelteURL(page.url)
   url.searchParams.set(LANGUAGE_QUERY_KEY, lng)
   pushState(url, {})
 }

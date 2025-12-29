@@ -3,7 +3,7 @@
   import {
     changeLanguage,
     getCurrentLanguage,
-  } from '$lib/store/language/language-store'
+  } from '$lib/store/language/language-store.svelte'
 
   import { getContext } from 'svelte'
 

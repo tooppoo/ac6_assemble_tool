@@ -26,6 +26,14 @@ export default [
       },
     },
   },
+  {
+    files: ['**/*.svelte.ts', '**/*.svelte.js'],
+    languageOptions: {
+      parserOptions: {
+        parser: tsParser,
+      },
+    },
+  },
   ...importRules({
     pathGroups: [
       {

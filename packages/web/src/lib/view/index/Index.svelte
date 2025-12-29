@@ -8,8 +8,11 @@
   import ErrorModal from '$lib/components/modal/ErrorModal.svelte'
   import i18n from '$lib/i18n/define'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
-  import { syncLanguageFromQuery } from '$lib/store/language/language-store'
-  import { storeAssemblyAsQuery } from '$lib/store/query/query-store'
+  import { syncLanguageFromQuery } from '$lib/store/language/language-store.svelte'
+  import {
+    buildQueryFromAssembly,
+    storeAssemblyAsQuery,
+  } from '$lib/store/query/query-store'
 
   import {
     type Assembly,
@@ -20,7 +23,6 @@
   import { changeAssemblyCommand } from '@ac6_assemble_tool/core/assembly/command/change-assembly'
   import { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
   import { RandomAssembly } from '@ac6_assemble_tool/core/assembly/random/random-assembly'
-  import { assemblyToSearchV2 } from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
   import {
     type Candidates,
     type OrderParts,
@@ -78,8 +80,9 @@
   let errorMessage = $state<string[]>([])
 
   let assembly = $state<Assembly>(initializeAssembly(candidates))
+  // アセンブリと現在のURLクエリ（言語設定など）をマージしてパーツ一覧へのリンクを生成
   let navToPartsList = $derived(
-    `/parts-list?${assemblyToSearchV2(assembly).toString()}`,
+    `/parts-list?${buildQueryFromAssembly(assembly).toString()}`,
   )
 
   let queuedUrl: URL | null = null

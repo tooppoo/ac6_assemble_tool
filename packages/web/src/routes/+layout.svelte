@@ -9,7 +9,7 @@
   import i18n from '$lib/i18n/define'
   import { extractChars } from '$lib/i18n/extract-chars'
   import { resources } from '$lib/i18n/resources'
-  import { initializeLanguageFromQuery } from '$lib/store/language/language-store'
+  import { initializeLanguageFromQuery } from '$lib/store/language/language-store.svelte'
   import { appVersion } from '$lib/utils/app-version'
   import { withPageQuery } from '$lib/utils/page-query'
 
