@@ -90,6 +90,8 @@
   const orderParts: OrderParts = $derived(defineOrder(orders))
 
   const serializeAssembly = useWithEnableState(() => {
+    logger.debug('serialize assembly')
+
     storeAssemblyAsQuery(assembly)
 
     if (queuedUrl) {
@@ -98,13 +100,14 @@
     }
   })
 
-  let shouldSerializeAssembly = true
-
   afterNavigate(({ type }) => {
     logger.debug('afterNavigate: type', { type })
 
-    if (type === 'enter') {
-      // initialization on first load
+    serializeAssembly.enable()
+
+    // popstateは別途onPopstateハンドラで処理されるため、ここでは扱わない
+    if (type === 'enter' || type === 'link' || type === 'goto') {
+      // initialization on first load or navigation from other pages
       const result = bootstrap(page.url, partsPool.candidates)
 
       partsPoolState = result.partsPool
@@ -125,9 +128,6 @@
           queuedUrl = result.migratedUrl
         }
       }
-
-      logger.debug('initialized')
-      serializeAssembly.enable()
     }
   })
 
@@ -135,16 +135,8 @@
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     assembly // watch assembly changes
 
-    if (shouldSerializeAssembly) {
-      logger.debug('assembly changed, serialize to URL')
-      // 設計変更により untrack は不要:
-      // - navToPartsList は assembly から直接導出されるため、
-      //   appQuery を $state にする必要がなくなった
-      // - appQuery が通常の変数になったことで、リアクティビティの循環が発生しない
-      serializeAssembly.run()
-    } else {
-      shouldSerializeAssembly = true
-    }
+    logger.debug('assembly changed')
+    serializeAssembly.run()
   })
 
   // handler
@@ -196,8 +188,6 @@
   }
 
   const onPopstate = () => {
-    shouldSerializeAssembly = false
-
     // re-create from URL state on back/forward navigation
     logger.debug('on popstate', {
       search: page.url.search,
