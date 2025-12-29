@@ -1,5 +1,12 @@
 # @ac6_assemble_tool/web
 
+## 3.2.7
+### Patch Changes
+
+
+
+- [#993](https://github.com/tooppoo/ac6_assemble_tool/pull/993) [`477ab2a`](https://github.com/tooppoo/ac6_assemble_tool/commit/477ab2aebde82d3953f293bccbd54104d2f68f5b) Thanks [@tooppoo](https://github.com/tooppoo)! - refactor application state
+
 ## 3.2.6
 
 ### Patch Changes
