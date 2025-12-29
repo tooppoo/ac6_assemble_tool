@@ -1,69 +1,29 @@
 <script lang="ts">
   import type { I18NextStore } from '$lib/i18n/define'
-  import { useWithEnableState } from '$lib/ssg/safety-reference'
+  import {
+    changeLanguage,
+    getCurrentLanguage,
+  } from '$lib/store/language/language-store.svelte'
 
-  import { getContext, onMount } from 'svelte'
-  import { SvelteURL } from 'svelte/reactivity'
-
-  interface Props {
-    onUpdate?: (search: string) => void
-  }
-
-  let { onUpdate }: Props = $props()
+  import { getContext } from 'svelte'
 
   const i18n = getContext<I18NextStore>('i18n')
 
-  const defaultLanguage: string = 'ja'
-  const languageQuery: string = 'lng'
-  const serializeLanguage = useWithEnableState(setLanguageQuery)
+  // グローバルストアから現在の言語設定を取得
+  // $state のため、リアクティブに追跡される
+  let language = $derived.by(() => getCurrentLanguage())
 
-  // state
-  let language: string = $state(defaultLanguage)
-
-  onMount(() => {
-    initialize()
-
-    serializeLanguage.enable()
-  })
-
-  const languages = (() => {
-    const defLng = (opt: { value: string; label: string }) => ({
-      ...opt,
-      isSelected: () => language === opt.value,
-    })
-
-    return [
-      defLng({ value: 'ja', label: '日本語' }),
-      defLng({ value: 'en', label: 'English' }),
-    ]
-  })()
+  const languages = [
+    { value: 'ja', label: '日本語' },
+    { value: 'en', label: 'English' },
+  ]
 
   // handler
   function onChange(e: Event) {
     const target = e.target as HTMLInputElement
 
-    language = target.value
-
-    $i18n.changeLanguage(language)
-
-    serializeLanguage.run()
-  }
-
-  // setup
-  function initialize() {
-    const url = new URL(location.href)
-
-    language = url.searchParams.get(languageQuery) || defaultLanguage
-  }
-  function setLanguageQuery() {
-    const url = new SvelteURL(location.href)
-    const query = url.searchParams
-
-    query.set(languageQuery, language)
-    url.search = query.toString()
-
-    history.pushState({}, '', url)
-    onUpdate?.(url.search)
+    // グローバルストアとURLクエリの両方を更新
+    changeLanguage(target.value)
   }
 </script>
 
@@ -73,9 +33,9 @@
       {$i18n.t('language.label', { ns: 'page/index' })}
     </label>
     :
-    <select id="change-language" onchange={onChange} bind:value={language}>
+    <select id="change-language" onchange={onChange} value={language}>
       {#each languages as lng (lng.value)}
-        <option value={lng.value} selected={lng.isSelected()}>
+        <option value={lng.value}>
           {lng.label}
         </option>
       {/each}

@@ -8,6 +8,11 @@
   import ErrorModal from '$lib/components/modal/ErrorModal.svelte'
   import i18n from '$lib/i18n/define'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
+  import { syncLanguageFromQuery } from '$lib/store/language/language-store.svelte'
+  import {
+    buildQueryFromAssembly,
+    storeAssemblyAsQuery,
+  } from '$lib/store/query/query-store'
 
   import {
     type Assembly,
@@ -18,7 +23,6 @@
   import { changeAssemblyCommand } from '@ac6_assemble_tool/core/assembly/command/change-assembly'
   import { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
   import { RandomAssembly } from '@ac6_assemble_tool/core/assembly/random/random-assembly'
-  import { assemblyToSearchV2 } from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
   import {
     type Candidates,
     type OrderParts,
@@ -34,10 +38,7 @@
   } from './form/PartsSelectForm.svelte'
   import PartsSelectForm from './form/PartsSelectForm.svelte'
   import { initializeAssembly } from './interaction/assembly'
-  import {
-    buildAssemblyFromQuery,
-    mergeAssemblyParams,
-  } from './interaction/assembly-from-query'
+  import { buildAssemblyFromQuery } from './interaction/assembly-from-query'
   import { bootstrap } from './interaction/bootstrap'
   import type { PartsPoolRestrictions } from './interaction/derive-parts-pool'
   import { assemblyErrorMessage } from './interaction/error-message'
@@ -78,30 +79,35 @@
   let openAssemblyStore = $state(false)
   let errorMessage = $state<string[]>([])
 
-  let navToPartsList = $state(`/parts-list`)
+  let assembly = $state<Assembly>(initializeAssembly(candidates))
+  // アセンブリと現在のURLクエリ（言語設定など）をマージしてパーツ一覧へのリンクを生成
+  let navToPartsList = $derived(
+    `/parts-list?${buildQueryFromAssembly(assembly).toString()}`,
+  )
 
   let queuedUrl: URL | null = null
 
   const orderParts: OrderParts = $derived(defineOrder(orders))
 
-  // svelte-ignore state_referenced_locally
-  let assembly = $state<Assembly>(initializeAssembly(candidates))
   const serializeAssembly = useWithEnableState(() => {
-    serializeAssemblyAsQuery()
-    navToPartsList = `/parts-list?${page.url.search}`
+    logger.debug('serialize assembly')
+
+    storeAssemblyAsQuery(assembly)
+
     if (queuedUrl) {
       pushState(queuedUrl, {})
       queuedUrl = null
     }
   })
 
-  let shouldSerializeAssembly = true
-
   afterNavigate(({ type }) => {
     logger.debug('afterNavigate: type', { type })
 
-    if (type === 'enter') {
-      // initialization on first load
+    serializeAssembly.enable()
+
+    // popstateは別途onPopstateハンドラで処理されるため、ここでは扱わない
+    if (type === 'enter' || type === 'link' || type === 'goto') {
+      // initialization on first load or navigation from other pages
       const result = bootstrap(page.url, partsPool.candidates)
 
       partsPoolState = result.partsPool
@@ -122,9 +128,6 @@
           queuedUrl = result.migratedUrl
         }
       }
-
-      logger.debug('initialized')
-      serializeAssembly.enable()
     }
   })
 
@@ -132,16 +135,14 @@
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     assembly // watch assembly changes
 
-    if (shouldSerializeAssembly) {
-      logger.debug('assembly changed, serialize to URL')
-      serializeAssembly.run()
-    } else {
-      shouldSerializeAssembly = true
-    }
+    logger.debug('assembly changed')
+    serializeAssembly.run()
   })
 
   // handler
   const onChangeParts = (event: ChangePartsEvent) => {
+    logger.debug('on change parts', { event })
+
     const { assembly: nextAssembly, remainingCandidates } = changeAssembly(
       event.id,
       event.selected,
@@ -157,6 +158,8 @@
     })
   }
   const onRandom = (event: AssembleRandomly) => {
+    logger.debug('on random', { event })
+
     assembly = event.assembly
     candidates = deriveAvailableCandidates({
       assembly,
@@ -165,10 +168,14 @@
     })
   }
   const errorOnRandom = (event: ErrorOnAssembly) => {
+    logger.debug('error on random', { event })
+
     errorMessage = assemblyErrorMessage(event.error, $i18n)
   }
 
   const onLock = (event: ToggleLockEvent) => {
+    logger.debug('on lock', { event })
+
     lockedParts = event.value
       ? lockedParts.lock(event.id, assembly[event.id])
       : lockedParts.unlock(event.id)
@@ -181,12 +188,15 @@
   }
 
   const onPopstate = () => {
-    shouldSerializeAssembly = false
-
     // re-create from URL state on back/forward navigation
     logger.debug('on popstate', {
       search: page.url.search,
     })
+
+    // 言語設定を同期
+    syncLanguageFromQuery(page.url)
+
+    // アセンブリを再構築
     const result = buildAssemblyFromQuery(
       page.url.searchParams,
       partsPoolState.candidates,
@@ -198,20 +208,6 @@
       lockedParts,
       initialCandidates,
     })
-  }
-
-  function serializeAssemblyAsQuery() {
-    const url = new URL(page.url)
-    const assemblyQuery = assemblyToSearchV2(assembly)
-
-    // 既存の非アセンブリパラメータ（lng等）を保持
-    mergeAssemblyParams(url.searchParams, assemblyQuery)
-
-    logger.debug('serializeAssemblyAsQuery', {
-      url: url.toString(),
-    })
-
-    pushState(url, {})
   }
 </script>
 

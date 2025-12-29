@@ -1,5 +1,12 @@
 # Technology Stack
 
+<!-- Last Updated: 2025-12-12 -->
+
+## Recent Changes
+
+- **2025-12-12**: Zod → Valibot移行（軽量化とパフォーマンス向上）、lodash削除
+- **2025-12-12**: Node.js 24.11.1、pnpm 10.24.0、Vitest 4.xへ更新
+
 ## Architecture Overview
 
 モダンなJavaScript/TypeScriptエコシステムをベースとした、monorepo構成のWebアプリケーション。フロントエンド中心のアーキテクチャで、静的サイト生成とクライアントサイドレンダリングのハイブリッド構成。
@@ -22,7 +29,7 @@
 
 - **Svelte Stores**: リアクティブ状態管理
 - **Dexie**: IndexedDBラッパーライブラリ（データ永続化）
-- **Zod**: スキーマバリデーション
+- **Valibot**: スキーマバリデーション（軽量・高性能なZod代替）
 
 ### Internationalization
 
@@ -33,8 +40,8 @@
 
 ### Package Management
 
-- **pnpm 10.17.1**: パッケージマネージャー
-- **Node.js 22.19.0**: ランタイム要求バージョン
+- **pnpm 10.24.0**: パッケージマネージャー
+- **Node.js 24.11.1**: ランタイム要求バージョン
 
 ### Monorepo Management
 
@@ -170,4 +177,5 @@ git push origin v1.2.3  # タグプッシュ
 - **Svelte**: ~5.x
 - **TypeScript**: ~5.9.x
 - **Vite**: ~7.x
-- **Vitest**: ~3.x
+- **Vitest**: ~4.x
+- **Valibot**: ~1.x

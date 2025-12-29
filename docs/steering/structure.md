@@ -166,8 +166,8 @@ infrastructure/ # インフラストラクチャ
 
 ```typescript
 // 1. 外部ライブラリ
-import { sum } from 'lodash-es'
 import { object } from 'valibot'
+import { createI18n } from 'i18next'
 
 // 2. 内部パッケージ
 import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
