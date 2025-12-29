@@ -1,10 +1,9 @@
+import { mergeAssemblyParams } from '$lib/store/query/query-merge'
+
 import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 
-import {
-  buildAssemblyFromQuery,
-  mergeAssemblyParams,
-} from './assembly-from-query'
+import { buildAssemblyFromQuery } from './assembly-from-query'
 import {
   derivePartsPool,
   type PartsPoolRestrictions,

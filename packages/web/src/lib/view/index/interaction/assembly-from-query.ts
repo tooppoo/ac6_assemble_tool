@@ -2,10 +2,7 @@ import {
   createAssembly,
   type Assembly,
 } from '@ac6_assemble_tool/core/assembly/assembly'
-import {
-  searchToAssemblyV2,
-  ASSEMBLY_QUERY_V2_KEYS,
-} from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
+import { searchToAssemblyV2 } from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
 import { VersionMigration } from '@ac6_assemble_tool/core/assembly/version-migration'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 
@@ -35,18 +32,4 @@ export const buildAssemblyFromQuery = (
     assembly,
     migratedParams: changed ? convertedParams : undefined,
   }
-}
-
-/**
- * アセンブリ関連パラメータのみを差し替え、非アセンブリ系のクエリは保持する。
- */
-export const mergeAssemblyParams = (
-  currentParams: URLSearchParams,
-  assemblyParams: URLSearchParams,
-): void => {
-  ASSEMBLY_QUERY_V2_KEYS.forEach((key) => currentParams.delete(key))
-
-  assemblyParams.forEach((value, key) => {
-    currentParams.set(key, value)
-  })
 }

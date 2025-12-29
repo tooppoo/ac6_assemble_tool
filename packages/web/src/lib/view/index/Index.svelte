@@ -8,6 +8,7 @@
   import ErrorModal from '$lib/components/modal/ErrorModal.svelte'
   import i18n from '$lib/i18n/define'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
+  import { storeAssemblyAsQuery } from '$lib/store/query/query-store'
 
   import {
     type Assembly,
@@ -34,10 +35,7 @@
   } from './form/PartsSelectForm.svelte'
   import PartsSelectForm from './form/PartsSelectForm.svelte'
   import { initializeAssembly } from './interaction/assembly'
-  import {
-    buildAssemblyFromQuery,
-    mergeAssemblyParams,
-  } from './interaction/assembly-from-query'
+  import { buildAssemblyFromQuery } from './interaction/assembly-from-query'
   import { bootstrap } from './interaction/bootstrap'
   import type { PartsPoolRestrictions } from './interaction/derive-parts-pool'
   import { assemblyErrorMessage } from './interaction/error-message'
@@ -78,17 +76,19 @@
   let openAssemblyStore = $state(false)
   let errorMessage = $state<string[]>([])
 
-  let navToPartsList = $state(`/parts-list`)
+  let assembly = $state<Assembly>(initializeAssembly(candidates))
+  let navToPartsList = $derived(
+    `/parts-list?${assemblyToSearchV2(assembly).toString()}`,
+  )
 
   let queuedUrl: URL | null = null
 
   const orderParts: OrderParts = $derived(defineOrder(orders))
 
   // svelte-ignore state_referenced_locally
-  let assembly = $state<Assembly>(initializeAssembly(candidates))
   const serializeAssembly = useWithEnableState(() => {
-    serializeAssemblyAsQuery()
-    navToPartsList = `/parts-list?${page.url.search}`
+    storeAssemblyAsQuery(assembly)
+
     if (queuedUrl) {
       pushState(queuedUrl, {})
       queuedUrl = null
@@ -134,6 +134,10 @@
 
     if (shouldSerializeAssembly) {
       logger.debug('assembly changed, serialize to URL')
+      // 設計変更により untrack は不要:
+      // - navToPartsList は assembly から直接導出されるため、
+      //   appQuery を $state にする必要がなくなった
+      // - appQuery が通常の変数になったことで、リアクティビティの循環が発生しない
       serializeAssembly.run()
     } else {
       shouldSerializeAssembly = true
@@ -142,6 +146,8 @@
 
   // handler
   const onChangeParts = (event: ChangePartsEvent) => {
+    logger.debug('on change parts', { event })
+
     const { assembly: nextAssembly, remainingCandidates } = changeAssembly(
       event.id,
       event.selected,
@@ -157,6 +163,8 @@
     })
   }
   const onRandom = (event: AssembleRandomly) => {
+    logger.debug('on random', { event })
+
     assembly = event.assembly
     candidates = deriveAvailableCandidates({
       assembly,
@@ -165,10 +173,14 @@
     })
   }
   const errorOnRandom = (event: ErrorOnAssembly) => {
+    logger.debug('error on random', { event })
+
     errorMessage = assemblyErrorMessage(event.error, $i18n)
   }
 
   const onLock = (event: ToggleLockEvent) => {
+    logger.debug('on lock', { event })
+
     lockedParts = event.value
       ? lockedParts.lock(event.id, assembly[event.id])
       : lockedParts.unlock(event.id)
@@ -198,20 +210,6 @@
       lockedParts,
       initialCandidates,
     })
-  }
-
-  function serializeAssemblyAsQuery() {
-    const url = new URL(page.url)
-    const assemblyQuery = assemblyToSearchV2(assembly)
-
-    // 既存の非アセンブリパラメータ（lng等）を保持
-    mergeAssemblyParams(url.searchParams, assemblyQuery)
-
-    logger.debug('serializeAssemblyAsQuery', {
-      url: url.toString(),
-    })
-
-    pushState(url, {})
   }
 </script>
 
