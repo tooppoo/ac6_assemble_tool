@@ -49,3 +49,4 @@ analyze.html
 # other
 .env
 tmp
+.devbox/
