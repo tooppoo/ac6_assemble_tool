@@ -1,5 +1,3 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-
 // Mock $app modules - must be defined before imports
 vi.mock('$app/navigation', () => ({
   pushState: vi.fn(),
@@ -16,6 +14,9 @@ vi.mock('i18next', () => ({
   },
 }))
 
+import _i18next from 'i18next'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import {
   changeLanguage,
   getCurrentLanguage,
@@ -25,7 +26,6 @@ import {
 
 import { pushState } from '$app/navigation'
 import { page } from '$app/state'
-import _i18next from 'i18next'
 
 const mockPushState = pushState as ReturnType<typeof vi.fn>
 const mockPage = page as { url: URL }

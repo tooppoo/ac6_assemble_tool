@@ -1,6 +1,6 @@
 import { genAssembly } from '@ac6_assemble_tool/core/spec-helper/property-generator'
 import { it as fcit } from '@fast-check/vitest'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, vi } from 'vitest'
 
 // Mock $app modules - must be defined before imports
 let mockBrowser = true
@@ -141,24 +141,21 @@ describe('query-store', () => {
       },
     )
 
-    fcit.prop([genAssembly()])(
-      '現在のパス名を保持すること',
-      (assembly) => {
-        // 各テスト内で元のURLを保存
-        const originalUrl = mockPage.url
-        mockPage.url = new URL('http://localhost/parts-list')
+    fcit.prop([genAssembly()])('現在のパス名を保持すること', (assembly) => {
+      // 各テスト内で元のURLを保存
+      const originalUrl = mockPage.url
+      mockPage.url = new URL('http://localhost/parts-list')
 
-        try {
-          storeAssemblyAsQuery(assembly)
+      try {
+        storeAssemblyAsQuery(assembly)
 
-          const [url] = mockPushState.mock.calls[0]
-          expect(url).toMatch(/^\/parts-list\?/)
-        } finally {
-          // 元のURLに戻す
-          mockPage.url = originalUrl
-        }
-      },
-    )
+        const [url] = mockPushState.mock.calls[0]
+        expect(url).toMatch(/^\/parts-list\?/)
+      } finally {
+        // 元のURLに戻す
+        mockPage.url = originalUrl
+      }
+    })
 
     fcit.prop([genAssembly()])(
       '既存のクエリパラメータをマージすること',
@@ -252,7 +249,7 @@ describe('query-store', () => {
 
           storeAssemblyAsQuery(assembly)
 
-          let [url1] = mockPushState.mock.calls[0]
+          const [url1] = mockPushState.mock.calls[0]
           expect(url1).toContain('lng=ja')
 
           // 言語を英語に変更
@@ -261,7 +258,7 @@ describe('query-store', () => {
 
           storeAssemblyAsQuery(assembly)
 
-          let [url2] = mockPushState.mock.calls[0]
+          const [url2] = mockPushState.mock.calls[0]
           expect(url2).toContain('lng=en')
         } finally {
           mockPage.url = originalUrl
