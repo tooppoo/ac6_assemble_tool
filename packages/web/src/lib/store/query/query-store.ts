@@ -3,8 +3,8 @@ import { assemblyToSearchV2 } from '@ac6_assemble_tool/core/assembly/serialize/a
 
 import { mergeAssemblyParams } from './query-merge'
 
-import { pushState } from '$app/navigation'
 import { browser } from '$app/environment'
+import { pushState } from '$app/navigation'
 import { page } from '$app/state'
 
 /**
