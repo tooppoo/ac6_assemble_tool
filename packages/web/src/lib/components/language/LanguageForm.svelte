@@ -10,28 +10,20 @@
   const i18n = getContext<I18NextStore>('i18n')
 
   // グローバルストアから現在の言語設定を取得
-  let language: string = $state(getCurrentLanguage())
+  // $state のため、リアクティブに追跡される
+  let language = $derived.by(() => getCurrentLanguage())
 
-  const languages = (() => {
-    const defLng = (opt: { value: string; label: string }) => ({
-      ...opt,
-      isSelected: () => language === opt.value,
-    })
-
-    return [
-      defLng({ value: 'ja', label: '日本語' }),
-      defLng({ value: 'en', label: 'English' }),
-    ]
-  })()
+  const languages = [
+    { value: 'ja', label: '日本語' },
+    { value: 'en', label: 'English' },
+  ]
 
   // handler
   function onChange(e: Event) {
     const target = e.target as HTMLInputElement
 
-    language = target.value
-
     // グローバルストアとURLクエリの両方を更新
-    changeLanguage(language)
+    changeLanguage(target.value)
   }
 </script>
 
@@ -41,9 +33,9 @@
       {$i18n.t('language.label', { ns: 'page/index' })}
     </label>
     :
-    <select id="change-language" onchange={onChange} bind:value={language}>
+    <select id="change-language" onchange={onChange} value={language}>
       {#each languages as lng (lng.value)}
-        <option value={lng.value} selected={lng.isSelected()}>
+        <option value={lng.value}>
           {lng.label}
         </option>
       {/each}
