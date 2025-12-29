@@ -7,9 +7,6 @@ import { page } from '$app/state'
 const LANGUAGE_QUERY_KEY = 'lng'
 const DEFAULT_LANGUAGE = 'ja'
 
-// 現在の言語設定を保持する $state
-// LanguageForm で bind:value を使うため、$state が必要
-// リアクティビティの循環は、URL更新時に untrack を使って回避する
 let currentLanguage = $state(DEFAULT_LANGUAGE)
 
 /**
