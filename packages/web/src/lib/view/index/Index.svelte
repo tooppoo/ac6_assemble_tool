@@ -8,6 +8,7 @@
   import ErrorModal from '$lib/components/modal/ErrorModal.svelte'
   import i18n from '$lib/i18n/define'
   import { useWithEnableState } from '$lib/ssg/safety-reference'
+  import { syncLanguageFromQuery } from '$lib/store/language/language-store'
   import { storeAssemblyAsQuery } from '$lib/store/query/query-store'
 
   import {
@@ -85,7 +86,6 @@
 
   const orderParts: OrderParts = $derived(defineOrder(orders))
 
-  // svelte-ignore state_referenced_locally
   const serializeAssembly = useWithEnableState(() => {
     storeAssemblyAsQuery(assembly)
 
@@ -199,6 +199,11 @@
     logger.debug('on popstate', {
       search: page.url.search,
     })
+
+    // 言語設定を同期
+    syncLanguageFromQuery(page.url)
+
+    // アセンブリを再構築
     const result = buildAssemblyFromQuery(
       page.url.searchParams,
       partsPoolState.candidates,

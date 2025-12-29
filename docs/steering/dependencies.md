@@ -97,14 +97,17 @@ graph TD
 **責務**: 技術的インフラレイヤー
 
 **提供機能**:
+
 - 構造化ログ（logger）
 - 共通ユーティリティ（array, number等）
 
 **依存先**:
+
 - 外部パッケージ: `@praha/byethrow`
 - 内部パッケージ: なし（最下位レイヤー）
 
 **被依存元**:
+
 - `@ac6_assemble_tool/core`
 - `@ac6_assemble_tool/parts`
 - `@ac6_assemble_tool/web`
@@ -116,15 +119,18 @@ graph TD
 **責務**: ドメインデータ層 - パーツ定義とバージョン管理
 
 **提供機能**:
+
 - パーツ型定義（フレーム系、武装系、内装系、拡張系）
 - パッチバージョン対応
 - パーツ実体定義
 - パーツ属性ユーティリティ
 
 **依存先**:
+
 - `@ac6_assemble_tool/shared`
 
 **被依存元**:
+
 - `@ac6_assemble_tool/core`
 - `@ac6_assemble_tool/web`
 
@@ -135,6 +141,7 @@ graph TD
 **責務**: ビジネスロジック・計算エンジン
 
 **提供機能**:
+
 - 機体組み立てロジック
 - パーツフィルタリング
 - ランダム生成・検証
@@ -142,11 +149,13 @@ graph TD
 - データ永続化（IndexedDB）
 
 **依存先**:
+
 - `@ac6_assemble_tool/parts`
 - `@ac6_assemble_tool/shared`
 - 外部パッケージ: `valibot`, `ulid`, `@praha/byethrow`, `@philomagi/base-error.js`
 
 **被依存元**:
+
 - `@ac6_assemble_tool/web`
 
 **特記事項**: UIに依存しない純粋なビジネスロジック層として設計
@@ -156,12 +165,14 @@ graph TD
 **責務**: UI層 - Web フロントエンド
 
 **提供機能**:
+
 - SvelteKit ベースの Web アプリケーション
 - ビュー固有ロジック（フィルター、インタラクション、レポート）
 - 国際化対応（i18n）
 - パッチバージョン別データ管理
 
 **依存先**:
+
 - `@ac6_assemble_tool/core`
 - `@ac6_assemble_tool/parts`
 - `@ac6_assemble_tool/shared`
@@ -208,6 +219,7 @@ graph TD
    - 技術的ユーティリティ → `shared`
 
 2. **依存方向確認**: 依存グラフに従い、上位→下位のみ許可されていることを確認
+
    ```txt
    OK: web → core → parts → shared
    NG: parts → core (下位から上位への依存)
@@ -215,6 +227,7 @@ graph TD
    ```
 
 3. **循環依存チェック**: 追加する依存が循環を生じないか確認
+
    ```bash
    # 依存グラフの可視化（例: madge を使用）
    pnpm add -D madge
@@ -230,6 +243,7 @@ graph TD
 2. **依存方向の確認**: 上位→下位の一方向依存となるか検証
 
 3. **package.json への追加**:
+
    ```json
    {
      "dependencies": {
@@ -239,6 +253,7 @@ graph TD
    ```
 
 4. **動作確認**:
+
    ```bash
    pnpm install
    pnpm run build
@@ -268,6 +283,7 @@ graph TD
 ### 循環依存が発生した場合
 
 1. **依存グラフの確認**:
+
    ```bash
    npx madge --circular --extensions ts packages/
    ```
@@ -279,6 +295,7 @@ graph TD
 ### ビルドエラー "Cannot find module" が発生
 
 1. **workspace インストール**:
+
    ```bash
    pnpm install
    ```

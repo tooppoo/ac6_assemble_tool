@@ -272,16 +272,19 @@ graph TD
 **責務**: SvelteKitルーティングのエントリポイント
 
 **特徴**:
+
 - `+page.svelte`: ページ本体
 - `+layout.svelte`: 共通レイアウト
 - `+page.ts` / `+page.server.ts`: データロード
 
 **依存ルール**:
+
 - View コンポーネントを組み込む
 - データロードロジックは `+page.ts` に集約
 - 直接的なビジネスロジックは持たない
 
 **例**:
+
 ```svelte
 <!-- routes/+page.svelte -->
 <script lang="ts">
@@ -304,11 +307,13 @@ graph TD
 **配置**: `src/lib/components/`
 
 **特徴**:
+
 - ビジネスロジックを持たない
 - `@ac6_assemble_tool/core` や `@ac6_assemble_tool/parts` への依存禁止
 - propsでデータを受け取り、イベントで通知
 
 **サブディレクトリ**:
+
 - `button/`: ボタン類（IconButton, TextButton）
 - `form/`: フォーム要素（Switch）
 - `layout/`: レイアウト要素（Navbar, CollapseText, ToolSection）
@@ -318,6 +323,7 @@ graph TD
 - `tooltip/`: ツールチップ（ClickToggleTooltip）
 
 **例**:
+
 ```svelte
 <!-- components/button/TextButton.svelte -->
 <script lang="ts">
@@ -341,11 +347,13 @@ graph TD
 **配置**: `src/lib/view/`
 
 **特徴**:
+
 - ドメインロジックを呼び出す
 - `@ac6_assemble_tool/core`, `@ac6_assemble_tool/parts` への依存可能
 - Svelte 5 rune API（`$state`, `$derived`, `$effect`）を活用
 
 **サブディレクトリ**:
+
 - `index/`: トップページビュー（機体組み立て）
   - `Index.svelte`: メインコンポーネント
   - `form/`: パーツ選択フォーム
@@ -362,6 +370,7 @@ graph TD
   - `state/`: 状態管理UI
 
 **例**:
+
 ```svelte
 <!-- view/parts-list/PartsListView.svelte -->
 <script lang="ts">
@@ -388,11 +397,13 @@ graph TD
 **配置**: `src/lib/view/*/interaction/`, `filter/`, `sort/` 等
 
 **特徴**:
+
 - プレーンなTypeScript関数/クラス
 - コンポーネントから呼び出される（逆方向依存禁止）
 - テスタブルな純粋関数を優先
 
 **例**:
+
 ```typescript
 // view/parts-list/filter/filters-core.ts
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
@@ -418,6 +429,7 @@ export function applyFilters(
    - ページ → `routes/*/`
 
 2. **依存方向確認**:
+
    ```txt
    OK: Component → TypeScript Module → Core/Parts/Shared
    NG: TypeScript Module → Component (逆方向依存)
@@ -524,6 +536,7 @@ export function applyFilters(
 **理由**: SSR/CSRの一貫性確保
 
 **実装例**:
+
 ```typescript
 // utils/page-query.ts
 import { page } from '$app/state'
@@ -621,6 +634,7 @@ export function doSomething(data: Data): Result {
 ### 循環依存が発生した場合
 
 1. **依存グラフの確認**:
+
    ```bash
    npx madge --circular --extensions ts,svelte packages/web/src
    ```

@@ -26,5 +26,4 @@ describe('assembly-from-query', () => {
     expect(migratedParams).toBeUndefined()
     expect(assemblyToSearchV2(assembly).toString()).toBe(params.toString())
   })
-
 })

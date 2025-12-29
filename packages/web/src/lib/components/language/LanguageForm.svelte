@@ -1,30 +1,16 @@
 <script lang="ts">
   import type { I18NextStore } from '$lib/i18n/define'
-  import { useWithEnableState } from '$lib/ssg/safety-reference'
+  import {
+    changeLanguage,
+    getCurrentLanguage,
+  } from '$lib/store/language/language-store'
 
-  import { getContext, onMount } from 'svelte'
-  import { SvelteURL } from 'svelte/reactivity'
-
-  interface Props {
-    onUpdate?: (search: string) => void
-  }
-
-  let { onUpdate }: Props = $props()
+  import { getContext } from 'svelte'
 
   const i18n = getContext<I18NextStore>('i18n')
 
-  const defaultLanguage: string = 'ja'
-  const languageQuery: string = 'lng'
-  const serializeLanguage = useWithEnableState(setLanguageQuery)
-
-  // state
-  let language: string = $state(defaultLanguage)
-
-  onMount(() => {
-    initialize()
-
-    serializeLanguage.enable()
-  })
+  // グローバルストアから現在の言語設定を取得
+  let language: string = $state(getCurrentLanguage())
 
   const languages = (() => {
     const defLng = (opt: { value: string; label: string }) => ({
@@ -44,26 +30,8 @@
 
     language = target.value
 
-    $i18n.changeLanguage(language)
-
-    serializeLanguage.run()
-  }
-
-  // setup
-  function initialize() {
-    const url = new URL(location.href)
-
-    language = url.searchParams.get(languageQuery) || defaultLanguage
-  }
-  function setLanguageQuery() {
-    const url = new SvelteURL(location.href)
-    const query = url.searchParams
-
-    query.set(languageQuery, language)
-    url.search = query.toString()
-
-    history.pushState({}, '', url)
-    onUpdate?.(url.search)
+    // グローバルストアとURLクエリの両方を更新
+    changeLanguage(language)
   }
 </script>
 

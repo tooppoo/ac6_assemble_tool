@@ -9,12 +9,15 @@
   import i18n from '$lib/i18n/define'
   import { extractChars } from '$lib/i18n/extract-chars'
   import { resources } from '$lib/i18n/resources'
+  import { initializeLanguageFromQuery } from '$lib/store/language/language-store'
   import { appVersion } from '$lib/utils/app-version'
   import { withPageQuery } from '$lib/utils/page-query'
 
   import { setLogLevel } from '@ac6_assemble_tool/shared/logger'
   import { setContext } from 'svelte'
 
+  import { afterNavigate } from '$app/navigation'
+  import { page } from '$app/state'
   import {
     PUBLIC_LOG_LEVEL,
     PUBLIC_REPORT_BUG_URL,
@@ -25,6 +28,13 @@
 
   setContext('i18n', i18n)
   setLogLevel(PUBLIC_LOG_LEVEL || 'info')
+
+  // アプリケーション起動時に言語設定を初期化
+  afterNavigate(({ type }) => {
+    if (type === 'enter') {
+      initializeLanguageFromQuery(page.url)
+    }
+  })
 
   const jaText = extractChars(resources.ja)
   function onFontLoad(this: HTMLLinkElement): void {

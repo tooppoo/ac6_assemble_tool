@@ -1,4 +1,4 @@
-import { ASSEMBLY_QUERY_V2_KEYS } from "@ac6_assemble_tool/core/assembly/serialize/as-query-v2"
+import { ASSEMBLY_QUERY_V2_KEYS } from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
 
 /**
  * アセンブリ関連パラメータのみを差し替え、非アセンブリ系のクエリは保持する。

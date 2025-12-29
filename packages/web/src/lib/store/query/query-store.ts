@@ -1,11 +1,10 @@
+import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
+import { assemblyToSearchV2 } from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
 
-import { assemblyToSearchV2 } from "@ac6_assemble_tool/core/assembly/serialize/as-query-v2"
+import { mergeAssemblyParams } from './query-merge'
 
-import { mergeAssemblyParams } from "./query-merge"
-
-import { pushState } from "$app/navigation"
-import { page } from "$app/state"
-import type { Assembly } from "@ac6_assemble_tool/core/assembly/assembly"
+import { pushState } from '$app/navigation'
+import { page } from '$app/state'
 
 export function storeAssemblyAsQuery(assembly: Assembly): void {
   const appQuery = assemblyToSearchV2(assembly)
