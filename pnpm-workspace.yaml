@@ -8,4 +8,6 @@ minimumReleaseAge: 1440
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - esbuild
+  - sharp
   - unrs-resolver
+  - workerd
