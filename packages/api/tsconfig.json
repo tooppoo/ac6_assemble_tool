@@ -1,14 +1,12 @@
 {
+  "extends": ["@ac6_assemble_tool/tsconfig/base.json"],
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "strict": true,
-    "skipLibCheck": true,
-    "lib": [
-      "ESNext"
-    ],
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    "rootDir": ".",
+    "outDir": "dist",
+    "declaration": true,
+    "sourceMap": true,
+    "types": ["@ac6_assemble_tool/spec/lib/vitest", "node"]
   },
+  "include": ["./src"],
+  "exclude": ["node_modules", "dist"]
 }

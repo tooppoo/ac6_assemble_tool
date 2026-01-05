@@ -100,6 +100,15 @@ importers:
         specifier: ^4.11.3
         version: 4.11.3
     devDependencies:
+      '@ac6_assemble_tool/eslint':
+        specifier: workspace:1.0.0
+        version: link:../eslint
+      '@ac6_assemble_tool/spec':
+        specifier: workspace:1.0.0
+        version: link:../spec
+      '@ac6_assemble_tool/tsconfig':
+        specifier: workspace:1.0.0
+        version: link:../tsconfig
       wrangler:
         specifier: ^4.4.0
         version: 4.54.0

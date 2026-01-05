@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "ac6_assemble_tool_api",
   "main": "src/index.ts",
-  "compatibility_date": "2026-01-05"
+  "compatibility_date": "2026-01-05",
   // "compatibility_flags": [
   //   "nodejs_compat"
   // ],
