@@ -31,7 +31,7 @@ export const baseRules = [
   },
 ]
 
-export const importRules = ({ pathGroups, ignoreUnresolved }) => [
+export const importRules = ({ pathGroups, ignoreUnresolved } = {}) => [
   importPlugin.flatConfigs.recommended,
   {
     languageOptions: {

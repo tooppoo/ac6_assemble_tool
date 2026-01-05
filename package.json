@@ -22,6 +22,7 @@
     "changeset": "changeset",
     "core": "pnpm --filter @ac6_assemble_tool/core",
     "web": "pnpm --filter @ac6_assemble_tool/web",
+    "api": "pnpm --filter @ac6_assemble_tool/api",
     "parts": "pnpm --filter @ac6_assemble_tool/parts",
     "shared": "pnpm --filter @ac6_assemble_tool/shared",
     "docs": "pnpm --filter @ac6_assemble_tool/docs"
