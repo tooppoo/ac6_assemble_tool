@@ -23,6 +23,10 @@ export type ACParts<
   weight: number
   /** EN負荷 */
   en_load: number
+  /** AI用の簡潔な説明（2-3文） */
+  ai_summary: string
+  /** AI用のタグ（検索・分類用） */
+  ai_tags: readonly string[]
 }>
 
 export type WithEnLoad = Readonly<{

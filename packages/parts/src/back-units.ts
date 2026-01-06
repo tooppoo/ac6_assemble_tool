@@ -113,6 +113,9 @@ export const leftBackUnits = [
 
     weight: 2700,
     en_load: 310,
+
+    ai_summary: 'アーキバス社製のパルスシールド。通常展開でダメージ軽減58、衝撃軽減40、イニシャルガードでダメージ軽減78、衝撃軽減80、持続時間0.6秒。バランス型。',
+    ai_tags: ['シールド', 'パルスシールド', 'バランス型', 'アーキバス', '左背'],
   }),
   defineShieldUnit<AsShield>()({
     id: 'BU002',
@@ -136,6 +139,9 @@ export const leftBackUnits = [
 
     weight: 2010,
     en_load: 220,
+
+    ai_summary: 'タキガワ製の軽量パルスシールド。通常展開はダメージ軽減45、衝撃軽減25と控えめだが、イニシャルガードでダメージ軽減65、衝撃軽減75、持続時間1.0秒。軽量重視。',
+    ai_tags: ['シールド', 'パルスシールド', '軽量級', 'タキガワ', '左背'],
   }),
   defineShieldUnit<AsShield>()({
     id: 'BU003',
@@ -159,6 +165,9 @@ export const leftBackUnits = [
 
     weight: 3150,
     en_load: 323,
+
+    ai_summary: 'タキガワ製のパルスシールド。通常展開でダメージ軽減63、衝撃軽減48と高性能だが、イニシャルガードの持続時間は0.2秒と極めて短い。瞬間防御に特化。',
+    ai_tags: ['シールド', 'パルスシールド', '通常展開重視', 'タキガワ', '左背'],
   }),
   defineShieldUnit<AsBuckler>()({
     id: 'BU004',
@@ -182,6 +191,9 @@ export const leftBackUnits = [
 
     weight: 1920,
     en_load: 285,
+
+    ai_summary: 'アーキバス社製のパルスバックラー。通常展開の性能は控えめだが、イニシャルガードでダメージ軽減96、衝撃軽減95と最高クラスの防御性能。持続時間0.3秒。',
+    ai_tags: ['シールド', 'パルスバックラー', 'アサルトアーマー特化', 'アーキバス', '左背'],
   }),
   defineShieldUnit<AsBuckler>()({
     id: 'BU005',
@@ -205,6 +217,9 @@ export const leftBackUnits = [
 
     weight: 3380,
     en_load: 385,
+
+    ai_summary: 'タキガワ製のパルスバックラー。イニシャルガードでダメージ軽減82、衝撃軽減76、持続時間1.6秒と長時間。通常展開は控えめ。重量とEN負荷は高め。',
+    ai_tags: ['シールド', 'パルスバックラー', '長時間展開', 'タキガワ', '左背'],
   }),
   defineShieldUnit<AsScutum>()({
     id: 'BU006',
@@ -228,6 +243,9 @@ export const leftBackUnits = [
 
     weight: 4100,
     en_load: 480,
+
+    ai_summary: 'アーキバス先進開発局製のパルススカタム。展開時にダメージ軽減86、衝撃軽減70。非展開待機時も軽減21/18を4.0秒維持。重量4100、EN負荷480と重め。',
+    ai_tags: ['シールド', 'パルススカタム', '常時防御', 'アーキバス先進開発局', '左背'],
   }),
   defineShieldUnit<AsShield>()({
     id: 'BU007',
@@ -251,6 +269,9 @@ export const leftBackUnits = [
 
     weight: 2170,
     en_load: 800,
+
+    ai_summary: '技研製のコーラルシールド。ダメージ軽減55、衝撃軽減42、イニシャルガードでダメージ軽減68、衝撃軽減57、持続時間0.8秒。EN負荷800と非常に高い。',
+    ai_tags: ['シールド', 'コーラルシールド', '高EN負荷', '技研', '左背'],
   }),
 ] as const
 export type LeftBackUnit = (typeof leftBackUnits)[number]
@@ -282,6 +303,9 @@ export const backUnits = [
 
     weight: 3960,
     en_load: 404,
+
+    ai_summary: '大豊製のガトリングキャノン。攻撃力24、連射速度14.3と高速連射。理想射程156、有効射程289の近中距離武器。総弾数800、反動5と低反動。実弾属性。',
+    ai_tags: ['背部武器', 'ガトリング', '高速連射', '実弾', '大豊'],
   }),
   defineBackUnit<AsBlastShooting>()({
     id: 'BU009',
@@ -308,6 +332,9 @@ export const backUnits = [
 
     weight: 6580,
     en_load: 465,
+
+    ai_summary: 'ベイラム社製の散弾バズーカ。攻撃力1360、衝撃力1450、爆発半径15。有効射程510、総弾数25、リロード5.0秒。重量6580の重量級爆発武器。',
+    ai_tags: ['背部武器', 'バズーカ', '爆発', '高衝撃', 'ベイラム'],
   }),
   defineBackUnit<AsBlastShooting>()({
     id: 'BU010',
@@ -334,6 +361,9 @@ export const backUnits = [
 
     weight: 7230,
     en_load: 386,
+
+    ai_summary: 'メリニット製のグレネードキャノン。攻撃力2098、爆発半径90と超広範囲。有効射程720、総弾数16、リロード9.3秒。重量7230の超重量級爆発武器。',
+    ai_tags: ['背部武器', 'グレネード', '爆発', '超広範囲', 'メリニット'],
   }),
   defineBackUnit<AsBlastShooting>()({
     id: 'BU011',
@@ -360,6 +390,9 @@ export const backUnits = [
 
     weight: 5500,
     en_load: 285,
+
+    ai_summary: 'メリニット製のグレネードキャノン。攻撃力655×2の2連射バースト、爆発半径60。有効射程625、総弾数42、リロード6.4秒。重量5500と比較的軽量。',
+    ai_tags: ['背部武器', 'グレネード', 'バースト', '爆発', 'メリニット'],
   }),
   defineBackUnit<AsKineticShooting & WithBlast & WithReload>()({
     id: 'BU012',
@@ -387,6 +420,9 @@ export const backUnits = [
 
     weight: 6150,
     en_load: 825,
+
+    ai_summary: 'アーキバス先進開発局製のスタンニードルランチャー。攻撃力1258、爆発半径30。理想射程280、有効射程490。EN負荷825と高め。実弾属性スタン武器。',
+    ai_tags: ['背部武器', 'ニードル', 'スタン', '実弾', 'アーキバス先進開発局'],
   }),
   defineBackUnit<AsLaserCannon>()({
     id: 'BU013',
@@ -423,6 +459,9 @@ export const backUnits = [
 
     weight: 5190,
     en_load: 683,
+
+    ai_summary: 'アーキバス社製のレーザーキャノン。通常攻撃力925、チャージ攻撃力1621。チャージEN負荷759、チャージ時間1.6秒。理想射程230、有効射程359。EN属性。',
+    ai_tags: ['背部武器', 'レーザー', 'チャージ', 'EN属性', 'アーキバス'],
   }),
   defineBackUnit<AsLaserCannon>()({
     id: 'BU014',
@@ -459,6 +498,9 @@ export const backUnits = [
 
     weight: 14820,
     en_load: 1200,
+
+    ai_summary: 'アーキバス先進開発局製の3連レーザーキャノン。通常攻撃力633×3、チャージ攻撃力1015×3。チャージEN負荷1440、チャージ時間5.0秒。重量14820と超重量級。',
+    ai_tags: ['背部武器', 'レーザー', '3連射', 'チャージ', 'アーキバス先進開発局'],
   }),
   defineBackUnit<AsLaserCannon>()({
     id: 'BU015',
@@ -495,6 +537,9 @@ export const backUnits = [
 
     weight: 9270,
     en_load: 803,
+
+    ai_summary: 'アーキバス先進開発局製のレーザーキャノン。通常攻撃力1201、チャージ攻撃力2203。チャージEN負荷988、チャージ時間4.3秒。理想射程300、有効射程447。高火力型。',
+    ai_tags: ['背部武器', 'レーザー', 'チャージ', '高火力', 'アーキバス先進開発局'],
   }),
   defineBackUnit<AsLaserCannon & WithChargeBlast>()({
     id: 'BU016',
@@ -532,6 +577,9 @@ export const backUnits = [
 
     weight: 7620,
     en_load: 784,
+
+    ai_summary: 'アーキバス社製の拡散レーザーキャノン。通常攻撃力1308、チャージ攻撃力1988でチャージ時爆発半径45。チャージEN負荷902、チャージ時間2.0秒。近距離範囲攻撃型。',
+    ai_tags: ['背部武器', 'レーザー', '拡散', 'チャージ爆発', 'アーキバス'],
   }),
 
   defineBackUnit<AsPlasmaCanon>()({
@@ -570,6 +618,9 @@ export const backUnits = [
 
     weight: 6270,
     en_load: 882,
+
+    ai_summary: 'シュナイダー製のプラズマキャノン。通常攻撃力1560、チャージ攻撃力2412。爆発半径30/60。チャージEN負荷944、チャージ時間2.0秒。EN属性範囲攻撃武器。',
+    ai_tags: ['背部武器', 'プラズマ', 'チャージ', '爆発', 'シュナイダー'],
   }),
   defineBackUnit<AsPulseCanon>()({
     id: 'BU018',
@@ -598,6 +649,9 @@ export const backUnits = [
 
     weight: 2100,
     en_load: 652,
+
+    ai_summary: 'シュナイダー製のパルスキャノン。攻撃力85、連射速度10.0と高速連射。PA干渉550と高い。有効射程490、総弾数560。重量2100と軽量。EN属性連射武器。',
+    ai_tags: ['背部武器', 'パルスキャノン', '高速連射', 'PA干渉', 'シュナイダー'],
   }),
   defineBackUnit<
     AsShooting &
@@ -634,6 +688,9 @@ export const backUnits = [
 
     weight: 2760,
     en_load: 382,
+
+    ai_summary: 'シュナイダー製のパルスシールドランチャー。攻撃力455、爆発半径15、PA干渉175。3連マガジン、連射速度3.4。有効射程62と超近距離。軽量でEN負荷も低い。',
+    ai_tags: ['背部武器', 'シールドランチャー', '超近距離', 'PA干渉', 'シュナイダー'],
   }),
   defineBackUnit<AsMissile & WithPAInterference>()({
     id: 'BU020',
@@ -662,6 +719,9 @@ export const backUnits = [
 
     weight: 3330,
     en_load: 390,
+
+    ai_summary: '技研製の光波砲。攻撃力134×4、PA干渉117。誘導240、ロック時間3.3秒、4ロック。有効射程930と長射程。EN属性ホーミング武器。',
+    ai_tags: ['背部武器', '光波砲', 'ホーミング', 'PA干渉', '技研'],
   }),
 
   defineBackUnit<AsMissile>()({
@@ -690,6 +750,9 @@ export const backUnits = [
 
     weight: 2120,
     en_load: 154,
+
+    ai_summary: 'ファーロン製の標準ミサイル。攻撃力103×4、誘導180、4ロック、ロック時間0.3秒。有効射程2500と超長射程。総弾数140。軽量でEN負荷も低い。',
+    ai_tags: ['背部武器', 'ミサイル', 'ホーミング', '長射程', 'ファーロン'],
   }),
   defineBackUnit<AsMissile>()({
     id: 'BU022',
@@ -717,6 +780,9 @@ export const backUnits = [
 
     weight: 3840,
     en_load: 241,
+
+    ai_summary: 'ファーロン製の標準ミサイル。攻撃力103×6、誘導180、6ロック、ロック時間0.4秒。有効射程2500と超長射程。総弾数228。中型ミサイルコンテナ。',
+    ai_tags: ['背部武器', 'ミサイル', 'ホーミング', '長射程', 'ファーロン'],
   }),
   defineBackUnit<AsMissile>()({
     id: 'BU023',
@@ -744,6 +810,9 @@ export const backUnits = [
 
     weight: 5220,
     en_load: 320,
+
+    ai_summary: 'ファーロン製の標準ミサイル。攻撃力103×10、誘導180、10ロック、ロック時間0.8秒。有効射程2500と超長射程。総弾数300。大型ミサイルコンテナ。',
+    ai_tags: ['背部武器', 'ミサイル', 'ホーミング', '長射程', 'ファーロン'],
   }),
 
   defineBackUnit<AsMissile>()({
@@ -772,6 +841,9 @@ export const backUnits = [
 
     weight: 3580,
     en_load: 325,
+
+    ai_summary: 'ファーロン製の分裂ミサイル。攻撃力600×2、誘導145、2ロック、ロック時間1.5秒。有効射程1425。分裂後の広範囲攻撃が可能。',
+    ai_tags: ['背部武器', 'ミサイル', '分裂', 'ホーミング', 'ファーロン'],
   }),
   defineBackUnit<AsMissile>()({
     id: 'BU025',
@@ -799,6 +871,9 @@ export const backUnits = [
 
     weight: 2800,
     en_load: 228,
+
+    ai_summary: 'ファーロン製の分裂ミサイル。攻撃力688、誘導145、1ロック、ロック時間1.0秒。有効射程1425。総弾数40。軽量タイプ。',
+    ai_tags: ['背部武器', 'ミサイル', '分裂', 'ホーミング', 'ファーロン'],
   }),
   defineBackUnit<AsMissile>()({
     id: 'BU026',
@@ -826,6 +901,9 @@ export const backUnits = [
 
     weight: 5010,
     en_load: 510,
+
+    ai_summary: 'ファーロン製の分裂ミサイル。攻撃力688×2、誘導145、2ロック、ロック時間2.0秒。有効射程1425。総弾数72。重量級タイプ。',
+    ai_tags: ['背部武器', 'ミサイル', '分裂', 'ホーミング', 'ファーロン'],
   }),
 
   defineBackUnit<AsMissile>()({
@@ -854,6 +932,9 @@ export const backUnits = [
 
     weight: 1900,
     en_load: 182,
+
+    ai_summary: 'ファーロン製のデュアルミサイル。攻撃力148×4、誘導145、2ロック、ロック時間0.4秒。有効射程500と近距離。総弾数124。軽量でEN負荷も低い。',
+    ai_tags: ['背部武器', 'ミサイル', 'デュアル', '近距離', 'ファーロン'],
   }),
   defineBackUnit<AsMissile>()({
     id: 'BU028',
@@ -881,6 +962,9 @@ export const backUnits = [
 
     weight: 3450,
     en_load: 262,
+
+    ai_summary: 'ファーロン製のデュアルミサイル。攻撃力148×6、誘導145、3ロック、ロック時間0.4秒。有効射程500と近距離。総弾数180。中型タイプ。',
+    ai_tags: ['背部武器', 'ミサイル', 'デュアル', '近距離', 'ファーロン'],
   }),
   defineBackUnit<AsMissile>()({
     id: 'BU029',
@@ -908,6 +992,9 @@ export const backUnits = [
 
     weight: 4020,
     en_load: 332,
+
+    ai_summary: 'ファーロン製のデュアルミサイル。攻撃力177×6、誘導145、6ロック、ロック時間0.7秒。有効射程500と近距離。総弾数156。大型タイプ。',
+    ai_tags: ['背部武器', 'ミサイル', 'デュアル', '近距離', 'ファーロン'],
   }),
 
   defineBackUnit<AsMissile>()({
@@ -936,6 +1023,9 @@ export const backUnits = [
 
     weight: 2240,
     en_load: 258,
+
+    ai_summary: 'ファーロン製の垂直ミサイル。攻撃力124×4、誘導480と高い。4ロック、ロック時間0.4秒。有効射程1000。遮蔽物越しの攻撃が可能。',
+    ai_tags: ['背部武器', 'ミサイル', '垂直', '高誘導', 'ファーロン'],
   }),
   defineBackUnit<AsMissile>()({
     id: 'BU031',
@@ -963,6 +1053,9 @@ export const backUnits = [
 
     weight: 3920,
     en_load: 380,
+
+    ai_summary: 'ファーロン製の垂直ミサイル。攻撃力124×8、誘導480と高い。8ロック、ロック時間0.8秒。有効射程1000。中型垂直ミサイルコンテナ。',
+    ai_tags: ['背部武器', 'ミサイル', '垂直', '高誘導', 'ファーロン'],
   }),
   defineBackUnit<AsMissile>()({
     id: 'BU032',
@@ -990,6 +1083,9 @@ export const backUnits = [
 
     weight: 5010,
     en_load: 525,
+
+    ai_summary: 'ファーロン製の垂直ミサイル。攻撃力124×12、誘導480と高い。12ロック、ロック時間1.4秒。有効射程1000。大型垂直ミサイルコンテナ。',
+    ai_tags: ['背部武器', 'ミサイル', '垂直', '高誘導', 'ファーロン'],
   }),
 
   defineBackUnit<AsActiveHomingMissile>()({
@@ -1019,6 +1115,9 @@ export const backUnits = [
 
     weight: 2680,
     en_load: 213,
+
+    ai_summary: 'ファーロン製のアクティブホーミングミサイル。攻撃力486、爆発半径12。誘導115、1ロック、ロック時間2.0秒。発射後自動追尾。総弾数45。',
+    ai_tags: ['背部武器', 'ミサイル', 'アクティブホーミング', '爆発', 'ファーロン'],
   }),
   defineBackUnit<AsActiveHomingMissile>()({
     id: 'BU034',
@@ -1047,6 +1146,9 @@ export const backUnits = [
 
     weight: 4320,
     en_load: 424,
+
+    ai_summary: 'ファーロン製のアクティブホーミングミサイル。攻撃力486×2、爆発半径12。誘導115、2ロック、ロック時間2.8秒。発射後自動追尾。総弾数72。',
+    ai_tags: ['背部武器', 'ミサイル', 'アクティブホーミング', '爆発', 'ファーロン'],
   }),
 
   defineBackUnit<AsContainerMissile>()({
@@ -1073,6 +1175,9 @@ export const backUnits = [
 
     weight: 6370,
     en_load: 150,
+
+    ai_summary: 'ファーロン製のコンテナミサイル。攻撃力1422、衝撃力1278と超高威力。誘導120、有効射程700。総弾数12、リロード12.0秒。重量6370と重い。',
+    ai_tags: ['背部武器', 'ミサイル', 'コンテナ', '超高威力', 'ファーロン'],
   }),
 
   defineBackUnit<AsMissile & WithBlast>()({
@@ -1102,6 +1207,9 @@ export const backUnits = [
 
     weight: 6890,
     en_load: 499,
+
+    ai_summary: 'RaD製のクラスターミサイル。攻撃力2133、衝撃力2040、爆発半径24。誘導200、1ロック、ロック時間5.0秒。総弾数20。重量6890の超重量級。',
+    ai_tags: ['背部武器', 'ミサイル', 'クラスター', '超高威力', 'RaD'],
   }),
 
   defineBackUnit<AsMissile>()({
@@ -1130,6 +1238,9 @@ export const backUnits = [
 
     weight: 5620,
     en_load: 680,
+
+    ai_summary: 'RaD製のスキャッターミサイル。攻撃力78×10、誘導180、1ロック、ロック時間0.5秒。有効射程2500。総弾数420と大量。EN負荷680と高め。',
+    ai_tags: ['背部武器', 'ミサイル', 'スキャッター', '大量弾数', 'RaD'],
   }),
 
   defineBackUnit<AsMissile & WithBlast>()({
@@ -1159,6 +1270,9 @@ export const backUnits = [
 
     weight: 4250,
     en_load: 425,
+
+    ai_summary: 'オールマインド製の起爆ミサイル。攻撃力791、爆発半径15。誘導360と極めて高い。1ロック、ロック時間2.4秒。有効射程360と近距離。',
+    ai_tags: ['背部武器', 'ミサイル', '起爆', '超高誘導', 'オールマインド'],
   }),
 
   defineBackUnit<AsMissile & WithIdealRange>()({
@@ -1188,6 +1302,9 @@ export const backUnits = [
 
     weight: 3100,
     en_load: 420,
+
+    ai_summary: 'エルカノ製のニードルミサイル。攻撃力415×2、誘導110。理想射程310、有効射程410。1ロック、ロック時間4.2秒。実弾属性のミサイル武器。',
+    ai_tags: ['背部武器', 'ミサイル', 'ニードル', '実弾', 'エルカノ'],
   }),
 
   defineBackUnit<AsPlasmaMissile>()({
@@ -1217,6 +1334,9 @@ export const backUnits = [
 
     weight: 2310,
     en_load: 210,
+
+    ai_summary: 'VCPL製のプラズマミサイル。攻撃力760、爆発半径26。誘導180、3ロック、ロック時間0.3秒。有効射程1500。総弾数120。EN属性範囲攻撃。',
+    ai_tags: ['背部武器', 'ミサイル', 'プラズマ', 'EN属性', 'VCPL'],
   }),
   defineBackUnit<AsPlasmaMissile>()({
     id: 'BU041',
@@ -1245,6 +1365,9 @@ export const backUnits = [
 
     weight: 3900,
     en_load: 276,
+
+    ai_summary: 'VCPL製のプラズマミサイル。攻撃力760、爆発半径26。誘導180、6ロック、ロック時間0.3秒。有効射程1500。総弾数210と大量。',
+    ai_tags: ['背部武器', 'ミサイル', 'プラズマ', 'EN属性', 'VCPL'],
   }),
   defineBackUnit<AsPlasmaMissile>()({
     id: 'BU042',
@@ -1273,6 +1396,9 @@ export const backUnits = [
 
     weight: 3760,
     en_load: 268,
+
+    ai_summary: 'VCPL製のプラズマミサイル。攻撃力760、爆発半径26。誘導155、5ロック、ロック時間0.5秒。有効射程750と中距離。総弾数240。垂直発射型。',
+    ai_tags: ['背部武器', 'ミサイル', 'プラズマ', '垂直', 'VCPL'],
   }),
 
   defineBackUnit<AsCoralMissile>()({
@@ -1312,6 +1438,9 @@ export const backUnits = [
 
     weight: 4200,
     en_load: 783,
+
+    ai_summary: '技研製のコーラルミサイル。通常攻撃力827、チャージ攻撃力4078。爆発半径36/56。誘導110、1ロック、ロック時間4.9秒。コーラル属性超高威力。',
+    ai_tags: ['背部武器', 'ミサイル', 'コーラル', 'チャージ', '技研'],
   }),
 
   defineBackUnit<AsOrbit>()({
@@ -1339,6 +1468,9 @@ export const backUnits = [
 
     weight: 2230,
     en_load: 435,
+
+    ai_summary: 'ベイラム社製の弾丸軌道兵器。攻撃力28×8のバースト射撃。理想射程130、有効射程205と近距離。連射速度5.5。自動追尾する弾丸軌道。実弾属性。',
+    ai_tags: ['背部武器', '軌道兵器', '弾丸', 'バースト', 'ベイラム'],
   }),
   defineBackUnit<AsOrbit>()({
     id: 'BU045',
@@ -1365,6 +1497,9 @@ export const backUnits = [
 
     weight: 2010,
     en_load: 446,
+
+    ai_summary: 'オールマインド製のレーザー軌道兵器。攻撃力144×3のバースト射撃。理想射程198、有効射程262。連射速度1.0。自動追尾するレーザー軌道。EN属性。',
+    ai_tags: ['背部武器', '軌道兵器', 'レーザー', 'バースト', 'オールマインド'],
   }),
   defineBackUnit<AsTurret>()({
     id: 'BU046',
@@ -1392,6 +1527,9 @@ export const backUnits = [
 
     weight: 2800,
     en_load: 560,
+
+    ai_summary: 'アーキバス社製のレーザータレット。攻撃力146×10。理想射程250、有効射程304。3連マガジン、連射速度0.9。総弾数52。EN属性の設置型武器。',
+    ai_tags: ['背部武器', 'タレット', 'レーザー', '設置型', 'アーキバス'],
   }),
   defineBackUnit<AsLaserDrone>()({
     id: 'BU047',
@@ -1424,6 +1562,9 @@ export const backUnits = [
 
     weight: 3800,
     en_load: 570,
+
+    ai_summary: 'VCPL製のレーザードローン。通常攻撃力288×6、チャージ攻撃力1370×2。誘導360、1ロック、ロック時間0.3秒。総弾数120。自律追尾型レーザー兵器。',
+    ai_tags: ['背部武器', 'ドローン', 'レーザー', 'チャージ', 'VCPL'],
   }),
 ] as const
 export type BackUnit = (typeof backUnits)[number]

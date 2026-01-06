@@ -40,6 +40,9 @@ export const boosters = [
 
     weight: 1820,
     en_load: 266,
+
+    ai_summary: 'BAWS製ブースター。推力5667、上昇推力4917。QB推力19150、持続時間0.31秒。AB推力8218。近接攻撃推力14019と高い。バランス型。',
+    ai_tags: ['ブースター', 'バランス型', '高近接推力', 'BAWS', '中量級'],
   }),
   defineBooster({
     id: 'BS002',
@@ -68,6 +71,9 @@ export const boosters = [
 
     weight: 1300,
     en_load: 130,
+
+    ai_summary: 'ファーロン製ブースター。推力5734、上昇推力5084。QB推力17600、持続時間0.39秒。AB推力8735。重量1300、EN負荷130と軽量。価格0の初期装備。',
+    ai_tags: ['ブースター', '初期装備', '軽量級', 'ファーロン', '低EN負荷'],
   }),
   defineBooster({
     id: 'BS003',
@@ -96,6 +102,9 @@ export const boosters = [
 
     weight: 1710,
     en_load: 250,
+
+    ai_summary: 'ファーロン製ブースター。推力6001、上昇推力5400。QB推力20600、持続時間0.38秒。AB推力8501。QB適正重量82000と高め。バランス型。',
+    ai_tags: ['ブースター', 'バランス型', '高QB推力', 'ファーロン', '中量級'],
   }),
   defineBooster({
     id: 'BS004',
@@ -124,6 +133,9 @@ export const boosters = [
 
     weight: 1420,
     en_load: 390,
+
+    ai_summary: 'ファーロン製ブースター。推力6801、上昇推力5217。QB推力18600、リロード時間0.5秒と短い。AB推力8685。重量1420と軽量。速度重視型。',
+    ai_tags: ['ブースター', '高推力', '短QBリロード', 'ファーロン', '軽量級'],
   }),
   defineBooster({
     id: 'BS005',
@@ -152,6 +164,9 @@ export const boosters = [
 
     weight: 1900,
     en_load: 410,
+
+    ai_summary: 'シュナイダー製ブースター。推力6668、上昇推力5067。QB推力21650と高く、リロード時間0.35秒と極めて短い。AB推力9085。近接攻撃推力10868。QB特化型。',
+    ai_tags: ['ブースター', '高QB推力', '極短QBリロード', 'シュナイダー', 'QB特化'],
   }),
   defineBooster({
     id: 'BS006',
@@ -180,6 +195,9 @@ export const boosters = [
 
     weight: 1980,
     en_load: 282,
+
+    ai_summary: 'シュナイダー製ブースター。推力6251、上昇推力5634。QB推力20000、持続時間0.4秒、リロード0.5秒。AB推力8668。近接攻撃推力12335と高い。バランス型。',
+    ai_tags: ['ブースター', 'バランス型', '高近接推力', 'シュナイダー', '中量級'],
   }),
   defineBooster({
     id: 'BS007',
@@ -208,6 +226,9 @@ export const boosters = [
 
     weight: 2240,
     en_load: 480,
+
+    ai_summary: 'シュナイダー製ブースター。推力6167、上昇推力4834。QB推力18050、リロード時間0.91秒と長い。QB適正重量100600と超重量級向け。AB推力9301。重量級特化。',
+    ai_tags: ['ブースター', '超重量級向け', '高QB適正重量', 'シュナイダー', '重量級'],
   }),
   defineBooster({
     id: 'BS008',
@@ -236,6 +257,9 @@ export const boosters = [
 
     weight: 1360,
     en_load: 180,
+
+    ai_summary: 'RaD製ブースター。推力5801、上昇推力5200。QB推力18900、持続時間0.54秒と長い。QB適正重量97000と重量級向け。重量1360、EN負荷180と軽量。持続力重視。',
+    ai_tags: ['ブースター', '長QB持続', '重量級向け', 'RaD', '軽量級'],
   }),
   defineBooster({
     id: 'BS009',
@@ -264,6 +288,9 @@ export const boosters = [
 
     weight: 970,
     en_load: 200,
+
+    ai_summary: 'RaD製ブースター。推力5417、上昇推力4767。QB推力17500、持続時間0.46秒。上昇EN消費405と低い。重量970、EN負荷200と最軽量級。省エネ軽量型。',
+    ai_tags: ['ブースター', '最軽量級', '低上昇EN消費', 'RaD', '省エネ型'],
   }),
   defineBooster({
     id: 'BS010',
@@ -292,6 +319,9 @@ export const boosters = [
 
     weight: 2010,
     en_load: 244,
+
+    ai_summary: 'RaD製ブースター。推力6401、上昇推力6334と極めて高い。QB推力19000。AB推力8585。近接攻撃推力11468。EN負荷244と低め。上昇性能特化型。',
+    ai_tags: ['ブースター', '最高上昇推力', '上昇特化', 'RaD', '低EN負荷'],
   }),
   defineBooster({
     id: 'BS011',
@@ -320,6 +350,9 @@ export const boosters = [
 
     weight: 1590,
     en_load: 400,
+
+    ai_summary: '技研製ブースター。推力6534、上昇推力5334。QB推力18850、リロード時間0.3秒と極めて短い。AB推力8335。重量1590と軽量。QB回転率特化型。',
+    ai_tags: ['ブースター', '極短QBリロード', 'QB回転率特化', '技研', '軽量級'],
   }),
   defineBooster({
     id: 'BS012',
@@ -348,6 +381,9 @@ export const boosters = [
 
     weight: 1930,
     en_load: 342,
+
+    ai_summary: '技研製ブースター。推力6467、上昇推力6001。QB推力22200と最高クラス、持続時間0.43秒と長い。QB適正重量90200。AB推力8835。高性能型。',
+    ai_tags: ['ブースター', '最高QB推力', '高性能型', '技研', '中量級'],
   }),
 ] as const
 export type Booster = (typeof boosters)[number]
