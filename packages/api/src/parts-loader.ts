@@ -1,14 +1,6 @@
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
-import { heads } from '@ac6_assemble_tool/parts/heads'
-import { arms } from '@ac6_assemble_tool/parts/arms'
-import { cores } from '@ac6_assemble_tool/parts/cores'
-import { legs } from '@ac6_assemble_tool/parts/legs'
-import { boosters } from '@ac6_assemble_tool/parts/booster'
-import { fcses } from '@ac6_assemble_tool/parts/fces'
-import { generators } from '@ac6_assemble_tool/parts/generators'
-import { armUnits } from '@ac6_assemble_tool/parts/arm-units'
-import { backUnits } from '@ac6_assemble_tool/parts/back-units'
-import { expansions } from '@ac6_assemble_tool/parts/expansions'
+import { candidates } from '@ac6_assemble_tool/parts/versions/v1.09.1'
+
 import type { SlotType } from './types'
 
 /**
@@ -33,16 +25,18 @@ const SLOT_TO_CLASSIFICATION: Record<SlotType, string> = {
  */
 function loadAllParts(): ACParts[] {
   return [
-    ...heads,
-    ...arms,
-    ...cores,
-    ...legs,
-    ...boosters,
-    ...fcses,
-    ...generators,
-    ...armUnits,
-    ...backUnits,
-    ...expansions,
+    ...candidates.head,
+    ...candidates.arms,
+    ...candidates.core,
+    ...candidates.legs,
+    ...candidates.booster,
+    ...candidates.fcs,
+    ...candidates.generator,
+    ...candidates.rightArmUnit,
+    ...candidates.leftArmUnit,
+    ...candidates.rightBackUnit,
+    ...candidates.leftBackUnit,
+    ...candidates.expansion,
   ]
 }
 
