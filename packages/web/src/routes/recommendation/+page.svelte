@@ -97,8 +97,8 @@
 <main class="recommendation-page py-4">
   <div class="container">
     <h1 class="py-2 text-center">
-      ARMORED CORE Ⅵ<br class="d-block d-md-none" />
-      AI PARTS RECOMMENDATION
+      ARMORED CORE Ⅵ<br class="d-block" />
+      AI PARTS RECOMMENDATION(α)
     </h1>
 
     <p class="text-center text-muted mb-4">{pageDescription}</p>
