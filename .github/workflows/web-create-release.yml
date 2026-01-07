@@ -32,6 +32,7 @@ jobs:
           echo "PUBLIC_REPORT_BUG_URL=${{ vars.PUBLIC_REPORT_BUG_URL }}" > packages/web/.env
           echo "PUBLIC_REPORT_REQUEST_URL=${{ vars.PUBLIC_REPORT_REQUEST_URL }}" >> packages/web/.env
           echo "PUBLIC_LOG_LEVEL=${{ vars.PUBLIC_LOG_LEVEL }}" >> packages/web/.env
+          echo "PUBLIC_API_ENDPOINT=${{ vars.PUBLIC_API_ENDPOINT }}" >> packages/web/.env
       - name: Build
         run: pnpm run build
 
