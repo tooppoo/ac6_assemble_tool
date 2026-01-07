@@ -10,16 +10,10 @@ describe('recommend-handler', () => {
     it('should handle valid request and return recommendations', async () => {
       const mockAI: CloudflareAI = {
         run: vi.fn().mockResolvedValue({
-          response: JSON.stringify({
-            recommendations: [
-              {
-                partId: 'HD001',
-                partName: 'Test Head',
-                reason: 'Test reason',
-                score: 0.9,
-              },
-            ],
-          }),
+          response: `高火力の武器をお探しですね。Test Headをお勧めします。
+
+---RECOMMENDATIONS---
+partId: HD001 | partName: Test Head | score: 0.9 | reason: Test reason`,
         }),
       }
 
@@ -32,24 +26,21 @@ describe('recommend-handler', () => {
       expect(Result.isSuccess(result)).toBe(true)
       if (Result.isSuccess(result)) {
         const response = Result.unwrap(result) as RecommendResponse
+        expect(response.answer).toContain('高火力の武器をお探しですね')
         expect(response.recommendations).toHaveLength(1)
         expect(response.recommendations[0].partId).toBe('HD001')
+        expect(response.recommendations[0].partName).toBe('Test Head')
+        expect(response.recommendations[0].score).toBe(0.9)
       }
     })
 
     it('should handle request with slot filter', async () => {
       const mockAI: CloudflareAI = {
         run: vi.fn().mockResolvedValue({
-          response: JSON.stringify({
-            recommendations: [
-              {
-                partId: 'HD001',
-                partName: 'Test Head',
-                reason: 'Test reason',
-                score: 0.9,
-              },
-            ],
-          }),
+          response: `軽量なヘッドパーツをお探しですね。Test Headをお勧めします。
+
+---RECOMMENDATIONS---
+partId: HD001 | partName: Test Head | score: 0.9 | reason: Test reason`,
         }),
       }
 
@@ -63,7 +54,9 @@ describe('recommend-handler', () => {
       expect(Result.isSuccess(result)).toBe(true)
       if (Result.isSuccess(result)) {
         const response = Result.unwrap(result) as RecommendResponse
+        expect(response.answer).toContain('軽量なヘッドパーツをお探しですね')
         expect(response.recommendations).toBeDefined()
+        expect(response.recommendations).toHaveLength(1)
       }
     })
 
@@ -81,10 +74,10 @@ describe('recommend-handler', () => {
       expect(Result.isFailure(result)).toBe(true)
     })
 
-    it('should return error when AI response parsing fails', async () => {
+    it('should handle malformed AI response gracefully', async () => {
       const mockAI: CloudflareAI = {
         run: vi.fn().mockResolvedValue({
-          response: 'invalid json',
+          response: 'invalid response without any markers or structure',
         }),
       }
 
@@ -94,15 +87,21 @@ describe('recommend-handler', () => {
 
       const result = await handleRecommendRequest(mockAI, request)
 
-      expect(Result.isFailure(result)).toBe(true)
+      // parseAIResponse always succeeds with graceful degradation
+      expect(Result.isSuccess(result)).toBe(true)
+      if (Result.isSuccess(result)) {
+        const response = Result.unwrap(result) as RecommendResponse
+        expect(response.answer).toBe('invalid response without any markers or structure')
+        expect(response.recommendations).toHaveLength(0)
+      }
     })
 
     it('should return empty recommendations when no parts match', async () => {
       const mockAI: CloudflareAI = {
         run: vi.fn().mockResolvedValue({
-          response: JSON.stringify({
-            recommendations: [],
-          }),
+          response: `申し訳ございませんが、ご要望に合うパーツが見つかりませんでした。
+
+---RECOMMENDATIONS---`,
         }),
       }
 
@@ -115,6 +114,7 @@ describe('recommend-handler', () => {
       expect(Result.isSuccess(result)).toBe(true)
       if (Result.isSuccess(result)) {
         const response = Result.unwrap(result) as RecommendResponse
+        expect(response.answer).toContain('申し訳ございませんが')
         expect(response.recommendations).toHaveLength(0)
       }
     })
