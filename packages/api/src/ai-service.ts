@@ -1,6 +1,7 @@
-import { Result } from '@praha/byethrow'
-import { logger } from '@ac6_assemble_tool/shared/logger'
 import { allAttributes } from '@ac6_assemble_tool/shared/i18n/terminology'
+import { logger } from '@ac6_assemble_tool/shared/logger'
+import { Result } from '@praha/byethrow'
+
 import type { AIPartData } from './parts-loader'
 import type { Recommendation } from './types'
 
@@ -17,7 +18,11 @@ export interface AIResponse {
 export class AIServiceError extends Error {
   constructor(
     message: string,
-    public readonly type: 'parse_failed' | 'invalid_format' | 'api_failed' | 'timeout',
+    public readonly type:
+      | 'parse_failed'
+      | 'invalid_format'
+      | 'api_failed'
+      | 'timeout',
     public readonly cause?: unknown,
   ) {
     super(message)
@@ -25,7 +30,9 @@ export class AIServiceError extends Error {
   }
 }
 
-function reverseKeyValue<T extends Record<string, string>>(obj: T): Record<string, string> {
+function reverseKeyValue<T extends Record<string, string>>(
+  obj: T,
+): Record<string, string> {
   const reversed: Record<string, string> = {}
   for (const [key, value] of Object.entries(obj)) {
     reversed[value] = key
@@ -115,7 +122,7 @@ function extractRecommendations(text: string): Recommendation[] {
 
     // パターン: partId: xxx | partName: xxx | score: 0.xx | reason: xxx
     const match = line.match(
-      /partId:\s*([^\|]+)\s*\|\s*partName:\s*([^\|]+)\s*\|\s*score:\s*([\d.]+)\s*\|\s*reason:\s*(.+)/,
+      /partId:\s*([^|]+)\s*\|\s*partName:\s*([^|]+)\s*\|\s*score:\s*([\d.]+)\s*\|\s*reason:\s*(.+)/,
     )
 
     if (match) {
@@ -143,7 +150,10 @@ function extractRecommendations(text: string): Recommendation[] {
  */
 export function parseAIResponse(
   aiResponse: AIResponse,
-): Result.Result<{ answer: string; recommendations: Recommendation[] }, AIServiceError> {
+): Result.Result<
+  { answer: string; recommendations: Recommendation[] },
+  AIServiceError
+> {
   try {
     logger.debug('Parsing AI response', {
       responseLength: aiResponse.response?.length,
@@ -162,7 +172,10 @@ export function parseAIResponse(
     // 自然言語の回答部分を抽出（---RECOMMENDATIONS---より前）
     const marker = '---RECOMMENDATIONS---'
     const markerIndex = fullText.indexOf(marker)
-    const answer = markerIndex !== -1 ? fullText.substring(0, markerIndex).trim() : fullText.trim()
+    const answer =
+      markerIndex !== -1
+        ? fullText.substring(0, markerIndex).trim()
+        : fullText.trim()
 
     logger.info('Successfully parsed AI response', {
       answerLength: answer.length,
@@ -179,11 +192,7 @@ export function parseAIResponse(
       errorStack: error instanceof Error ? error.stack : undefined,
     })
     return Result.fail(
-      new AIServiceError(
-        'Failed to parse AI response',
-        'parse_failed',
-        error,
-      ),
+      new AIServiceError('Failed to parse AI response', 'parse_failed', error),
     )
   }
 }

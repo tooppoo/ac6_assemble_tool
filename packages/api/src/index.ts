@@ -1,14 +1,14 @@
+import { logger, setLogLevel } from '@ac6_assemble_tool/shared/logger'
+import { Result } from '@praha/byethrow'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import * as v from 'valibot'
-import { Result } from '@praha/byethrow'
-import { logger, setLogLevel } from '@ac6_assemble_tool/shared/logger'
-import { RecommendRequestSchema } from './validation'
+
 import { handleRecommendRequest } from './recommend-handler'
 import type { ErrorResponse } from './types'
+import { RecommendRequestSchema } from './validation'
 
 const app = new Hono<{ Bindings: Cloudflare.Env }>()
-
 
 // CORS設定
 app.use('*', cors())
@@ -22,7 +22,10 @@ app.post('/api/recommend', async (c) => {
   try {
     // リクエストボディの取得とバリデーション
     const body = await c.req.json()
-    logger.info('Received recommend request', { query: body.query, slot: body.slot })
+    logger.info('Received recommend request', {
+      query: body.query,
+      slot: body.slot,
+    })
 
     const parseResult = v.safeParse(RecommendRequestSchema, body)
 

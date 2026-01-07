@@ -1,5 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { Result } from '@praha/byethrow'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+
+import type { CloudflareAI } from './ai-client'
 import { callWorkersAI, AIClientError } from './ai-client'
 
 describe('ai-client', () => {
@@ -18,7 +20,7 @@ describe('ai-client', () => {
 
       mockAI.run.mockResolvedValue(expectedResponse)
 
-      const result = await callWorkersAI(mockAI as any, prompt)
+      const result = await callWorkersAI(mockAI as CloudflareAI, prompt)
 
       expect(mockAI.run).toHaveBeenCalledWith(
         '@cf/meta/llama-3.1-8b-instruct-fast',
@@ -39,7 +41,7 @@ describe('ai-client', () => {
 
       mockAI.run.mockRejectedValue(error)
 
-      const result = await callWorkersAI(mockAI as any, prompt)
+      const result = await callWorkersAI(mockAI as CloudflareAI, prompt)
 
       expect(Result.isFailure(result)).toBe(true)
       if (Result.isFailure(result)) {
@@ -57,7 +59,7 @@ describe('ai-client', () => {
 
       mockAI.run.mockRejectedValue(timeoutError)
 
-      const result = await callWorkersAI(mockAI as any, prompt)
+      const result = await callWorkersAI(mockAI as CloudflareAI, prompt)
 
       expect(Result.isFailure(result)).toBe(true)
       if (Result.isFailure(result)) {
@@ -70,7 +72,7 @@ describe('ai-client', () => {
       const prompt = 'Test prompt'
       mockAI.run.mockResolvedValue({ invalid: 'format' })
 
-      const result = await callWorkersAI(mockAI as any, prompt)
+      const result = await callWorkersAI(mockAI as CloudflareAI, prompt)
 
       expect(Result.isFailure(result)).toBe(true)
       if (Result.isFailure(result)) {

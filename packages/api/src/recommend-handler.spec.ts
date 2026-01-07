@@ -1,8 +1,9 @@
-import { describe, it, expect, vi } from 'vitest'
 import { Result } from '@praha/byethrow'
-import { handleRecommendRequest } from './recommend-handler'
+import { describe, it, expect, vi } from 'vitest'
+
 import type { CloudflareAI } from './ai-client'
-import type { RecommendRequest } from './types'
+import { handleRecommendRequest } from './recommend-handler'
+import type { RecommendRequest, RecommendResponse } from './types'
 
 describe('recommend-handler', () => {
   describe('handleRecommendRequest', () => {
@@ -11,7 +12,12 @@ describe('recommend-handler', () => {
         run: vi.fn().mockResolvedValue({
           response: JSON.stringify({
             recommendations: [
-              { partId: 'HD001', partName: 'Test Head', reason: 'Test reason', score: 0.9 },
+              {
+                partId: 'HD001',
+                partName: 'Test Head',
+                reason: 'Test reason',
+                score: 0.9,
+              },
             ],
           }),
         }),
@@ -25,7 +31,7 @@ describe('recommend-handler', () => {
 
       expect(Result.isSuccess(result)).toBe(true)
       if (Result.isSuccess(result)) {
-        const response = Result.unwrap(result) as any
+        const response = Result.unwrap(result) as RecommendResponse
         expect(response.recommendations).toHaveLength(1)
         expect(response.recommendations[0].partId).toBe('HD001')
       }
@@ -36,7 +42,12 @@ describe('recommend-handler', () => {
         run: vi.fn().mockResolvedValue({
           response: JSON.stringify({
             recommendations: [
-              { partId: 'HD001', partName: 'Test Head', reason: 'Test reason', score: 0.9 },
+              {
+                partId: 'HD001',
+                partName: 'Test Head',
+                reason: 'Test reason',
+                score: 0.9,
+              },
             ],
           }),
         }),
@@ -51,7 +62,7 @@ describe('recommend-handler', () => {
 
       expect(Result.isSuccess(result)).toBe(true)
       if (Result.isSuccess(result)) {
-        const response = Result.unwrap(result) as any
+        const response = Result.unwrap(result) as RecommendResponse
         expect(response.recommendations).toBeDefined()
       }
     })
@@ -103,7 +114,7 @@ describe('recommend-handler', () => {
 
       expect(Result.isSuccess(result)).toBe(true)
       if (Result.isSuccess(result)) {
-        const response = Result.unwrap(result) as any
+        const response = Result.unwrap(result) as RecommendResponse
         expect(response.recommendations).toHaveLength(0)
       }
     })

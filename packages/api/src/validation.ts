@@ -1,4 +1,5 @@
 import * as v from 'valibot'
+
 import type { RecommendRequest } from './types'
 
 /**
@@ -29,8 +30,8 @@ export type RecommendRequestInput = v.InferOutput<typeof RecommendRequestSchema>
 
 // 型の整合性チェック（コンパイル時検証）
 // @ts-expect-error - Type compatibility check
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 const _typeCheck: RecommendRequest = {} as RecommendRequestInput
 // @ts-expect-error - Type compatibility check
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 const _typeCheck2: RecommendRequestInput = {} as RecommendRequest

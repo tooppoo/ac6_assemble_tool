@@ -17,7 +17,7 @@ export class AIClientError extends Error {
 /**
  * Workers AI レスポンス型
  */
-interface WorkersAIResponse {
+export interface WorkersAIResponse {
   response: string
 }
 
@@ -48,7 +48,7 @@ export async function callWorkersAI(
       typeof response !== 'object' ||
       response === null ||
       !('response' in response) ||
-      typeof (response as any).response !== 'string'
+      typeof (response as { response: string }).response !== 'string'
     ) {
       return Result.fail(
         new AIClientError(

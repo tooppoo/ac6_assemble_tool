@@ -1,13 +1,11 @@
-import { Result } from '@praha/byethrow'
-import type { CloudflareAI } from './ai-client'
-import { callWorkersAI } from './ai-client'
-import { loadParts, extractAIData } from './parts-loader'
-import { buildPrompt, parseAIResponse, AIServiceError } from './ai-service'
-import type {
-  RecommendRequest,
-  RecommendResponse,
-} from './types'
 import { logger } from '@ac6_assemble_tool/shared/logger'
+import { Result } from '@praha/byethrow'
+
+import type { CloudflareAI, WorkersAIResponse } from './ai-client'
+import { callWorkersAI } from './ai-client'
+import { buildPrompt, parseAIResponse, AIServiceError } from './ai-service'
+import { loadParts, extractAIData } from './parts-loader'
+import type { RecommendRequest, RecommendResponse } from './types'
 
 /**
  * レコメンド推論を実行してレスポンスを生成する
@@ -42,7 +40,7 @@ export async function handleRecommendRequest(
 
   // AI レスポンスのパース
   const aiResponse = Result.unwrap(aiResult)
-  const parseResult = parseAIResponse(aiResponse as any)
+  const parseResult = parseAIResponse(aiResponse as WorkersAIResponse)
   logger.debug('Parsed AI Response:', { aiResponse, parseResult })
 
   if (Result.isFailure(parseResult)) {

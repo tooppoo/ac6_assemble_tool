@@ -1,9 +1,6 @@
 import { describe, it, expectTypeOf, assertType } from 'vitest'
 
-import {
-  head as headCategory,
-  core as coreCategory,
-} from './category'
+import { head as headCategory, core as coreCategory } from './category'
 import { head, core } from './classification'
 import { allmind, arquebus } from './manufacture'
 import type { ACParts } from './types'
@@ -29,7 +26,8 @@ describe('ACParts型', () => {
 
     it('Readonly型である', () => {
       // ACParts型全体がReadonlyであることを確認
-      type IsReadonly = ACParts extends Readonly<Record<string, unknown>> ? true : false
+      type IsReadonly =
+        ACParts extends Readonly<Record<string, unknown>> ? true : false
       expectTypeOf<IsReadonly>().toEqualTypeOf<true>()
     })
 

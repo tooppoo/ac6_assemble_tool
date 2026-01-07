@@ -6,6 +6,7 @@
    */
 
   import type { I18NextStore } from '$lib/i18n/define'
+
   import type { Recommendation } from '@ac6_assemble_tool/api'
   import { getContext } from 'svelte'
 
@@ -20,7 +21,12 @@
     error?: string | null
   }
 
-  let { answer, recommendations, loading = false, error = null }: Props = $props()
+  let {
+    answer,
+    recommendations,
+    loading = false,
+    error = null,
+  }: Props = $props()
 
   const title = $derived.by(() => $i18n.t('page/recommendation:result.title'))
   const loadingText = $derived.by(() =>

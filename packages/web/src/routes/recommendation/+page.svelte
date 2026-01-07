@@ -5,16 +5,17 @@
    * AIを使って自然言語でパーツを検索・推奨するページ
    */
 
+  import { fetchRecommendations } from '$lib/api/recommend'
   import LanguageForm from '$lib/components/language/LanguageForm.svelte'
   import Navbar from '$lib/components/layout/Navbar.svelte'
-  import SlotFilter from '$lib/view/recommendation/slot/SlotFilter.svelte'
+  import type { I18NextStore } from '$lib/i18n/define'
   import QueryInput from '$lib/view/recommendation/query/QueryInput.svelte'
   import RecommendationResult from '$lib/view/recommendation/result/RecommendationResult.svelte'
-  import { fetchRecommendations } from '$lib/api/recommend'
+  import SlotFilter from '$lib/view/recommendation/slot/SlotFilter.svelte'
+
   import type { SlotType, Recommendation } from '@ac6_assemble_tool/api'
-  import { Result } from '@praha/byethrow'
   import { logger } from '@ac6_assemble_tool/shared/logger'
-  import type { I18NextStore } from '$lib/i18n/define'
+  import { Result } from '@praha/byethrow'
   import { getContext } from 'svelte'
 
   import { PUBLIC_API_ENDPOINT } from '$env/static/public'
@@ -70,8 +71,7 @@
 
       if (err instanceof Error) {
         error = err.message
-      }
-      else {
+      } else {
         error = $i18n.t('page/recommendation:error.unknown')
       }
       logger.error('Recommendation request failed', { error: err })

@@ -6,6 +6,7 @@
    */
 
   import type { I18NextStore } from '$lib/i18n/define'
+
   import { getContext } from 'svelte'
 
   // i18n
@@ -20,7 +21,9 @@
 
   let { query = $bindable(), disabled = false, onquerychange }: Props = $props()
 
-  const label = $derived.by(() => $i18n.t('page/recommendation:queryInput.label'))
+  const label = $derived.by(() =>
+    $i18n.t('page/recommendation:queryInput.label'),
+  )
   const placeholder = $derived.by(() =>
     $i18n.t('page/recommendation:queryInput.placeholder'),
   )

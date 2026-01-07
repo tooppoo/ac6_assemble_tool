@@ -1,4 +1,5 @@
 import { describe, it, expectTypeOf, assertType } from 'vitest'
+
 import type {
   SlotType,
   RecommendRequest,

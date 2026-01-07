@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
 import * as v from 'valibot'
+import { describe, it, expect } from 'vitest'
+
 import { RecommendRequestSchema } from './validation'
 
 describe('RecommendRequestSchema', () => {

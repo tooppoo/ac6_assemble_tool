@@ -1,6 +1,11 @@
-import { Result } from '@praha/byethrow'
-import type { RecommendRequest, RecommendResponse, ErrorResponse, SlotType } from '@ac6_assemble_tool/api'
+import type {
+  RecommendRequest,
+  RecommendResponse,
+  ErrorResponse,
+  SlotType,
+} from '@ac6_assemble_tool/api'
 import { logger } from '@ac6_assemble_tool/shared/logger'
+import { Result } from '@praha/byethrow'
 
 /**
  * API呼び出しエラー

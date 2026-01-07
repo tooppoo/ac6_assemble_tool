@@ -6,6 +6,7 @@
    */
 
   import type { I18NextStore } from '$lib/i18n/define'
+
   import type { SlotType } from '@ac6_assemble_tool/api'
   import { getContext } from 'svelte'
 
@@ -34,7 +35,9 @@
     { value: 'expansion', key: 'expansion' },
   ]
 
-  const label = $derived.by(() => $i18n.t('page/recommendation:slotFilter.label'))
+  const label = $derived.by(() =>
+    $i18n.t('page/recommendation:slotFilter.label'),
+  )
 
   function handleSlotChange(slot: SlotType) {
     selectedSlot = slot

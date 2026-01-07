@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+
 import { loadParts, filterBySlot, extractAIData } from './parts-loader'
 
 describe('parts-loader', () => {
