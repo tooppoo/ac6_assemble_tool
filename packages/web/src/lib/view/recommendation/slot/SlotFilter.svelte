@@ -23,6 +23,8 @@
   // スロット一覧（未指定含む）
   const slots: Array<{ value: SlotType | undefined; key: string }> = [
     { value: undefined, key: 'all' },
+    { value: 'arm-unit', key: 'arm-unit' },
+    { value: 'back-unit', key: 'back-unit' },
     { value: 'head', key: 'head' },
     { value: 'core', key: 'core' },
     { value: 'arms', key: 'arms' },
@@ -30,8 +32,6 @@
     { value: 'booster', key: 'booster' },
     { value: 'fcs', key: 'fcs' },
     { value: 'generator', key: 'generator' },
-    { value: 'arm-unit', key: 'arm-unit' },
-    { value: 'back-unit', key: 'back-unit' },
     { value: 'expansion', key: 'expansion' },
   ]
 

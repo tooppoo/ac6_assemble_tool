@@ -12,6 +12,9 @@ export const jaAssembly = {
   generator: 'ジェネレータ',
   expansion: 'コア拡張',
 
+  'arm-unit': '腕武器',
+  'back-unit': '背中武器',
+
   // arm units
   attackType: '属性',
   weaponType: '武器タイプ',
