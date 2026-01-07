@@ -85,7 +85,7 @@ describe('ai-service', () => {
 
       expect(Result.isSuccess(result)).toBe(true)
       if (Result.isSuccess(result)) {
-        const recommendations = Result.unwrap(result) as Recommendation[]
+        const { recommendations } = Result.unwrap(result)
         expect(recommendations).toHaveLength(1)
         expect(recommendations[0].partId).toBe('WP001')
         expect(recommendations[0].partName).toBe('Test Weapon')
@@ -109,7 +109,7 @@ describe('ai-service', () => {
 
       expect(Result.isSuccess(result)).toBe(true)
       if (Result.isSuccess(result)) {
-        const recommendations = Result.unwrap(result) as Recommendation[]
+        const { recommendations } = Result.unwrap(result)
         expect(recommendations).toHaveLength(3)
       }
     })
@@ -163,7 +163,7 @@ ${JSON.stringify({
 
       expect(Result.isSuccess(result)).toBe(true)
       if (Result.isSuccess(result)) {
-        const recommendations = Result.unwrap(result) as Recommendation[]
+        const { recommendations } = Result.unwrap(result)
         expect(recommendations).toHaveLength(1)
       }
     })
