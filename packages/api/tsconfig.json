@@ -5,7 +5,11 @@
     "outDir": "dist",
     "declaration": true,
     "sourceMap": true,
-    "types": ["@ac6_assemble_tool/spec/lib/vitest", "node"]
+    "types": [
+      "@ac6_assemble_tool/spec/lib/vitest",
+      "./worker-configuration.d.ts",
+      "node"
+    ]
   },
   "include": ["./src"],
   "exclude": ["node_modules", "dist"]
