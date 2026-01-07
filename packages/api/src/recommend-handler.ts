@@ -7,6 +7,7 @@ import type {
   RecommendRequest,
   RecommendResponse,
 } from './types'
+import { logger } from '@ac6_assemble_tool/shared/logger'
 
 /**
  * レコメンド推論を実行してレスポンスを生成する
@@ -24,6 +25,7 @@ export async function handleRecommendRequest(
 
   // プロンプト生成
   const prompt = buildPrompt(request.query, aiData)
+  logger.debug('Generated Prompt:', { prompt })
 
   // Workers AI 呼び出し
   const aiResult = await callWorkersAI(ai, prompt)
@@ -41,6 +43,8 @@ export async function handleRecommendRequest(
   // AI レスポンスのパース
   const aiResponse = Result.unwrap(aiResult)
   const parseResult = parseAIResponse(aiResponse as any)
+  logger.debug('Parsed AI Response:', { aiResponse, parseResult })
+
   if (Result.isFailure(parseResult)) {
     return parseResult as Result.Result<never, AIServiceError>
   }

@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import * as v from 'valibot'
 import { Result } from '@praha/byethrow'
-import { logger } from '@ac6_assemble_tool/shared/logger'
+import { logger, setLogLevel } from '@ac6_assemble_tool/shared/logger'
 import { RecommendRequestSchema } from './validation'
 import { handleRecommendRequest } from './recommend-handler'
 import type { ErrorResponse } from './types'
@@ -16,6 +16,7 @@ interface Env {
 
 const app = new Hono<{ Bindings: Env }>()
 
+
 // CORS設定
 app.use('*', cors())
 
@@ -24,6 +25,7 @@ app.use('*', cors())
  * パーツ推奨エンドポイント
  */
 app.post('/api/recommend', async (c) => {
+  setLogLevel(c.env.LOG_LEVEL || 'info')
   try {
     // リクエストボディの取得とバリデーション
     const body = await c.req.json()
