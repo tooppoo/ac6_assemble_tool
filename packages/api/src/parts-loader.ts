@@ -85,8 +85,7 @@ export interface AIPartData {
  */
 export function extractAIData(parts: ACParts[]): AIPartData[] {
   return parts.map((p) => ({
-    id: p.id,
-    name: p.name,
+    ...p,
     summary: p.ai_summary,
     tags: p.ai_tags,
   }))

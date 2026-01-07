@@ -48,9 +48,7 @@ function reverseKeyValue<T extends Record<string, string>>(
  */
 export function buildPrompt(query: string, parts: AIPartData[]): string {
   const partsJson = parts.map((p) => ({
-    id: p.id,
-    name: p.name,
-    summary: p.summary,
+    ...p,
     tags: Array.from(p.tags),
   }))
 
