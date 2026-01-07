@@ -72,7 +72,8 @@ ${attributesJson}
 1. Analyze the user's request and recommend 3-5 suitable parts
 2. Use the Japanese terminology reference above to understand technical terms in the query
 3. Respond in Japanese with a natural, friendly explanation
-4. At the end of your response, list recommended parts in this format:
+4. **IMPORTANT**: When mentioning parts in your natural language response, always use the part **name** (not ID)
+5. At the end of your response, list recommended parts in this format:
 
 ---RECOMMENDATIONS---
 partId: [ID] | partName: [名前] | score: [0.0-1.0] | reason: [理由]
@@ -81,6 +82,8 @@ partId: [ID] | partName: [名前] | score: [0.0-1.0] | reason: [理由]
 ## Example
 
 ユーザーのご要望に合うパーツを探しました。高火力で軽量という条件では、以下のパーツがおすすめです。
+
+まず「ライフル A」は攻撃力が高く、重量も控えめなのでバランスが良いです。次に「ショットガン B」は近距離での瞬間火力に優れています。
 
 ---RECOMMENDATIONS---
 partId: WR-001 | partName: ライフル A | score: 0.95 | reason: 高火力かつ軽量で機動性を保てる
