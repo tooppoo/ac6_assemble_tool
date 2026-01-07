@@ -1,5 +1,6 @@
 import { Result } from '@praha/byethrow'
 import { logger } from '@ac6_assemble_tool/shared/logger'
+import { allAttributes } from '@ac6_assemble_tool/shared/i18n/terminology'
 import type { AIPartData } from './parts-loader'
 import type { Recommendation } from './types'
 
@@ -24,6 +25,14 @@ export class AIServiceError extends Error {
   }
 }
 
+function reverseKeyValue<T extends Record<string, string>>(obj: T): Record<string, string> {
+  const reversed: Record<string, string> = {}
+  for (const [key, value] of Object.entries(obj)) {
+    reversed[value] = key
+  }
+  return reversed
+}
+
 /**
  * 構造化プロンプトを生成する
  * @param query ユーザークエリ
@@ -38,24 +47,39 @@ export function buildPrompt(query: string, parts: AIPartData[]): string {
     tags: Array.from(p.tags),
   }))
 
+  // 属性名の日本語対応表を生成
+  const attributesJson = JSON.stringify(reverseKeyValue(allAttributes), null, 2)
+
   return `You are a parts recommendation assistant for AC6 Assemble Tool.
 
 User query: "${query}"
 
-Available parts (JSON):
-${JSON.stringify(partsJson, null, 2)}
+## Available parts
 
-Instructions:
+\`\`\`json
+${JSON.stringify(partsJson, null, 2)}
+\`\`\`
+
+## Japanese terminology reference
+
+### Attribute names
+\`\`\`json
+${attributesJson}
+\`\`\`
+
+## Instructions
+
 1. Analyze the user's request and recommend 3-5 suitable parts
-2. Respond in Japanese with a natural, friendly explanation
-3. At the end of your response, list recommended parts in this format:
+2. Use the Japanese terminology reference above to understand technical terms in the query
+3. Respond in Japanese with a natural, friendly explanation
+4. At the end of your response, list recommended parts in this format:
 
 ---RECOMMENDATIONS---
 partId: [ID] | partName: [名前] | score: [0.0-1.0] | reason: [理由]
 partId: [ID] | partName: [名前] | score: [0.0-1.0] | reason: [理由]
-...
 
-Example:
+## Example
+
 ユーザーのご要望に合うパーツを探しました。高火力で軽量という条件では、以下のパーツがおすすめです。
 
 ---RECOMMENDATIONS---

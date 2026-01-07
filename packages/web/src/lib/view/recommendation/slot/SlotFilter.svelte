@@ -47,7 +47,7 @@
   <select
     id="slot-select"
     class="form-select form-select-lg"
-    value={selectedSlot ?? ''}
+    value={selectedSlot ?? 'arm-unit'}
     onchange={(e) => {
       const value = e.currentTarget.value
       handleSlotChange(value === '' ? undefined : (value as SlotType))
