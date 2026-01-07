@@ -343,18 +343,20 @@ flowchart TD
 
 #### Hono Router (既存拡張)
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: HTTPルーティングとミドルウェア処理
 - **Domain Boundary**: API層のエントリポイント
 - **Data Ownership**: リクエスト/レスポンスの受け渡し
 - **Transaction Boundary**: HTTP リクエストスコープ
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: packages/web（HTTP client）
 - **Outbound**: RecommendHandler
 - **External**: Hono v4.11.3
 
-**Contract Definition (API Contract)**
+##### Contract Definition (API Contract)
 
 | Method | Endpoint | Request | Response | Errors |
 | -------- | ---------- | --------- | ---------- | -------- |
@@ -410,13 +412,15 @@ interface ErrorResponse {
 
 #### RecommendHandler
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: パーツ推奨エンドポイントのビジネスロジック調整
 - **Domain Boundary**: パーツ推奨ドメイン
 - **Data Ownership**: リクエスト処理フローの制御
 - **Transaction Boundary**: HTTPリクエストスコープ
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: Hono Router
 - **Outbound**: Request Validator, Parts Loader, AI Inference Service, Structured Logger
 - **External**: なし
@@ -445,13 +449,15 @@ async function handle(c: Context): Promise<Response> {
 
 #### Request Validator
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: リクエストボディのバリデーション
 - **Domain Boundary**: 入力検証層
 - **Data Ownership**: バリデーション結果
 - **Transaction Boundary**: バリデーション処理スコープ
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: RecommendHandler
 - **Outbound**: なし
 - **External**: valibot
@@ -480,13 +486,14 @@ function validate(body: unknown): Result<RecommendRequest, ValidationError> {
 
 #### Parts Loader
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: パーツデータのロードとスロットフィルタリング
 - **Domain Boundary**: パーツデータアクセス層
 - **Data Ownership**: ロードされたパーツ配列
 - **Transaction Boundary**: データロードスコープ
 
-**Dependencies**
+##### Dependencies
 - **Inbound**: RecommendHandler
 - **Outbound**: @ac6_assemble_tool/parts
 - **External**: なし
@@ -526,13 +533,14 @@ function filterBySlot(parts: ACParts[], slot: SlotType): ACParts[] {
 
 #### AI Inference Service
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: Cloudflare Workers AIへの推論リクエストとレスポンスパース
 - **Domain Boundary**: AI推論層
 - **Data Ownership**: AI推論結果（推奨パーツリスト）
 - **Transaction Boundary**: AI推論呼び出しスコープ
 
-**Dependencies**
+##### Dependencies
 - **Inbound**: RecommendHandler
 - **Outbound**: Cloudflare Workers AI（env.AI binding）, Structured Logger
 - **External**: Cloudflare Workers AI
@@ -673,13 +681,15 @@ function parseRecommendations(
 
 #### Structured Logger (packages/shared)
 
-**Responsibility & Boundaries**
+##### Responsibility & Boundaries
+
 - **Primary Responsibility**: 構造化ログ出力
 - **Domain Boundary**: インフラストラクチャ層
 - **Data Ownership**: ログエントリ
 - **Transaction Boundary**: ログ出力スコープ
 
-**Dependencies**
+##### Dependencies
+
 - **Inbound**: RecommendHandler, Request Validator, AI Inference Service
 - **Outbound**: console（標準出力）
 - **External**: なし
