@@ -15,7 +15,6 @@ import type { RecommendRequest, RecommendResponse } from './types'
  */
 export async function handleRecommendRequest(
   ai: CloudflareAI,
-  model: string,
   request: RecommendRequest,
 ): Promise<Result.Result<RecommendResponse, AIServiceError>> {
   // パーツデータのロード
@@ -27,7 +26,7 @@ export async function handleRecommendRequest(
   logger.debug('Generated Prompt:', { prompt })
 
   // Workers AI 呼び出し
-  const aiResult = await callWorkersAI(ai, model, prompt)
+  const aiResult = await callWorkersAI(ai, prompt)
   if (Result.isFailure(aiResult)) {
     const aiError = Result.unwrapError(aiResult)
     return Result.fail(

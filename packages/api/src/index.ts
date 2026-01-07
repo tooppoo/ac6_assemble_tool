@@ -18,7 +18,7 @@ app.use('*', cors())
  * パーツ推奨エンドポイント
  */
 app.post('/api/recommend', async (c) => {
-  setLogLevel(c.env.LOG_LEVEL ?? 'info')
+  setLogLevel(c.env.LOG_LEVEL || 'info')
   try {
     // リクエストボディの取得とバリデーション
     const body = await c.req.json()
@@ -42,11 +42,7 @@ app.post('/api/recommend', async (c) => {
 
     // AI推論の実行
     const request = parseResult.output
-    const result = await handleRecommendRequest(
-      c.env.AI,
-      c.env.AI_MODEL ?? '@cf/meta/llama-3.1-8b-instruct-fast',
-      request
-    )
+    const result = await handleRecommendRequest(c.env.AI, request)
 
     if (Result.isFailure(result)) {
       const error = Result.unwrapError(result)

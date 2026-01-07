@@ -36,7 +36,6 @@ export interface CloudflareAI {
  */
 export async function callWorkersAI(
   ai: CloudflareAI,
-  model: string,
   prompt: string,
 ): Promise<Result.Result<WorkersAIResponse, AIClientError>> {
   try {
