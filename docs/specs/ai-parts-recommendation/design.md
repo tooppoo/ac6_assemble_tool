@@ -73,22 +73,26 @@ graph TB
 ### Architecture Integration
 
 **既存パターンの保持**:
+
 - Honoフレームワークを使用したHTTPルーティング（`src/index.ts`の既存Honoインスタンスを拡張）
 - Cloudflare Workers環境での実行（`wrangler.jsonc`設定準拠）
 - TypeScript型安全性とVitestテスト構成
 
 **新規コンポーネントの追加理由**:
+
 - **RecommendHandler**: POST `/api/recommend`エンドポイントのハンドラ関数（Honoルート定義）
 - **Request Validator**: Valibotスキーマによるリクエストボディ検証（型安全性MUST要件）
 - **AI Inference Service**: Cloudflare Workers AI呼び出しをカプセル化し、エラーハンドリングとタイムアウト処理を集約
 - **Parts Loader**: packages/partsから必要なパーツデータをロードし、スロットフィルタリングを実行
 
 **技術スタックとの整合性**:
+
 - **Hono**: 既存のpackages/api標準フレームワーク
 - **Valibot**: プロジェクト全体で採用されているバリデーションライブラリ（packages/coreで使用実績）
 - **構造化ログ**: packages/sharedのloggerを使用（AGENTS.md L99, dependencies.md L100）
 
 **ステアリング準拠**:
+
 - **依存の一方向性**: packages/api → packages/parts, packages/shared（AGENTS.md L170, dependencies.md L14）
 - **レイヤー分離**: API層としてpackages/apiを独立配置（structure.md準拠）
 - **型安全性**: Valibot + TypeScript型定義による型レベルプログラミング（AGENTS.md L149）
@@ -102,17 +106,20 @@ graph TB
 本機能は既存のpackages/api技術スタックに整合する形で実装する：
 
 **既存技術の活用**:
+
 - **Cloudflare Workers**: 実行環境（既存）
 - **Hono v4.11.3**: HTTPルーティング（既存）
 - **Wrangler**: デプロイツール（既存）
 - **Vitest**: テストフレームワーク（既存）
 
 **新規導入する依存関係**:
+
 - **@ac6_assemble_tool/parts**: パーツデータおよび型定義の参照
 - **@ac6_assemble_tool/shared**: 構造化logger
 - **valibot**: リクエスト/レスポンスバリデーション（packages/coreで使用実績あり、バージョン統一を検討）
 
 **新規導入の正当性**:
+
 - packages/partsへの依存は、パーツ推奨機能の核心要件（ai_summary/ai_tags活用）であり不可避
 - packages/sharedのloggerは、構造化ログ出力のMUST要件（AGENTS.md L99）に準拠
 - valibotは、型安全性MUST要件（AGENTS.md L115）を満たすため必須
@@ -126,6 +133,7 @@ graph TB
 **Context**: パーツ推奨にはテキスト理解と適合度判定が必要。複数のLlamaモデルが利用可能だが、レスポンス時間3秒以内の要件を満たす必要がある。
 
 **Alternatives**:
+
 1. **Llama 3.1-70b-instruct**: 高精度だが推論時間が長くタイムアウトリスク高
 2. **Llama 3.1-8b-instruct（標準版）**: 精度とレスポンスのバランス型
 3. **Llama 3.1-8b-instruct-fast**: 高速化に最適化、多言語対話に適合
@@ -133,11 +141,13 @@ graph TB
 **Selected Approach**: Llama 3.1-8b-instruct-fast
 
 **Rationale**:
+
 - パフォーマンス要件（3秒以内）を優先し、高速化最適化版を選択
 - 日本語パーツデータ（ai_summary/ai_tags）を扱うため、多言語対話対応が重要
 - 8bモデルでも推奨タスクには十分な精度を期待できる（単純な適合度判定）
 
 **Trade-offs**:
+
 - 獲得: 高速レスポンス、タイムアウトリスク低減、多言語対応
 - 犠牲: 70bモデルと比較した推論精度（ただし推奨タスクには影響軽微）
 
@@ -148,6 +158,7 @@ graph TB
 **Context**: パーツ数は各スロットあたり数十件程度。LLMにどのようにパーツ情報を提示し、推奨結果をどう返させるかが設計課題。
 
 **Alternatives**:
+
 1. **パーツごとに個別推論**: 各パーツをLLMに順次問い合わせてスコアリング
 2. **埋め込みベクトル検索**: Workers AI Embeddingでベクトル化し、コサイン類似度でランキング
 3. **構造化プロンプトによる一括推論**: 全パーツ情報を1プロンプトで送信し、JSON形式で結果取得
@@ -178,12 +189,14 @@ Task: Analyze the user query and parts data, then return top 3-5 recommended par
 ```
 
 **Rationale**:
+
 - 代替案1（個別推論）は、API呼び出しが多数発生しタイムアウトリスク高
 - 代替案2（埋め込みベクトル）は、初期実装としては複雑度が高く、Vectorizeの追加設定が必要
 - 構造化プロンプトは、1回のAI呼び出しで完結し、レスポンス時間を最小化できる
 - Llama 3.1-8b-instruct-fastは128Kトークンコンテキストウィンドウを持ち、全パーツデータ送信に十分
 
 **Trade-offs**:
+
 - 獲得: シンプルな実装、高速レスポンス、初期開発コスト低
 - 犠牲: パーツ数が極端に増えた場合のスケーラビリティ（ただし現状のデータ規模では問題なし）
 
@@ -194,6 +207,7 @@ Task: Analyze the user query and parts data, then return top 3-5 recommended par
 **Context**: AGENTS.md L143でResult型使用が推奨されているが、HTTPエンドポイントではステータスコードによるエラー表現が標準。
 
 **Alternatives**:
+
 1. **Result型のみ**: 全てのエラーをResult型で表現し、HTTPレスポンスもカスタム形式
 2. **例外スロー**: try-catchベースのエラーハンドリング
 3. **ハイブリッド**: 内部処理でResult型、HTTP境界で標準ステータスコード
@@ -201,11 +215,13 @@ Task: Analyze the user query and parts data, then return top 3-5 recommended par
 **Selected Approach**: ハイブリッド（内部Result型 + HTTP標準ステータス）
 
 **Rationale**:
+
 - packages/coreおよびpackages/sharedで@praha/byethrowを採用済み（dependencies.md L274）
 - HTTPエンドポイントでは、クライアント（packages/web）がステータスコードを期待
 - Result型で内部エラーを型安全に扱い、ハンドラ層でHTTPレスポンスに変換
 
 **Trade-offs**:
+
 - 獲得: 型安全なエラー処理、標準的なHTTP APIインターフェース
 - 犠牲: 変換レイヤーの追加（ただし薄い変換ロジックで実装可能）
 
@@ -362,7 +378,7 @@ flowchart TD
 | -------- | ---------- | --------- | ---------- | -------- |
 | POST | /api/recommend | `RecommendRequest` | `RecommendResponse` | 400, 500, 503, 504 |
 
-#### Request Schema (Valibot):
+#### Request Schema (Valibot)
 
 ```typescript
 const RecommendRequestSchema = v.object({
@@ -384,7 +400,7 @@ const RecommendRequestSchema = v.object({
 type RecommendRequest = v.InferOutput<typeof RecommendRequestSchema>;
 ```
 
-#### **Response Schema**:
+#### **Response Schema**
 
 ```typescript
 interface RecommendResponse {
@@ -399,7 +415,7 @@ interface Recommendation {
 }
 ```
 
-#### **Error Response Schema**:
+#### **Error Response Schema**
 
 ```typescript
 interface ErrorResponse {
@@ -425,7 +441,7 @@ interface ErrorResponse {
 - **Outbound**: Request Validator, Parts Loader, AI Inference Service, Structured Logger
 - **External**: なし
 
-#### Service Interface:
+#### Service Interface
 
 ```typescript
 interface RecommendHandler {
@@ -463,6 +479,7 @@ async function handle(c: Context): Promise<Response> {
 - **External**: valibot
 
 **Service Interface**:
+
 ```typescript
 interface RequestValidator {
   validate(body: unknown): Result<RecommendRequest, ValidationError>;
@@ -494,11 +511,13 @@ function validate(body: unknown): Result<RecommendRequest, ValidationError> {
 - **Transaction Boundary**: データロードスコープ
 
 ##### Dependencies
+
 - **Inbound**: RecommendHandler
 - **Outbound**: @ac6_assemble_tool/parts
 - **External**: なし
 
 **External Dependencies Investigation**:
+
 - **@ac6_assemble_tool/parts**: monorepo内部パッケージ、パーツ型定義とデータ実体を提供
 - **主要エクスポート**: `heads`, `arms`, `cores`, `legs`, `booster`, `fces`, `generators`, `armUnits`, `backUnits`, `expansions`
 - **型定義**: `ACParts<Classification, Manufacture, Category>` 型でai_summaryとai_tagsを含む
@@ -541,11 +560,13 @@ function filterBySlot(parts: ACParts[], slot: SlotType): ACParts[] {
 - **Transaction Boundary**: AI推論呼び出しスコープ
 
 ##### Dependencies
+
 - **Inbound**: RecommendHandler
 - **Outbound**: Cloudflare Workers AI（env.AI binding）, Structured Logger
 - **External**: Cloudflare Workers AI
 
 **External Dependencies Investigation**:
+
 - **Cloudflare Workers AI**: Cloudflareが提供するサーバーレスAI推論プラットフォーム
 - **公式ドキュメント**: [Workers AI Documentation](https://developers.cloudflare.com/workers-ai/)
 - **モデル一覧**: [Available Models](https://developers.cloudflare.com/workers-ai/models/)
@@ -695,6 +716,7 @@ function parseRecommendations(
 - **External**: なし
 
 **External Dependencies Investigation**:
+
 - **@ac6_assemble_tool/shared**: monorepo内部パッケージ、loggerを提供
 - **実装**: JSON形式の構造化ログ（AGENTS.md L99）
 - **ログレベル**: info, debug, warn, error, fatal
@@ -758,6 +780,7 @@ type SlotType =
 ```
 
 **Business Rules**:
+
 - queryは1文字以上の文字列
 - slotは定義された10種類のいずれか、または未指定
 
@@ -777,6 +800,7 @@ interface Recommendation {
 ```
 
 **Business Rules**:
+
 - recommendationsは最大5件
 - scoreは0.0以上1.0以下の数値
 - スコア降順でソート済み
@@ -805,6 +829,7 @@ interface ACParts<
 ```
 
 **使用するフィールド**:
+
 - id: パーツ識別子（レスポンスのpartIdとして返却）
 - name: パーツ名（レスポンスのpartNameとして返却）
 - classification: スロットフィルタリングに使用
@@ -888,6 +913,7 @@ interface AIPromptData {
 本機能では、内部処理でResult型（@praha/byethrow）を使用し、HTTP境界で標準HTTPステータスコードに変換する。
 
 **基本方針**:
+
 - ユーザーが解決可能なエラー（バリデーションエラー等）→ Result型で表現
 - システムが解決すべきエラー（AI API障害等）→ Result型で表現、ログ出力後にHTTPエラー返却
 - 予期しない例外 → try-catchで捕捉し、500エラー + errorログ
@@ -897,8 +923,10 @@ interface AIPromptData {
 #### User Errors (4xx)
 
 **400 Bad Request**:
+
 - **発生条件**: リクエストボディのバリデーション失敗（query空文字列、不正なslot値、JSON形式エラー）
 - **レスポンス例**:
+
   ```json
   {
     "error": {
@@ -907,14 +935,17 @@ interface AIPromptData {
     }
   }
   ```
+
 - **ログレベル**: warn
 - **Recovery**: クライアント側でリクエスト修正
 
 #### System Errors (5xx)
 
 **500 Internal Server Error**:
+
 - **発生条件**: 予期しない例外（AI レスポンスパース失敗、未処理エラー）
 - **レスポンス例**:
+
   ```json
   {
     "error": {
@@ -923,12 +954,15 @@ interface AIPromptData {
     }
   }
   ```
+
 - **ログレベル**: error
 - **Recovery**: サーバー側でエラー原因調査、必要に応じてコード修正
 
 **503 Service Unavailable**:
+
 - **発生条件**: Cloudflare Workers AI API呼び出し失敗
 - **レスポンス例**:
+
   ```json
   {
     "error": {
@@ -937,12 +971,15 @@ interface AIPromptData {
     }
   }
   ```
+
 - **ログレベル**: error
 - **Recovery**: クライアント側でリトライ（Exponential Backoff推奨）、サーバー側でAI API状態監視
 
 **504 Gateway Timeout**:
+
 - **発生条件**: AI API呼び出しが3秒以内に完了しない
 - **レスポンス例**:
+
   ```json
   {
     "error": {
@@ -951,6 +988,7 @@ interface AIPromptData {
     }
   }
   ```
+
 - **ログレベル**: error
 - **Recovery**: クライアント側でリトライ、サーバー側でプロンプトサイズ最適化検討
 
@@ -984,11 +1022,13 @@ flowchart TD
 ### Monitoring
 
 **Error Tracking**:
+
 - 全てのエラーは構造化ログ（JSON形式）で出力
 - ログには `level`, `timestamp`, `message`, `context`（エラータイプ、リクエストID等）を含める
 - 機微情報（APIキー、個人情報）は除外
 
 **Logging Implementation**:
+
 ```typescript
 // バリデーションエラー例
 logger.warn('Request validation failed', {
@@ -1012,6 +1052,7 @@ logger.error('AI service timeout', {
 ```
 
 **Health Monitoring**:
+
 - 初期実装では `/health` エンドポイントは不要（将来的に検討）
 - Cloudflare Workers のダッシュボードで実行時間、エラー率を監視
 
@@ -1103,28 +1144,33 @@ logger.error('AI service timeout', {
 **初期実装**: 認証・認可なし（packages/webから直接呼び出し）
 
 **将来的な拡張**:
+
 - APIキー認証（Cloudflare Workers KV使用）
 - レート制限（Cloudflare Workers Durable Objects使用）
 
 ### Data Protection
 
 **機微情報の扱い**:
+
 - ユーザークエリは一時的にメモリに保持されるのみで永続化しない
 - ログ出力時に機微情報（APIキー、個人情報）を除外
 - Cloudflare Workers AI へのリクエストはHTTPS通信
 
 **パーツデータ**:
+
 - ai_summary/ai_tagsは公開情報のため機密性なし
 - パーツ価格・性能値も公開ゲーム情報
 
 ### Input Validation
 
 **インジェクション対策**:
+
 - Valibotスキーマによる厳格なバリデーション
 - ユーザークエリはAIプロンプト内でエスケープ不要（文字列として扱われる）
 - SQL/NoSQLインジェクション対策不要（データベース未使用）
 
 **XSS対策**:
+
 - APIレスポンスはJSON形式のみ（HTMLレンダリングなし）
 - packages/webでのレスポンス表示時にエスケープ処理が必要（別仕様）
 
@@ -1141,10 +1187,12 @@ logger.error('AI service timeout', {
 ### Scaling Approaches
 
 **Cloudflare Workers の自動スケーリング**:
+
 - Cloudflareが自動的にリクエスト負荷に応じてスケール
 - 初期実装では手動スケーリング不要
 
 **最適化戦略**:
+
 - **プロンプトサイズ削減**: パーツ数が多い場合は事前フィルタリング（例: 上位100件に絞る）
 - **キャッシュ戦略（将来）**: 同一クエリの推奨結果をCloudflare Workers KVにキャッシュ（TTL: 1時間）
 - **モデル切り替え（将来）**: 高負荷時はより軽量なモデルに自動切り替え
@@ -1154,6 +1202,7 @@ logger.error('AI service timeout', {
 **初期実装**: キャッシュなし（全リクエストでAI推論実行）
 
 **将来的な拡張**:
+
 - Cloudflare Workers KVを使用したレスポンスキャッシュ
 - キャッシュキー: `query + slot` のハッシュ値
 - TTL: 1時間（パーツデータ更新頻度を考慮）
