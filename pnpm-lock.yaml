@@ -213,6 +213,9 @@ importers:
 
   packages/web:
     dependencies:
+      '@ac6_assemble_tool/api':
+        specifier: workspace:*
+        version: link:../api
       '@ac6_assemble_tool/core':
         specifier: workspace:*
         version: link:../core

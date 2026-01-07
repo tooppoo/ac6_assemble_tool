@@ -6,7 +6,6 @@ import { buildPrompt, parseAIResponse, AIServiceError } from './ai-service'
 import type {
   RecommendRequest,
   RecommendResponse,
-  Recommendation,
 } from './types'
 
 /**
@@ -46,6 +45,6 @@ export async function handleRecommendRequest(
     return parseResult as Result.Result<never, AIServiceError>
   }
 
-  const recommendations = Result.unwrap(parseResult) as Recommendation[]
-  return Result.succeed({ recommendations })
+  const { answer, recommendations } = Result.unwrap(parseResult)
+  return Result.succeed({ answer, recommendations })
 }

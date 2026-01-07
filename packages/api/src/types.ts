@@ -58,7 +58,13 @@ export interface Recommendation {
  */
 export interface RecommendResponse {
   /**
+   * AIの自然言語回答（そのまま表示用）
+   */
+  answer: string
+
+  /**
    * 推奨パーツリスト（最大5件、スコア降順）
+   * パース失敗時は空配列
    */
   recommendations: Recommendation[]
 }

@@ -43,6 +43,7 @@
     "vite-bundle-analyzer": "1.2.3"
   },
   "dependencies": {
+    "@ac6_assemble_tool/api": "workspace:*",
     "@ac6_assemble_tool/core": "workspace:*",
     "@ac6_assemble_tool/parts": "workspace:*",
     "@ac6_assemble_tool/shared": "workspace:*",

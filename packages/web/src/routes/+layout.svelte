@@ -173,6 +173,9 @@
           <ListItem>
             <a href={`/parts-list${pageQuery}`}>PARTS LIST</a>
           </ListItem>
+          <ListItem>
+            <a href={`/recommendation${pageQuery}`}>AI RECOMMENDATION</a>
+          </ListItem>
         </FlushList>
       </FooterSection>
 

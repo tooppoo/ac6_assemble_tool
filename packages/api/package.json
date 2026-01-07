@@ -1,6 +1,12 @@
 {
   "name": "@ac6_assemble_tool/api",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/types.ts",
+      "default": "./src/index.ts"
+    }
+  },
   "scripts": {
     "dev": "wrangler dev",
     "build": "tsc -p tsconfig.build.json",
