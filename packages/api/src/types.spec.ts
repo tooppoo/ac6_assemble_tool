@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expectTypeOf, assertType } from 'vitest'
 import type {
   SlotType,
   RecommendRequest,
@@ -9,117 +9,129 @@ import type {
 
 describe('types', () => {
   describe('SlotType', () => {
-    it('should include all valid slot types', () => {
-      const validSlots: SlotType[] = [
-        'head',
-        'arms',
-        'core',
-        'legs',
-        'booster',
-        'fcs',
-        'generator',
-        'arm-unit',
-        'back-unit',
-        'expansion',
-      ]
+    it('should be a union of valid slot types', () => {
+      expectTypeOf<SlotType>().toEqualTypeOf<
+        | 'head'
+        | 'arms'
+        | 'core'
+        | 'legs'
+        | 'booster'
+        | 'fcs'
+        | 'generator'
+        | 'arm-unit'
+        | 'back-unit'
+        | 'expansion'
+      >()
+    })
 
-      expect(validSlots).toHaveLength(10)
+    it('should accept valid slot values', () => {
+      // 型レベルでの代入可能性チェック
+      assertType<SlotType>('head')
+      assertType<SlotType>('arms')
+      assertType<SlotType>('core')
+      assertType<SlotType>('legs')
+      assertType<SlotType>('booster')
+      assertType<SlotType>('fcs')
+      assertType<SlotType>('generator')
+      assertType<SlotType>('arm-unit')
+      assertType<SlotType>('back-unit')
+      assertType<SlotType>('expansion')
     })
   })
 
   describe('RecommendRequest', () => {
-    it('should have query field', () => {
-      const request: RecommendRequest = {
-        query: 'test query',
-      }
-
-      expect(request.query).toBe('test query')
+    it('should have required query field of type string', () => {
+      expectTypeOf<RecommendRequest>().toHaveProperty('query').toBeString()
     })
 
-    it('should have optional slot field', () => {
-      const requestWithSlot: RecommendRequest = {
-        query: 'test query',
-        slot: 'head',
-      }
+    it('should have optional slot field of type SlotType', () => {
+      expectTypeOf<RecommendRequest>()
+        .toHaveProperty('slot')
+        .toEqualTypeOf<SlotType | undefined>()
+    })
 
-      const requestWithoutSlot: RecommendRequest = {
-        query: 'test query',
-      }
-
-      expect(requestWithSlot.slot).toBe('head')
-      expect(requestWithoutSlot.slot).toBeUndefined()
+    it('should accept valid request objects', () => {
+      assertType<RecommendRequest>({ query: 'test' })
+      assertType<RecommendRequest>({ query: 'test', slot: 'head' })
+      assertType<RecommendRequest>({ query: 'test', slot: undefined })
     })
   })
 
   describe('Recommendation', () => {
-    it('should have all required fields', () => {
-      const recommendation: Recommendation = {
+    it('should have required string fields', () => {
+      expectTypeOf<Recommendation>().toHaveProperty('partId').toBeString()
+      expectTypeOf<Recommendation>().toHaveProperty('partName').toBeString()
+      expectTypeOf<Recommendation>().toHaveProperty('reason').toBeString()
+    })
+
+    it('should have required score field of type number', () => {
+      expectTypeOf<Recommendation>().toHaveProperty('score').toBeNumber()
+    })
+
+    it('should accept valid recommendation objects', () => {
+      assertType<Recommendation>({
         partId: 'HD001',
         partName: 'AH-J-124 BASHO',
-        reason: '高防御力でバランス型のため、汎用性が高い',
+        reason: '高防御力',
         score: 0.95,
-      }
-
-      expect(recommendation.partId).toBe('HD001')
-      expect(recommendation.partName).toBe('AH-J-124 BASHO')
-      expect(recommendation.reason).toBe('高防御力でバランス型のため、汎用性が高い')
-      expect(recommendation.score).toBe(0.95)
+      })
     })
   })
 
   describe('RecommendResponse', () => {
-    it('should have recommendations array', () => {
-      const response: RecommendResponse = {
+    it('should have required answer field of type string', () => {
+      expectTypeOf<RecommendResponse>().toHaveProperty('answer').toBeString()
+    })
+
+    it('should have required recommendations field of type Recommendation array', () => {
+      expectTypeOf<RecommendResponse>()
+        .toHaveProperty('recommendations')
+        .toEqualTypeOf<Recommendation[]>()
+    })
+
+    it('should accept valid response objects', () => {
+      assertType<RecommendResponse>({
+        answer: 'test answer',
+        recommendations: [],
+      })
+
+      assertType<RecommendResponse>({
+        answer: 'test answer',
         recommendations: [
           {
             partId: 'HD001',
             partName: 'AH-J-124 BASHO',
-            reason: '高防御力でバランス型のため、汎用性が高い',
+            reason: '高防御力',
             score: 0.95,
           },
         ],
-      }
-
-      expect(response.recommendations).toHaveLength(1)
-      expect(response.recommendations[0].partId).toBe('HD001')
-    })
-
-    it('should allow empty recommendations array', () => {
-      const response: RecommendResponse = {
-        recommendations: [],
-      }
-
-      expect(response.recommendations).toHaveLength(0)
+      })
     })
   })
 
   describe('ErrorResponse', () => {
-    it('should have error field with message', () => {
-      const errorResponse: ErrorResponse = {
-        error: {
-          message: 'Invalid request',
-        },
-      }
-
-      expect(errorResponse.error.message).toBe('Invalid request')
+    it('should have required error field with message', () => {
+      expectTypeOf<ErrorResponse>()
+        .toHaveProperty('error')
+        .toHaveProperty('message')
+        .toBeString()
     })
 
     it('should have optional code field', () => {
-      const errorWithCode: ErrorResponse = {
-        error: {
-          message: 'Invalid request',
-          code: 'VALIDATION_ERROR',
-        },
-      }
+      expectTypeOf<ErrorResponse>()
+        .toHaveProperty('error')
+        .toHaveProperty('code')
+        .toEqualTypeOf<string | undefined>()
+    })
 
-      const errorWithoutCode: ErrorResponse = {
-        error: {
-          message: 'Invalid request',
-        },
-      }
+    it('should accept valid error objects', () => {
+      assertType<ErrorResponse>({
+        error: { message: 'Invalid request' },
+      })
 
-      expect(errorWithCode.error.code).toBe('VALIDATION_ERROR')
-      expect(errorWithoutCode.error.code).toBeUndefined()
+      assertType<ErrorResponse>({
+        error: { message: 'Invalid request', code: 'VALIDATION_ERROR' },
+      })
     })
   })
 })
