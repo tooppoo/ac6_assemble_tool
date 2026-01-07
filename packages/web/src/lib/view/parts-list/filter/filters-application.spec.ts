@@ -204,6 +204,8 @@ describe('filters-application', () => {
         weight: 420,
         en_load: 110,
         attack_power: 1200,
+        ai_summary: 'これはテスト用のパーツ1です。',
+        ai_tags: ['テスト1', 'パーツ1'],
       },
       {
         id: 'p2',
@@ -215,6 +217,8 @@ describe('filters-application', () => {
         weight: 380,
         en_load: 130,
         attack_power: 800,
+        ai_summary: 'これはテスト用のパーツ1です。',
+        ai_tags: ['テスト1', 'パーツ1'],
       },
       {
         id: 'p3',
@@ -225,6 +229,8 @@ describe('filters-application', () => {
         price: 1800,
         weight: 620,
         en_load: 150,
+        ai_summary: 'これはテスト用のパーツ1です。',
+        ai_tags: ['テスト1', 'パーツ1'],
       },
     ]
 
