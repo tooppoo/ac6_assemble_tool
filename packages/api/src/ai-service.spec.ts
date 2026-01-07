@@ -126,7 +126,9 @@ partId: WP003 | partName: W3 | score: 0.7 | reason: R3`,
       expect(Result.isSuccess(result)).toBe(true)
       if (Result.isSuccess(result)) {
         const { answer, recommendations } = Result.unwrap(result)
-        expect(answer).toBe('これは自然言語の回答のみです。推奨パーツはありません。')
+        expect(answer).toBe(
+          'これは自然言語の回答のみです。推奨パーツはありません。',
+        )
         expect(recommendations).toHaveLength(0)
       }
     })

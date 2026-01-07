@@ -91,7 +91,9 @@ partId: HD001 | partName: Test Head | score: 0.9 | reason: Test reason`,
       expect(Result.isSuccess(result)).toBe(true)
       if (Result.isSuccess(result)) {
         const response = Result.unwrap(result) as RecommendResponse
-        expect(response.answer).toBe('invalid response without any markers or structure')
+        expect(response.answer).toBe(
+          'invalid response without any markers or structure',
+        )
         expect(response.recommendations).toHaveLength(0)
       }
     })
