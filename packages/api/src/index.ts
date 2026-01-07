@@ -7,14 +7,7 @@ import { RecommendRequestSchema } from './validation'
 import { handleRecommendRequest } from './recommend-handler'
 import type { ErrorResponse } from './types'
 
-/**
- * Cloudflare Workers の環境型
- */
-interface Env {
-  AI: any
-}
-
-const app = new Hono<{ Bindings: Env }>()
+const app = new Hono<{ Bindings: Cloudflare.Env }>()
 
 
 // CORS設定
