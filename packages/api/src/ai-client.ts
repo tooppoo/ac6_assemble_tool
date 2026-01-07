@@ -40,7 +40,7 @@ export async function callWorkersAI(
   prompt: string,
 ): Promise<Result.Result<WorkersAIResponse, AIClientError>> {
   try {
-    const response = await ai.run('@cf/meta/llama-3.1-8b-instruct-fast', {
+    const response = await ai.run(model, {
       prompt,
     })
 
