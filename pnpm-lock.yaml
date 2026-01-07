@@ -97,7 +97,7 @@ importers:
   packages/api:
     dependencies:
       '@ac6_assemble_tool/parts':
-        specifier: workspace:1.8.1
+        specifier: workspace:*
         version: link:../parts
       '@ac6_assemble_tool/shared':
         specifier: workspace:1.0.0
