@@ -15,6 +15,8 @@ describe('PartsGrid', () => {
       price: 100000,
       weight: 5000,
       en_load: 300,
+      ai_summary: 'これはテスト用のパーツ1です。',
+      ai_tags: ['テスト1', 'パーツ1'],
     },
     {
       id: 'TEST-002',
@@ -25,6 +27,8 @@ describe('PartsGrid', () => {
       price: 200000,
       weight: 6000,
       en_load: 400,
+      ai_summary: 'これはテスト用のパーツ1です。',
+      ai_tags: ['テスト1', 'パーツ1'],
     },
   ]
 

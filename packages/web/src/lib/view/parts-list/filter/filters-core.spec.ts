@@ -22,6 +22,8 @@ const sampleParts: ACParts[] = [
     price: 1200,
     weight: 450,
     en_load: 90,
+    ai_summary: 'これはテスト用のパーツ1です。',
+    ai_tags: ['テスト1', 'パーツ1'],
   },
   {
     id: 'p2',
@@ -32,6 +34,8 @@ const sampleParts: ACParts[] = [
     price: 3200,
     weight: 820,
     en_load: 180,
+    ai_summary: 'これはテスト用のパーツ1です。',
+    ai_tags: ['テスト1', 'パーツ1'],
   },
 ]
 

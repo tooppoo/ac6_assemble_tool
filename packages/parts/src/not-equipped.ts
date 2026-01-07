@@ -18,6 +18,8 @@ const defineNotEquipped = (
     price: 0,
     weight: 0,
     en_load: 0,
+    ai_summary: 'パーツが装備されていない状態',
+    ai_tags: ['未装備', 'なし'],
   }) as const
 
 export const boosterNotEquipped = defineNotEquipped('NE001')

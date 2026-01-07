@@ -1,6 +1,12 @@
 {
   "name": "@ac6_assemble_tool/api",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/types.ts",
+      "default": "./src/index.ts"
+    }
+  },
   "scripts": {
     "dev": "wrangler dev",
     "build": "tsc -p tsconfig.build.json",
@@ -15,7 +21,11 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "hono": "^4.11.3"
+    "@ac6_assemble_tool/parts": "workspace:*",
+    "@ac6_assemble_tool/shared": "workspace:1.0.0",
+    "@praha/byethrow": "0.8.1",
+    "hono": "^4.11.3",
+    "valibot": "1.2.0"
   },
   "devDependencies": {
     "@ac6_assemble_tool/eslint": "workspace:1.0.0",

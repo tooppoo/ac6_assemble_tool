@@ -14,6 +14,8 @@ describe('PartsCard', () => {
     price: 100000,
     weight: 5000,
     en_load: 300,
+    ai_summary: 'これはテスト用のパーツです。',
+    ai_tags: ['テスト', 'パーツ'],
   }
 
   describe('基本レンダリング', () => {

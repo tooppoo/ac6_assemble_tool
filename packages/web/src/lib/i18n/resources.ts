@@ -9,6 +9,7 @@ import { enLock } from './locales/en/lock'
 import { enManufactures } from './locales/en/manufactures'
 import { enPageIndex } from './locales/en/pages'
 import { enPartsListPage } from './locales/en/pages/parts-list'
+import { enRecommendationPage } from './locales/en/pages/recommendation'
 import { enRandom } from './locales/en/random'
 import { enShare } from './locales/en/share'
 import { enSort } from './locales/en/sort'
@@ -24,6 +25,7 @@ import { jaLock } from './locales/ja/lock'
 import { jaManufactures } from './locales/ja/manufactures'
 import { jaPageIndex } from './locales/ja/pages'
 import { jaPartsListPage } from './locales/ja/pages/parts-list'
+import { jaRecommendationPage } from './locales/ja/pages/recommendation'
 import { jaRandom } from './locales/ja/random'
 import { jaShare } from './locales/ja/share'
 import { jaSort } from './locales/ja/sort'
@@ -43,6 +45,7 @@ export const resources = {
     attack_type: jaAttackType,
     'page/index': jaPageIndex,
     'page/parts-list': jaPartsListPage,
+    'page/recommendation': jaRecommendationPage,
     'filter/operand': jaFilterOperand,
     sort: jaSort,
     error: jaError,
@@ -63,6 +66,7 @@ export const resources = {
     attack_type: enAttackType,
     'page/index': enPageIndex,
     'page/parts-list': enPartsListPage,
+    'page/recommendation': enRecommendationPage,
     'filter/operand': enFilterOperand,
     sort: enSort,
     error: enError,

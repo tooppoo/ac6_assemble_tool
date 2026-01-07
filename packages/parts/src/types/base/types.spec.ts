@@ -1,22 +1,38 @@
-import { describe, it, expect, expectTypeOf } from 'vitest'
+import { describe, it, expectTypeOf, assertType } from 'vitest'
 
-import {
-  head as headCategory,
-  core as coreCategory,
-  arms as armsCategory,
-  two_legs as twoLegsCategory,
-  assault_rifle,
-} from './category'
-import { head, core, arms, legs } from './classification'
-import type { Classification } from './classification'
+import { head as headCategory, core as coreCategory } from './category'
+import { head, core } from './classification'
 import { allmind, arquebus } from './manufacture'
 import type { ACParts } from './types'
 
 describe('ACParts型', () => {
-  describe('IDフィールド', () => {
-    it('id フィールドを持つことができる', () => {
-      // グローバルユニークIDを持つパーツオブジェクトを作成
-      const part: ACParts = {
+  describe('型構造のテスト', () => {
+    it('必須フィールドを持つ', () => {
+      expectTypeOf<ACParts>().toHaveProperty('id').toBeString()
+      expectTypeOf<ACParts>().toHaveProperty('name').toBeString()
+      expectTypeOf<ACParts>().toHaveProperty('classification')
+      expectTypeOf<ACParts>().toHaveProperty('manufacture')
+      expectTypeOf<ACParts>().toHaveProperty('category').toBeString()
+      expectTypeOf<ACParts>().toHaveProperty('price').toBeNumber()
+      expectTypeOf<ACParts>().toHaveProperty('weight').toBeNumber()
+      expectTypeOf<ACParts>().toHaveProperty('en_load').toBeNumber()
+      expectTypeOf<ACParts>().toHaveProperty('ai_summary').toBeString()
+      expectTypeOf<ACParts>().toHaveProperty('ai_tags')
+    })
+
+    it('ai_tagsはreadonly string配列である', () => {
+      expectTypeOf<ACParts['ai_tags']>().toEqualTypeOf<readonly string[]>()
+    })
+
+    it('Readonly型である', () => {
+      // ACParts型全体がReadonlyであることを確認
+      type IsReadonly =
+        ACParts extends Readonly<Record<string, unknown>> ? true : false
+      expectTypeOf<IsReadonly>().toEqualTypeOf<true>()
+    })
+
+    it('有効なACPartsオブジェクトを受け入れる', () => {
+      assertType<ACParts>({
         id: 'HD001',
         name: 'テストヘッド',
         classification: head,
@@ -25,14 +41,11 @@ describe('ACParts型', () => {
         price: 100000,
         weight: 500,
         en_load: 100,
-      }
+        ai_summary: 'これはテスト用のヘッドパーツです。',
+        ai_tags: ['軽量', '高性能'],
+      })
 
-      expect(part.id).toBe('HD001')
-      expect(part.name).toBe('テストヘッド')
-    })
-
-    it('idは文字列型である', () => {
-      const part: ACParts = {
+      assertType<ACParts>({
         id: 'CR001',
         name: 'テストコア',
         classification: core,
@@ -41,80 +54,9 @@ describe('ACParts型', () => {
         price: 200000,
         weight: 1000,
         en_load: 200,
-      }
-
-      expect(typeof part.id).toBe('string')
-    })
-
-    it('異なるパーツは異なるIDを持つ', () => {
-      const part1: ACParts = {
-        id: 'HD001',
-        name: 'ヘッドA',
-        classification: head,
-        manufacture: allmind,
-        category: headCategory,
-        price: 100000,
-        weight: 500,
-        en_load: 100,
-      }
-
-      const part2: ACParts = {
-        id: 'HD002',
-        name: 'ヘッドB',
-        classification: head,
-        manufacture: allmind,
-        category: headCategory,
-        price: 110000,
-        weight: 520,
-        en_load: 110,
-      }
-
-      expect(part1.id).not.toBe(part2.id)
-    })
-
-    it('カテゴリコードと連番の形式を持つ', () => {
-      const testCases: Array<{
-        id: string
-        classification: Classification
-        category: string
-      }> = [
-        { id: 'HD001', classification: head, category: headCategory },
-        { id: 'CR042', classification: core, category: coreCategory },
-        { id: 'AR123', classification: arms, category: armsCategory },
-        { id: 'LG001', classification: legs, category: twoLegsCategory },
-        { id: 'WP001', classification: 'arm-unit', category: assault_rifle },
-      ]
-
-      testCases.forEach(({ id, classification, category }) => {
-        const part: ACParts = {
-          id,
-          name: 'テストパーツ',
-          classification,
-          manufacture: allmind,
-          category,
-          price: 100000,
-          weight: 500,
-          en_load: 100,
-        }
-
-        // IDが{2-3文字カテゴリコード}{3-4桁連番}の形式であることを確認
-        expect(part.id).toMatch(/^[A-Z]{2,3}\d{3,4}$/)
+        ai_summary: 'これはテスト用のコアパーツです。',
+        ai_tags: ['重装甲'],
       })
-    })
-
-    it('型チェック: idフィールドは必須である', () => {
-      expectTypeOf<ACParts>().toHaveProperty('id')
-      expectTypeOf<ACParts['id']>().toBeString()
-    })
-
-    it('型チェック: idフィールドは読み取り専用である', () => {
-      type ACPartsId = ACParts['id']
-      expectTypeOf<ACPartsId>().toEqualTypeOf<string>()
-
-      // ACParts型全体がReadonlyであることを確認
-      type IsReadonly =
-        ACParts extends Readonly<Record<string, unknown>> ? true : false
-      expectTypeOf<IsReadonly>().toEqualTypeOf<true>()
     })
   })
 })

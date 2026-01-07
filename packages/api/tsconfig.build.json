@@ -1,8 +1,5 @@
 {
-  "extends": [
-    "@ac6_assemble_tool/tsconfig/base.json",
-    "./tsconfig.json"
-  ],
+  "extends": ["@ac6_assemble_tool/tsconfig/base.json", "./tsconfig.json"],
   "compilerOptions": {
     "declaration": false,
     "sourceMap": false
