@@ -30,9 +30,11 @@
   let loading = $state(false)
   let error = $state<string | null>(null)
 
-  const pageTitle = 'AI PARTS RECOMMENDATION'
   const pageDescription = $derived.by(() =>
     $i18n.t('page/recommendation:description'),
+  )
+  const pageDescriptionNote = $derived.by(() =>
+    $i18n.t('page/recommendation:descriptionNote'),
   )
   const submitButtonText = $derived.by(() =>
     $i18n.t('page/recommendation:submit'),
@@ -101,7 +103,11 @@
       AI PARTS RECOMMENDATION(α)
     </h1>
 
-    <p class="text-center text-muted mb-4">{pageDescription}</p>
+    <p class="text-center text-muted mb-4">
+      {pageDescription}
+      <br />
+      <small class="text-center text-muted">{pageDescriptionNote}</small>
+    </p>
 
     <div class="row justify-content-center">
       <div class="col-12 col-md-10 col-lg-8">

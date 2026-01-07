@@ -102,8 +102,4 @@
     margin-bottom: 0.5rem;
     border-radius: 0.5rem;
   }
-
-  .list-group-item:hover {
-    background-color: var(--bs-light);
-  }
 </style>

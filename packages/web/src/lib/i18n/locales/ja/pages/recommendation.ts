@@ -1,6 +1,7 @@
 export const jaRecommendationPage = {
   description:
     'AIを使って自然言語でパーツを検索・オススメします。質問を入力すると、最適なパーツを提案します。',
+  descriptionNote: '※現状、武器パーツの推奨精度は低い可能性があります',
   slotFilter: {
     label: 'パーツスロット',
     all: 'すべて',
