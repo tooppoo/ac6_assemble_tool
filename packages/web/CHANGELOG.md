@@ -1,5 +1,12 @@
 # @ac6_assemble_tool/web
 
+## 4.0.0
+### Major Changes
+
+
+
+- [`74773a8`](https://github.com/tooppoo/ac6_assemble_tool/commit/74773a85b57802b4b766db755cebe981760de1b2) Thanks [@tooppoo](https://github.com/tooppoo)! - AIによる提案機能を実装
+
 ## 3.2.7
 
 ### Patch Changes
