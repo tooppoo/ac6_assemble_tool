@@ -155,7 +155,8 @@ graph TB
 **Selected Approach**: 構造化プロンプトによる一括推論
 
 プロンプト例:
-```
+
+```txt
 You are a parts recommendation system for AC6 Assemble Tool.
 
 User query: "{query}"
@@ -308,7 +309,7 @@ flowchart TD
 ## Requirements Traceability
 
 | Requirement | 要件概要 | 実現コンポーネント | インターフェース | フロー図 |
-|-------------|---------|------------------|----------------|---------|
+| ------------- | --------- | ------------------ | ---------------- | --------- |
 | 1.1 | POST /api/recommend エンドポイント | Hono Router, RecommendHandler | `POST /api/recommend` | シーケンス図 |
 | 1.2 | query フィールド受付 | Request Validator (Valibot) | `RecommendRequest` スキーマ | プロセスフロー: バリデーション |
 | 1.3 | slot フィールド（オプショナル）受付 | Request Validator, Parts Loader | `RecommendRequest.slot?` | プロセスフロー: フィルタリング |
@@ -356,10 +357,11 @@ flowchart TD
 **Contract Definition (API Contract)**
 
 | Method | Endpoint | Request | Response | Errors |
-|--------|----------|---------|----------|--------|
+| -------- | ---------- | --------- | ---------- | -------- |
 | POST | /api/recommend | `RecommendRequest` | `RecommendResponse` | 400, 500, 503, 504 |
 
-**Request Schema (Valibot)**:
+#### Request Schema (Valibot):
+
 ```typescript
 const RecommendRequestSchema = v.object({
   query: v.pipe(v.string(), v.minLength(1)),
@@ -380,7 +382,8 @@ const RecommendRequestSchema = v.object({
 type RecommendRequest = v.InferOutput<typeof RecommendRequestSchema>;
 ```
 
-**Response Schema**:
+#### **Response Schema**:
+
 ```typescript
 interface RecommendResponse {
   recommendations: Recommendation[];
@@ -394,7 +397,8 @@ interface Recommendation {
 }
 ```
 
-**Error Response Schema**:
+#### **Error Response Schema**:
+
 ```typescript
 interface ErrorResponse {
   error: {
@@ -417,7 +421,8 @@ interface ErrorResponse {
 - **Outbound**: Request Validator, Parts Loader, AI Inference Service, Structured Logger
 - **External**: なし
 
-**Service Interface**:
+#### Service Interface:
+
 ```typescript
 interface RecommendHandler {
   handle(c: Context): Promise<Response>;
@@ -493,6 +498,7 @@ function validate(body: unknown): Result<RecommendRequest, ValidationError> {
 - **バージョン**: packages/parts v1.8.1（workspace内）
 
 **Service Interface**:
+
 ```typescript
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types';
 
@@ -544,6 +550,7 @@ function filterBySlot(parts: ACParts[], slot: SlotType): ACParts[] {
 - **課題**: 構造化出力（JSON形式）の信頼性は実装時に検証が必要
 
 **Service Interface**:
+
 ```typescript
 interface AIInferenceService {
   recommendParts(
@@ -684,6 +691,7 @@ function parseRecommendations(
 - **機微情報除外**: AGENTS.md L93に準拠
 
 **Service Interface**:
+
 ```typescript
 interface StructuredLogger {
   info(message: string, context?: Record<string, unknown>): void;
@@ -798,6 +806,7 @@ interface ACParts<
 #### API Data Transfer
 
 **Request Validation (Valibot)**:
+
 ```typescript
 const RecommendRequestSchema = v.object({
   query: v.pipe(v.string(), v.minLength(1)),
@@ -817,6 +826,7 @@ const RecommendRequestSchema = v.object({
 ```
 
 **Response Validation (TypeScript型のみ)**:
+
 ```typescript
 // Valibot検証は行わず、TypeScript型定義で保証
 interface RecommendResponse {
@@ -829,6 +839,7 @@ interface RecommendResponse {
 #### AI Prompt Schema
 
 **AI Input (構造化プロンプト)**:
+
 ```typescript
 interface AIPromptData {
   query: string;
@@ -842,6 +853,7 @@ interface AIPromptData {
 ```
 
 **AI Output (期待される JSON形式)**:
+
 ```json
 {
   "recommendations": [
