@@ -25,7 +25,7 @@ export interface WorkersAIResponse {
  * Cloudflare Workers AI インターフェース
  */
 export interface CloudflareAI {
-  run(model: string, params: { prompt: string }): Promise<unknown>
+  run(model: string, params: unknown): Promise<unknown>
 }
 
 /**
@@ -36,11 +36,15 @@ export interface CloudflareAI {
  */
 export async function callWorkersAI(
   ai: CloudflareAI,
-  prompt: string,
+  systemPrompt: string,
+  userQuery: string
 ): Promise<Result.Result<WorkersAIResponse, AIClientError>> {
   try {
     const response = await ai.run('@cf/meta/llama-3.1-8b-instruct-fast', {
-      prompt,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userQuery }
+      ],
     })
 
     // レスポンス形式の検証

@@ -3,7 +3,7 @@ import { Result } from '@praha/byethrow'
 
 import type { CloudflareAI, WorkersAIResponse } from './ai-client'
 import { callWorkersAI } from './ai-client'
-import { buildPrompt, parseAIResponse, AIServiceError } from './ai-service'
+import { buildSystemPrompt, parseAIResponse, AIServiceError } from './ai-service'
 import { loadParts, extractAIData } from './parts-loader'
 import type { RecommendRequest, RecommendResponse } from './types'
 
@@ -22,11 +22,11 @@ export async function handleRecommendRequest(
   const aiData = extractAIData(parts)
 
   // プロンプト生成
-  const prompt = buildPrompt(request.query, aiData)
-  logger.debug('Generated Prompt:', { prompt })
+  const systemPrompt = buildSystemPrompt(aiData)
+  logger.debug('Generated Prompt:', { systemPrompt })
 
   // Workers AI 呼び出し
-  const aiResult = await callWorkersAI(ai, prompt)
+  const aiResult = await callWorkersAI(ai, systemPrompt, request.query)
   if (Result.isFailure(aiResult)) {
     const aiError = Result.unwrapError(aiResult)
     return Result.fail(

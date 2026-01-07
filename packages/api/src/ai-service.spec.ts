@@ -1,7 +1,7 @@
 import { Result } from '@praha/byethrow'
 import { describe, it, expect } from 'vitest'
 
-import { buildPrompt, parseAIResponse } from './ai-service'
+import { buildSystemPrompt, parseAIResponse } from './ai-service'
 import type { AIPartData } from './parts-loader'
 
 describe('ai-service', () => {
@@ -17,7 +17,7 @@ describe('ai-service', () => {
         },
       ]
 
-      const prompt = buildPrompt(query, parts)
+      const prompt = buildSystemPrompt(parts)
 
       expect(prompt).toContain(query)
       expect(prompt).toContain('WP001')
@@ -38,7 +38,7 @@ describe('ai-service', () => {
         },
       ]
 
-      const prompt = buildPrompt(query, parts)
+      const prompt = buildSystemPrompt(parts)
 
       expect(prompt).toContain('partId')
       expect(prompt).toContain('partName')
@@ -58,7 +58,7 @@ describe('ai-service', () => {
         },
       ]
 
-      const prompt = buildPrompt(query, parts)
+      const prompt = buildSystemPrompt(parts)
 
       // 日本語用語マップが含まれていることを確認
       expect(prompt).toContain('Japanese terminology reference')

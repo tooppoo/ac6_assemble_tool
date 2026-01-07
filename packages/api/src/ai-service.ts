@@ -41,12 +41,11 @@ function reverseKeyValue<T extends Record<string, string>>(
 }
 
 /**
- * 構造化プロンプトを生成する
- * @param query ユーザークエリ
+ * システム側の構造化プロンプトを生成する
  * @param parts パーツデータ
  * @returns 構造化プロンプト
  */
-export function buildPrompt(query: string, parts: AIPartData[]): string {
+export function buildSystemPrompt(parts: AIPartData[]): string {
   const partsJson = parts.map((p) => ({
     ...p,
     tags: Array.from(p.tags),
@@ -56,8 +55,6 @@ export function buildPrompt(query: string, parts: AIPartData[]): string {
   const attributesJson = JSON.stringify(reverseKeyValue(allAttributes), null, 2)
 
   return `You are a parts recommendation assistant for AC6 Assemble Tool.
-
-User query: "${query}"
 
 ## Available parts
 
