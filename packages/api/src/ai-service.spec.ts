@@ -3,7 +3,6 @@ import { describe, it, expect } from 'vitest'
 
 import { buildPrompt, parseAIResponse } from './ai-service'
 import type { AIPartData } from './parts-loader'
-import type { Recommendation } from './types'
 
 describe('ai-service', () => {
   describe('buildPrompt', () => {
