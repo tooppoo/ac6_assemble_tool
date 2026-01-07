@@ -20,7 +20,7 @@ describe('ai-client', () => {
 
       mockAI.run.mockResolvedValue(expectedResponse)
 
-      const result = await callWorkersAI(mockAI as CloudflareAI, prompt)
+      const result = await callWorkersAI(mockAI as CloudflareAI, 'test-model', prompt)
 
       expect(mockAI.run).toHaveBeenCalledWith(
         '@cf/meta/llama-3.1-8b-instruct-fast',
@@ -41,7 +41,7 @@ describe('ai-client', () => {
 
       mockAI.run.mockRejectedValue(error)
 
-      const result = await callWorkersAI(mockAI as CloudflareAI, prompt)
+      const result = await callWorkersAI(mockAI as CloudflareAI, 'test-model', prompt)
 
       expect(Result.isFailure(result)).toBe(true)
       if (Result.isFailure(result)) {
@@ -59,7 +59,7 @@ describe('ai-client', () => {
 
       mockAI.run.mockRejectedValue(timeoutError)
 
-      const result = await callWorkersAI(mockAI as CloudflareAI, prompt)
+      const result = await callWorkersAI(mockAI as CloudflareAI, 'test-model', prompt)
 
       expect(Result.isFailure(result)).toBe(true)
       if (Result.isFailure(result)) {
@@ -72,7 +72,7 @@ describe('ai-client', () => {
       const prompt = 'Test prompt'
       mockAI.run.mockResolvedValue({ invalid: 'format' })
 
-      const result = await callWorkersAI(mockAI as CloudflareAI, prompt)
+      const result = await callWorkersAI(mockAI as CloudflareAI, 'test-model', prompt)
 
       expect(Result.isFailure(result)).toBe(true)
       if (Result.isFailure(result)) {

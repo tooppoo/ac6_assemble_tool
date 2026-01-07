@@ -6,7 +6,8 @@ declare namespace Cloudflare {
     mainModule: typeof import('./src/index')
   }
   interface Env {
-    LOG_LEVEL: string
+    LOG_LEVEL?: string
+    AI_MODEL?: string
     AI: Ai
   }
 }

@@ -21,7 +21,7 @@ partId: HD001 | partName: Test Head | score: 0.9 | reason: Test reason`,
         query: '高火力の武器',
       }
 
-      const result = await handleRecommendRequest(mockAI, request)
+      const result = await handleRecommendRequest(mockAI, 'test-model', request)
 
       expect(Result.isSuccess(result)).toBe(true)
       if (Result.isSuccess(result)) {
@@ -49,7 +49,7 @@ partId: HD001 | partName: Test Head | score: 0.9 | reason: Test reason`,
         slot: 'head',
       }
 
-      const result = await handleRecommendRequest(mockAI, request)
+      const result = await handleRecommendRequest(mockAI, 'test-model', request)
 
       expect(Result.isSuccess(result)).toBe(true)
       if (Result.isSuccess(result)) {
@@ -69,7 +69,7 @@ partId: HD001 | partName: Test Head | score: 0.9 | reason: Test reason`,
         query: 'test query',
       }
 
-      const result = await handleRecommendRequest(mockAI, request)
+      const result = await handleRecommendRequest(mockAI, 'test-model', request)
 
       expect(Result.isFailure(result)).toBe(true)
     })
@@ -85,7 +85,7 @@ partId: HD001 | partName: Test Head | score: 0.9 | reason: Test reason`,
         query: 'test query',
       }
 
-      const result = await handleRecommendRequest(mockAI, request)
+      const result = await handleRecommendRequest(mockAI, 'test-model', request)
 
       // parseAIResponse always succeeds with graceful degradation
       expect(Result.isSuccess(result)).toBe(true)
@@ -111,7 +111,7 @@ partId: HD001 | partName: Test Head | score: 0.9 | reason: Test reason`,
         query: 'non-existent part',
       }
 
-      const result = await handleRecommendRequest(mockAI, request)
+      const result = await handleRecommendRequest(mockAI, 'test-model', request)
 
       expect(Result.isSuccess(result)).toBe(true)
       if (Result.isSuccess(result)) {
