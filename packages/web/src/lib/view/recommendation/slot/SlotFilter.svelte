@@ -21,7 +21,7 @@
   let { selectedSlot = $bindable(), onslotchange }: Props = $props()
 
   // スロット一覧（未指定含む）
-  const slots: Array<{ value: SlotType | undefined; key: string }> = [
+  const slots: Array<{ value: SlotType; key: string }> = [
     { value: 'arm-unit', key: 'arm-unit' },
     { value: 'back-unit', key: 'back-unit' },
     { value: 'head', key: 'head' },
@@ -36,7 +36,7 @@
 
   const label = $derived.by(() => $i18n.t('page/recommendation:slotFilter.label'))
 
-  function handleSlotChange(slot: SlotType | undefined) {
+  function handleSlotChange(slot: SlotType) {
     selectedSlot = slot
     onslotchange?.(slot)
   }
@@ -53,11 +53,9 @@
       handleSlotChange(value === '' ? undefined : (value as SlotType))
     }}
   >
-    {#each slots as slot (slot.value ?? 'all')}
-      <option value={slot.value ?? ''}>
-        {slot.key === 'all'
-          ? $i18n.t('page/recommendation:slotFilter.all')
-          : $i18n.t(`assembly:${slot.key}`)}
+    {#each slots as slot (slot.value)}
+      <option value={slot.value}>
+        {$i18n.t(`assembly:${slot.key}`)}
       </option>
     {/each}
   </select>
