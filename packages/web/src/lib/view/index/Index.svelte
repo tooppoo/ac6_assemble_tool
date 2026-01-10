@@ -53,6 +53,7 @@
 
   import { afterNavigate, pushState } from '$app/navigation'
   import { page } from '$app/state'
+  import { closeOffcanvas, openAssemblyStore, openRandomAssembly, openShare, type OffcanvasStatus } from './interaction/offcanvas'
 
   const tryLimit = 3000
 
@@ -74,9 +75,7 @@
   let lockedParts = $state<LockedParts>(LockedParts.empty)
   let randomAssembly = $state(RandomAssembly.init({ limit: tryLimit }))
 
-  let openRandomAssembly = $state(false)
-  let openShare = $state(false)
-  let openAssemblyStore = $state(false)
+  let offcanvasStatus: OffcanvasStatus = $state(closeOffcanvas())
   let errorMessage = $state<string[]>([])
 
   let assembly = $state<Assembly>(initializeAssembly(candidates))
@@ -218,7 +217,7 @@
     id="random-assemble"
     class="me-3"
     title={$i18n.t('command.random.description', { ns: 'page/index' })}
-    onclick={() => (openRandomAssembly = true)}
+    onclick={() => (offcanvasStatus = openRandomAssembly())}
   >
     {#snippet icon()}
       <i class="bi bi-tools"></i>
@@ -257,7 +256,7 @@
     id="open-share"
     class="me-3"
     title={$i18n.t('command.share.description', { ns: 'page/index' })}
-    onclick={() => (openShare = true)}
+    onclick={() => (offcanvasStatus = openShare())}
   >
     {#snippet icon()}
       <i class="bi bi-share"></i>
@@ -270,7 +269,7 @@
     id="open-assembly-store"
     class="me-3"
     title={$i18n.t('command.store.description', { ns: 'page/index' })}
-    onclick={() => (openAssemblyStore = true)}
+    onclick={() => (offcanvasStatus = openAssemblyStore())}
   >
     {#snippet icon()}
       <i class="bi bi-database"></i>
@@ -351,13 +350,13 @@
 
 <RandomAssemblyOffCanvas
   id="random-assembly-canvas"
-  open={openRandomAssembly}
+  open={offcanvasStatus.openRandomAssembly}
   {initialCandidates}
   {candidates}
   {lockedParts}
   {randomAssembly}
   {assembly}
-  onToggle={(e) => (openRandomAssembly = e.open)}
+  onToggle={(e) => (offcanvasStatus = e.open ? openRandomAssembly() : closeOffcanvas())}
   {onRandom}
   onError={errorOnRandom}
   onFilter={(event) => {
@@ -371,9 +370,9 @@
 </RandomAssemblyOffCanvas>
 <ShareAssembly
   id="share-assembly"
-  open={openShare}
+  open={offcanvasStatus.openShare}
   assembly={() => assembly}
-  onToggle={(e) => (openShare = e.open)}
+  onToggle={(e) => (offcanvasStatus = e.open ? openShare() : closeOffcanvas())}
 >
   {#snippet title()}
     {$i18n.t('share:caption')}
@@ -381,10 +380,10 @@
 </ShareAssembly>
 <StoreAssembly
   id="store-assembly"
-  open={openAssemblyStore}
+  open={offcanvasStatus.openAssemblyStore}
   candidates={initialCandidates}
   {assembly}
-  onToggle={(e) => (openAssemblyStore = e.open)}
+  onToggle={(e) => (offcanvasStatus = e.open ? openAssemblyStore() : closeOffcanvas())}
   onApply={(aggregation) => (assembly = aggregation.assembly)}
 />
 
