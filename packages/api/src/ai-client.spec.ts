@@ -15,17 +15,21 @@ describe('ai-client', () => {
     })
 
     it('should call Workers AI with correct parameters', async () => {
-      const prompt = 'Test prompt'
+      const systemPrompt = 'Test system prompt'
+      const userPrompt = 'Test user prompt'
       const expectedResponse = { response: 'AI response' }
 
       mockAI.run.mockResolvedValue(expectedResponse)
 
-      const result = await callWorkersAI(mockAI as CloudflareAI, prompt, prompt)
+      const result = await callWorkersAI(mockAI as CloudflareAI, systemPrompt, userPrompt)
 
       expect(mockAI.run).toHaveBeenCalledWith(
         '@cf/meta/llama-3.1-8b-instruct-fast',
         {
-          prompt,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt },
+          ],
         },
       )
       expect(Result.isSuccess(result)).toBe(true)
