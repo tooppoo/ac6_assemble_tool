@@ -30,10 +30,10 @@ export function initializeAssembly(candidates: Candidates): Assembly {
   })()
   return createAssembly({
     ...pair,
-    rightArmUnit: armNotEquipped,
-    leftArmUnit: armNotEquipped,
-    rightBackUnit: backNotEquipped,
-    leftBackUnit: backNotEquipped,
+    rightArmUnit: candidates.rightArmUnit[0],
+    leftArmUnit: candidates.leftArmUnit[0],
+    rightBackUnit: candidates.rightBackUnit[0],
+    leftBackUnit: candidates.leftBackUnit[0],
 
     head: candidates.head[0],
     arms: candidates.arms[0],
