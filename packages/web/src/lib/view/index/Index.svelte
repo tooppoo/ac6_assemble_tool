@@ -32,7 +32,7 @@
   import { indexController, type ControllerResult } from './controller/index-controller'
   import type { IndexState } from './controller/index-state'
   import type { IndexEffect } from './controller/index-effects'
-  import { applyNavigationEffect } from './adapters/index-navigation'
+  import { createNavigationRunner } from './adapters/index-navigation'
   import { applyI18nEffect } from './adapters/index-i18n'
 
   const tryLimit = 3000
@@ -57,9 +57,10 @@
 
   const orderParts: OrderParts = $derived(defineOrder(orders))
 
+  const navigationRunner = createNavigationRunner()
   const runEffects = (effects: IndexEffect[]) => {
     for (const effect of effects) {
-      if (applyNavigationEffect(effect)) continue
+      if (navigationRunner.apply(effect)) continue
       if (applyI18nEffect(effect)) continue
     }
   }
@@ -69,34 +70,38 @@
     }
     runEffects(result.effects)
   }
+  const commitAndSync = (result: ControllerResult) => {
+    commit(result)
+    commit(indexController.onAssemblyChanged(result.state))
+  }
 
   afterNavigate(({ type }) => {
     logger.debug('afterNavigate: type', { type })
-    commit(
-      indexController.onAfterNavigate(indexState, {
-        url: page.url,
-        type,
-        baseCandidates: partsPool.candidates,
-      }),
-    )
-  })
-
-  $effect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    indexState.assembly // watch assembly changes
-
-    logger.debug('assembly changed')
-    commit(indexController.onAssemblyChanged(indexState))
+    navigationRunner.enable()
+    const result = indexController.onAfterNavigate(indexState, {
+      url: page.url,
+      type,
+      baseCandidates: partsPool.candidates,
+    })
+    commit(result)
+    if (type === 'enter' || type === 'link' || type === 'goto') {
+      const hasSerialize = result.effects.some(
+        (effect) => effect.type === 'serializeAssembly',
+      )
+      if (!hasSerialize) {
+        commit(indexController.onAssemblyChanged(result.state))
+      }
+    }
   })
 
   // handler
   const onChangeParts = (event: ChangePartsEvent) => {
     logger.debug('on change parts', { event })
-    commit(indexController.onChangeParts(indexState, event))
+    commitAndSync(indexController.onChangeParts(indexState, event))
   }
   const onRandom = (event: AssembleRandomly) => {
     logger.debug('on random', { event })
-    commit(indexController.onRandom(indexState, event))
+    commitAndSync(indexController.onRandom(indexState, event))
   }
   const errorOnRandom = (event: ErrorOnAssembly) => {
     logger.debug('error on random', { event })
@@ -292,7 +297,9 @@
   assembly={indexState.assembly}
   onToggle={(e) => commit(indexController.onToggleStorePanel(indexState, e.open))}
   onApply={(aggregation) =>
-    commit(indexController.onApplyStoredAssembly(indexState, aggregation.assembly))
+    commitAndSync(
+      indexController.onApplyStoredAssembly(indexState, aggregation.assembly),
+    )
   }
 />
 

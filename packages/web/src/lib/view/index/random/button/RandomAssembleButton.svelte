@@ -60,7 +60,7 @@
         assembly: randomAssembly.assemble(actualCandidates, { lockedParts }),
       })
     } catch (error) {
-      logger.error('RandomAssembleButton: error onRandom', { error })
+      logger.error(`[RandomAssembleButton] error onRandom ${error instanceof Error ? error.message : error }`, { error })
 
       onerror?.({
         error: error instanceof Error ? error : new Error(`${error}`),
