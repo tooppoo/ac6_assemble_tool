@@ -13,7 +13,7 @@ vi.mock('$lib/store/query/query-store', () => ({
 import { pushState } from '$app/navigation'
 import { storeAssemblyAsQuery } from '$lib/store/query/query-store'
 
-import { initializeAssembly } from '../interaction/assembly'
+import { initializeAssembly } from '../usecase/initialize-assembly'
 import { createNavigationRunner } from './index-navigation'
 
 const mockPushState = pushState as ReturnType<typeof vi.fn>

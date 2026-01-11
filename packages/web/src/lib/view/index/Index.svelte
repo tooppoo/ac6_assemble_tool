@@ -16,7 +16,7 @@
 
   import type { ChangePartsEvent, ToggleLockEvent } from './form/PartsSelectForm.svelte'
   import PartsSelectForm from './form/PartsSelectForm.svelte'
-  import type { PartsPoolRestrictions } from './interaction/derive-parts-pool'
+  import type { PartsPoolRestrictions } from './usecase/derive-parts-pool'
   import RandomAssembleButton from './random/button/RandomAssembleButton.svelte'
   import RandomAssemblyOffCanvas, {
     type AssembleRandomly,

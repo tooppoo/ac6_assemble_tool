@@ -3,9 +3,9 @@ import { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
 import { RandomAssembly } from '@ac6_assemble_tool/core/assembly/random/random-assembly'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 
-import { initializeAssembly } from '../interaction/assembly'
-import { closeOffcanvas, type OffcanvasStatus } from '../interaction/offcanvas'
-import type { PartsPoolRestrictions } from '../interaction/derive-parts-pool'
+import { initializeAssembly } from '../usecase/initialize-assembly'
+import { closeOffcanvas, type OffcanvasStatus } from './offcanvas'
+import type { PartsPoolRestrictions } from '../usecase/derive-parts-pool'
 
 export type IndexState = {
   partsPoolState: PartsPoolRestrictions

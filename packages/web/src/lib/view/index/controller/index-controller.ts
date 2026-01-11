@@ -6,9 +6,9 @@ import type {
   ApplyRandomFilter,
   ErrorOnAssembly,
 } from '../random/RandomAssemblyOffCanvas.svelte'
-import { assemblyErrorMessage, type Translator } from '../interaction/error-message'
-import { bootstrap } from '../interaction/bootstrap'
-import { buildAssemblyFromQuery } from '../interaction/assembly-from-query'
+import { assemblyErrorMessage, type Translator } from '../format/error-message'
+import { bootstrap } from '../usecase/bootstrap'
+import { buildAssemblyFromQuery } from '../usecase/assembly-from-query'
 
 import type { IndexEffect } from './index-effects'
 import {

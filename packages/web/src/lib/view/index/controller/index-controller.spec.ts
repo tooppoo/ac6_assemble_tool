@@ -3,7 +3,7 @@ import { latest as regulation } from '$lib/regulation'
 import { assemblyToSearchV2 } from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
 import { describe, expect, it } from 'vitest'
 
-import { initializeAssembly } from '../interaction/assembly'
+import { initializeAssembly } from '../usecase/initialize-assembly'
 import { indexController } from './index-controller'
 import type { IndexState } from './index-state'
 

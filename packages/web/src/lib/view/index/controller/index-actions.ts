@@ -12,7 +12,7 @@ import {
   openAssemblyStore,
   openRandomAssembly,
   openShare,
-} from '../interaction/offcanvas'
+} from './offcanvas'
 
 export type ToggleLockPayload = Readonly<{ id: AssemblyKey; value: boolean }>
 
