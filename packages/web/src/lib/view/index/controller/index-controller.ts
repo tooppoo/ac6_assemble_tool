@@ -183,13 +183,6 @@ export const indexController = {
       return result(nextState)
     }
 
-    if (!nextState.serializeEnabled) {
-      return result({
-        ...nextState,
-        queuedUrl: bootResult.migratedUrl,
-      })
-    }
-
     return result(nextState, [
       { type: 'serializeAssembly', assembly: nextState.assembly },
     ])
