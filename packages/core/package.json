@@ -33,7 +33,7 @@
     "@ac6_assemble_tool/parts": "workspace:1.8.1",
     "@ac6_assemble_tool/shared": "workspace:1.0.0",
     "@philomagi/base-error.js": "0.0.2",
-    "@praha/byethrow": "0.8.1",
+    "@praha/byethrow": "0.9.0",
     "ulid": "3.0.2",
     "valibot": "1.2.0"
   }
