@@ -61,8 +61,8 @@
       })
     } catch (error) {
       logger.error(
-        `[RandomAssembleButton] error onRandom ${error instanceof Error ? error.message : error}`,
-        { error },
+        `[RandomAssembleButton] error onRandom`,
+        { error: error instanceof Error ? error.message : error },
       )
 
       onerror?.({
