@@ -41,14 +41,6 @@ export const importRules = ({ pathGroups, ignoreUnresolved } = {}) => [
       },
     },
     settings: {
-      'import/parsers': {
-        /*
-         * trick for eslint-plugin-import
-         * https://github.com/import-js/eslint-plugin-import/issues/2556#issuecomment-1419518561
-         */
-        espree: ['.js', '.cjs', '.mjs', '.jsx'],
-        '@typescript-eslint/parser': ['.ts', '.js'],
-      },
       'import/resolver': {
         typescript: true,
         node: true,
@@ -97,7 +89,7 @@ export function fromBase(rules = importRules([])) {
       languageOptions: {
         parser: tsParser,
         parserOptions: {
-          ecmaVersion: 2023,
+          ecmaVersion: 'latest',
           sourceType: 'module',
         },
         globals: {
