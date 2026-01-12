@@ -40,7 +40,7 @@
     "purgecss": "7.0.2",
     "sass-embedded": "1.97.2",
     "svelte-sitemap": "2.7.1",
-    "vite-bundle-analyzer": "1.2.3"
+    "vite-bundle-analyzer": "1.3.2"
   },
   "dependencies": {
     "@ac6_assemble_tool/api": "workspace:*",
