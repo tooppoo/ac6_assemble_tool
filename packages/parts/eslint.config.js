@@ -1,8 +1,8 @@
 import { fromBase, importRules } from '@ac6_assemble_tool/eslint/configs'
-import { config as tsConfig } from 'typescript-eslint'
+import { defineConfig } from 'eslint/config'
 
-export default tsConfig(
-  ...fromBase([
+export default defineConfig(
+  fromBase([
     ...importRules({
       pathGroups: [
         {
