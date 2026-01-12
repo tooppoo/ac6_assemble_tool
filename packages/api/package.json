@@ -23,7 +23,7 @@
   "dependencies": {
     "@ac6_assemble_tool/parts": "workspace:*",
     "@ac6_assemble_tool/shared": "workspace:1.0.0",
-    "@praha/byethrow": "0.8.1",
+    "@praha/byethrow": "0.9.0",
     "hono": "^4.11.3",
     "valibot": "1.2.0"
   },

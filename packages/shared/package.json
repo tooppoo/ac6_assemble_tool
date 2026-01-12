@@ -27,6 +27,6 @@
     "@ac6_assemble_tool/tsconfig": "workspace:1.0.0"
   },
   "dependencies": {
-    "@praha/byethrow": "0.8.1"
+    "@praha/byethrow": "0.9.0"
   }
 }
