@@ -180,8 +180,8 @@ importers:
         specifier: workspace:1.0.0
         version: link:../tsconfig
       ceiocs:
-        specifier: 0.0.9
-        version: 0.0.9
+        specifier: 1.0.0
+        version: 1.0.0
 
   packages/shared:
     dependencies:
@@ -235,8 +235,8 @@ importers:
         specifier: 1.13.1
         version: 1.13.1
       ceiocs:
-        specifier: 0.0.9
-        version: 0.0.9
+        specifier: 1.0.0
+        version: 1.0.0
       dexie:
         specifier: 4.2.1
         version: 4.2.1
@@ -1995,9 +1995,8 @@ packages:
     resolution: {integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==}
     engines: {node: '>=6'}
 
-  ceiocs@0.0.9:
-    resolution: {integrity: sha512-7WKjxOy+auhoQLoHr1c+k8p0B/dyiPckCAUnyxdXx9fBWjehuBFTUsfuHKhDdX1xlEPuWEEONtrnobLbmyLoug==}
-    engines: {node: '>=12.0.0'}
+  ceiocs@1.0.0:
+    resolution: {integrity: sha512-1CK8BbecEW6f15eMPJzpzDYUEQdUjx2278oFzkenbG94wX5HqI2UT3PzRKJes5eHbldIBM4upNqvCVJVxuz+VQ==}
 
   chai@6.2.1:
     resolution: {integrity: sha512-p4Z49OGG5W/WBCPSS/dH3jQ73kD6tiMmUM+bckNK6Jr5JHMG3k9bg/BvKR8lKmtVBKmOiuVaV2ws8s9oSbwysg==}
@@ -5685,7 +5684,7 @@ snapshots:
 
   callsites@3.1.0: {}
 
-  ceiocs@0.0.9: {}
+  ceiocs@1.0.0: {}
 
   chai@6.2.1: {}
 
