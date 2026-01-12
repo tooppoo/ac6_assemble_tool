@@ -1,4 +1,3 @@
-
 export interface OffcanvasStatus {
   openRandomAssembly: boolean
   openShare: boolean

@@ -9,14 +9,31 @@
   import i18n from '$lib/i18n/define'
   import { buildQueryFromAssembly } from '$lib/store/query/query-store'
 
-  import { assemblyKeys, spaceByWord } from '@ac6_assemble_tool/core/assembly/assembly'
-  import { type OrderParts, type Order, defineOrder } from '@ac6_assemble_tool/parts/types/candidates'
+  import {
+    assemblyKeys,
+    spaceByWord,
+  } from '@ac6_assemble_tool/core/assembly/assembly'
+  import {
+    type OrderParts,
+    type Order,
+    defineOrder,
+  } from '@ac6_assemble_tool/parts/types/candidates'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import { logger } from '@ac6_assemble_tool/shared/logger'
 
-  import type { ChangePartsEvent, ToggleLockEvent } from './form/PartsSelectForm.svelte'
+  import { applyI18nEffect } from './adapters/index-i18n'
+  import { createNavigationRunner } from './adapters/index-navigation'
+  import {
+    indexController as defaultIndexController,
+    type ControllerResult,
+  } from './controller/index-controller'
+  import type { IndexEffect } from './controller/index-effects'
+  import type { IndexState } from './controller/index-state'
+  import type {
+    ChangePartsEvent,
+    ToggleLockEvent,
+  } from './form/PartsSelectForm.svelte'
   import PartsSelectForm from './form/PartsSelectForm.svelte'
-  import type { PartsPoolRestrictions } from './usecase/derive-parts-pool'
   import RandomAssembleButton from './random/button/RandomAssembleButton.svelte'
   import RandomAssemblyOffCanvas, {
     type AssembleRandomly,
@@ -26,14 +43,10 @@
   import ReportList from './report/ReportList.svelte'
   import ShareAssembly from './share/ShareAssembly.svelte'
   import StoreAssembly from './store/StoreAssembly.svelte'
+  import type { PartsPoolRestrictions } from './usecase/derive-parts-pool'
 
   import { afterNavigate } from '$app/navigation'
   import { page } from '$app/state'
-  import { indexController as defaultIndexController, type ControllerResult } from './controller/index-controller'
-  import type { IndexState } from './controller/index-state'
-  import type { IndexEffect } from './controller/index-effects'
-  import { createNavigationRunner } from './adapters/index-navigation'
-  import { applyI18nEffect } from './adapters/index-i18n'
 
   const tryLimit = 3000
 
@@ -273,12 +286,12 @@
   lockedParts={indexState.lockedParts}
   randomAssembly={indexState.randomAssembly}
   assembly={indexState.assembly}
-  onToggle={(e) => commit(indexController.onToggleRandomPanel(indexState, e.open))}
+  onToggle={(e) =>
+    commit(indexController.onToggleRandomPanel(indexState, e.open))}
   {onRandom}
   onError={errorOnRandom}
   onFilter={(event: ApplyRandomFilter) =>
-    commit(indexController.onFilterRandom(indexState, event))
-  }
+    commit(indexController.onFilterRandom(indexState, event))}
   onLockLegs={onLock}
 >
   {#snippet title()}
@@ -289,7 +302,8 @@
   id="share-assembly"
   open={indexState.offcanvasStatus.openShare}
   assembly={() => indexState.assembly}
-  onToggle={(e) => commit(indexController.onToggleSharePanel(indexState, e.open))}
+  onToggle={(e) =>
+    commit(indexController.onToggleSharePanel(indexState, e.open))}
 >
   {#snippet title()}
     {$i18n.t('share:caption')}
@@ -300,12 +314,12 @@
   open={indexState.offcanvasStatus.openAssemblyStore}
   candidates={indexState.initialCandidates}
   assembly={indexState.assembly}
-  onToggle={(e) => commit(indexController.onToggleStorePanel(indexState, e.open))}
+  onToggle={(e) =>
+    commit(indexController.onToggleStorePanel(indexState, e.open))}
   onApply={(aggregation) =>
     commitAndSync(
       indexController.onApplyStoredAssembly(indexState, aggregation.assembly),
-    )
-  }
+    )}
 />
 
 <ErrorModal

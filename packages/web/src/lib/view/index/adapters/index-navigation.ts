@@ -1,11 +1,15 @@
-import { pushState } from '$app/navigation'
 import { storeAssemblyAsQuery } from '$lib/store/query/query-store'
 
 import { logger } from '@ac6_assemble_tool/shared/logger'
 
 import type { IndexEffect } from '../controller/index-effects'
 
-type NavigationEffect = Extract<IndexEffect, { type: 'serializeAssembly' | 'pushState' }>
+import { pushState } from '$app/navigation'
+
+type NavigationEffect = Extract<
+  IndexEffect,
+  { type: 'serializeAssembly' | 'pushState' }
+>
 
 type NavigationRunner = Readonly<{
   enable: () => void

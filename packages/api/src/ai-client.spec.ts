@@ -21,7 +21,11 @@ describe('ai-client', () => {
 
       mockAI.run.mockResolvedValue(expectedResponse)
 
-      const result = await callWorkersAI(mockAI as CloudflareAI, systemPrompt, userPrompt)
+      const result = await callWorkersAI(
+        mockAI as CloudflareAI,
+        systemPrompt,
+        userPrompt,
+      )
 
       expect(mockAI.run).toHaveBeenCalledWith(
         '@cf/meta/llama-3.1-8b-instruct-fast',

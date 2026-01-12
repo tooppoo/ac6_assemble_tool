@@ -1,4 +1,5 @@
 import { latest as regulation } from '$lib/regulation'
+
 import { describe, expect, it, beforeEach, vi } from 'vitest'
 
 // Mock $app modules - must be defined before imports
@@ -10,14 +11,19 @@ vi.mock('$lib/store/query/query-store', () => ({
   storeAssemblyAsQuery: vi.fn(),
 }))
 
-import { pushState } from '$app/navigation'
+// eslint-disable-next-line import/order mockの関係上
 import { storeAssemblyAsQuery } from '$lib/store/query/query-store'
 
 import { initializeAssembly } from '../usecase/initialize-assembly'
+
 import { createNavigationRunner } from './index-navigation'
 
+import { pushState } from '$app/navigation'
+
 const mockPushState = pushState as ReturnType<typeof vi.fn>
-const mockStoreAssemblyAsQuery = storeAssemblyAsQuery as ReturnType<typeof vi.fn>
+const mockStoreAssemblyAsQuery = storeAssemblyAsQuery as ReturnType<
+  typeof vi.fn
+>
 
 describe('createNavigationRunner', () => {
   beforeEach(() => {

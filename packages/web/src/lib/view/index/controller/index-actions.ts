@@ -1,11 +1,12 @@
+import type { AssemblyKey } from '@ac6_assemble_tool/core/assembly/assembly'
 import { deriveAvailableCandidates } from '@ac6_assemble_tool/core/assembly/availability/derive-candidates'
 import { changeAssemblyCommand } from '@ac6_assemble_tool/core/assembly/command/change-assembly'
 import { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
-import type { AssemblyKey } from '@ac6_assemble_tool/core/assembly/assembly'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 
 import type { ChangePartsEvent } from '../form/PartsSelectForm.svelte'
 import type { AssembleRandomly } from '../random/RandomAssemblyOffCanvas.svelte'
+
 import type { IndexState } from './index-state'
 import {
   closeOffcanvas,
@@ -126,20 +127,14 @@ export function toggleRandomPanel(
   }
 }
 
-export function toggleSharePanel(
-  state: IndexState,
-  open: boolean,
-): IndexState {
+export function toggleSharePanel(state: IndexState, open: boolean): IndexState {
   return {
     ...state,
     offcanvasStatus: open ? openShare() : closeOffcanvas(),
   }
 }
 
-export function toggleStorePanel(
-  state: IndexState,
-  open: boolean,
-): IndexState {
+export function toggleStorePanel(state: IndexState, open: boolean): IndexState {
   return {
     ...state,
     offcanvasStatus: open ? openAssemblyStore() : closeOffcanvas(),

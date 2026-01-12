@@ -4,6 +4,7 @@ import { assemblyToSearchV2 } from '@ac6_assemble_tool/core/assembly/serialize/a
 import { describe, expect, it } from 'vitest'
 
 import { initializeAssembly } from '../usecase/initialize-assembly'
+
 import { indexController } from './index-controller'
 import type { IndexState } from './index-state'
 
@@ -16,7 +17,10 @@ const tryLimit = 3000
 
 describe('indexController', () => {
   it('onAfterNavigate: migratedUrlがある場合にserialize effectを返す', () => {
-    const { state } = indexController.init({ partsPool: basePartsPool, tryLimit })
+    const { state } = indexController.init({
+      partsPool: basePartsPool,
+      tryLimit,
+    })
     const url = new URL('https://example.com/')
 
     const result = indexController.onAfterNavigate(state, {
@@ -31,7 +35,10 @@ describe('indexController', () => {
   })
 
   it('onAssemblyChanged: queuedUrlがある場合にpushState effectを含める', () => {
-    const { state } = indexController.init({ partsPool: basePartsPool, tryLimit })
+    const { state } = indexController.init({
+      partsPool: basePartsPool,
+      tryLimit,
+    })
     const queuedUrl = new URL('https://example.com/?v=2')
     const nextState: IndexState = {
       ...state,
@@ -49,7 +56,10 @@ describe('indexController', () => {
   })
 
   it('onPopState: assemblyを再構築しsyncLanguageFromQueryを返す', () => {
-    const { state } = indexController.init({ partsPool: basePartsPool, tryLimit })
+    const { state } = indexController.init({
+      partsPool: basePartsPool,
+      tryLimit,
+    })
     const baseAssembly = initializeAssembly(basePartsPool.candidates)
     const query = assemblyToSearchV2(baseAssembly)
     const url = new URL(`https://example.com/?${query.toString()}`)

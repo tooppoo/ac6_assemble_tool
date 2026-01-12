@@ -1,16 +1,15 @@
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 
 import type { ChangePartsEvent } from '../form/PartsSelectForm.svelte'
+import { assemblyErrorMessage, type Translator } from '../format/error-message'
 import type {
   AssembleRandomly,
   ApplyRandomFilter,
   ErrorOnAssembly,
 } from '../random/RandomAssemblyOffCanvas.svelte'
-import { assemblyErrorMessage, type Translator } from '../format/error-message'
-import { bootstrap } from '../usecase/bootstrap'
 import { buildAssemblyFromQuery } from '../usecase/assembly-from-query'
+import { bootstrap } from '../usecase/bootstrap'
 
-import type { IndexEffect } from './index-effects'
 import {
   applyRandomAssembly,
   applyStoredAssembly,
@@ -28,8 +27,9 @@ import {
   updateCandidatesFromAssembly,
   updateRandomFilter,
 } from './index-actions'
-import { createIndexState, type IndexState } from './index-state'
 import type { ToggleLockPayload } from './index-actions'
+import type { IndexEffect } from './index-effects'
+import { createIndexState, type IndexState } from './index-state'
 
 export type NavigateType = 'enter' | 'link' | 'goto' | string
 
@@ -40,7 +40,10 @@ export type ControllerResult = {
 
 const noEffects: IndexEffect[] = []
 
-function result(state: IndexState, effects: IndexEffect[] = noEffects): ControllerResult {
+function result(
+  state: IndexState,
+  effects: IndexEffect[] = noEffects,
+): ControllerResult {
   return { state, effects }
 }
 

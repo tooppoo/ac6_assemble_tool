@@ -3,7 +3,11 @@ import { Result } from '@praha/byethrow'
 
 import type { CloudflareAI, WorkersAIResponse } from './ai-client'
 import { callWorkersAI } from './ai-client'
-import { buildSystemPrompt, parseAIResponse, AIServiceError } from './ai-service'
+import {
+  buildSystemPrompt,
+  parseAIResponse,
+  AIServiceError,
+} from './ai-service'
 import { loadParts, extractAIData } from './parts-loader'
 import type { RecommendRequest, RecommendResponse } from './types'
 
