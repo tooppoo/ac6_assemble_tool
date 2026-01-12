@@ -7,7 +7,7 @@ import {
   buildSystemPrompt,
   parseAIResponse,
   AIServiceError,
-} from './ai-service'
+} from './ai/ai-service'
 import { loadParts, extractAIData } from './parts-loader'
 import type { RecommendRequest, RecommendResponse } from './types'
 

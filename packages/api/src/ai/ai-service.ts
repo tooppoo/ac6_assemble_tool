@@ -2,8 +2,8 @@ import { allAttributes } from '@ac6_assemble_tool/shared/i18n/terminology'
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 
-import type { AIPartData } from './parts-loader'
-import type { Recommendation } from './types'
+import type { AIPartData } from '../parts-loader'
+import type { Recommendation } from '../types'
 
 /**
  * AI レスポンス型（Cloudflare Workers AI）
