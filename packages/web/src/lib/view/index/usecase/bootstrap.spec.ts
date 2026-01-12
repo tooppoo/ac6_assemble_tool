@@ -3,8 +3,8 @@ import { latest as regulation } from '$lib/regulation'
 import { assemblyToSearchV2 } from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { initializeAssembly } from './assembly'
 import { bootstrap } from './bootstrap'
+import { initializeAssembly } from './initialize-assembly'
 
 describe('bootstrap', () => {
   const candidates = regulation.candidates

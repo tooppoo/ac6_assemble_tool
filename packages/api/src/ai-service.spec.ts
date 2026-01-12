@@ -7,7 +7,6 @@ import type { AIPartData } from './parts-loader'
 describe('ai-service', () => {
   describe('buildPrompt', () => {
     it('should generate structured prompt with query and parts', () => {
-      const query = '高火力の武器が欲しい'
       const parts: AIPartData[] = [
         {
           id: 'WP001',
@@ -19,7 +18,6 @@ describe('ai-service', () => {
 
       const prompt = buildSystemPrompt(parts)
 
-      expect(prompt).toContain(query)
       expect(prompt).toContain('WP001')
       expect(prompt).toContain('Test Weapon')
       expect(prompt).toContain('High damage weapon')
@@ -28,7 +26,6 @@ describe('ai-service', () => {
     })
 
     it('should include marker format instructions', () => {
-      const query = 'test'
       const parts: AIPartData[] = [
         {
           id: 'ID001',
@@ -48,7 +45,6 @@ describe('ai-service', () => {
     })
 
     it('should include Japanese terminology reference', () => {
-      const query = 'test'
       const parts: AIPartData[] = [
         {
           id: 'ID001',

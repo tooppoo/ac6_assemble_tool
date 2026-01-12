@@ -5,7 +5,7 @@
   import {
     stringifyAssembly,
     stringifyStatus,
-  } from '$lib/view/index/interaction/share'
+  } from '$lib/view/index/format/share'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
   import type { HTMLAttributes } from 'svelte/elements'

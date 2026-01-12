@@ -7,24 +7,13 @@
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import ErrorModal from '$lib/components/modal/ErrorModal.svelte'
   import i18n from '$lib/i18n/define'
-  import { useWithEnableState } from '$lib/ssg/safety-reference'
-  import { syncLanguageFromQuery } from '$lib/store/language/language-store.svelte'
-  import {
-    buildQueryFromAssembly,
-    storeAssemblyAsQuery,
-  } from '$lib/store/query/query-store'
+  import { buildQueryFromAssembly } from '$lib/store/query/query-store'
 
   import {
-    type Assembly,
     assemblyKeys,
     spaceByWord,
   } from '@ac6_assemble_tool/core/assembly/assembly'
-  import { deriveAvailableCandidates } from '@ac6_assemble_tool/core/assembly/availability/derive-candidates'
-  import { changeAssemblyCommand } from '@ac6_assemble_tool/core/assembly/command/change-assembly'
-  import { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
-  import { RandomAssembly } from '@ac6_assemble_tool/core/assembly/random/random-assembly'
   import {
-    type Candidates,
     type OrderParts,
     type Order,
     defineOrder,
@@ -32,26 +21,30 @@
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import { logger } from '@ac6_assemble_tool/shared/logger'
 
-  import type {
-    ChangePartsEvent,
-    ToggleLockEvent,
-  } from './form/PartsSelectForm.svelte'
+  import { applyI18nEffect } from './adapters/index-i18n'
+  import { createNavigationRunner } from './adapters/index-navigation'
+  import {
+    indexController as defaultIndexController,
+    type ControllerResult,
+  } from './controller/index-controller'
+  import type { IndexEffect } from './controller/index-effects'
+  import type { IndexState } from './controller/index-state'
   import PartsSelectForm from './form/PartsSelectForm.svelte'
-  import { initializeAssembly } from './interaction/assembly'
-  import { buildAssemblyFromQuery } from './interaction/assembly-from-query'
-  import { bootstrap } from './interaction/bootstrap'
-  import type { PartsPoolRestrictions } from './interaction/derive-parts-pool'
-  import { assemblyErrorMessage } from './interaction/error-message'
   import RandomAssembleButton from './random/button/RandomAssembleButton.svelte'
-  import RandomAssemblyOffCanvas, {
-    type AssembleRandomly,
-    type ErrorOnAssembly,
-  } from './random/RandomAssemblyOffCanvas.svelte'
+  import RandomAssemblyOffCanvas from './random/RandomAssemblyOffCanvas.svelte'
   import ReportList from './report/ReportList.svelte'
   import ShareAssembly from './share/ShareAssembly.svelte'
   import StoreAssembly from './store/StoreAssembly.svelte'
+  import type {
+    ApplyRandomFilter,
+    AssembleRandomly,
+    ChangePartsEvent,
+    ErrorOnAssembly,
+    ToggleLockEvent,
+  } from './types/index-events'
+  import type { PartsPoolRestrictions } from './usecase/derive-parts-pool'
 
-  import { afterNavigate, pushState } from '$app/navigation'
+  import { afterNavigate } from '$app/navigation'
   import { page } from '$app/state'
 
   const tryLimit = 3000
@@ -60,131 +53,81 @@
   interface Props {
     regulation: Regulation
     partsPool: PartsPoolRestrictions
+    indexController?: typeof defaultIndexController
   }
-  let { regulation, partsPool }: Props = $props()
+  let {
+    regulation,
+    partsPool,
+    indexController = defaultIndexController,
+  }: Props = $props()
 
   const orders: Order = $derived(regulation.orders)
   const version: string = $derived(regulation.version)
 
-  let partsPoolState = $derived(partsPool)
-
-  let initialCandidates = $derived<Candidates>(partsPoolState.candidates)
-  let candidates = $derived<Candidates>(partsPoolState.candidates)
-  let changeAssembly = $derived(changeAssemblyCommand(initialCandidates))
-  let lockedParts = $state<LockedParts>(LockedParts.empty)
-  let randomAssembly = $state(RandomAssembly.init({ limit: tryLimit }))
-
-  let openRandomAssembly = $state(false)
-  let openShare = $state(false)
-  let openAssemblyStore = $state(false)
-  let errorMessage = $state<string[]>([])
-
-  let assembly = $state<Assembly>(initializeAssembly(candidates))
+  let indexState: IndexState = $state(
+    indexController.init({ partsPool, tryLimit }).state,
+  )
   // アセンブリと現在のURLクエリ（言語設定など）をマージしてパーツ一覧へのリンクを生成
   let navToPartsList = $derived(
-    `/parts-list?${buildQueryFromAssembly(assembly).toString()}`,
+    `/parts-list?${buildQueryFromAssembly(indexState.assembly).toString()}`,
   )
-
-  let queuedUrl: URL | null = null
 
   const orderParts: OrderParts = $derived(defineOrder(orders))
 
-  const serializeAssembly = useWithEnableState(() => {
-    logger.debug('serialize assembly')
-
-    storeAssemblyAsQuery(assembly)
-
-    if (queuedUrl) {
-      pushState(queuedUrl, {})
-      queuedUrl = null
+  const navigationRunner = createNavigationRunner()
+  const runEffects = (effects: IndexEffect[]) => {
+    for (const effect of effects) {
+      if (navigationRunner.apply(effect)) continue
+      if (applyI18nEffect(effect)) continue
     }
-  })
+  }
+  const commit = (result: ControllerResult) => {
+    if (result.state !== indexState) {
+      indexState = result.state
+    }
+    runEffects(result.effects)
+  }
+  const commitAndSync = (result: ControllerResult) => {
+    commit(result)
+    commit(indexController.onAssemblyChanged(result.state))
+  }
 
   afterNavigate(({ type }) => {
     logger.debug('afterNavigate: type', { type })
-
-    serializeAssembly.enable()
-
-    // popstateは別途onPopstateハンドラで処理されるため、ここでは扱わない
+    navigationRunner.enable()
+    const result = indexController.onAfterNavigate(indexState, {
+      url: page.url,
+      type,
+      baseCandidates: partsPool.candidates,
+    })
+    commit(result)
     if (type === 'enter' || type === 'link' || type === 'goto') {
-      // initialization on first load or navigation from other pages
-      const result = bootstrap(page.url, partsPool.candidates)
-
-      partsPoolState = result.partsPool
-      initialCandidates = result.partsPool.candidates
-      assembly = result.assembly
-      candidates = deriveAvailableCandidates({
-        assembly,
-        lockedParts,
-        initialCandidates,
-      })
-
-      if (result.migratedUrl) {
-        logger.debug('migrated url', { bootstrapResult: result })
-
-        if (serializeAssembly.isEnabled()) {
-          serializeAssembly.run()
-        } else {
-          queuedUrl = result.migratedUrl
-        }
+      const hasSerialize = result.effects.some(
+        (effect) => effect.type === 'serializeAssembly',
+      )
+      if (!hasSerialize) {
+        commit(indexController.onAssemblyChanged(result.state))
       }
     }
-  })
-
-  $effect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    assembly // watch assembly changes
-
-    logger.debug('assembly changed')
-    serializeAssembly.run()
   })
 
   // handler
   const onChangeParts = (event: ChangePartsEvent) => {
     logger.debug('on change parts', { event })
-
-    const { assembly: nextAssembly, remainingCandidates } = changeAssembly(
-      event.id,
-      event.selected,
-      assembly,
-      candidates,
-    )
-
-    assembly = nextAssembly
-    candidates = deriveAvailableCandidates({
-      assembly,
-      lockedParts,
-      initialCandidates: remainingCandidates,
-    })
+    commitAndSync(indexController.onChangeParts(indexState, event))
   }
   const onRandom = (event: AssembleRandomly) => {
     logger.debug('on random', { event })
-
-    assembly = event.assembly
-    candidates = deriveAvailableCandidates({
-      assembly,
-      lockedParts,
-      initialCandidates,
-    })
+    commitAndSync(indexController.onRandom(indexState, event))
   }
   const errorOnRandom = (event: ErrorOnAssembly) => {
     logger.debug('error on random', { event })
-
-    errorMessage = assemblyErrorMessage(event.error, $i18n)
+    commit(indexController.onError(indexState, event, $i18n))
   }
 
   const onLock = (event: ToggleLockEvent) => {
     logger.debug('on lock', { event })
-
-    lockedParts = event.value
-      ? lockedParts.lock(event.id, assembly[event.id])
-      : lockedParts.unlock(event.id)
-
-    candidates = deriveAvailableCandidates({
-      assembly,
-      lockedParts,
-      initialCandidates,
-    })
+    commit(indexController.onToggleLock(indexState, event))
   }
 
   const onPopstate = () => {
@@ -192,22 +135,7 @@
     logger.debug('on popstate', {
       search: page.url.search,
     })
-
-    // 言語設定を同期
-    syncLanguageFromQuery(page.url)
-
-    // アセンブリを再構築
-    const result = buildAssemblyFromQuery(
-      page.url.searchParams,
-      partsPoolState.candidates,
-    )
-
-    assembly = result.assembly
-    candidates = deriveAvailableCandidates({
-      assembly,
-      lockedParts,
-      initialCandidates,
-    })
+    commit(indexController.onPopState(indexState, page.url))
   }
 </script>
 
@@ -218,7 +146,7 @@
     id="random-assemble"
     class="me-3"
     title={$i18n.t('command.random.description', { ns: 'page/index' })}
-    onclick={() => (openRandomAssembly = true)}
+    onclick={() => commit(indexController.onOpenRandomPanel(indexState))}
   >
     {#snippet icon()}
       <i class="bi bi-tools"></i>
@@ -244,7 +172,7 @@
     id="reset-lock-nav"
     class="me-3 d-none d-md-block"
     title={$i18n.t('command.resetLock.description', { ns: 'page/index' })}
-    onclick={() => (lockedParts = LockedParts.empty)}
+    onclick={() => commit(indexController.onResetLocks(indexState))}
   >
     {#snippet icon()}
       <i class="bi bi-unlock"></i>
@@ -257,7 +185,7 @@
     id="open-share"
     class="me-3"
     title={$i18n.t('command.share.description', { ns: 'page/index' })}
-    onclick={() => (openShare = true)}
+    onclick={() => commit(indexController.onOpenSharePanel(indexState))}
   >
     {#snippet icon()}
       <i class="bi bi-share"></i>
@@ -270,7 +198,7 @@
     id="open-assembly-store"
     class="me-3"
     title={$i18n.t('command.store.description', { ns: 'page/index' })}
-    onclick={() => (openAssemblyStore = true)}
+    onclick={() => commit(indexController.onOpenStorePanel(indexState))}
   >
     {#snippet icon()}
       <i class="bi bi-database"></i>
@@ -299,14 +227,14 @@
     <div class="d-flex d-md-none justify-content-end">
       <RandomAssembleButton
         id="random-assembly-button-form"
-        {initialCandidates}
-        {candidates}
-        {lockedParts}
-        {randomAssembly}
+        initialCandidates={indexState.initialCandidates}
+        candidates={indexState.candidates}
+        lockedParts={indexState.lockedParts}
+        randomAssembly={indexState.randomAssembly}
         tooltipText={$i18n.t('random:command.random.label')}
         aria-label={$i18n.t('random:command.random.label')}
         class="me-3"
-        onclick={({ assembly: randomAssembly }) => (assembly = randomAssembly)}
+        onclick={(event) => onRandom(event)}
       />
       <TextButton
         id="reset-lock-form"
@@ -314,7 +242,7 @@
         tooltipText={$i18n.t('command.resetLock.description', {
           ns: 'page/index',
         })}
-        onclick={() => (lockedParts = LockedParts.empty)}
+        onclick={() => commit(indexController.onResetLocks(indexState))}
       >
         <i class="bi bi-unlock"></i>
       </TextButton>
@@ -326,9 +254,9 @@
         class="mb-3 mb-sm-4"
         caption={spaceByWord(key).toUpperCase()}
         tag="section"
-        parts={orderParts(key, candidates[key])}
-        selected={assembly[key]}
-        lock={lockedParts}
+        parts={orderParts(key, indexState.candidates[key])}
+        selected={indexState.assembly[key]}
+        lock={indexState.lockedParts}
         onToggleLock={onLock}
         onchange={onChangeParts}
       />
@@ -336,7 +264,7 @@
   </ToolSection>
 
   <ToolSection id="assembly-report" class="container mw-100 mx-0 my-4 w-100">
-    <ReportList {assembly} />
+    <ReportList assembly={indexState.assembly} />
   </ToolSection>
 
   <CollapseText
@@ -351,18 +279,18 @@
 
 <RandomAssemblyOffCanvas
   id="random-assembly-canvas"
-  open={openRandomAssembly}
-  {initialCandidates}
-  {candidates}
-  {lockedParts}
-  {randomAssembly}
-  {assembly}
-  onToggle={(e) => (openRandomAssembly = e.open)}
+  open={indexState.offcanvasStatus.openRandomAssembly}
+  initialCandidates={indexState.initialCandidates}
+  candidates={indexState.candidates}
+  lockedParts={indexState.lockedParts}
+  randomAssembly={indexState.randomAssembly}
+  assembly={indexState.assembly}
+  onToggle={(e) =>
+    commit(indexController.onToggleRandomPanel(indexState, e.open))}
   {onRandom}
   onError={errorOnRandom}
-  onFilter={(event) => {
-    randomAssembly = event.randomAssembly
-  }}
+  onFilter={(event: ApplyRandomFilter) =>
+    commit(indexController.onFilterRandom(indexState, event))}
   onLockLegs={onLock}
 >
   {#snippet title()}
@@ -371,9 +299,10 @@
 </RandomAssemblyOffCanvas>
 <ShareAssembly
   id="share-assembly"
-  open={openShare}
-  assembly={() => assembly}
-  onToggle={(e) => (openShare = e.open)}
+  open={indexState.offcanvasStatus.openShare}
+  assembly={() => indexState.assembly}
+  onToggle={(e) =>
+    commit(indexController.onToggleSharePanel(indexState, e.open))}
 >
   {#snippet title()}
     {$i18n.t('share:caption')}
@@ -381,17 +310,21 @@
 </ShareAssembly>
 <StoreAssembly
   id="store-assembly"
-  open={openAssemblyStore}
-  candidates={initialCandidates}
-  {assembly}
-  onToggle={(e) => (openAssemblyStore = e.open)}
-  onApply={(aggregation) => (assembly = aggregation.assembly)}
+  open={indexState.offcanvasStatus.openAssemblyStore}
+  candidates={indexState.initialCandidates}
+  assembly={indexState.assembly}
+  onToggle={(e) =>
+    commit(indexController.onToggleStorePanel(indexState, e.open))}
+  onApply={(aggregation) =>
+    commitAndSync(
+      indexController.onApplyStoredAssembly(indexState, aggregation.assembly),
+    )}
 />
 
 <ErrorModal
   id="index-error-modal"
-  open={errorMessage.length !== 0}
-  onClose={() => (errorMessage = [])}
+  open={indexState.errorMessages.length !== 0}
+  onClose={() => commit(indexController.onCloseError(indexState))}
 >
   {#snippet title()}
     ERROR
@@ -400,7 +333,7 @@
     OK
   {/snippet}
 
-  {#each errorMessage as row, i (i)}
+  {#each indexState.errorMessages as row, i (i)}
     {row}<br />
   {/each}
 </ErrorModal>

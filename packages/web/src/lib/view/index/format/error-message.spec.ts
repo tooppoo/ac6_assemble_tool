@@ -2,7 +2,7 @@ import type { I18Next } from '$lib/i18n/define'
 import {
   assemblyErrorMessage,
   type Translator,
-} from '$lib/view/index/interaction/error-message'
+} from '$lib/view/index/format/error-message'
 
 import { OverTryLimitError } from '@ac6_assemble_tool/core/assembly/random/random-assembly'
 import {

@@ -22,20 +22,16 @@
   import { logger } from '@ac6_assemble_tool/shared/logger'
   import type { Snippet } from 'svelte'
 
+  import type {
+    ApplyRandomFilter,
+    AssembleRandomly,
+    ErrorOnAssembly,
+  } from '../types/index-events'
+
   import CoamRangeSlider from './range/CoamRangeSlider.svelte'
   import LoadRangeSlider, {
     type ToggleLock,
   } from './range/LoadRangeSlider.svelte'
-
-  export type AssembleRandomly = Readonly<{
-    assembly: Assembly
-  }>
-  export type ErrorOnAssembly = Readonly<{
-    error: Error
-  }>
-  export type ApplyRandomFilter = Readonly<{
-    randomAssembly: RandomAssembly
-  }>
 
   interface Props {
     id: string

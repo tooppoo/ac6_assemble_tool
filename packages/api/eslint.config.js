@@ -3,7 +3,7 @@ import { config as tsConfig } from 'typescript-eslint'
 
 export default tsConfig(
   {
-    ignores: ['coverage'],
+    ignores: ['.turbo', 'dist', '.wrangler', 'node_modules'],
   },
   ...fromBase([...importRules()]),
 )
