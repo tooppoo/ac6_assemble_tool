@@ -29,7 +29,7 @@
 
   import { afterNavigate } from '$app/navigation'
   import { page } from '$app/state'
-  import { indexController, type ControllerResult } from './controller/index-controller'
+  import { indexController as defaultIndexController, type ControllerResult } from './controller/index-controller'
   import type { IndexState } from './controller/index-state'
   import type { IndexEffect } from './controller/index-effects'
   import { createNavigationRunner } from './adapters/index-navigation'
@@ -41,8 +41,13 @@
   interface Props {
     regulation: Regulation
     partsPool: PartsPoolRestrictions
+    indexController?: typeof defaultIndexController
   }
-  let { regulation, partsPool }: Props = $props()
+  let {
+    regulation,
+    partsPool,
+    indexController = defaultIndexController,
+  }: Props = $props()
 
   const orders: Order = $derived(regulation.orders)
   const version: string = $derived(regulation.version)
