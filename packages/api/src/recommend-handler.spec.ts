@@ -1,20 +1,20 @@
 import { Result } from '@praha/byethrow'
 import { describe, it, expect, vi } from 'vitest'
 
-import type { CloudflareAI } from './ai-client'
 import { handleRecommendRequest } from './recommend-handler'
 import type { RecommendRequest, RecommendResponse } from './types'
+import { AIClient } from './ai/ai-client'
 
 describe('recommend-handler', () => {
   describe('handleRecommendRequest', () => {
     it('should handle valid request and return recommendations', async () => {
-      const mockAI: CloudflareAI = {
-        run: vi.fn().mockResolvedValue({
+      const mockAI: AIClient = {
+        call: vi.fn().mockResolvedValue(Result.succeed({
           response: `高火力の武器をお探しですね。Test Headをお勧めします。
 
 ---RECOMMENDATIONS---
 partId: HD001 | partName: Test Head | score: 0.9 | reason: Test reason`,
-        }),
+        })),
       }
 
       const request: RecommendRequest = {
@@ -35,13 +35,13 @@ partId: HD001 | partName: Test Head | score: 0.9 | reason: Test reason`,
     })
 
     it('should handle request with slot filter', async () => {
-      const mockAI: CloudflareAI = {
-        run: vi.fn().mockResolvedValue({
+      const mockAI: AIClient = {
+        call: vi.fn().mockResolvedValue(Result.succeed({
           response: `軽量なヘッドパーツをお探しですね。Test Headをお勧めします。
 
 ---RECOMMENDATIONS---
 partId: HD001 | partName: Test Head | score: 0.9 | reason: Test reason`,
-        }),
+        })),
       }
 
       const request: RecommendRequest = {
@@ -61,8 +61,8 @@ partId: HD001 | partName: Test Head | score: 0.9 | reason: Test reason`,
     })
 
     it('should return error when AI client fails', async () => {
-      const mockAI: CloudflareAI = {
-        run: vi.fn().mockRejectedValue(new Error('AI Error')),
+      const mockAI: AIClient = {
+        call: vi.fn().mockResolvedValue(Result.fail(new Error('AI Error'))),
       }
 
       const request: RecommendRequest = {
@@ -75,10 +75,10 @@ partId: HD001 | partName: Test Head | score: 0.9 | reason: Test reason`,
     })
 
     it('should handle malformed AI response gracefully', async () => {
-      const mockAI: CloudflareAI = {
-        run: vi.fn().mockResolvedValue({
+      const mockAI: AIClient = {
+        call: vi.fn().mockResolvedValue(Result.succeed({
           response: 'invalid response without any markers or structure',
-        }),
+        })),
       }
 
       const request: RecommendRequest = {
@@ -99,12 +99,12 @@ partId: HD001 | partName: Test Head | score: 0.9 | reason: Test reason`,
     })
 
     it('should return empty recommendations when no parts match', async () => {
-      const mockAI: CloudflareAI = {
-        run: vi.fn().mockResolvedValue({
+      const mockAI: AIClient = {
+        call: vi.fn().mockResolvedValue(Result.succeed({
           response: `申し訳ございませんが、ご要望に合うパーツが見つかりませんでした。
 
 ---RECOMMENDATIONS---`,
-        }),
+        })),
       }
 
       const request: RecommendRequest = {

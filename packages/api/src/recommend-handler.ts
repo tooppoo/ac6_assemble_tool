@@ -1,8 +1,6 @@
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 
-import type { CloudflareAI, WorkersAIResponse } from './ai-client'
-import { callWorkersAI } from './ai-client'
 import {
   buildSystemPrompt,
   parseAIResponse,
@@ -10,6 +8,7 @@ import {
 } from './ai/ai-service'
 import { loadParts, extractAIData } from './parts-loader'
 import type { RecommendRequest, RecommendResponse } from './types'
+import { AIClient } from './ai/ai-client'
 
 /**
  * レコメンド推論を実行してレスポンスを生成する
@@ -18,7 +17,7 @@ import type { RecommendRequest, RecommendResponse } from './types'
  * @returns レスポンスまたはエラー
  */
 export async function handleRecommendRequest(
-  ai: CloudflareAI,
+  aiClient: AIClient,
   request: RecommendRequest,
 ): Promise<Result.Result<RecommendResponse, AIServiceError>> {
   // パーツデータのロード
@@ -29,8 +28,8 @@ export async function handleRecommendRequest(
   const systemPrompt = buildSystemPrompt(aiData)
   logger.debug('Generated Prompt:', { systemPrompt })
 
-  // Workers AI 呼び出し
-  const aiResult = await callWorkersAI(ai, systemPrompt, request.query)
+  // AI 呼び出し
+  const aiResult = await aiClient.call(systemPrompt, request.query)
   if (Result.isFailure(aiResult)) {
     const aiError = Result.unwrapError(aiResult)
     return Result.fail(
@@ -44,7 +43,7 @@ export async function handleRecommendRequest(
 
   // AI レスポンスのパース
   const aiResponse = Result.unwrap(aiResult)
-  const parseResult = parseAIResponse(aiResponse as WorkersAIResponse)
+  const parseResult = parseAIResponse(aiResponse)
   logger.debug('Parsed AI Response:', { aiResponse, parseResult })
 
   if (Result.isFailure(parseResult)) {

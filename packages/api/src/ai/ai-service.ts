@@ -4,13 +4,7 @@ import { Result } from '@praha/byethrow'
 
 import type { AIPartData } from '../parts-loader'
 import type { Recommendation } from '../types'
-
-/**
- * AI レスポンス型（Cloudflare Workers AI）
- */
-export interface AIResponse {
-  response: string
-}
+import { AIResponse } from './ai-client'
 
 /**
  * AI サービスエラー
