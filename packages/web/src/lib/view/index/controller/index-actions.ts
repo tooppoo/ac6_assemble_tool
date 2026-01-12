@@ -4,10 +4,7 @@ import { changeAssemblyCommand } from '@ac6_assemble_tool/core/assembly/command/
 import { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 
-import type {
-  AssembleRandomly,
-  ChangePartsEvent,
-} from '../types/index-events'
+import type { AssembleRandomly, ChangePartsEvent } from '../types/index-events'
 
 import type { IndexState } from './index-state'
 import {

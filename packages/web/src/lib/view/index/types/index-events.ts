@@ -1,4 +1,7 @@
-import type { Assembly, AssemblyKey } from '@ac6_assemble_tool/core/assembly/assembly'
+import type {
+  Assembly,
+  AssemblyKey,
+} from '@ac6_assemble_tool/core/assembly/assembly'
 import type { RandomAssembly } from '@ac6_assemble_tool/core/assembly/random/random-assembly'
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 

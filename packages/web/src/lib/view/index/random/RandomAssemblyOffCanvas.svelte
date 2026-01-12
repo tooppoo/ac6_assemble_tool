@@ -22,16 +22,16 @@
   import { logger } from '@ac6_assemble_tool/shared/logger'
   import type { Snippet } from 'svelte'
 
-  import CoamRangeSlider from './range/CoamRangeSlider.svelte'
-  import LoadRangeSlider, {
-    type ToggleLock,
-  } from './range/LoadRangeSlider.svelte'
-
   import type {
     ApplyRandomFilter,
     AssembleRandomly,
     ErrorOnAssembly,
   } from '../types/index-events'
+
+  import CoamRangeSlider from './range/CoamRangeSlider.svelte'
+  import LoadRangeSlider, {
+    type ToggleLock,
+  } from './range/LoadRangeSlider.svelte'
 
   interface Props {
     id: string
