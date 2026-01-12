@@ -11,7 +11,8 @@ vi.mock('$lib/store/query/query-store', () => ({
   storeAssemblyAsQuery: vi.fn(),
 }))
 
-// eslint-disable-next-line import/order mockの関係上
+// mockの関係上、mock後にimport
+// eslint-disable-next-line import/order
 import { storeAssemblyAsQuery } from '$lib/store/query/query-store'
 
 import { initializeAssembly } from '../usecase/initialize-assembly'
