@@ -47,9 +47,7 @@ export function createNavigationRunner(): NavigationRunner {
     }
     const queue = pending.splice(0, pending.length)
     for (const effect of queue) {
-      if (!tryApply(effect)) {
-        pending.push(effect)
-      }
+      tryApply(effect)
     }
   }
 
@@ -67,9 +65,7 @@ export function createNavigationRunner(): NavigationRunner {
         pending.push(effect)
         return true
       }
-      if (!tryApply(effect)) {
-        pending.push(effect)
-      }
+      tryApply(effect)
       return true
     },
   }

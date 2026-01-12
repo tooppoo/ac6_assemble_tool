@@ -54,6 +54,21 @@ describe('createNavigationRunner', () => {
     expect(mockStoreAssemblyAsQuery).toHaveBeenCalledWith(assembly)
   })
 
+  it('enable後の失敗は再実行しない', () => {
+    const runner = createNavigationRunner()
+    const url = new URL('https://example.com/?v=2')
+
+    mockPushState.mockImplementationOnce(() => {
+      throw new Error('failed')
+    })
+
+    runner.apply({ type: 'pushState', url })
+    runner.enable()
+    runner.enable()
+
+    expect(mockPushState).toHaveBeenCalledTimes(1)
+  })
+
   it('navigation以外のeffectは処理しない', () => {
     const runner = createNavigationRunner()
     const url = new URL('https://example.com/?v=2')
