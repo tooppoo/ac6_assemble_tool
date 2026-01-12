@@ -29,20 +29,19 @@
   } from './controller/index-controller'
   import type { IndexEffect } from './controller/index-effects'
   import type { IndexState } from './controller/index-state'
-  import type {
-    ChangePartsEvent,
-    ToggleLockEvent,
-  } from './form/PartsSelectForm.svelte'
   import PartsSelectForm from './form/PartsSelectForm.svelte'
   import RandomAssembleButton from './random/button/RandomAssembleButton.svelte'
-  import RandomAssemblyOffCanvas, {
-    type AssembleRandomly,
-    type ErrorOnAssembly,
-    type ApplyRandomFilter,
-  } from './random/RandomAssemblyOffCanvas.svelte'
+  import RandomAssemblyOffCanvas from './random/RandomAssemblyOffCanvas.svelte'
   import ReportList from './report/ReportList.svelte'
   import ShareAssembly from './share/ShareAssembly.svelte'
   import StoreAssembly from './store/StoreAssembly.svelte'
+  import type {
+    ApplyRandomFilter,
+    AssembleRandomly,
+    ChangePartsEvent,
+    ErrorOnAssembly,
+    ToggleLockEvent,
+  } from './types/index-events'
   import type { PartsPoolRestrictions } from './usecase/derive-parts-pool'
 
   import { afterNavigate } from '$app/navigation'

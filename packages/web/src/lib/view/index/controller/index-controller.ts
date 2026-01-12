@@ -1,12 +1,12 @@
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 
-import type { ChangePartsEvent } from '../form/PartsSelectForm.svelte'
 import { assemblyErrorMessage, type Translator } from '../format/error-message'
 import type {
-  AssembleRandomly,
   ApplyRandomFilter,
+  AssembleRandomly,
+  ChangePartsEvent,
   ErrorOnAssembly,
-} from '../random/RandomAssemblyOffCanvas.svelte'
+} from '../types/index-events'
 import { buildAssemblyFromQuery } from '../usecase/assembly-from-query'
 import { bootstrap } from '../usecase/bootstrap'
 

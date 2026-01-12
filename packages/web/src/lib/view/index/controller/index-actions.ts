@@ -4,8 +4,10 @@ import { changeAssemblyCommand } from '@ac6_assemble_tool/core/assembly/command/
 import { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
 
-import type { ChangePartsEvent } from '../form/PartsSelectForm.svelte'
-import type { AssembleRandomly } from '../random/RandomAssemblyOffCanvas.svelte'
+import type {
+  AssembleRandomly,
+  ChangePartsEvent,
+} from '../types/index-events'
 
 import type { IndexState } from './index-state'
 import {

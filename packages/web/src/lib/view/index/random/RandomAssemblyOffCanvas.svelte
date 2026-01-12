@@ -27,15 +27,11 @@
     type ToggleLock,
   } from './range/LoadRangeSlider.svelte'
 
-  export type AssembleRandomly = Readonly<{
-    assembly: Assembly
-  }>
-  export type ErrorOnAssembly = Readonly<{
-    error: Error
-  }>
-  export type ApplyRandomFilter = Readonly<{
-    randomAssembly: RandomAssembly
-  }>
+  import type {
+    ApplyRandomFilter,
+    AssembleRandomly,
+    ErrorOnAssembly,
+  } from '../types/index-events'
 
   interface Props {
     id: string

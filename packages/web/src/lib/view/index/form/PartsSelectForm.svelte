@@ -7,11 +7,10 @@
   import type { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
   import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 
-  export type ChangePartsEvent = Readonly<{
-    id: AssemblyKey
-    selected: ACParts
-  }>
-  export type ToggleLockEvent = Readonly<{ id: AssemblyKey; value: boolean }>
+  import type {
+    ChangePartsEvent,
+    ToggleLockEvent,
+  } from '../types/index-events'
 
   interface Props {
     id: AssemblyKey
