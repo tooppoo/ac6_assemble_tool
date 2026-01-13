@@ -12,7 +12,7 @@ export interface AIClient {
 }
 
 /**
- * AI レスポンス型（Cloudflare Workers AI）
+ * AIクライアント共通レスポンス型
  */
 export interface AIResponse {
   response: string
