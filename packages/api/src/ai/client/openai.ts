@@ -1,34 +1,26 @@
-import { Result } from '@praha/byethrow'
-import OpenAI from 'openai'
-
-import type { AIClient, AIResponse } from '../ai-client'
-import { AIClientError } from '../ai-client'
+import OpenAI from "openai";
+import { AIClient, AIClientError, AIResponse } from "../ai-client";
+import { Result } from "@praha/byethrow";
+import { logger } from "@ac6_assemble_tool/shared/logger";
 
 type EnvDTO = Pick<
   Cloudflare.Env,
-  'OPENAI_API_KEY' | 'OPENAI_API_ENDPOINT' | 'OPENAI_API_MODEL'
->
+  'OPENAI_API_KEY' | 'OPENAI_API_MODEL'
+>;
 
-export function createOpenAIClient(
-  env: EnvDTO,
-): Result.Result<OpenAIClient, Error> {
-  const apiKey = env.OPENAI_API_KEY
-  if (!apiKey) {
-    return Result.fail(
-      new Error('OPENAI_API_KEY is not set in environment variables'),
-    )
+export function createOpenAIClient(env: EnvDTO): Result.Result<OpenAIClient, Error> {
+  try {
+    if (!env.OPENAI_API_KEY) {
+      return Result.fail(new Error("OPENAI_API_KEY is not set in environment variables"));
+    }
+
+    const openAI = new OpenAI();
+    const model = env.OPENAI_API_MODEL ?? "gpt-5-nano-2025-08-07";
+
+    return Result.succeed(new OpenAIClient(openAI, model));
+  } catch (error) {
+    return Result.fail(new Error(`Failed to create OpenAI client: ${(error as Error).message}`));
   }
-  const baseURL = env.OPENAI_API_ENDPOINT
-  if (!baseURL) {
-    return Result.fail(
-      new Error('OPENAI_API_ENDPOINT is not set in environment variables'),
-    )
-  }
-
-  const opanAI = new OpenAI({ apiKey, baseURL })
-  const model = env.OPENAI_API_MODEL ?? 'gpt-5-nano-2025-08-07'
-
-  return Result.succeed(new OpenAIClient(opanAI, model))
 }
 
 export class OpenAIClient implements AIClient {
@@ -42,6 +34,7 @@ export class OpenAIClient implements AIClient {
     userQuery: string,
   ): Promise<Result.Result<AIResponse, AIClientError>> {
     try {
+      logger.debug("Calling OpenAI API");
       const aiResponse = await this.client.chat.completions.create({
         model: this.model,
         messages: [

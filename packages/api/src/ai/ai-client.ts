@@ -21,14 +21,14 @@ export interface AIResponse {
 export function getAIClient(env: Cloudflare.Env): AIClient {
   switch (env.AI_CLIENT) {
     case 'openai':
-      return Result.unwrap(
-        Result.pipe(
-          createOpenAIClient(env),
-          Result.orElse((error) => {
-            logger.warn(
-              'Failed to create OpenAI client, so using WorkerAiClient as fallback',
-              { error: error.message },
-            )
+      logger.debug('Using OpenAI client for AI interactions');
+      return Result.unwrap(Result.pipe(
+        createOpenAIClient(env),
+        Result.orElse((error) => {
+          logger.warn(
+            'Failed to create OpenAI client, so using WorkerAiClient as fallback',
+            { error: error.message }
+          );
 
             return Result.succeed(new WorkerAiClient(env.AI))
           }),
@@ -36,7 +36,8 @@ export function getAIClient(env: Cloudflare.Env): AIClient {
       )
     case 'worker-ai':
     default:
-      return new WorkerAiClient(env.AI)
+      logger.debug('Using WorkerAiClient for AI interactions');
+      return new WorkerAiClient(env.AI);
   }
 }
 
