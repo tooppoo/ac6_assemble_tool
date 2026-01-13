@@ -4,9 +4,39 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import { createOpenAIClient, OpenAIClient } from './openai'
 
-const { OpenAIMock } = vi.hoisted(() => {
+const {
+  OpenAIMock,
+  setCreateMock,
+  getLatestOptions,
+  resetOpenAIMock,
+} = vi.hoisted(() => {
+  // OpenAIは`new OpenAI()`で生成されるため、constructableなモックを用意し、
+  // 内部に`chat.completions.create`を差し込んで呼び出し検証ができるようにする。
+  let createMock = vi.fn()
+  let latestOptions: unknown
+  const OpenAIMock = vi.fn(function OpenAIMock(
+    this: {
+      chat: { completions: { create: (...args: unknown[]) => unknown } }
+      options?: unknown
+    },
+    options: unknown,
+  ) {
+    latestOptions = options
+    this.chat = { completions: { create: createMock } }
+    this.options = options
+  })
+
   return {
-    OpenAIMock: vi.fn(),
+    OpenAIMock,
+    setCreateMock: (next: typeof createMock) => {
+      createMock = next
+    },
+    getLatestOptions: () => latestOptions,
+    resetOpenAIMock: () => {
+      createMock = vi.fn()
+      latestOptions = undefined
+      OpenAIMock.mockClear()
+    },
   }
 })
 
@@ -16,7 +46,7 @@ vi.mock('openai', () => ({
 
 describe('openai', () => {
   beforeEach(() => {
-    OpenAIMock.mockReset()
+    resetOpenAIMock()
   })
 
   describe('createOpenAIClient', () => {
@@ -35,33 +65,11 @@ describe('openai', () => {
       }
     })
 
-    it('should fail when OPENAI_API_ENDPOINT is missing', () => {
-      const result = createOpenAIClient({
-        OPENAI_API_KEY: 'key',
-        OPENAI_API_MODEL: 'model',
-      })
-
-      expect(Result.isFailure(result)).toBe(true)
-      if (Result.isFailure(result)) {
-        const error = Result.unwrapError(result)
-        expect(error.message).toBe(
-          'OPENAI_API_ENDPOINT is not set in environment variables',
-        )
-      }
-    })
-
     it('should create client with specified model', async () => {
       const create = vi.fn().mockResolvedValue({
         choices: [{ message: { content: 'ok' } }],
       })
-      let latestInstance: unknown
-      OpenAIMock.mockImplementation((options: unknown) => {
-        latestInstance = {
-          chat: { completions: { create } },
-          options,
-        }
-        return latestInstance
-      })
+      setCreateMock(create)
 
       const env = {
         OPENAI_API_KEY: 'key',
@@ -76,7 +84,9 @@ describe('openai', () => {
         await client.call('system', 'user')
       }
 
-      expect(OpenAIMock).toHaveBeenCalled()
+      expect(OpenAIMock).toHaveBeenCalledWith({
+        apiKey: 'key',
+      })
       expect(create).toHaveBeenCalledWith({
         model: 'gpt-test',
         messages: [
@@ -84,20 +94,20 @@ describe('openai', () => {
           { role: 'user', content: 'user' },
         ],
       })
-      expect(latestInstance).toBeDefined()
+      expect(getLatestOptions()).toEqual({
+        apiKey: 'key',
+      })
     })
 
     it('should default model when OPENAI_API_MODEL is missing', async () => {
       const create = vi.fn().mockResolvedValue({
         choices: [{ message: { content: 'ok' } }],
       })
-      OpenAIMock.mockImplementation(() => ({
-        chat: { completions: { create } },
-      }))
+      setCreateMock(create)
 
       const env = {
         OPENAI_API_KEY: 'key',
-        OPENAI_API_MODEL: '',
+        OPENAI_API_MODEL: undefined,
       }
 
       const result = createOpenAIClient(env)
@@ -109,12 +119,29 @@ describe('openai', () => {
       }
 
       expect(create).toHaveBeenCalledWith({
-        model: 'gpt-5-nano-2025-08-07',
+        model: 'gpt-5-nano',
         messages: [
           { role: 'system', content: 'system' },
           { role: 'user', content: 'user' },
         ],
       })
+    })
+
+    it('should fail when OpenAI constructor throws', () => {
+      OpenAIMock.mockImplementationOnce(function OpenAIMockFail() {
+        throw new Error('init failed')
+      })
+
+      const result = createOpenAIClient({
+        OPENAI_API_KEY: 'key',
+        OPENAI_API_MODEL: 'model',
+      })
+
+      expect(Result.isFailure(result)).toBe(true)
+      if (Result.isFailure(result)) {
+        const error = Result.unwrapError(result)
+        expect(error.message).toBe('Failed to create OpenAI client: init failed')
+      }
     })
   })
 

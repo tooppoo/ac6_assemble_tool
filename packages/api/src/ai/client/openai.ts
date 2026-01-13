@@ -5,7 +5,8 @@ import OpenAI from 'openai'
 import type { AIClient, AIResponse } from '../ai-client'
 import { AIClientError } from '../ai-client'
 
-type EnvDTO = Pick<Cloudflare.Env, 'OPENAI_API_KEY' | 'OPENAI_API_MODEL'>
+type EnvDTO = Pick<Cloudflare.Env, 'OPENAI_API_KEY'> &
+  Partial<Pick<Cloudflare.Env, 'OPENAI_API_MODEL'>>
 
 export function createOpenAIClient(
   env: EnvDTO,
