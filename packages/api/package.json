@@ -1,6 +1,7 @@
 {
   "name": "@ac6_assemble_tool/api",
   "type": "module",
+  "version": "1.3.0",
   "exports": {
     ".": {
       "types": "./src/types.ts",
