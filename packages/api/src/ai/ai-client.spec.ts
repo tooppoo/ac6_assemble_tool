@@ -1,9 +1,9 @@
+import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import { getAIClient } from './ai-client'
 import { WorkerAiClient } from './client/worker-ai'
-import { logger } from '@ac6_assemble_tool/shared/logger'
 
 const { createOpenAIClientMock } = vi.hoisted(() => {
   return {
@@ -38,7 +38,9 @@ describe('ai-client', () => {
 
     it('should fallback to WorkerAiClient when createOpenAIClient fails', () => {
       const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => {})
-      createOpenAIClientMock.mockReturnValue(Result.fail(new Error('init failed')))
+      createOpenAIClientMock.mockReturnValue(
+        Result.fail(new Error('init failed')),
+      )
 
       const env = {
         AI_CLIENT: 'openai',

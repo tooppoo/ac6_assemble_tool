@@ -1,7 +1,6 @@
 import { Result } from '@praha/byethrow'
+import type OpenAI from 'openai'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-
-import OpenAI from 'openai'
 
 import { createOpenAIClient, OpenAIClient } from './openai'
 
@@ -30,7 +29,9 @@ describe('openai', () => {
       expect(Result.isFailure(result)).toBe(true)
       if (Result.isFailure(result)) {
         const error = Result.unwrapError(result)
-        expect(error.message).toBe('OPENAI_API_KEY is not set in environment variables')
+        expect(error.message).toBe(
+          'OPENAI_API_KEY is not set in environment variables',
+        )
       }
     })
 
@@ -43,7 +44,9 @@ describe('openai', () => {
       expect(Result.isFailure(result)).toBe(true)
       if (Result.isFailure(result)) {
         const error = Result.unwrapError(result)
-        expect(error.message).toBe('OPENAI_API_ENDPOINT is not set in environment variables')
+        expect(error.message).toBe(
+          'OPENAI_API_ENDPOINT is not set in environment variables',
+        )
       }
     })
 
