@@ -19,7 +19,7 @@ export function createOpenAIClient(
     const openAI = new OpenAI({
       apiKey,
     });
-    const model = env.OPENAI_API_MODEL ?? "gpt-5-nano-2025-08-07";
+    const model = env.OPENAI_API_MODEL ?? "gpt-5-nano";
 
     return Result.succeed(new OpenAIClient(openAI, model))
   } catch (error) {
