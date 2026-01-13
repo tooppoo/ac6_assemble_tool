@@ -4,41 +4,37 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import { createOpenAIClient, OpenAIClient } from './openai'
 
-const {
-  OpenAIMock,
-  setCreateMock,
-  getLatestOptions,
-  resetOpenAIMock,
-} = vi.hoisted(() => {
-  // OpenAIは`new OpenAI()`で生成されるため、constructableなモックを用意し、
-  // 内部に`chat.completions.create`を差し込んで呼び出し検証ができるようにする。
-  let createMock = vi.fn()
-  let latestOptions: unknown
-  const OpenAIMock = vi.fn(function OpenAIMock(
-    this: {
-      chat: { completions: { create: (...args: unknown[]) => unknown } }
-      options?: unknown
-    },
-    options: unknown,
-  ) {
-    latestOptions = options
-    this.chat = { completions: { create: createMock } }
-    this.options = options
-  })
+const { OpenAIMock, setCreateMock, getLatestOptions, resetOpenAIMock } =
+  vi.hoisted(() => {
+    // OpenAIは`new OpenAI()`で生成されるため、constructableなモックを用意し、
+    // 内部に`chat.completions.create`を差し込んで呼び出し検証ができるようにする。
+    let createMock = vi.fn()
+    let latestOptions: unknown
+    const OpenAIMock = vi.fn(function OpenAIMock(
+      this: {
+        chat: { completions: { create: (...args: unknown[]) => unknown } }
+        options?: unknown
+      },
+      options: unknown,
+    ) {
+      latestOptions = options
+      this.chat = { completions: { create: createMock } }
+      this.options = options
+    })
 
-  return {
-    OpenAIMock,
-    setCreateMock: (next: typeof createMock) => {
-      createMock = next
-    },
-    getLatestOptions: () => latestOptions,
-    resetOpenAIMock: () => {
-      createMock = vi.fn()
-      latestOptions = undefined
-      OpenAIMock.mockClear()
-    },
-  }
-})
+    return {
+      OpenAIMock,
+      setCreateMock: (next: typeof createMock) => {
+        createMock = next
+      },
+      getLatestOptions: () => latestOptions,
+      resetOpenAIMock: () => {
+        createMock = vi.fn()
+        latestOptions = undefined
+        OpenAIMock.mockClear()
+      },
+    }
+  })
 
 vi.mock('openai', () => ({
   default: OpenAIMock,
@@ -140,7 +136,9 @@ describe('openai', () => {
       expect(Result.isFailure(result)).toBe(true)
       if (Result.isFailure(result)) {
         const error = Result.unwrapError(result)
-        expect(error.message).toBe('Failed to create OpenAI client: init failed')
+        expect(error.message).toBe(
+          'Failed to create OpenAI client: init failed',
+        )
       }
     })
   })
