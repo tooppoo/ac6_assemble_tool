@@ -11,15 +11,17 @@ export function createOpenAIClient(
   env: EnvDTO,
 ): Result.Result<OpenAIClient, Error> {
   try {
-    const apiKey = env.OPENAI_API_KEY;
+    const apiKey = env.OPENAI_API_KEY
     if (!apiKey) {
-      return Result.fail(new Error("OPENAI_API_KEY is not set in environment variables"));
+      return Result.fail(
+        new Error('OPENAI_API_KEY is not set in environment variables'),
+      )
     }
 
     const openAI = new OpenAI({
       apiKey,
-    });
-    const model = env.OPENAI_API_MODEL ?? "gpt-5-nano";
+    })
+    const model = env.OPENAI_API_MODEL ?? 'gpt-5-nano'
 
     return Result.succeed(new OpenAIClient(openAI, model))
   } catch (error) {
@@ -40,7 +42,7 @@ export class OpenAIClient implements AIClient {
     userQuery: string,
   ): Promise<Result.Result<AIResponse, AIClientError>> {
     try {
-      logger.debug("Calling OpenAI API", { model: this.model });
+      logger.debug('Calling OpenAI API', { model: this.model })
 
       const aiResponse = await this.client.chat.completions.create({
         model: this.model,
