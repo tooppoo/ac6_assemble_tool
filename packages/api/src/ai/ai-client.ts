@@ -1,6 +1,7 @@
 import { Result } from "@praha/byethrow";
-import { OpenAIClient } from "./client/openai";
+import { createOpenAIClient } from "./client/openai";
 import { WorkerAiClient } from "./client/worker-ai";
+import { logger } from "@ac6_assemble_tool/shared/logger";
 
 export interface AIClient {
   call(systemPrompt: string, userQuery: string): Promise<Result.Result<AIResponse, AIClientError>>;
@@ -16,7 +17,17 @@ export interface AIResponse {
 export function getAIClient(env: Cloudflare.Env): AIClient {
   switch (env.AI_CLIENT) {
     case 'openai':
-      return new OpenAIClient(env);
+      return Result.unwrap(Result.pipe(
+        createOpenAIClient(env),
+        Result.orElse((error) => {
+          logger.warn(
+            'Failed to create OpenAI client, so using WorkerAiClient as fallback',
+            { error: error.message }
+          );
+
+          return Result.succeed(new WorkerAiClient(env.AI));
+        })
+      ));
     case 'worker-ai':
     default:
       return new WorkerAiClient(env.AI);
