@@ -1,8 +1,9 @@
 import { Result } from '@praha/byethrow'
 import { describe, it, expect } from 'vitest'
 
-import { buildSystemPrompt, parseAIResponse } from './ai-service'
 import type { AIPartData } from '../parts-loader'
+
+import { buildSystemPrompt, parseAIResponse } from './ai-service'
 
 describe('ai-service', () => {
   describe('buildPrompt', () => {

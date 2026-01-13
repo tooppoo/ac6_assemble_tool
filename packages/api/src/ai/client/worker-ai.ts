@@ -1,5 +1,6 @@
-import { Result } from "@praha/byethrow"
-import { type AIClient, AIClientError, type AIResponse } from "../ai-client"
+import { Result } from '@praha/byethrow'
+
+import { type AIClient, AIClientError, type AIResponse } from '../ai-client'
 
 /**
  * Workers AI レスポンス型
@@ -15,7 +16,6 @@ export interface CloudflareAI {
   run(model: string, params: unknown): Promise<unknown>
 }
 
-
 export class WorkerAiClient implements AIClient {
   constructor(private readonly ai: CloudflareAI) {}
 
@@ -24,12 +24,15 @@ export class WorkerAiClient implements AIClient {
     userQuery: string,
   ): Promise<Result.Result<AIResponse, AIClientError>> {
     try {
-      const response = await this.ai.run('@cf/meta/llama-3.1-8b-instruct-fast', {
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userQuery },
-        ],
-      })
+      const response = await this.ai.run(
+        '@cf/meta/llama-3.1-8b-instruct-fast',
+        {
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userQuery },
+          ],
+        },
+      )
 
       // レスポンス形式の検証
       if (

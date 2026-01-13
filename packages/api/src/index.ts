@@ -4,10 +4,10 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import * as v from 'valibot'
 
+import { getAIClient } from './ai/ai-client'
 import { handleRecommendRequest } from './recommend-handler'
 import type { ErrorResponse } from './types'
 import { RecommendRequestSchema } from './validation'
-import { getAIClient } from './ai/ai-client'
 
 const app = new Hono<{ Bindings: Cloudflare.Env }>()
 

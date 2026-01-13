@@ -1,6 +1,7 @@
 import { logger } from '@ac6_assemble_tool/shared/logger'
 import { Result } from '@praha/byethrow'
 
+import type { AIClient } from './ai/ai-client'
 import {
   buildSystemPrompt,
   parseAIResponse,
@@ -8,7 +9,6 @@ import {
 } from './ai/ai-service'
 import { loadParts, extractAIData } from './parts-loader'
 import type { RecommendRequest, RecommendResponse } from './types'
-import { AIClient } from './ai/ai-client'
 
 /**
  * レコメンド推論を実行してレスポンスを生成する

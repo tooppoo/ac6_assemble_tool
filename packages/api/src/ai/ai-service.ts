@@ -4,7 +4,8 @@ import { Result } from '@praha/byethrow'
 
 import type { AIPartData } from '../parts-loader'
 import type { Recommendation } from '../types'
-import { AIResponse } from './ai-client'
+
+import type { AIResponse } from './ai-client'
 
 /**
  * AI サービスエラー

@@ -1,9 +1,10 @@
 import { Result } from '@praha/byethrow'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
+import { AIClientError } from '../ai-client'
+
 import type { CloudflareAI } from './worker-ai'
 import { WorkerAiClient } from './worker-ai'
-import { AIClientError } from '../ai-client'
 
 describe('worker-ai', () => {
   describe('WorkerAiClient', () => {
