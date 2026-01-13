@@ -1,11 +1,13 @@
 import { Result } from '@praha/byethrow'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-import type { CloudflareAI } from './ai-client'
-import { callWorkersAI, AIClientError } from './ai-client'
+import { AIClientError } from '../ai-client'
 
-describe('ai-client', () => {
-  describe('callWorkersAI', () => {
+import type { CloudflareAI } from './worker-ai'
+import { WorkerAiClient } from './worker-ai'
+
+describe('worker-ai', () => {
+  describe('WorkerAiClient', () => {
     const mockAI = {
       run: vi.fn(),
     }
@@ -16,23 +18,20 @@ describe('ai-client', () => {
 
     it('should call Workers AI with correct parameters', async () => {
       const systemPrompt = 'Test system prompt'
-      const userPrompt = 'Test user prompt'
+      const userQuery = 'Test user prompt'
       const expectedResponse = { response: 'AI response' }
 
       mockAI.run.mockResolvedValue(expectedResponse)
 
-      const result = await callWorkersAI(
-        mockAI as CloudflareAI,
-        systemPrompt,
-        userPrompt,
-      )
+      const client = new WorkerAiClient(mockAI as CloudflareAI)
+      const result = await client.call(systemPrompt, userQuery)
 
       expect(mockAI.run).toHaveBeenCalledWith(
         '@cf/meta/llama-3.1-8b-instruct-fast',
         {
           messages: [
             { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt },
+            { role: 'user', content: userQuery },
           ],
         },
       )
@@ -44,12 +43,14 @@ describe('ai-client', () => {
     })
 
     it('should return error when AI call fails', async () => {
-      const prompt = 'Test prompt'
+      const systemPrompt = 'Test system prompt'
+      const userQuery = 'Test user prompt'
       const error = new Error('API error')
 
       mockAI.run.mockRejectedValue(error)
 
-      const result = await callWorkersAI(mockAI as CloudflareAI, prompt, prompt)
+      const client = new WorkerAiClient(mockAI as CloudflareAI)
+      const result = await client.call(systemPrompt, userQuery)
 
       expect(Result.isFailure(result)).toBe(true)
       if (Result.isFailure(result)) {
@@ -61,13 +62,15 @@ describe('ai-client', () => {
     })
 
     it('should handle timeout error', async () => {
-      const prompt = 'Test prompt'
+      const systemPrompt = 'Test system prompt'
+      const userQuery = 'Test user prompt'
       const timeoutError = new Error('Timeout')
       timeoutError.name = 'TimeoutError'
 
       mockAI.run.mockRejectedValue(timeoutError)
 
-      const result = await callWorkersAI(mockAI as CloudflareAI, prompt, prompt)
+      const client = new WorkerAiClient(mockAI as CloudflareAI)
+      const result = await client.call(systemPrompt, userQuery)
 
       expect(Result.isFailure(result)).toBe(true)
       if (Result.isFailure(result)) {
@@ -77,10 +80,13 @@ describe('ai-client', () => {
     })
 
     it('should return error when response format is invalid', async () => {
-      const prompt = 'Test prompt'
+      const systemPrompt = 'Test system prompt'
+      const userQuery = 'Test user prompt'
+
       mockAI.run.mockResolvedValue({ invalid: 'format' })
 
-      const result = await callWorkersAI(mockAI as CloudflareAI, prompt, prompt)
+      const client = new WorkerAiClient(mockAI as CloudflareAI)
+      const result = await client.call(systemPrompt, userQuery)
 
       expect(Result.isFailure(result)).toBe(true)
       if (Result.isFailure(result)) {
