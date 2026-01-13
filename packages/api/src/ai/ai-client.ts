@@ -1,4 +1,6 @@
 import { Result } from "@praha/byethrow";
+import { OpenAIClient } from "./client/openai";
+import { WorkerAiClient } from "./client/worker-ai";
 
 export interface AIClient {
   call(systemPrompt: string, userQuery: string): Promise<Result.Result<AIResponse, AIClientError>>;
@@ -11,6 +13,15 @@ export interface AIResponse {
   response: string
 }
 
+export function getAIClient(env: Cloudflare.Env): AIClient {
+  switch (env.AI_CLIENT) {
+    case 'openai':
+      return new OpenAIClient(env);
+    case 'worker-ai':
+    default:
+      return new WorkerAiClient(env.AI);
+  }
+}
 
 /**
  * AI クライアントエラー

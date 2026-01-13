@@ -7,7 +7,7 @@ import * as v from 'valibot'
 import { handleRecommendRequest } from './recommend-handler'
 import type { ErrorResponse } from './types'
 import { RecommendRequestSchema } from './validation'
-import { WorkerAiClient } from './ai/client/worker-ai'
+import { getAIClient } from './ai/ai-client'
 
 const app = new Hono<{ Bindings: Cloudflare.Env }>()
 
@@ -43,7 +43,7 @@ app.post('/api/recommend', async (c) => {
 
     // AI推論の実行
     const request = parseResult.output
-    const result = await handleRecommendRequest(new WorkerAiClient(c.env.AI), request)
+    const result = await handleRecommendRequest(getAIClient(c.env), request)
 
     if (Result.isFailure(result)) {
       const error = Result.unwrapError(result)
