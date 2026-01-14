@@ -26,7 +26,7 @@
     "@ac6_assemble_tool/parts": "workspace:*",
     "@ac6_assemble_tool/shared": "workspace:1.0.0",
     "@praha/byethrow": "0.9.0",
-    "hono": "^4.11.3",
+    "hono": "^4.11.4",
     "openai": "6.16.0",
     "valibot": "1.2.0"
   },
