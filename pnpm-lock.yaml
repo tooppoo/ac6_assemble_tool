@@ -26,7 +26,7 @@ importers:
         version: 9.39.2
       '@fast-check/vitest':
         specifier: 0.2.4
-        version: 0.2.4(vitest@4.0.17(@types/node@24.10.4)(jsdom@27.1.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))
+        version: 0.2.4(vitest@4.0.17(@types/node@24.10.4)(jsdom@27.4.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))
       '@types/node':
         specifier: 24.10.4
         version: 24.10.4
@@ -41,7 +41,7 @@ importers:
         version: 8.53.0(eslint@9.39.2)(typescript@5.9.3)
       '@vitest/coverage-v8':
         specifier: 4.0.17
-        version: 4.0.17(vitest@4.0.17(@types/node@24.10.4)(jsdom@27.1.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))
+        version: 4.0.17(vitest@4.0.17(@types/node@24.10.4)(jsdom@27.4.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
@@ -89,7 +89,7 @@ importers:
         version: 7.3.1(@types/node@24.10.4)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0)
       vitest:
         specifier: 4.0.17
-        version: 4.0.17(@types/node@24.10.4)(jsdom@27.1.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0)
+        version: 4.0.17(@types/node@24.10.4)(jsdom@27.4.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0)
       zx:
         specifier: 8.8.5
         version: 8.8.5
@@ -285,7 +285,7 @@ importers:
         version: 6.9.1
       '@testing-library/svelte':
         specifier: 5.3.1
-        version: 5.3.1(svelte@5.46.4)(vite@7.3.1(@types/node@24.10.4)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))(vitest@4.0.17(@types/node@24.10.4)(jsdom@27.1.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))
+        version: 5.3.1(svelte@5.46.4)(vite@7.3.1(@types/node@24.10.4)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))(vitest@4.0.17(@types/node@24.10.4)(jsdom@27.4.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
@@ -296,8 +296,8 @@ importers:
         specifier: 6.2.5
         version: 6.2.5
       jsdom:
-        specifier: 27.1.0
-        version: 27.1.0
+        specifier: 27.4.0
+        version: 27.4.0
       nodemon:
         specifier: 3.1.11
         version: 3.1.11
@@ -874,6 +874,15 @@ packages:
   '@eslint/plugin-kit@0.4.1':
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@exodus/bytes@1.8.0':
+    resolution: {integrity: sha512-8JPn18Bcp8Uo1T82gR8lh2guEOa5KKU/IEKvvdp0sgmi7coPBWf1Doi1EXsGZb2ehc8ym/StJCjffYV+ne7sXQ==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
+    peerDependencies:
+      '@exodus/crypto': ^1.0.0-rc.4
+    peerDependenciesMeta:
+      '@exodus/crypto':
+        optional: true
 
   '@fast-check/vitest@0.2.4':
     resolution: {integrity: sha512-Ilcr+JAIPhb1s6FRm4qoglQYSGXXrS+zAupZeNuWAA3qHVGDA1d1Gb84Hb/+otL3GzVZjFJESg5/1SfIvrgssA==}
@@ -2554,9 +2563,9 @@ packages:
     resolution: {integrity: sha512-U7tt8JsyrxSRKspfhtLET79pU8K+tInj5QZXs1jSugO1Vq5dFj3kmZsRldo29mTBfcjDRVRXrEZ6LS63Cog9ZA==}
     engines: {node: '>=16.9.0'}
 
-  html-encoding-sniffer@4.0.0:
-    resolution: {integrity: sha512-Y22oTqIU4uuPgEemfz7NDJz6OeKf12Lsu+QC+s3BVpda64lTiMYCyGwg5ki4vFxkMwQdeZDl2adZoqUgdFuTgQ==}
-    engines: {node: '>=18'}
+  html-encoding-sniffer@6.0.0:
+    resolution: {integrity: sha512-CV9TW3Y3f8/wT0BRFc1/KAVQ3TUHiXmaAb6VW9vtiMFf7SLoMd1PdAc4W3KFOFETBJUb90KatHqlsZMWV+R9Gg==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
 
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
@@ -2580,10 +2589,6 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
-
-  iconv-lite@0.6.3:
-    resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
-    engines: {node: '>=0.10.0'}
 
   iconv-lite@0.7.2:
     resolution: {integrity: sha512-im9DjEDQ55s9fL4EYzOAv0yMqmMBSZp6G0VvFyTMPKWxiSBHUj9NW/qqLmXUwXrrM7AvqSlTCfvqRb0cM8yYqw==}
@@ -2799,8 +2804,8 @@ packages:
     resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
     hasBin: true
 
-  jsdom@27.1.0:
-    resolution: {integrity: sha512-Pcfm3eZ+eO4JdZCXthW9tCDT3nF4K+9dmeZ+5X39n+Kqz0DDIABRP5CAEOHRFZk8RGuC2efksTJxrjp8EXCunQ==}
+  jsdom@27.4.0:
+    resolution: {integrity: sha512-mjzqwWRD9Y1J1KUi7W97Gja1bwOOM5Ug0EZ6UDK3xS7j7mndrkwozHtSblfomlzyB4NepioNt+B2sOSzczVgtQ==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
     peerDependencies:
       canvas: ^3.0.0
@@ -4045,11 +4050,6 @@ packages:
     resolution: {integrity: sha512-BMhLD/Sw+GbJC21C/UgyaZX41nPt8bUTg+jWyDeg7e7YN4xOM05YPSIXceACnXVtqyEw/LMClUQMtMZ+PGGpqQ==}
     engines: {node: '>=20'}
 
-  whatwg-encoding@3.1.1:
-    resolution: {integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==}
-    engines: {node: '>=18'}
-    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
-
   whatwg-mimetype@4.0.0:
     resolution: {integrity: sha512-QaKxh0eNIi2mE9p2vEdzfagOKHCcj1pJ56EEHGQOVxp8r9/iszLUUV7v89x9O1p/T+NlTM5W7jW6+cz4Fq1YVg==}
     engines: {node: '>=18'}
@@ -4663,10 +4663,12 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
-  '@fast-check/vitest@0.2.4(vitest@4.0.17(@types/node@24.10.4)(jsdom@27.1.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))':
+  '@exodus/bytes@1.8.0': {}
+
+  '@fast-check/vitest@0.2.4(vitest@4.0.17(@types/node@24.10.4)(jsdom@27.4.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))':
     dependencies:
       fast-check: 4.5.3
-      vitest: 4.0.17(@types/node@24.10.4)(jsdom@27.1.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0)
+      vitest: 4.0.17(@types/node@24.10.4)(jsdom@27.4.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0)
 
   '@humanfs/core@0.19.1': {}
 
@@ -5113,14 +5115,14 @@ snapshots:
     dependencies:
       svelte: 5.46.4
 
-  '@testing-library/svelte@5.3.1(svelte@5.46.4)(vite@7.3.1(@types/node@24.10.4)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))(vitest@4.0.17(@types/node@24.10.4)(jsdom@27.1.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))':
+  '@testing-library/svelte@5.3.1(svelte@5.46.4)(vite@7.3.1(@types/node@24.10.4)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))(vitest@4.0.17(@types/node@24.10.4)(jsdom@27.4.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))':
     dependencies:
       '@testing-library/dom': 10.4.1
       '@testing-library/svelte-core': 1.0.0(svelte@5.46.4)
       svelte: 5.46.4
     optionalDependencies:
       vite: 7.3.1(@types/node@24.10.4)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0)
-      vitest: 4.0.17(@types/node@24.10.4)(jsdom@27.1.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0)
+      vitest: 4.0.17(@types/node@24.10.4)(jsdom@27.4.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0)
 
   '@tybys/wasm-util@0.10.1':
     dependencies:
@@ -5395,7 +5397,7 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
 
-  '@vitest/coverage-v8@4.0.17(vitest@4.0.17(@types/node@24.10.4)(jsdom@27.1.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))':
+  '@vitest/coverage-v8@4.0.17(vitest@4.0.17(@types/node@24.10.4)(jsdom@27.4.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
       '@vitest/utils': 4.0.17
@@ -5407,7 +5409,7 @@ snapshots:
       obug: 2.1.1
       std-env: 3.10.0
       tinyrainbow: 3.0.3
-      vitest: 4.0.17(@types/node@24.10.4)(jsdom@27.1.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0)
+      vitest: 4.0.17(@types/node@24.10.4)(jsdom@27.4.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0)
 
   '@vitest/expect@4.0.17':
     dependencies:
@@ -6373,9 +6375,11 @@ snapshots:
 
   hono@4.11.4: {}
 
-  html-encoding-sniffer@4.0.0:
+  html-encoding-sniffer@6.0.0:
     dependencies:
-      whatwg-encoding: 3.1.1
+      '@exodus/bytes': 1.8.0
+    transitivePeerDependencies:
+      - '@exodus/crypto'
 
   html-escaper@2.0.2: {}
 
@@ -6400,10 +6404,6 @@ snapshots:
       '@babel/runtime': 7.28.4
     optionalDependencies:
       typescript: 5.9.3
-
-  iconv-lite@0.6.3:
-    dependencies:
-      safer-buffer: 2.1.2
 
   iconv-lite@0.7.2:
     dependencies:
@@ -6614,14 +6614,15 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  jsdom@27.1.0:
+  jsdom@27.4.0:
     dependencies:
       '@acemir/cssom': 0.9.30
       '@asamuzakjp/dom-selector': 6.7.6
+      '@exodus/bytes': 1.8.0
       cssstyle: 5.3.7
       data-urls: 6.0.0
       decimal.js: 10.6.0
-      html-encoding-sniffer: 4.0.0
+      html-encoding-sniffer: 6.0.0
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
       is-potential-custom-element-name: 1.0.1
@@ -6631,12 +6632,12 @@ snapshots:
       tough-cookie: 6.0.0
       w3c-xmlserializer: 5.0.0
       webidl-conversions: 8.0.1
-      whatwg-encoding: 3.1.1
       whatwg-mimetype: 4.0.0
       whatwg-url: 15.1.0
       ws: 8.19.0
       xml-name-validator: 5.0.0
     transitivePeerDependencies:
+      - '@exodus/crypto'
       - bufferutil
       - supports-color
       - utf-8-validate
@@ -7942,7 +7943,7 @@ snapshots:
     optionalDependencies:
       vite: 7.3.1(@types/node@24.10.4)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0)
 
-  vitest@4.0.17(@types/node@24.10.4)(jsdom@27.1.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0):
+  vitest@4.0.17(@types/node@24.10.4)(jsdom@27.4.0)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0):
     dependencies:
       '@vitest/expect': 4.0.17
       '@vitest/mocker': 4.0.17(vite@7.3.1(@types/node@24.10.4)(sass-embedded@1.97.2)(sass@1.97.2)(tsx@4.21.0))
@@ -7966,7 +7967,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.10.4
-      jsdom: 27.1.0
+      jsdom: 27.4.0
     transitivePeerDependencies:
       - jiti
       - less
@@ -7987,10 +7988,6 @@ snapshots:
   webidl-conversions@3.0.1: {}
 
   webidl-conversions@8.0.1: {}
-
-  whatwg-encoding@3.1.1:
-    dependencies:
-      iconv-lite: 0.6.3
 
   whatwg-mimetype@4.0.0: {}
 
