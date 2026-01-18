@@ -100,7 +100,7 @@
   <div class="container">
     <h1 class="py-2 text-center">
       ARMORED CORE Ⅵ<br class="d-block" />
-      AI PARTS RECOMMENDATION(α)
+      AI PARTS RECOMMENDATION(β)
     </h1>
 
     <p class="text-center text-muted mb-4">
