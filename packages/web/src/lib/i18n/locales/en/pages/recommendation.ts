@@ -2,7 +2,7 @@ export const enRecommendationPage = {
   description:
     'Search and recommend parts using AI with natural language. Enter your question to get optimal part suggestions.',
   descriptionNote:
-    '※Currently, weapon parts recommendations may have lower accuracy',
+    '(This is β version)',
   slotFilter: {
     label: 'Parts Slot',
     all: 'All',
