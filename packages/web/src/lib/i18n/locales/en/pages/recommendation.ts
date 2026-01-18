@@ -1,8 +1,7 @@
 export const enRecommendationPage = {
   description:
     'Search and recommend parts using AI with natural language. Enter your question to get optimal part suggestions.',
-  descriptionNote:
-    '(This is β version)',
+  descriptionNote: '(This is β version)',
   slotFilter: {
     label: 'Parts Slot',
     all: 'All',
