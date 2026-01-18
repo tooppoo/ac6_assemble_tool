@@ -1,5 +1,12 @@
 # @ac6_assemble_tool/web
 
+## 4.1.1
+### Patch Changes
+
+
+
+- [#1045](https://github.com/tooppoo/ac6_assemble_tool/pull/1045) [`565f2e2`](https://github.com/tooppoo/ac6_assemble_tool/commit/565f2e29768baebc2afbec247c658bf1f3f12dfb) Thanks [@tooppoo](https://github.com/tooppoo)! - update text caption
+
 ## 4.1.0
 
 ### Minor Changes
