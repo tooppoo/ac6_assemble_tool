@@ -1,5 +1,4 @@
 import type { LeftArmUnit, ArmUnit } from '@ac6_assemble_tool/parts/arm-units'
-import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
 import {
   type ArmNotEquipped,
   armNotEquipped,
@@ -25,6 +24,7 @@ import {
 } from './validators'
 
 import { genAssembly } from '#spec-helper/property-generator'
+import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
 
 describe('validator', () => {
   const candidatesWithoutNotEquipped = ((): Candidates => {
@@ -289,9 +289,9 @@ describe('validator', () => {
       key: WeaponSlotKey,
       part: ArmNotEquipped | BackNotEquipped,
     ) => {
-      ;(
-        assembly as Record<WeaponSlotKey, ArmNotEquipped | BackNotEquipped>
-      )[key] = part
+      ;(assembly as Record<WeaponSlotKey, ArmNotEquipped | BackNotEquipped>)[
+        key
+      ] = part
     }
 
     describe.each([

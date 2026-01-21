@@ -58,8 +58,7 @@ export const notCarrySameUnitInSameSide: Validator = {
   },
 }
 
-export const disallowAnyNotEquippedWeaponName =
-  'disallowAnyNotEquippedWeapon'
+export const disallowAnyNotEquippedWeaponName = 'disallowAnyNotEquippedWeapon'
 export const disallowAnyNotEquippedWeapon: Validator = {
   validate(assembly) {
     const hasNotEquipped = [
