@@ -1,9 +1,8 @@
 # @ac6_assemble_tool/core
 
 ## 1.4.0
+
 ### Minor Changes
-
-
 
 - [#1048](https://github.com/tooppoo/ac6_assemble_tool/pull/1048) [`8a4064c`](https://github.com/tooppoo/ac6_assemble_tool/commit/8a4064c0ca6a70b9c9aeb88c39cdb6e3bf825e56) Thanks [@tooppoo](https://github.com/tooppoo)! - support DisallowNotEquipped
 

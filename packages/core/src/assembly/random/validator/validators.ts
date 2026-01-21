@@ -75,8 +75,7 @@ export const disallowNotEquippedInSlotName = (
 ): `disallowNotEquippedInSlot:${NotEquippedTargetSlot}` =>
   `disallowNotEquippedInSlot:${slot}`
 export const disallowNotEquippedInSlot =
-  (slot: NotEquippedTargetSlot): Validator =>
-  ((): Validator => ({
+  (slot: NotEquippedTargetSlot): Validator => ({
     validate(assembly: Assembly) {
       const part = assembly[slot]
 
@@ -89,7 +88,7 @@ export const disallowNotEquippedInSlot =
           ])
         : Result.succeed(assembly)
     },
-  }))()
+  })
 
 export const totalCoamNotOverMaxName = 'totalCoamNotOverMax'
 export const totalCoamNotOverMax = (max: number): Validator => ({
