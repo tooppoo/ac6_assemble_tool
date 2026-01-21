@@ -10,8 +10,7 @@ import {
 } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
 import type { NotEquippedTargetSlot } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
 
-type NotEquippedErrorKey =
-  `disallowNotEquippedInSlot:${NotEquippedTargetSlot}`
+type NotEquippedErrorKey = `disallowNotEquippedInSlot:${NotEquippedTargetSlot}`
 
 const toNotEquippedLabel = (slot: NotEquippedTargetSlot) => {
   switch (slot) {
