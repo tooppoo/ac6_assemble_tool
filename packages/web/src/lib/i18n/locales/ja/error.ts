@@ -1,6 +1,7 @@
 import {
   disallowArmsLoadOverName,
   disallowLoadOverName,
+  disallowAnyNotEquippedWeaponName,
   notCarrySameUnitInSameSideName,
   notOverEnergyOutputName,
   totalCoamNotOverMaxName,
@@ -30,6 +31,9 @@ export const jaError = {
     },
     [disallowArmsLoadOverName]: {
       label: '腕部積載超過',
+    },
+    [disallowAnyNotEquippedWeaponName]: {
+      label: '武器未装備',
     },
     unknown: {
       label: '$t(unknown.label)',

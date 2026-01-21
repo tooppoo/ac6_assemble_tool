@@ -1,7 +1,10 @@
 import type { LeftArmUnit, ArmUnit } from '@ac6_assemble_tool/parts/arm-units'
+import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
 import {
   type ArmNotEquipped,
   armNotEquipped,
+  backNotEquipped,
+  type BackNotEquipped,
 } from '@ac6_assemble_tool/parts/not-equipped'
 import { notEquipped as notEquippedClass } from '@ac6_assemble_tool/parts/types/base/classification'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
@@ -14,6 +17,7 @@ import { afterEach, beforeEach, describe, expect } from 'vitest'
 import {
   disallowArmsLoadOver,
   disallowLoadOver,
+  disallowAnyNotEquippedWeapon,
   notCarrySameUnitInSameSide,
   notOverEnergyOutput,
   totalCoamNotOverMax,
@@ -23,6 +27,19 @@ import {
 import { genAssembly } from '#spec-helper/property-generator'
 
 describe('validator', () => {
+  const candidatesWithoutNotEquipped = ((): Candidates => {
+    const withoutNotEquipped = <T extends { classification: string }>(p: T) =>
+      p.classification !== notEquippedClass
+
+    return {
+      ...candidates,
+      rightArmUnit: candidates.rightArmUnit.filter(withoutNotEquipped),
+      leftArmUnit: candidates.leftArmUnit.filter(withoutNotEquipped),
+      rightBackUnit: candidates.rightBackUnit.filter(withoutNotEquipped),
+      leftBackUnit: candidates.leftBackUnit.filter(withoutNotEquipped),
+    }
+  })()
+
   describe('not over energy output', () => {
     let sandbox: sinon.SinonSandbox
     beforeEach(() => {
@@ -258,6 +275,49 @@ describe('validator', () => {
         const sut = disallowArmsLoadOver()
 
         expect(Result.isSuccess(sut.validate(assembly))).toBe(true)
+      },
+    )
+  })
+  describe('disallow any not equipped weapon', () => {
+    type WeaponSlotKey =
+      | 'rightArmUnit'
+      | 'leftArmUnit'
+      | 'rightBackUnit'
+      | 'leftBackUnit'
+    const setWeaponSlot = (
+      assembly: Assembly,
+      key: WeaponSlotKey,
+      part: ArmNotEquipped | BackNotEquipped,
+    ) => {
+      ;(
+        assembly as Record<WeaponSlotKey, ArmNotEquipped | BackNotEquipped>
+      )[key] = part
+    }
+
+    describe.each([
+      { key: 'rightArmUnit', part: armNotEquipped },
+      { key: 'leftArmUnit', part: armNotEquipped },
+      { key: 'rightBackUnit', part: backNotEquipped },
+      { key: 'leftBackUnit', part: backNotEquipped },
+    ] as const)('when $key is not equipped', ({ key, part }) => {
+      fcit.prop([genAssembly(candidatesWithoutNotEquipped)])(
+        'should evaluate as invalid',
+        (assembly) => {
+          setWeaponSlot(assembly, key, part)
+
+          expect(
+            Result.isSuccess(disallowAnyNotEquippedWeapon.validate(assembly)),
+          ).toBe(false)
+        },
+      )
+    })
+
+    fcit.prop([genAssembly(candidatesWithoutNotEquipped)])(
+      'should evaluate as valid when all weapons equipped',
+      (assembly) => {
+        expect(
+          Result.isSuccess(disallowAnyNotEquippedWeapon.validate(assembly)),
+        ).toBe(true)
       },
     )
   })

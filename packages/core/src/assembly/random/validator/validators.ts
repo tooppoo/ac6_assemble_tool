@@ -58,6 +58,28 @@ export const notCarrySameUnitInSameSide: Validator = {
   },
 }
 
+export const disallowAnyNotEquippedWeaponName =
+  'disallowAnyNotEquippedWeapon'
+export const disallowAnyNotEquippedWeapon: Validator = {
+  validate(assembly) {
+    const hasNotEquipped = [
+      assembly.rightArmUnit,
+      assembly.leftArmUnit,
+      assembly.rightBackUnit,
+      assembly.leftBackUnit,
+    ].some((unit) => unit.classification === notEquipped)
+
+    return hasNotEquipped
+      ? Result.fail([
+          new ValidationError('some weapon is not equipped', {
+            validationName: disallowAnyNotEquippedWeaponName,
+            adjustable: true,
+          }),
+        ])
+      : Result.succeed(assembly)
+  },
+}
+
 export const totalCoamNotOverMaxName = 'totalCoamNotOverMax'
 export const totalCoamNotOverMax = (max: number): Validator => ({
   validate(assembly) {
@@ -117,6 +139,7 @@ export const disallowArmsLoadOver = (): Validator => ({
 export type ValidationName =
   | typeof notOverEnergyOutputName
   | typeof notCarrySameUnitInSameSideName
+  | typeof disallowAnyNotEquippedWeaponName
   | typeof totalCoamNotOverMaxName
   | typeof totalLoadNotOverMaxName
   | typeof disallowLoadOverName
