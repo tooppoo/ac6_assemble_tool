@@ -346,7 +346,9 @@ describe('validator', () => {
           assembly[slot] = notEquippedBySlot[slot]
 
           expect(
-            Result.isSuccess(disallowNotEquippedInSlot(slot).validate(assembly)),
+            Result.isSuccess(
+              disallowNotEquippedInSlot(slot).validate(assembly),
+            ),
           ).toBe(false)
         },
       )
@@ -355,7 +357,9 @@ describe('validator', () => {
         'should be valid when the slot is equipped',
         (assembly) => {
           expect(
-            Result.isSuccess(disallowNotEquippedInSlot(slot).validate(assembly)),
+            Result.isSuccess(
+              disallowNotEquippedInSlot(slot).validate(assembly),
+            ),
           ).toBe(true)
         },
       )

@@ -175,7 +175,7 @@
       </Switch>
     </div>
     <Margin space={3} />
-    {#each notEquippedToggles as toggle}
+    {#each notEquippedToggles as toggle (toggle.key)}
       <div id={`disallow-${toggle.slot}-not-equipped`}>
         <Switch
           id={`${id}-${toggle.key}`}

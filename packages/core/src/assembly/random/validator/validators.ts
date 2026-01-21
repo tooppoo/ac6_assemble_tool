@@ -3,6 +3,7 @@ import { BaseError } from '@philomagi/base-error.js'
 import { Result } from '@praha/byethrow'
 
 import type { Validator } from './base'
+
 import type {
   Assembly,
   AssemblyKey,
@@ -74,21 +75,22 @@ export const disallowNotEquippedInSlotName = (
   slot: NotEquippedTargetSlot,
 ): `disallowNotEquippedInSlot:${NotEquippedTargetSlot}` =>
   `disallowNotEquippedInSlot:${slot}`
-export const disallowNotEquippedInSlot =
-  (slot: NotEquippedTargetSlot): Validator => ({
-    validate(assembly: Assembly) {
-      const part = assembly[slot]
+export const disallowNotEquippedInSlot = (
+  slot: NotEquippedTargetSlot,
+): Validator => ({
+  validate(assembly: Assembly) {
+    const part = assembly[slot]
 
-      return part.classification === notEquipped
-        ? Result.fail([
-            new ValidationError(`${slot} is not equipped`, {
-              validationName: disallowNotEquippedInSlotName(slot),
-              adjustable: true,
-            }),
-          ])
-        : Result.succeed(assembly)
-    },
-  })
+    return part.classification === notEquipped
+      ? Result.fail([
+          new ValidationError(`${slot} is not equipped`, {
+            validationName: disallowNotEquippedInSlotName(slot),
+            adjustable: true,
+          }),
+        ])
+      : Result.succeed(assembly)
+  },
+})
 
 export const totalCoamNotOverMaxName = 'totalCoamNotOverMax'
 export const totalCoamNotOverMax = (max: number): Validator => ({
