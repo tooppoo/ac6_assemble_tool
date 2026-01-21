@@ -1,6 +1,7 @@
 import {
   disallowArmsLoadOverName,
   disallowLoadOverName,
+  disallowAnyNotEquippedWeaponName,
   notCarrySameUnitInSameSideName,
   notOverEnergyOutputName,
   totalCoamNotOverMaxName,
@@ -29,6 +30,9 @@ export const enError = {
     },
     [disallowArmsLoadOverName]: {
       label: 'over arm load limit',
+    },
+    [disallowAnyNotEquippedWeaponName]: {
+      label: 'not equipped weapon',
     },
     unknown: {
       label: '$t(unknown.label)',

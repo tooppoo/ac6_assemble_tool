@@ -9,6 +9,9 @@ export const jaRandom = {
     disallow_arms_over_load: {
       label: '腕部積載超過を禁止',
     },
+    disallow_any_not_equipped_weapon: {
+      label: '武器未装備を禁止',
+    },
   },
   range: {
     coam: {

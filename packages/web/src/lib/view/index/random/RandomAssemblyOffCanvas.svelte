@@ -15,6 +15,7 @@
   import {
     disallowArmsLoadOver,
     disallowLoadOver,
+    disallowAnyNotEquippedWeapon,
     totalCoamNotOverMax,
     totalLoadNotOverMax,
   } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
@@ -138,6 +139,27 @@
           })}
       >
         {$i18n.t('random:command.disallow_arms_over_load.label')}
+      </Switch>
+    </div>
+    <Margin space={3} />
+    <div id="disallow-any-not-equipped-weapon">
+      <Switch
+        id={`${id}-disallow-any-not-equipped-weapon`}
+        onEnabled={() =>
+          onApply({
+            randomAssembly: randomAssembly.addValidator(
+              'disallow-any-not-equipped-weapon',
+              disallowAnyNotEquippedWeapon,
+            ),
+          })}
+        onDisabled={() =>
+          onApply({
+            randomAssembly: randomAssembly.removeValidator(
+              'disallow-any-not-equipped-weapon',
+            ),
+          })}
+      >
+        {$i18n.t('random:command.disallow_any_not_equipped_weapon.label')}
       </Switch>
     </div>
     <Margin space={3} />

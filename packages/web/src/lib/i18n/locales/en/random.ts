@@ -9,6 +9,9 @@ export const enRandom = {
     disallow_arms_over_load: {
       label: 'Disallow Arms Over Load',
     },
+    disallow_any_not_equipped_weapon: {
+      label: 'Disallow Any Not Equipped Weapon',
+    },
   },
   range: {
     coam: {
