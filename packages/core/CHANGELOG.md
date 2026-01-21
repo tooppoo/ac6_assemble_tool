@@ -1,5 +1,16 @@
 # @ac6_assemble_tool/core
 
+## 1.5.0
+### Minor Changes
+
+
+
+- [#1050](https://github.com/tooppoo/ac6_assemble_tool/pull/1050) [`6d83d6c`](https://github.com/tooppoo/ac6_assemble_tool/commit/6d83d6c1b42897d1540e29770f8660a6803b630b) Thanks [@tooppoo](https://github.com/tooppoo)! - support each disallow-not-equipped
+
+
+
+- [#1050](https://github.com/tooppoo/ac6_assemble_tool/pull/1050) [`5836643`](https://github.com/tooppoo/ac6_assemble_tool/commit/5836643f26ec925ae1ebb862d17cc915472cf72a) Thanks [@tooppoo](https://github.com/tooppoo)! - support each deny-not-equipped
+
 ## 1.4.0
 
 ### Minor Changes
