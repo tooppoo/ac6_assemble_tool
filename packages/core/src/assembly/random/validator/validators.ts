@@ -3,6 +3,10 @@ import { BaseError } from '@philomagi/base-error.js'
 import { Result } from '@praha/byethrow'
 
 import type { Validator } from './base'
+import type {
+  Assembly,
+  AssemblyKey,
+} from '@ac6_assemble_tool/core/assembly/assembly'
 
 export const notOverEnergyOutputName = 'notOverEnergyOutput'
 export const notOverEnergyOutput: Validator = {
@@ -58,26 +62,34 @@ export const notCarrySameUnitInSameSide: Validator = {
   },
 }
 
-export const disallowAnyNotEquippedWeaponName = 'disallowAnyNotEquippedWeapon'
-export const disallowAnyNotEquippedWeapon: Validator = {
-  validate(assembly) {
-    const hasNotEquipped = [
-      assembly.rightArmUnit,
-      assembly.leftArmUnit,
-      assembly.rightBackUnit,
-      assembly.leftBackUnit,
-    ].some((unit) => unit.classification === notEquipped)
+export const notEquippedTargetSlots = [
+  'rightArmUnit',
+  'leftArmUnit',
+  'rightBackUnit',
+  'leftBackUnit',
+  'expansion',
+] as const satisfies AssemblyKey[]
+export type NotEquippedTargetSlot = (typeof notEquippedTargetSlots)[number]
+export const disallowNotEquippedInSlotName = (
+  slot: NotEquippedTargetSlot,
+): `disallowNotEquippedInSlot:${NotEquippedTargetSlot}` =>
+  `disallowNotEquippedInSlot:${slot}`
+export const disallowNotEquippedInSlot =
+  (slot: NotEquippedTargetSlot): Validator =>
+  ((): Validator => ({
+    validate(assembly: Assembly) {
+      const part = assembly[slot]
 
-    return hasNotEquipped
-      ? Result.fail([
-          new ValidationError('some weapon is not equipped', {
-            validationName: disallowAnyNotEquippedWeaponName,
-            adjustable: true,
-          }),
-        ])
-      : Result.succeed(assembly)
-  },
-}
+      return part.classification === notEquipped
+        ? Result.fail([
+            new ValidationError(`${slot} is not equipped`, {
+              validationName: disallowNotEquippedInSlotName(slot),
+              adjustable: true,
+            }),
+          ])
+        : Result.succeed(assembly)
+    },
+  }))()
 
 export const totalCoamNotOverMaxName = 'totalCoamNotOverMax'
 export const totalCoamNotOverMax = (max: number): Validator => ({
@@ -138,11 +150,11 @@ export const disallowArmsLoadOver = (): Validator => ({
 export type ValidationName =
   | typeof notOverEnergyOutputName
   | typeof notCarrySameUnitInSameSideName
-  | typeof disallowAnyNotEquippedWeaponName
   | typeof totalCoamNotOverMaxName
   | typeof totalLoadNotOverMaxName
   | typeof disallowLoadOverName
   | typeof disallowArmsLoadOverName
+  | ReturnType<typeof disallowNotEquippedInSlotName>
 
 export class ValidationError extends BaseError {
   constructor(

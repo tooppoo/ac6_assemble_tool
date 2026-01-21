@@ -1,12 +1,29 @@
 import {
   disallowArmsLoadOverName,
   disallowLoadOverName,
-  disallowAnyNotEquippedWeaponName,
   notCarrySameUnitInSameSideName,
   notOverEnergyOutputName,
   totalCoamNotOverMaxName,
   totalLoadNotOverMaxName,
+  disallowNotEquippedInSlotName,
+  notEquippedTargetSlots,
 } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
+import type { NotEquippedTargetSlot } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
+
+const toNotEquippedLabel = (slot: NotEquippedTargetSlot) => {
+  switch (slot) {
+    case 'rightArmUnit':
+      return '右腕未装備'
+    case 'leftArmUnit':
+      return '左腕未装備'
+    case 'rightBackUnit':
+      return '右肩未装備'
+    case 'leftBackUnit':
+      return '左肩未装備'
+    case 'expansion':
+      return 'コア拡張未装備'
+  }
+}
 
 export const jaError = {
   assembly: {
@@ -32,9 +49,15 @@ export const jaError = {
     [disallowArmsLoadOverName]: {
       label: '腕部積載超過',
     },
-    [disallowAnyNotEquippedWeaponName]: {
-      label: '武器未装備',
-    },
+    ...notEquippedTargetSlots.reduce(
+      (acc, slot) => ({
+        ...acc,
+        [disallowNotEquippedInSlotName(slot)]: {
+          label: toNotEquippedLabel(slot),
+        },
+      }),
+      {} as Record<string, { label: string }>,
+    ),
     unknown: {
       label: '$t(unknown.label)',
     },

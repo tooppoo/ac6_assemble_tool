@@ -15,7 +15,8 @@
   import {
     disallowArmsLoadOver,
     disallowLoadOver,
-    disallowAnyNotEquippedWeapon,
+    disallowNotEquippedInSlot,
+    type NotEquippedTargetSlot,
     totalCoamNotOverMax,
     totalLoadNotOverMax,
   } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
@@ -74,6 +75,38 @@
 
     logger.debug('onApply:RandomAssemblyOffCanvas', { param })
   }
+
+  const notEquippedToggles: {
+    slot: NotEquippedTargetSlot
+    key: string
+    labelKey: string
+  }[] = [
+    {
+      slot: 'rightArmUnit',
+      key: 'disallow-not-equipped-right-arm',
+      labelKey: 'random:command.disallow_not_equipped_right_arm.label',
+    },
+    {
+      slot: 'leftArmUnit',
+      key: 'disallow-not-equipped-left-arm',
+      labelKey: 'random:command.disallow_not_equipped_left_arm.label',
+    },
+    {
+      slot: 'rightBackUnit',
+      key: 'disallow-not-equipped-right-back',
+      labelKey: 'random:command.disallow_not_equipped_right_back.label',
+    },
+    {
+      slot: 'leftBackUnit',
+      key: 'disallow-not-equipped-left-back',
+      labelKey: 'random:command.disallow_not_equipped_left_back.label',
+    },
+    {
+      slot: 'expansion',
+      key: 'disallow-not-equipped-expansion',
+      labelKey: 'random:command.disallow_not_equipped_expansion.label',
+    },
+  ]
 </script>
 
 <OffCanvas {id} {open} onToggle={(e) => onToggle?.(e)}>
@@ -142,27 +175,27 @@
       </Switch>
     </div>
     <Margin space={3} />
-    <div id="disallow-any-not-equipped-weapon">
-      <Switch
-        id={`${id}-disallow-any-not-equipped-weapon`}
-        onEnabled={() =>
-          onApply({
-            randomAssembly: randomAssembly.addValidator(
-              'disallow-any-not-equipped-weapon',
-              disallowAnyNotEquippedWeapon,
-            ),
-          })}
-        onDisabled={() =>
-          onApply({
-            randomAssembly: randomAssembly.removeValidator(
-              'disallow-any-not-equipped-weapon',
-            ),
-          })}
-      >
-        {$i18n.t('random:command.disallow_any_not_equipped_weapon.label')}
-      </Switch>
-    </div>
-    <Margin space={3} />
+    {#each notEquippedToggles as toggle}
+      <div id={`disallow-${toggle.slot}-not-equipped`}>
+        <Switch
+          id={`${id}-${toggle.key}`}
+          onEnabled={() =>
+            onApply({
+              randomAssembly: randomAssembly.addValidator(
+                toggle.key,
+                disallowNotEquippedInSlot(toggle.slot),
+              ),
+            })}
+          onDisabled={() =>
+            onApply({
+              randomAssembly: randomAssembly.removeValidator(toggle.key),
+            })}
+        >
+          {$i18n.t(toggle.labelKey)}
+        </Switch>
+      </div>
+      <Margin space={3} />
+    {/each}
     <CoamRangeSlider
       class="my-3 w-100"
       {candidates}

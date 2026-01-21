@@ -9,8 +9,20 @@ export const enRandom = {
     disallow_arms_over_load: {
       label: 'Disallow Arms Over Load',
     },
-    disallow_any_not_equipped_weapon: {
-      label: 'Disallow Any Not Equipped Weapon',
+    disallow_not_equipped_right_arm: {
+      label: 'Disallow Right Arm Not Equipped',
+    },
+    disallow_not_equipped_left_arm: {
+      label: 'Disallow Left Arm Not Equipped',
+    },
+    disallow_not_equipped_right_back: {
+      label: 'Disallow Right Shoulder Not Equipped',
+    },
+    disallow_not_equipped_left_back: {
+      label: 'Disallow Left Shoulder Not Equipped',
+    },
+    disallow_not_equipped_expansion: {
+      label: 'Disallow Core Expansion Not Equipped',
     },
   },
   range: {
