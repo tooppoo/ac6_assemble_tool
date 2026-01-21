@@ -4,6 +4,7 @@ import {
   armNotEquipped,
   backNotEquipped,
   type BackNotEquipped,
+  expansionNotEquipped,
 } from '@ac6_assemble_tool/parts/not-equipped'
 import { notEquipped as notEquippedClass } from '@ac6_assemble_tool/parts/types/base/classification'
 import type { Candidates } from '@ac6_assemble_tool/parts/types/candidates'
@@ -16,7 +17,8 @@ import { afterEach, beforeEach, describe, expect } from 'vitest'
 import {
   disallowArmsLoadOver,
   disallowLoadOver,
-  disallowAnyNotEquippedWeapon,
+  disallowNotEquippedInSlot,
+  notEquippedTargetSlots,
   notCarrySameUnitInSameSide,
   notOverEnergyOutput,
   totalCoamNotOverMax,
@@ -37,6 +39,7 @@ describe('validator', () => {
       leftArmUnit: candidates.leftArmUnit.filter(withoutNotEquipped),
       rightBackUnit: candidates.rightBackUnit.filter(withoutNotEquipped),
       leftBackUnit: candidates.leftBackUnit.filter(withoutNotEquipped),
+      expansion: candidates.expansion.filter(withoutNotEquipped),
     }
   })()
 
@@ -306,7 +309,9 @@ describe('validator', () => {
           setWeaponSlot(assembly, key, part)
 
           expect(
-            Result.isSuccess(disallowAnyNotEquippedWeapon.validate(assembly)),
+            Result.isSuccess(
+              disallowNotEquippedInSlot(key as typeof key).validate(assembly),
+            ),
           ).toBe(false)
         },
       )
@@ -316,7 +321,60 @@ describe('validator', () => {
       'should evaluate as valid when all weapons equipped',
       (assembly) => {
         expect(
-          Result.isSuccess(disallowAnyNotEquippedWeapon.validate(assembly)),
+          Result.isSuccess(
+            disallowNotEquippedInSlot('rightArmUnit').validate(assembly),
+          ),
+        ).toBe(true)
+      },
+    )
+  })
+
+  describe('disallow not equipped in slot', () => {
+    const notEquippedBySlot = {
+      rightArmUnit: armNotEquipped,
+      leftArmUnit: armNotEquipped,
+      rightBackUnit: backNotEquipped,
+      leftBackUnit: backNotEquipped,
+      expansion: expansionNotEquipped,
+    } as const
+
+    describe.each(notEquippedTargetSlots)('slot: %s', (slot) => {
+      fcit.prop([genAssembly(candidatesWithoutNotEquipped)])(
+        'should be invalid when the slot is not equipped',
+        (assembly) => {
+          // @ts-expect-error index access for test
+          assembly[slot] = notEquippedBySlot[slot]
+
+          expect(
+            Result.isSuccess(
+              disallowNotEquippedInSlot(slot).validate(assembly),
+            ),
+          ).toBe(false)
+        },
+      )
+
+      fcit.prop([genAssembly(candidatesWithoutNotEquipped)])(
+        'should be valid when the slot is equipped',
+        (assembly) => {
+          expect(
+            Result.isSuccess(
+              disallowNotEquippedInSlot(slot).validate(assembly),
+            ),
+          ).toBe(true)
+        },
+      )
+    })
+
+    fcit.prop([genAssembly(candidatesWithoutNotEquipped)])(
+      'should be valid when forbidden slot is equipped and other slot is not equipped',
+      (assembly) => {
+        assembly.rightArmUnit = candidatesWithoutNotEquipped.rightArmUnit[0]
+        assembly.leftArmUnit = armNotEquipped
+
+        expect(
+          Result.isSuccess(
+            disallowNotEquippedInSlot('rightArmUnit').validate(assembly),
+          ),
         ).toBe(true)
       },
     )

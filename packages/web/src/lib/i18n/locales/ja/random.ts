@@ -9,8 +9,20 @@ export const jaRandom = {
     disallow_arms_over_load: {
       label: '腕部積載超過を禁止',
     },
-    disallow_any_not_equipped_weapon: {
-      label: '武器未装備を禁止',
+    disallow_not_equipped_right_arm: {
+      label: '右腕の未装備を禁止',
+    },
+    disallow_not_equipped_left_arm: {
+      label: '左腕の未装備を禁止',
+    },
+    disallow_not_equipped_right_back: {
+      label: '右肩の未装備を禁止',
+    },
+    disallow_not_equipped_left_back: {
+      label: '左肩の未装備を禁止',
+    },
+    disallow_not_equipped_expansion: {
+      label: 'コア拡張の未装備を禁止',
     },
   },
   range: {

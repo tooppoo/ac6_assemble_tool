@@ -1,12 +1,38 @@
 import {
   disallowArmsLoadOverName,
   disallowLoadOverName,
-  disallowAnyNotEquippedWeaponName,
   notCarrySameUnitInSameSideName,
   notOverEnergyOutputName,
   totalCoamNotOverMaxName,
   totalLoadNotOverMaxName,
+  disallowNotEquippedInSlotName,
+  notEquippedTargetSlots,
 } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
+import type { NotEquippedTargetSlot } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
+
+type NotEquippedErrorKey = `disallowNotEquippedInSlot:${NotEquippedTargetSlot}`
+
+const toNotEquippedLabel = (slot: NotEquippedTargetSlot) => {
+  switch (slot) {
+    case 'rightArmUnit':
+      return 'right arm not equipped'
+    case 'leftArmUnit':
+      return 'left arm not equipped'
+    case 'rightBackUnit':
+      return 'right shoulder not equipped'
+    case 'leftBackUnit':
+      return 'left shoulder not equipped'
+    case 'expansion':
+      return 'core expansion not equipped'
+  }
+}
+
+const notEquippedErrors = Object.fromEntries(
+  notEquippedTargetSlots.map((slot) => [
+    disallowNotEquippedInSlotName(slot),
+    { label: toNotEquippedLabel(slot) },
+  ]),
+) as Record<NotEquippedErrorKey, { label: string }>
 
 export const enError = {
   assembly: {
@@ -31,9 +57,7 @@ export const enError = {
     [disallowArmsLoadOverName]: {
       label: 'over arm load limit',
     },
-    [disallowAnyNotEquippedWeaponName]: {
-      label: 'not equipped weapon',
-    },
+    ...notEquippedErrors,
     unknown: {
       label: '$t(unknown.label)',
     },
