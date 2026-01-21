@@ -1,9 +1,153 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "claude-code@latest": {
+      "last_modified": "2026-01-14T12:51:35Z",
+      "resolved": "github:NixOS/nixpkgs/13868c071cc73a5e9f610c47d7bb08e5da64fdd5#claude-code",
+      "source": "devbox-search",
+      "version": "2.1.7",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/ia74d0qh6ccisl9dyi62f65yj8rr3mpp-claude-code-2.1.7",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/ia74d0qh6ccisl9dyi62f65yj8rr3mpp-claude-code-2.1.7"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/kl1n0pbcvnm28i5ckgzb1f0g1gbcz9lp-claude-code-2.1.7",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/kl1n0pbcvnm28i5ckgzb1f0g1gbcz9lp-claude-code-2.1.7"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/rqjcd935h1cn9gjqr613m1brk68fr4xg-claude-code-2.1.7",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/rqjcd935h1cn9gjqr613m1brk68fr4xg-claude-code-2.1.7"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/2ky45gj0whzh2zcywad5xbx4a4jxhg8k-claude-code-2.1.7",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/2ky45gj0whzh2zcywad5xbx4a4jxhg8k-claude-code-2.1.7"
+        }
+      }
+    },
+    "codex@latest": {
+      "last_modified": "2026-01-11T16:44:50Z",
+      "resolved": "github:NixOS/nixpkgs/4d113fe1f7bb454435a5cabae6cd283e64191bb7#codex",
+      "source": "devbox-search",
+      "version": "0.80.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/q934pnqbda0rhckhd3cmrmvn5ad7rhhr-codex-0.80.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/q934pnqbda0rhckhd3cmrmvn5ad7rhhr-codex-0.80.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/4lx2hxrbncy53mlqg3c6b6sfg7lxlg6p-codex-0.80.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/4lx2hxrbncy53mlqg3c6b6sfg7lxlg6p-codex-0.80.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/icaw5ppclcs1jaqj8ams1yypc4y81gd5-codex-0.80.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/icaw5ppclcs1jaqj8ams1yypc4y81gd5-codex-0.80.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/aiyqdsn916ns28f59fad04y2wiljak7r-codex-0.80.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/aiyqdsn916ns28f59fad04y2wiljak7r-codex-0.80.0"
+        }
+      }
+    },
     "github:NixOS/nixpkgs/nixpkgs-unstable": {
       "last_modified": "2026-01-16T13:18:18Z",
       "resolved": "github:NixOS/nixpkgs/be5afa0fcb31f0a96bf9ecba05a516c66fcd8114?lastModified=1768569498&narHash=sha256-bB6Nt99Cj8Nu5nIUq0GLmpiErIT5KFshMQJGMZwgqUo%3D"
+    },
+    "jujutsu@latest": {
+      "last_modified": "2026-01-09T13:41:53Z",
+      "resolved": "github:NixOS/nixpkgs/5f02c91314c8ba4afe83b256b023756412218535#jujutsu",
+      "source": "devbox-search",
+      "version": "0.37.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/nb9zq3hg3yi1jm3hv8y9cv4lz1vzphhq-jujutsu-0.37.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/nb9zq3hg3yi1jm3hv8y9cv4lz1vzphhq-jujutsu-0.37.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/drjbpbi7k1d70znnxbqssd39k83f5n3d-jujutsu-0.37.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/drjbpbi7k1d70znnxbqssd39k83f5n3d-jujutsu-0.37.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/pzk1wydq7hphxwv8pkhr36krwi2v148s-jujutsu-0.37.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/pzk1wydq7hphxwv8pkhr36krwi2v148s-jujutsu-0.37.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/b72n64xbj78y5i665gjc56z52n5h54hp-jujutsu-0.37.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/b72n64xbj78y5i665gjc56z52n5h54hp-jujutsu-0.37.0"
+        }
+      }
     },
     "nodejs@24.12.0": {
       "last_modified": "2025-12-29T16:45:58Z",
