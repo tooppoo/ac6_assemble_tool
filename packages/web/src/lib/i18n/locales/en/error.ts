@@ -10,6 +10,9 @@ import {
 } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
 import type { NotEquippedTargetSlot } from '@ac6_assemble_tool/core/assembly/random/validator/validators'
 
+type NotEquippedErrorKey =
+  `disallowNotEquippedInSlot:${NotEquippedTargetSlot}`
+
 const toNotEquippedLabel = (slot: NotEquippedTargetSlot) => {
   switch (slot) {
     case 'rightArmUnit':
@@ -24,6 +27,13 @@ const toNotEquippedLabel = (slot: NotEquippedTargetSlot) => {
       return 'core expansion not equipped'
   }
 }
+
+const notEquippedErrors = Object.fromEntries(
+  notEquippedTargetSlots.map((slot) => [
+    disallowNotEquippedInSlotName(slot),
+    { label: toNotEquippedLabel(slot) },
+  ]),
+) as Record<NotEquippedErrorKey, { label: string }>
 
 export const enError = {
   assembly: {
@@ -48,15 +58,7 @@ export const enError = {
     [disallowArmsLoadOverName]: {
       label: 'over arm load limit',
     },
-    ...notEquippedTargetSlots.reduce(
-      (acc, slot) => ({
-        ...acc,
-        [disallowNotEquippedInSlotName(slot)]: {
-          label: toNotEquippedLabel(slot),
-        },
-      }),
-      {} as Record<string, { label: string }>,
-    ),
+    ...notEquippedErrors,
     unknown: {
       label: '$t(unknown.label)',
     },
