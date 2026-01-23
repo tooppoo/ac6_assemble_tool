@@ -14,7 +14,7 @@
   let {
     size = 'default',
     class: className = '',
-    loadingText = 'Loading...',
+    loadingText,
   }: Props = $props()
 
   const sizeClass = $derived(size === 'sm' ? 'spinner-border-sm' : '')
@@ -23,7 +23,7 @@
   )
 </script>
 
-<span class={classes} role="status" aria-hidden="true">
+<span class={classes} role="status">
   {#if loadingText}
     <span class="visually-hidden">{loadingText}</span>
   {/if}
