@@ -9,5 +9,8 @@ export const css = ['dist/_app/immutable/assets/*.css']
 export const output = 'dist/_app/immutable/assets/'
 export const variables = true
 export const fontFace = true
-export const keyframes = false
-export const safelist = ['spinner-border', 'spinner-border-sm']
+export const keyframes = true
+export const safelist = {
+  standard: ['spinner-border', 'spinner-border-sm'],
+  keyframes: ['spinner-border'],
+}
