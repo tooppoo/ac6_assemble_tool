@@ -164,7 +164,9 @@ describe(ReportBlock, () => {
     })
     describe('when no reports are shown', () => {
       it.prop([fc.array(genReportKey())])('should return false', (keys) => {
-        const block = ReportBlock.create(keys.map((k) => new Report(k, { show: false, positiveWhenUp: true })))
+        const block = ReportBlock.create(
+          keys.map((k) => new Report(k, { show: false, positiveWhenUp: true })),
+        )
 
         expect(block.someReportsShown).toBe(false)
       })

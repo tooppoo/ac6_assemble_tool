@@ -183,7 +183,6 @@ export type ReportDiff = Readonly<{
   positive: boolean
 }>
 
-
 export class Report {
   static fromDto(dto: ReportDto): Report {
     return new Report(dto.key, { show: dto.show, positiveWhenUp: true })
@@ -196,7 +195,7 @@ export class Report {
     readonly key: ReportKey,
     private readonly config: Readonly<{
       show: boolean
-      positiveWhenUp: boolean,
+      positiveWhenUp: boolean
     }>,
   ) {}
 
@@ -207,10 +206,7 @@ export class Report {
     return this.config.positiveWhenUp
   }
 
-  diff(
-    currentValue: number,
-    previousValue: number | null,
-  ): ReportDiff | null {
+  diff(currentValue: number, previousValue: number | null): ReportDiff | null {
     if (previousValue === null) return null
 
     const delta = currentValue - previousValue
@@ -225,7 +221,10 @@ export class Report {
     }
   }
   negativeWhenUp(): Report {
-    return new Report(this.key, { show: this.config.show, positiveWhenUp: false })
+    return new Report(this.key, {
+      show: this.config.show,
+      positiveWhenUp: false,
+    })
   }
 
   statusFor(
@@ -254,10 +253,16 @@ export class Report {
   }
 
   toggleShow(): Report {
-    return new Report(this.key, { show: !this.config.show, positiveWhenUp: this.config.positiveWhenUp })
+    return new Report(this.key, {
+      show: !this.config.show,
+      positiveWhenUp: this.config.positiveWhenUp,
+    })
   }
   forceShow(): Report {
-    return new Report(this.key, { show: true, positiveWhenUp: this.config.positiveWhenUp })
+    return new Report(this.key, {
+      show: true,
+      positiveWhenUp: this.config.positiveWhenUp,
+    })
   }
 
   toDto(): ReportDto {

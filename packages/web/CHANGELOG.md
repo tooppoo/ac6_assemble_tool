@@ -1,9 +1,8 @@
 # @ac6_assemble_tool/web
 
 ## 4.4.0
+
 ### Minor Changes
-
-
 
 - [#1061](https://github.com/tooppoo/ac6_assemble_tool/pull/1061) [`1abee10`](https://github.com/tooppoo/ac6_assemble_tool/commit/1abee10ea3976a7fbe6b40108f9ba722e98e6e2a) Thanks [@tooppoo](https://github.com/tooppoo)! - 差分UI追加
 
