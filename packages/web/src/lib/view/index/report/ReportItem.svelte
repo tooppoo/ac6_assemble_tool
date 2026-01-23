@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { ReportDiff } from '$lib/view/index/report/diff/report-diff'
-
   import type { HTMLAttributes } from 'svelte/elements'
+
+  import type { ReportDiff } from './model/report'
 
   type Props = {
     caption: string
     value: number
+    diff: ReportDiff | null
     class?: string
-    diff?: ReportDiff | null
   } & Omit<HTMLAttributes<HTMLElement>, 'class'>
 
   let { caption, value, class: className = '', diff = null }: Props = $props()
@@ -22,9 +22,11 @@
   const valueClass = $derived(textClass('fs-5'))
   const displayValue = $derived(formatValue(value))
   const showDiff = $derived(diff !== null)
-  const diffClass = $derived(
-    diff?.direction === 'up' ? 'text-success' : 'text-danger',
-  )
+  const diffClass = $derived.by(() => {
+    if (!diff) return ''
+
+    return diff.positive ? 'text-success' : 'text-danger'
+  })
   const diffSymbol = $derived(diff?.direction === 'up' ? '↑' : '↓')
   const diffValue = $derived(diff ? formatValue(diff.value) : null)
 </script>

@@ -10,14 +10,6 @@ import {
 } from './report'
 
 describe(ReportAggregation, () => {
-  describe(ReportAggregation.fromDto, () => {
-    it.prop([genReportAggregation()])('build from dto', (aggregation) => {
-      const dto = aggregation.toDto()
-
-      expect(ReportAggregation.fromDto(dto)).toEqual(aggregation)
-    })
-  })
-
   describe('blocks', () => {
     it.prop([genReportAggregation()])(
       'show some reports every block',
@@ -53,22 +45,22 @@ describe(ReportAggregation, () => {
           blockIndex: 0,
           target: Report.create('ap').toggleShow(),
           expectedBlock: ReportBlock.create([
-            new Report('ap', false),
-            new Report('attitudeStability', true),
+            Report.create('ap').toggleShow(),
+            Report.create('attitudeStability'),
           ]),
         },
         {
           aggregate: aggregation,
           blockIndex: 2,
-          target: Report.create('weight').toggleShow(),
+          target: Report.create('weight').negativeWhenUp().toggleShow(),
           expectedBlock: ReportBlock.create([
-            new Report('weight', false),
-            new Report('load', true),
-            new Report('loadLimit', true),
+            Report.create('weight').negativeWhenUp().toggleShow(),
+            Report.create('load').negativeWhenUp(),
+            Report.create('loadLimit'),
           ]),
         },
       ])(
-        '$aggregation.updateReport in blocks[$blockIndex] by $target',
+        'aggregation.updateReport in blocks[$blockIndex] by $target',
         ({ aggregate, blockIndex, target, expectedBlock }) => {
           it(`updated blocks[${blockIndex}] should be ${expectedBlock}`, () => {
             const targetBlockId = aggregate.allBlocks[blockIndex].id
@@ -117,13 +109,6 @@ describe(ReportAggregation, () => {
 })
 
 describe(ReportBlock, () => {
-  describe(ReportBlock.fromDto, () => {
-    it.prop([genReportBlock()])('build from dto', (block) => {
-      const dto = block.toDto()
-
-      expect(ReportBlock.fromDto(dto)).toEqual(block)
-    })
-  })
   describe('allReports', () => {
     it.prop([fc.array(genReport())])('return all reports', (reports) => {
       const block = ReportBlock.create(reports)
@@ -155,7 +140,7 @@ describe(ReportBlock, () => {
         (baseBlock, key) => {
           const block = ReportBlock.create([
             ...baseBlock.allReports,
-            new Report(key, true),
+            Report.create(key),
           ])
 
           expect(block.someReportsShown).toBe(true)
@@ -164,7 +149,9 @@ describe(ReportBlock, () => {
     })
     describe('when no reports are shown', () => {
       it.prop([fc.array(genReportKey())])('should return false', (keys) => {
-        const block = ReportBlock.create(keys.map((k) => new Report(k, false)))
+        const block = ReportBlock.create(
+          keys.map((k) => new Report(k, { show: false, positiveWhenUp: true })),
+        )
 
         expect(block.someReportsShown).toBe(false)
       })
@@ -306,13 +293,6 @@ describe(ReportBlock, () => {
 })
 
 describe(Report, () => {
-  describe(Report.fromDto, () => {
-    it.prop([genReport()])('build from dto', (report) => {
-      const dto = report.toDto()
-
-      expect(Report.fromDto(dto)).toEqual(report)
-    })
-  })
   describe(Report.create, () => {
     it.prop([genReportKey()])('always build as shown', (key) => {
       expect(Report.create(key).show).toBe(true)
@@ -437,7 +417,7 @@ describe(Report, () => {
     it.prop([genReportKey(), fc.boolean()])(
       'always not equal before toggle and after',
       (key, show) => {
-        const before = new Report(key, show)
+        const before = new Report(key, { show, positiveWhenUp: true })
         const after = before.toggleShow()
 
         expect(after.show).toBe(!before.show)
@@ -446,9 +426,97 @@ describe(Report, () => {
   })
   describe(Report.prototype.forceShow, () => {
     it.prop([genReportKey(), fc.boolean()])('always show', (key, show) => {
-      const before = new Report(key, show)
+      const before = new Report(key, { show, positiveWhenUp: true })
 
       expect(before.forceShow().show).toBe(true)
+    })
+  })
+  describe(Report.prototype.diff, () => {
+    it.prop([genReportKey(), fc.boolean(), fc.integer()])(
+      'when previousValue is null, return null',
+      (key, show, currentValue) => {
+        const report = new Report(key, { show, positiveWhenUp: true })
+
+        expect(report.diff(currentValue, null)).toBeNull()
+      },
+    )
+    it.prop([genReportKey(), fc.boolean(), fc.integer()])(
+      'when currentValue equals previousValue, return null',
+      (key, show, value) => {
+        const report = new Report(key, { show, positiveWhenUp: true })
+
+        expect(report.diff(value, value)).toBeNull()
+      },
+    )
+    describe('when currentValue not equals previousValue', () => {
+      describe('positive when up', () => {
+        describe('when up', () => {
+          it.prop([genReportKey(), fc.boolean(), fc.integer(), fc.integer()])(
+            'return correct ReportDiff',
+            (key, show, previousValue, currentValue) => {
+              fc.pre(currentValue > previousValue)
+              const report = new Report(key, { show, positiveWhenUp: true })
+
+              const diff = report.diff(currentValue, previousValue)
+              expect(diff).toEqual({
+                value: currentValue - previousValue,
+                direction: 'up',
+                positive: true,
+              })
+            },
+          )
+        })
+        describe('when down', () => {
+          it.prop([genReportKey(), fc.boolean(), fc.integer(), fc.integer()])(
+            'return correct ReportDiff',
+            (key, show, previousValue, currentValue) => {
+              fc.pre(currentValue < previousValue)
+              const report = new Report(key, { show, positiveWhenUp: true })
+
+              const diff = report.diff(currentValue, previousValue)
+              expect(diff).toEqual({
+                value: previousValue - currentValue,
+                direction: 'down',
+                positive: false,
+              })
+            },
+          )
+        })
+      })
+      describe('negative when up', () => {
+        describe('when up', () => {
+          it.prop([genReportKey(), fc.boolean(), fc.integer(), fc.integer()])(
+            'return correct ReportDiff',
+            (key, show, previousValue, currentValue) => {
+              fc.pre(currentValue > previousValue)
+              const report = new Report(key, { show, positiveWhenUp: false })
+
+              const diff = report.diff(currentValue, previousValue)
+              expect(diff).toEqual({
+                value: currentValue - previousValue,
+                direction: 'up',
+                positive: false,
+              })
+            },
+          )
+        })
+        describe('when down', () => {
+          it.prop([genReportKey(), fc.boolean(), fc.integer(), fc.integer()])(
+            'return correct ReportDiff',
+            (key, show, previousValue, currentValue) => {
+              fc.pre(currentValue < previousValue)
+              const report = new Report(key, { show, positiveWhenUp: false })
+
+              const diff = report.diff(currentValue, previousValue)
+              expect(diff).toEqual({
+                value: previousValue - currentValue,
+                direction: 'down',
+                positive: true,
+              })
+            },
+          )
+        })
+      })
     })
   })
 })
@@ -462,7 +530,7 @@ function genReportBlock(): fc.Arbitrary<ReportBlock> {
 function genReport(): fc.Arbitrary<Report> {
   return fc
     .record({ key: genReportKey(), show: fc.boolean() })
-    .map(({ key, show }) => new Report(key, show))
+    .map(({ key, show }) => new Report(key, { show, positiveWhenUp: true }))
 }
 function genReportKey(): fc.Arbitrary<ReportKey> {
   return fc.constantFrom(

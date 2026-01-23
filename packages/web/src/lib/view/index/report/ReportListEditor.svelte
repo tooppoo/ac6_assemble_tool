@@ -1,7 +1,6 @@
 <script lang="ts">
   import IconButton from '$lib/components/button/IconButton.svelte'
   import i18n, { type I18Next } from '$lib/i18n/define'
-  import { calculateReportDiff } from '$lib/view/index/report/diff/report-diff'
   import type {
     ReportAggregation,
     Report,
@@ -107,9 +106,9 @@
           <ReportItem
             caption={$i18n.t(report.key, { ns: 'assembly' })}
             value={assembly[report.key]}
-            diff={calculateReportDiff(
+            diff={report.diff(
               assembly[report.key],
-              previousAssembly?.[report.key],
+              previousAssembly?.[report.key] ?? null,
             )}
           />
         </div>
