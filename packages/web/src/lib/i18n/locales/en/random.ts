@@ -1,4 +1,7 @@
 export const enRandom = {
+  panel: {
+    effect: 'Only unlocked parts will be changed',
+  },
   command: {
     random: {
       label: 'Run Random Assemble',

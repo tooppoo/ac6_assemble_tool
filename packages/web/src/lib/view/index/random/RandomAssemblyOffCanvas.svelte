@@ -114,6 +114,9 @@
     {@render titleSnippet?.()}
   {/snippet}
   {#snippet body()}
+    <p class="text-muted small mb-3">
+      {$i18n.t('random:panel.effect')}
+    </p>
     <div
       id="random-assembly"
       class="d-none d-md-flex justify-content-bgein align-items-center mb-3"
