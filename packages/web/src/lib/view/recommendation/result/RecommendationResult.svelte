@@ -46,7 +46,7 @@
 
   {#if loading}
     <div class="text-center py-5">
-      <Spinner class="text-primary" loadingText={loadingText} />
+      <Spinner class="text-primary" {loadingText} />
       <p class="mt-3 text-muted">{loadingText}</p>
     </div>
   {:else if error}

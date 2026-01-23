@@ -130,7 +130,7 @@
                   class="btn btn-primary btn-lg"
                   disabled={loading || !query.trim()}
                 >
-  {#if loading}
+                  {#if loading}
                     <Spinner size="sm" class="me-2" />
                   {/if}
                   {submitButtonText}
