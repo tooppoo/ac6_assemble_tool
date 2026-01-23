@@ -1,4 +1,4 @@
-import { problemCaptionKeys } from "$lib/view/index/report/model/report";
+import { problemCaptionKeys } from '$lib/view/index/report/model/report'
 
 export const jaPageIndex = {
   command: {

@@ -10,12 +10,7 @@
     diff?: ReportDiff | null
   } & Omit<HTMLAttributes<HTMLElement>, 'class'>
 
-  let {
-    caption,
-    value,
-    class: className = '',
-    diff = null,
-  }: Props = $props()
+  let { caption, value, class: className = '', diff = null }: Props = $props()
 
   const formatValue = (target: number) => parseFloat(target.toFixed(2))
 
@@ -41,7 +36,7 @@
     {#if showDiff}
       <div class={`small ${diffClass}`}>
         ({diffSymbol}{diffValue})
-      </div >
+      </div>
     {/if}
   </div>
 </div>

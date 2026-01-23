@@ -56,7 +56,9 @@
 </script>
 
 <svelte:element this={tag} class={className + ' container'}>
-  <div class={`p-2 row text-start parts-select-row ${isLocked ? 'is-locked' : ''}`}>
+  <div
+    class={`p-2 row text-start parts-select-row ${isLocked ? 'is-locked' : ''}`}
+  >
     <label
       for={`select-${id}`}
       class="mb-1 mb-sm-0 p-0 col-12 col-sm-5 fs-5 d-flex justify-content-between align-items-center"

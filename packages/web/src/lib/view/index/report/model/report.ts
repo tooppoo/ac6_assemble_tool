@@ -101,7 +101,12 @@ interface ReportAggregationDto {
 export type ReportBlockId = string
 type ReadonlyReportBlock = Pick<
   ReportBlock,
-  'reports' | 'indexOf' | 'id' | 'someReportsShown' | 'containProblemFor' | 'problemCaptionKey'
+  | 'reports'
+  | 'indexOf'
+  | 'id'
+  | 'someReportsShown'
+  | 'containProblemFor'
+  | 'problemCaptionKey'
 >
 export class ReportBlock {
   static create(reports: Report[]): ReportBlock {
@@ -114,7 +119,7 @@ export class ReportBlock {
   private constructor(
     readonly id: ReportBlockId,
     private readonly _reports: readonly Report[],
-    readonly problemCaptionKey: string | null = null
+    readonly problemCaptionKey: string | null = null,
   ) {}
 
   get allReports(): readonly Report[] {
@@ -145,8 +150,10 @@ export class ReportBlock {
   withDangerCaptionKey(caption: string): ReportBlock {
     return new ReportBlock(this.id, this._reports, caption)
   }
-  containProblemFor(assembly: Assembly): this is ReportBlock & { dangerCaptionKey: string } {
-    return this._reports.some(r => r.statusFor(assembly) !== 'normal')
+  containProblemFor(
+    assembly: Assembly,
+  ): this is ReportBlock & { dangerCaptionKey: string } {
+    return this._reports.some((r) => r.statusFor(assembly) !== 'normal')
   }
 
   toDto(): ReportBlockDto {
@@ -164,10 +171,7 @@ interface ReportBlockDto {
 }
 
 export type ReportStatus = 'danger' | 'warning' | 'normal'
-type ReadonlyReport = Pick<
-  Report,
-  'statusFor' | 'key' | 'show'
->
+type ReadonlyReport = Pick<Report, 'statusFor' | 'key' | 'show'>
 
 export class Report {
   static fromDto(dto: ReportDto): Report {
