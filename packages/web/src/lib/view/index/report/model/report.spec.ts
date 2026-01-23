@@ -10,14 +10,6 @@ import {
 } from './report'
 
 describe(ReportAggregation, () => {
-  describe(ReportAggregation.fromDto, () => {
-    it.prop([genReportAggregation()])('build from dto', (aggregation) => {
-      const dto = aggregation.toDto()
-
-      expect(ReportAggregation.fromDto(dto)).toEqual(aggregation)
-    })
-  })
-
   describe('blocks', () => {
     it.prop([genReportAggregation()])(
       'show some reports every block',
@@ -117,13 +109,6 @@ describe(ReportAggregation, () => {
 })
 
 describe(ReportBlock, () => {
-  describe(ReportBlock.fromDto, () => {
-    it.prop([genReportBlock()])('build from dto', (block) => {
-      const dto = block.toDto()
-
-      expect(ReportBlock.fromDto(dto)).toEqual(block)
-    })
-  })
   describe('allReports', () => {
     it.prop([fc.array(genReport())])('return all reports', (reports) => {
       const block = ReportBlock.create(reports)
@@ -308,13 +293,6 @@ describe(ReportBlock, () => {
 })
 
 describe(Report, () => {
-  describe(Report.fromDto, () => {
-    it.prop([genReport()])('build from dto', (report) => {
-      const dto = report.toDto()
-
-      expect(Report.fromDto(dto)).toEqual(report)
-    })
-  })
   describe(Report.create, () => {
     it.prop([genReportKey()])('always build as shown', (key) => {
       expect(Report.create(key).show).toBe(true)

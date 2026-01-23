@@ -50,10 +50,6 @@ export function defaultReportAggregation(): ReportAggregation {
 
 export type ReadonlyReportAggregation = Pick<ReportAggregation, 'blocks'>
 export class ReportAggregation {
-  static fromDto(dto: ReportAggregationDto): ReportAggregation {
-    return new ReportAggregation(dto.blocks.map(ReportBlock.fromDto))
-  }
-
   constructor(private readonly _blocks: readonly ReportBlock[]) {}
 
   get allBlocks(): readonly ReportBlock[] {
@@ -87,15 +83,6 @@ export class ReportAggregation {
   showAll(): ReportAggregation {
     return new ReportAggregation(this.allBlocks.map((b) => b.showAll()))
   }
-
-  toDto(): ReportAggregationDto {
-    return {
-      blocks: this.allBlocks.map((b) => b.toDto()),
-    }
-  }
-}
-interface ReportAggregationDto {
-  blocks: ReportBlockDto[]
 }
 
 export type ReportBlockId = string
@@ -111,9 +98,6 @@ type ReadonlyReportBlock = Pick<
 export class ReportBlock {
   static create(reports: readonly Report[]): ReportBlock {
     return new ReportBlock(crypto.randomUUID(), reports)
-  }
-  static fromDto(dto: ReportBlockDto): ReportBlock {
-    return new ReportBlock(dto.id, dto.reports.map(Report.fromDto))
   }
 
   private constructor(
@@ -158,19 +142,6 @@ export class ReportBlock {
   ): this is ReportBlock & { problemCaptionKey: string } {
     return this._reports.some((r) => r.statusFor(assembly) !== 'normal')
   }
-
-  toDto(): ReportBlockDto {
-    return {
-      id: this.id,
-      reports: this.allReports.map((r) => r.toDto()),
-      dangerCaption: this.problemCaptionKey,
-    }
-  }
-}
-interface ReportBlockDto {
-  readonly id: ReportBlockId
-  readonly reports: readonly ReportDto[]
-  readonly dangerCaption: string | null
 }
 
 export type ReportStatus = 'danger' | 'warning' | 'normal'
@@ -184,9 +155,6 @@ export type ReportDiff = Readonly<{
 }>
 
 export class Report {
-  static fromDto(dto: ReportDto): Report {
-    return new Report(dto.key, { show: dto.show, positiveWhenUp: true })
-  }
   static create(key: ReportKey): Report {
     return new Report(key, { show: true, positiveWhenUp: true })
   }
@@ -264,14 +232,6 @@ export class Report {
       positiveWhenUp: this.config.positiveWhenUp,
     })
   }
-
-  toDto(): ReportDto {
-    return { key: this.key, show: this.config.show }
-  }
-}
-interface ReportDto {
-  readonly key: ReportKey
-  readonly show: boolean
 }
 
 export type ReportKey = Exclude<
