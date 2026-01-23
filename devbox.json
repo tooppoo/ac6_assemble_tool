@@ -5,7 +5,7 @@
     "pnpm@10.26.1",
     "jujutsu@0.37.0",
     "codex@0.87.0",
-    "claude-code@0.2.122"
+    "claude-code@2.1.12"
   ],
   "shell": {
     "init_hook": [
