@@ -21,18 +21,18 @@ export function defaultReportAggregation(): ReportAggregation {
       Report.create('antiExplosiveDefense'),
     ]),
     ReportBlock.create([
-      Report.create('weight'),
-      Report.create('load'),
+      Report.create('weight').negativeWhenUp(),
+      Report.create('load').negativeWhenUp(),
       Report.create('loadLimit'),
     ]).withDangerCaptionKey(problemCaptionKeys.loadLimitOver),
     ReportBlock.create([
-      Report.create('armsLoad'),
+      Report.create('armsLoad').negativeWhenUp(),
       Report.create('armsLoadLimit'),
       Report.create('meleeSpecialization'),
       Report.create('meleeRatio'),
     ]).withDangerCaptionKey(problemCaptionKeys.armsLoadLimitOver),
     ReportBlock.create([
-      Report.create('enLoad'),
+      Report.create('enLoad').negativeWhenUp(),
       Report.create('enOutput'),
       Report.create('enCapacity'),
       Report.create('enSurplus'),
@@ -43,8 +43,8 @@ export function defaultReportAggregation(): ReportAggregation {
       Report.create('enFirearmSpec'),
       Report.create('enFirearmRatio'),
     ]).withDangerCaptionKey(problemCaptionKeys.insufficientEnOutput),
-    ReportBlock.create([Report.create('qbEnConsumption')]),
-    ReportBlock.create([Report.create('coam')]),
+    ReportBlock.create([Report.create('qbEnConsumption').negativeWhenUp()]),
+    ReportBlock.create([Report.create('coam').negativeWhenUp()]),
   ])
 }
 
@@ -180,35 +180,52 @@ export type ReportDiffDirection = 'up' | 'down'
 export type ReportDiff = Readonly<{
   value: number
   direction: ReportDiffDirection
+  positive: boolean
 }>
 
 
 export class Report {
   static fromDto(dto: ReportDto): Report {
-    return new Report(dto.key, dto.show)
+    return new Report(dto.key, { show: dto.show, positiveWhenUp: true })
   }
   static create(key: ReportKey): Report {
-    return new Report(key, true)
+    return new Report(key, { show: true, positiveWhenUp: true })
   }
 
   constructor(
     readonly key: ReportKey,
-    readonly show: boolean,
+    private readonly config: Readonly<{
+      show: boolean
+      positiveWhenUp: boolean,
+    }>,
   ) {}
+
+  get show(): boolean {
+    return this.config.show
+  }
+  get positiveWhenUp(): boolean {
+    return this.config.positiveWhenUp
+  }
 
   diff(
     currentValue: number,
     previousValue: number | null,
   ): ReportDiff | null {
-    if (previousValue === null || previousValue === undefined) return null
+    if (previousValue === null) return null
 
     const delta = currentValue - previousValue
     if (delta === 0) return null
 
+    const isUp = delta > 0
+
     return {
       value: Math.abs(delta),
-      direction: delta > 0 ? 'up' : 'down',
+      direction: isUp ? 'up' : 'down',
+      positive: isUp ? this.config.positiveWhenUp : !this.config.positiveWhenUp,
     }
+  }
+  negativeWhenUp(): Report {
+    return new Report(this.key, { show: this.config.show, positiveWhenUp: false })
   }
 
   statusFor(
@@ -237,14 +254,14 @@ export class Report {
   }
 
   toggleShow(): Report {
-    return new Report(this.key, !this.show)
+    return new Report(this.key, { show: !this.config.show, positiveWhenUp: this.config.positiveWhenUp })
   }
   forceShow(): Report {
-    return new Report(this.key, true)
+    return new Report(this.key, { show: true, positiveWhenUp: this.config.positiveWhenUp })
   }
 
   toDto(): ReportDto {
-    return { key: this.key, show: this.show }
+    return { key: this.key, show: this.config.show }
   }
 }
 interface ReportDto {
