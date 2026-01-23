@@ -1,3 +1,5 @@
+import { problemCaptionKeys } from '$lib/view/index/report/model/report'
+
 export const jaPageIndex = {
   command: {
     random: {
@@ -40,6 +42,11 @@ export const jaPageIndex = {
   report: {
     bug: '不具合を報告する',
     request: '改修を依頼する',
+    block: {
+      [problemCaptionKeys.loadLimitOver]: '積載上限超過',
+      [problemCaptionKeys.armsLoadLimitOver]: '腕部積載上限超過',
+      [problemCaptionKeys.insufficientEnOutput]: 'EN出力不足',
+    },
   },
   language: {
     label: '言語',

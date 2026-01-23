@@ -1,4 +1,7 @@
 export const jaRandom = {
+  panel: {
+    effect: 'ロックされていないパーツのみ変更されます',
+  },
   command: {
     random: {
       label: 'ランダムアセン実行',

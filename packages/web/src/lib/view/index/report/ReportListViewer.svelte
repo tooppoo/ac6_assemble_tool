@@ -1,6 +1,7 @@
 <script lang="ts">
   import IconButton from '$lib/components/button/IconButton.svelte'
   import i18n from '$lib/i18n/define'
+  import { calculateReportDiff } from '$lib/view/index/report/diff/report-diff'
   import type { ReadonlyReportAggregation } from '$lib/view/index/report/model/report'
   import ReportItem from '$lib/view/index/report/ReportItem.svelte'
 
@@ -9,11 +10,17 @@
 
   type Props = {
     assembly: Assembly
+    previousAssembly?: Assembly | null
     reportAggregation: ReadonlyReportAggregation
     onEdit?: (payload: EmptyObject) => void
   }
 
-  let { assembly, reportAggregation, onEdit: onEditProp }: Props = $props()
+  let {
+    assembly,
+    previousAssembly = null,
+    reportAggregation,
+    onEdit: onEditProp,
+  }: Props = $props()
 
   function onEdit() {
     onEditProp?.({})
@@ -36,12 +43,20 @@
   {/if}
   <div>
     <div class="row mb-3">
+      {#if block.containProblemFor(assembly)}
+        <div class="alert alert-warning" role="alert">
+          {$i18n.t(`page/index:report.block.${block.problemCaptionKey}`)}
+        </div>
+      {/if}
       {#each block.reports as report (report.key)}
         <ReportItem
           caption={$i18n.t(report.key, { ns: 'assembly' })}
           class="mb-3 col-6 col-sm-4 col-md-3"
           value={assembly[report.key]}
-          status={report.statusFor(assembly)}
+          diff={calculateReportDiff(
+            assembly[report.key],
+            previousAssembly?.[report.key],
+          )}
         />
       {/each}
     </div>

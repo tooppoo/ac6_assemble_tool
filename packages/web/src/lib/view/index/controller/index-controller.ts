@@ -144,6 +144,7 @@ export const indexController = {
     return result(
       {
         ...state,
+        previousAssembly: state.assembly,
         assembly: buildResult.assembly,
         candidates,
       },
@@ -174,6 +175,7 @@ export const indexController = {
       ...state,
       partsPoolState: bootResult.partsPool,
       initialCandidates: bootResult.partsPool.candidates,
+      previousAssembly: null,
       assembly: bootResult.assembly,
       candidates,
       serializeEnabled,

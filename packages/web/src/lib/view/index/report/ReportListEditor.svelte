@@ -1,6 +1,7 @@
 <script lang="ts">
   import IconButton from '$lib/components/button/IconButton.svelte'
   import i18n, { type I18Next } from '$lib/i18n/define'
+  import { calculateReportDiff } from '$lib/view/index/report/diff/report-diff'
   import type {
     ReportAggregation,
     Report,
@@ -13,11 +14,17 @@
 
   type Props = {
     assembly: Assembly
+    previousAssembly?: Assembly | null
     reportAggregation: ReportAggregation
     onSave?: (payload: SaveAggregation) => void
   }
 
-  let { assembly, reportAggregation, onSave: onSaveProp }: Props = $props()
+  let {
+    assembly,
+    previousAssembly = null,
+    reportAggregation,
+    onSave: onSaveProp,
+  }: Props = $props()
 
   let editingReportAggregation = $derived(reportAggregation)
 
@@ -100,7 +107,10 @@
           <ReportItem
             caption={$i18n.t(report.key, { ns: 'assembly' })}
             value={assembly[report.key]}
-            status={report.statusFor(assembly)}
+            diff={calculateReportDiff(
+              assembly[report.key],
+              previousAssembly?.[report.key],
+            )}
           />
         </div>
       {/each}

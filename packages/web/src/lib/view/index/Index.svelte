@@ -264,7 +264,10 @@
   </ToolSection>
 
   <ToolSection id="assembly-report" class="container mw-100 mx-0 my-4 w-100">
-    <ReportList assembly={indexState.assembly} />
+    <ReportList
+      assembly={indexState.assembly}
+      previousAssembly={indexState.previousAssembly}
+    />
   </ToolSection>
 
   <CollapseText
