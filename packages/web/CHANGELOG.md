@@ -1,9 +1,8 @@
 # @ac6_assemble_tool/web
 
 ## 4.5.0
+
 ### Minor Changes
-
-
 
 - [#1063](https://github.com/tooppoo/ac6_assemble_tool/pull/1063) [`f0b2e3f`](https://github.com/tooppoo/ac6_assemble_tool/commit/f0b2e3f8c4c7a20d591bbcc598dd03306eca3224) Thanks [@tooppoo](https://github.com/tooppoo)! - レポートごとに数値差分の評価を変更
 
