@@ -11,6 +11,11 @@ export const variables = true
 export const fontFace = true
 export const keyframes = true
 export const safelist = {
-  standard: ['spinner-border', 'spinner-border-sm'],
+  standard: [
+    'spinner-border',
+    'spinner-border-sm',
+    'alert',
+    'alert-warning',
+  ],
   keyframes: ['spinner-border'],
 }
