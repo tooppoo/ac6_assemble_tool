@@ -1,3 +1,5 @@
+import { problemCaptionKeys } from "$lib/view/index/report/model/report";
+
 export const enPageIndex = {
   command: {
     random: {
@@ -41,6 +43,11 @@ export const enPageIndex = {
   report: {
     bug: 'Report Bug',
     request: 'Request Change',
+    block: {
+      [problemCaptionKeys.loadLimitOver]: 'Load limit exceeded',
+      [problemCaptionKeys.armsLoadLimitOver]: 'Arms load limit exceeded',
+      [problemCaptionKeys.insufficientEnOutput]: 'Insufficient EN output',
+    },
   },
   language: {
     label: 'Language',

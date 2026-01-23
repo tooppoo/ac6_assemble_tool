@@ -1,11 +1,9 @@
 <script lang="ts">
-  import type { ReportStatus } from '$lib/view/index/report/model/report'
   import type { ReportDiff } from '$lib/view/index/report/diff/report-diff'
 
   import type { HTMLAttributes } from 'svelte/elements'
 
   type Props = {
-    status?: ReportStatus
     caption: string
     value: number
     class?: string
@@ -13,7 +11,6 @@
   } & Omit<HTMLAttributes<HTMLElement>, 'class'>
 
   let {
-    status = 'normal',
     caption,
     value,
     class: className = '',
@@ -22,19 +19,12 @@
 
   const formatValue = (target: number) => parseFloat(target.toFixed(2))
 
-  const textClass = (base: string, stat: ReportStatus) => {
-    switch (stat) {
-      case 'danger':
-        return `${base} text-danger`
-      case 'warning':
-        return `${base} text-warning`
-      case 'normal':
-        return base
-    }
+  const textClass = (base: string) => {
+    return base
   }
 
-  const captionClass = $derived(textClass('fs-4', status))
-  const valueClass = $derived(textClass('fs-5', status))
+  const captionClass = $derived(textClass('fs-4'))
+  const valueClass = $derived(textClass('fs-5'))
   const displayValue = $derived(formatValue(value))
   const showDiff = $derived(diff !== null)
   const diffClass = $derived(

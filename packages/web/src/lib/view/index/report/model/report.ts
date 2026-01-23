@@ -3,6 +3,12 @@ import type {
   AssemblyProperty,
 } from '@ac6_assemble_tool/core/assembly/assembly'
 
+export const problemCaptionKeys = {
+  loadLimitOver: 'loadLimitOver',
+  armsLoadLimitOver: 'armsLoadLimitOver',
+  insufficientEnOutput: 'insufficientEnOutput',
+}
+
 export function defaultReportAggregation(): ReportAggregation {
   return new ReportAggregation([
     ReportBlock.create([
@@ -18,11 +24,13 @@ export function defaultReportAggregation(): ReportAggregation {
       Report.create('weight'),
       Report.create('load'),
       Report.create('loadLimit'),
+    ]).withDangerCaptionKey(problemCaptionKeys.loadLimitOver),
+    ReportBlock.create([
       Report.create('armsLoad'),
       Report.create('armsLoadLimit'),
       Report.create('meleeSpecialization'),
       Report.create('meleeRatio'),
-    ]),
+    ]).withDangerCaptionKey(problemCaptionKeys.armsLoadLimitOver),
     ReportBlock.create([
       Report.create('enLoad'),
       Report.create('enOutput'),
@@ -34,7 +42,7 @@ export function defaultReportAggregation(): ReportAggregation {
       Report.create('postRecoveryEnSupply'),
       Report.create('enFirearmSpec'),
       Report.create('enFirearmRatio'),
-    ]),
+    ]).withDangerCaptionKey(problemCaptionKeys.insufficientEnOutput),
     ReportBlock.create([Report.create('qbEnConsumption')]),
     ReportBlock.create([Report.create('coam')]),
   ])
@@ -93,7 +101,7 @@ interface ReportAggregationDto {
 export type ReportBlockId = string
 type ReadonlyReportBlock = Pick<
   ReportBlock,
-  'reports' | 'indexOf' | 'id' | 'someReportsShown'
+  'reports' | 'indexOf' | 'id' | 'someReportsShown' | 'containProblemFor' | 'problemCaptionKey'
 >
 export class ReportBlock {
   static create(reports: Report[]): ReportBlock {
@@ -106,6 +114,7 @@ export class ReportBlock {
   private constructor(
     readonly id: ReportBlockId,
     private readonly _reports: readonly Report[],
+    readonly problemCaptionKey: string | null = null
   ) {}
 
   get allReports(): readonly Report[] {
@@ -133,16 +142,25 @@ export class ReportBlock {
     )
   }
 
+  withDangerCaptionKey(caption: string): ReportBlock {
+    return new ReportBlock(this.id, this._reports, caption)
+  }
+  containProblemFor(assembly: Assembly): this is ReportBlock & { dangerCaptionKey: string } {
+    return this._reports.some(r => r.statusFor(assembly) !== 'normal')
+  }
+
   toDto(): ReportBlockDto {
     return {
       id: this.id,
       reports: this.allReports.map((r) => r.toDto()),
+      dangerCaption: this.problemCaptionKey,
     }
   }
 }
 interface ReportBlockDto {
   readonly id: ReportBlockId
   readonly reports: readonly ReportDto[]
+  readonly dangerCaption: string | null
 }
 
 export type ReportStatus = 'danger' | 'warning' | 'normal'

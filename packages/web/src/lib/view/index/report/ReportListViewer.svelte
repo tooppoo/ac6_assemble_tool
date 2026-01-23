@@ -43,12 +43,16 @@
   {/if}
   <div>
     <div class="row mb-3">
+      {#if block.containProblemFor(assembly)}
+        <div class="alert alert-warning" role="alert">
+          {$i18n.t(`page/index:report.block.${block.problemCaptionKey}`)}
+        </div>
+      {/if}
       {#each block.reports as report (report.key)}
         <ReportItem
           caption={$i18n.t(report.key, { ns: 'assembly' })}
           class="mb-3 col-6 col-sm-4 col-md-3"
           value={assembly[report.key]}
-          status={report.statusFor(assembly)}
           diff={calculateReportDiff(
             assembly[report.key],
             previousAssembly?.[report.key],

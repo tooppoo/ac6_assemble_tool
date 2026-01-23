@@ -107,11 +107,9 @@
           <ReportItem
             caption={$i18n.t(report.key, { ns: 'assembly' })}
             value={assembly[report.key]}
-            status={report.statusFor(assembly)}
-            diffEnabled={report.isDiffTarget()}
             diff={calculateReportDiff(
               assembly[report.key],
-              report.isDiffTarget() ? previousAssembly?.[report.key] : null,
+              previousAssembly?.[report.key],
             )}
           />
         </div>
