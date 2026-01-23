@@ -2,6 +2,7 @@ import type {
   Assembly,
   AssemblyProperty,
 } from '@ac6_assemble_tool/core/assembly/assembly'
+import { calculateReportDiff } from '../diff/report-diff'
 
 export const problemCaptionKeys = {
   loadLimitOver: 'loadLimitOver',
@@ -174,7 +175,14 @@ interface ReportBlockDto {
 }
 
 export type ReportStatus = 'danger' | 'warning' | 'normal'
-type ReadonlyReport = Pick<Report, 'statusFor' | 'key' | 'show'>
+type ReadonlyReport = Pick<Report, 'statusFor' | 'key' | 'show' | 'diff'>
+
+export type ReportDiffDirection = 'up' | 'down'
+export type ReportDiff = Readonly<{
+  value: number
+  direction: ReportDiffDirection
+}>
+
 
 export class Report {
   static fromDto(dto: ReportDto): Report {
@@ -188,6 +196,13 @@ export class Report {
     readonly key: ReportKey,
     readonly show: boolean,
   ) {}
+
+  diff(
+    currentValue: number,
+    previousValue: number | null,
+  ): ReportDiff | null {
+    return calculateReportDiff(currentValue, previousValue)
+  }
 
   statusFor(
     assembly: Pick<
