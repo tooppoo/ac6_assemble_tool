@@ -11,11 +11,7 @@
     loadingText?: string
   }
 
-  let {
-    size = 'default',
-    class: className = '',
-    loadingText,
-  }: Props = $props()
+  let { size = 'default', class: className = '', loadingText }: Props = $props()
 
   const sizeClass = $derived(size === 'sm' ? 'spinner-border-sm' : '')
   const classes = $derived(
