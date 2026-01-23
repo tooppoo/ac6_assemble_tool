@@ -4,7 +4,7 @@
 
 ## ディレクトリ構造
 
-```
+```txt
 docs/specs/
 ├── README.md                    # 本ファイル
 ├── {feature-name}/              # 機能ごとのディレクトリ
