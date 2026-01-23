@@ -5,6 +5,7 @@
    * AIからの推奨パーツリストを表示します。
    */
 
+  import Spinner from '$lib/components/spinner/Spinner.svelte'
   import type { I18NextStore } from '$lib/i18n/define'
 
   import type { Recommendation } from '@ac6_assemble_tool/api'
@@ -45,9 +46,7 @@
 
   {#if loading}
     <div class="text-center py-5">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">{loadingText}</span>
-      </div>
+      <Spinner class="text-primary" loadingText={loadingText} />
       <p class="mt-3 text-muted">{loadingText}</p>
     </div>
   {:else if error}

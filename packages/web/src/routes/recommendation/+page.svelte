@@ -8,6 +8,7 @@
   import { fetchRecommendations } from '$lib/api/recommend'
   import LanguageForm from '$lib/components/language/LanguageForm.svelte'
   import Navbar from '$lib/components/layout/Navbar.svelte'
+  import Spinner from '$lib/components/spinner/Spinner.svelte'
   import type { I18NextStore } from '$lib/i18n/define'
   import QueryInput from '$lib/view/recommendation/query/QueryInput.svelte'
   import RecommendationResult from '$lib/view/recommendation/result/RecommendationResult.svelte'
@@ -129,12 +130,8 @@
                   class="btn btn-primary btn-lg"
                   disabled={loading || !query.trim()}
                 >
-                  {#if loading}
-                    <span
-                      class="spinner-border spinner-border-sm me-2"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
+  {#if loading}
+                    <Spinner size="sm" class="me-2" />
                   {/if}
                   {submitButtonText}
                 </button>
