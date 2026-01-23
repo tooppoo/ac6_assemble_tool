@@ -17,6 +17,7 @@ export type IndexState = {
   offcanvasStatus: OffcanvasStatus
   errorMessages: string[]
   assembly: Assembly
+  previousAssembly: Assembly | null
   queuedUrl: URL | null
   serializeEnabled: boolean
 }
@@ -40,6 +41,7 @@ export function createIndexState({
     offcanvasStatus: closeOffcanvas(),
     errorMessages: [],
     assembly: initializeAssembly(candidates),
+    previousAssembly: null,
     queuedUrl: null,
     serializeEnabled: false,
   }

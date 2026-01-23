@@ -35,6 +35,7 @@ export function changeParts(
 
   return {
     ...state,
+    previousAssembly: state.assembly,
     assembly: nextAssembly,
     candidates,
   }
@@ -52,6 +53,7 @@ export function applyRandomAssembly(
 
   return {
     ...state,
+    previousAssembly: state.assembly,
     assembly: event.assembly,
     candidates,
   }
@@ -146,6 +148,7 @@ export function applyStoredAssembly(
 ): IndexState {
   return {
     ...state,
+    previousAssembly: state.assembly,
     assembly,
   }
 }

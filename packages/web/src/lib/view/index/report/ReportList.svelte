@@ -9,9 +9,10 @@
 
   type Props = {
     assembly: Assembly
+    previousAssembly?: Assembly | null
   }
 
-  let { assembly }: Props = $props()
+  let { assembly, previousAssembly = null }: Props = $props()
 
   let reportAggregation = $state(defaultReportAggregation())
   let editing = $state(false)
@@ -27,7 +28,12 @@
 </script>
 
 {#if editing}
-  <ReportListEditor {assembly} {reportAggregation} {onSave} />
+  <ReportListEditor {assembly} {previousAssembly} {reportAggregation} {onSave} />
 {:else}
-  <ReportListViewer {assembly} {reportAggregation} onEdit={startEdit} />
+  <ReportListViewer
+    {assembly}
+    {previousAssembly}
+    {reportAggregation}
+    onEdit={startEdit}
+  />
 {/if}

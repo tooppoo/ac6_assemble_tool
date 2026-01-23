@@ -146,7 +146,11 @@ interface ReportBlockDto {
 }
 
 export type ReportStatus = 'danger' | 'warning' | 'normal'
-type ReadonlyReport = Pick<Report, 'statusFor' | 'key' | 'show'>
+type ReadonlyReport = Pick<
+  Report,
+  'statusFor' | 'key' | 'show'
+>
+
 export class Report {
   static fromDto(dto: ReportDto): Report {
     return new Report(dto.key, dto.show)
