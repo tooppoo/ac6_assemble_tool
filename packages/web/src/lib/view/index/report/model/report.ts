@@ -2,7 +2,6 @@ import type {
   Assembly,
   AssemblyProperty,
 } from '@ac6_assemble_tool/core/assembly/assembly'
-import { calculateReportDiff } from '../diff/report-diff'
 
 export const problemCaptionKeys = {
   loadLimitOver: 'loadLimitOver',
@@ -201,7 +200,15 @@ export class Report {
     currentValue: number,
     previousValue: number | null,
   ): ReportDiff | null {
-    return calculateReportDiff(currentValue, previousValue)
+    if (previousValue === null || previousValue === undefined) return null
+
+    const delta = currentValue - previousValue
+    if (delta === 0) return null
+
+    return {
+      value: Math.abs(delta),
+      direction: delta > 0 ? 'up' : 'down',
+    }
   }
 
   statusFor(
