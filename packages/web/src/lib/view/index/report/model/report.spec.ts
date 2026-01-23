@@ -65,10 +65,6 @@ describe(ReportAggregation, () => {
             new Report('weight', false),
             new Report('load', true),
             new Report('loadLimit', true),
-            new Report('armsLoad', true),
-            new Report('armsLoadLimit', true),
-            new Report('meleeSpecialization', true),
-            new Report('meleeRatio', true),
           ]),
         },
       ])(
@@ -272,6 +268,40 @@ describe(ReportBlock, () => {
         expect(block.showAll().reports.length).toBe(block.allReports.length)
       },
     )
+  })
+  describe(ReportBlock.prototype.containProblemFor, () => {
+    type AssemblyLike = Parameters<ReportBlock['containProblemFor']>[0]
+    const baseAssemblyLike: AssemblyLike = {
+      withinEnOutput: true,
+      withinArmsLoadLimit: true,
+      withinLoadLimit: true,
+    }
+
+    describe('when any report not normal', () => {
+      const assemblyLike = {
+        ...baseAssemblyLike,
+        withinEnOutput: false,
+      }
+      it.prop([genReportBlock()])('should return true', (block) => {
+        // make sure at least one report is about energy load
+        const energyReport = Report.create('enLoad')
+        const testBlock = ReportBlock.create([
+          ...block.allReports,
+          energyReport,
+        ])
+
+        expect(testBlock.containProblemFor(assemblyLike)).toBe(true)
+      })
+    })
+    describe('when all reports are normal', () => {
+      const assemblyLike = { ...baseAssemblyLike }
+      it.prop([genReportBlock()])('should return false', (block) => {
+        const normalReports = block.allReports
+        const testBlock = ReportBlock.create(normalReports)
+
+        expect(testBlock.containProblemFor(assemblyLike)).toBe(false)
+      })
+    })
   })
 })
 

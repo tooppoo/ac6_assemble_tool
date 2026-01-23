@@ -109,7 +109,7 @@ type ReadonlyReportBlock = Pick<
   | 'problemCaptionKey'
 >
 export class ReportBlock {
-  static create(reports: Report[]): ReportBlock {
+  static create(reports: readonly Report[]): ReportBlock {
     return new ReportBlock(crypto.randomUUID(), reports)
   }
   static fromDto(dto: ReportBlockDto): ReportBlock {
@@ -151,7 +151,10 @@ export class ReportBlock {
     return new ReportBlock(this.id, this._reports, caption)
   }
   containProblemFor(
-    assembly: Assembly,
+    assembly: Pick<
+      Assembly,
+      'withinEnOutput' | 'withinLoadLimit' | 'withinArmsLoadLimit'
+    >,
   ): this is ReportBlock & { problemCaptionKey: string } {
     return this._reports.some((r) => r.statusFor(assembly) !== 'normal')
   }
