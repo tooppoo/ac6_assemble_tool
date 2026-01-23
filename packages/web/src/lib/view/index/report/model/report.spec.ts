@@ -449,37 +449,73 @@ describe(Report, () => {
       },
     )
     describe('when currentValue not equals previousValue', () => {
-      describe('when up', () => {
-        it.prop([genReportKey(), fc.boolean(), fc.integer(), fc.integer()])(
-          'return correct ReportDiff',
-          (key, show, previousValue, currentValue) => {
-            fc.pre(currentValue > previousValue)
-            const report = new Report(key, { show, positiveWhenUp: true })
+      describe('positive when up', () => {
+        describe('when up', () => {
+          it.prop([genReportKey(), fc.boolean(), fc.integer(), fc.integer()])(
+            'return correct ReportDiff',
+            (key, show, previousValue, currentValue) => {
+              fc.pre(currentValue > previousValue)
+              const report = new Report(key, { show, positiveWhenUp: true })
 
-            const diff = report.diff(currentValue, previousValue)
-            expect(diff).toEqual({
-              value: currentValue - previousValue,
-              direction: 'up',
-              positive: report.positiveWhenUp,
-            })
-          },
-        )
+              const diff = report.diff(currentValue, previousValue)
+              expect(diff).toEqual({
+                value: currentValue - previousValue,
+                direction: 'up',
+                positive: true,
+              })
+            },
+          )
+        })
+        describe('when down', () => {
+          it.prop([genReportKey(), fc.boolean(), fc.integer(), fc.integer()])(
+            'return correct ReportDiff',
+            (key, show, previousValue, currentValue) => {
+              fc.pre(currentValue < previousValue)
+              const report = new Report(key, { show, positiveWhenUp: true })
+
+              const diff = report.diff(currentValue, previousValue)
+              expect(diff).toEqual({
+                value: previousValue - currentValue,
+                direction: 'down',
+                positive: false,
+              })
+            },
+          )
+        })
       })
-      describe('when down', () => {
-        it.prop([genReportKey(), fc.boolean(), fc.integer(), fc.integer()])(
-          'return correct ReportDiff',
-          (key, show, previousValue, currentValue) => {
-            fc.pre(currentValue < previousValue)
-            const report = new Report(key, { show, positiveWhenUp: true })
+      describe('negative when up', () => {
+        describe('when up', () => {
+          it.prop([genReportKey(), fc.boolean(), fc.integer(), fc.integer()])(
+            'return correct ReportDiff',
+            (key, show, previousValue, currentValue) => {
+              fc.pre(currentValue > previousValue)
+              const report = new Report(key, { show, positiveWhenUp: false })
 
-            const diff = report.diff(currentValue, previousValue)
-            expect(diff).toEqual({
-              value: previousValue - currentValue,
-              direction: 'down',
-              positive: !report.positiveWhenUp,
-            })
-          },
-        )
+              const diff = report.diff(currentValue, previousValue)
+              expect(diff).toEqual({
+                value: currentValue - previousValue,
+                direction: 'up',
+                positive: false,
+              })
+            },
+          )
+        })
+        describe('when down', () => {
+          it.prop([genReportKey(), fc.boolean(), fc.integer(), fc.integer()])(
+            'return correct ReportDiff',
+            (key, show, previousValue, currentValue) => {
+              fc.pre(currentValue < previousValue)
+              const report = new Report(key, { show, positiveWhenUp: false })
+
+              const diff = report.diff(currentValue, previousValue)
+              expect(diff).toEqual({
+                value: previousValue - currentValue,
+                direction: 'down',
+                positive: true,
+              })
+            },
+          )
+        })
       })
     })
   })
