@@ -152,7 +152,7 @@ export class ReportBlock {
   }
   containProblemFor(
     assembly: Assembly,
-  ): this is ReportBlock & { dangerCaptionKey: string } {
+  ): this is ReportBlock & { problemCaptionKey: string } {
     return this._reports.some((r) => r.statusFor(assembly) !== 'normal')
   }
 
