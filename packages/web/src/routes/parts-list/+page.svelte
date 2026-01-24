@@ -5,8 +5,8 @@
    * スロット選択による文脈確立、フィルタリング、並び替え、お気に入り管理を提供する探索的UIページ
    */
 
-  import LanguageForm from '$lib/components/language/LanguageForm.svelte'
   import Navbar from '$lib/components/layout/Navbar.svelte'
+  import PageHeader from '$lib/components/layout/PageHeader.svelte'
   import PartsListView from '$lib/view/parts-list/PartsListView.svelte'
 
   import type { PageData } from './+page'
@@ -40,20 +40,15 @@
 
 <main class="parts-list-page py-4">
   <div class="container">
-    <div class="text-center mb-3">
-      <h1>
+    <PageHeader class="mb-3">
+      {#snippet title()}
         ARMORED CORE Ⅵ<br class="d-block d-md-none" />
         PARTS LIST
-      </h1>
-
-      <h2>
+      {/snippet}
+      {#snippet subtitle()}
         for Regulation {regulation.version}
-      </h2>
-
-      <div>
-        <LanguageForm />
-      </div>
-    </div>
+      {/snippet}
+    </PageHeader>
 
     <PartsListView {regulation} initialSearchParams={searchParams} />
   </div>

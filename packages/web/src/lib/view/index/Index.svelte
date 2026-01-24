@@ -1,8 +1,8 @@
 <script lang="ts">
-  import LanguageForm from '$lib/components/language/LanguageForm.svelte'
   import CollapseText from '$lib/components/layout/CollapseText.svelte'
   import NavButton from '$lib/components/layout/navbar/NavButton.svelte'
   import Navbar from '$lib/components/layout/Navbar.svelte'
+  import PageHeader from '$lib/components/layout/PageHeader.svelte'
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import ErrorModal from '$lib/components/modal/ErrorModal.svelte'
   import i18n from '$lib/i18n/define'
@@ -214,18 +214,15 @@
   </NavButton>
 </Navbar>
 
-<div class="text-center mt-3">
-  <h1>
+<PageHeader class="mt-3">
+  {#snippet title()}
     ARMORED CORE Ⅵ<br class="d-block d-md-none" />
     ASSEMBLY TOOL
-  </h1>
-  <h2>
+  {/snippet}
+  {#snippet subtitle()}
     for Regulation {version}
-  </h2>
-  <div>
-    <LanguageForm />
-  </div>
-</div>
+  {/snippet}
+</PageHeader>
 
 <article class="container text-center px-3">
   <ToolSection id="candidates-form" class="my-4 w-100">

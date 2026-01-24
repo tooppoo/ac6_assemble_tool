@@ -6,8 +6,8 @@
    */
 
   import { fetchRecommendations } from '$lib/api/recommend'
-  import LanguageForm from '$lib/components/language/LanguageForm.svelte'
   import Navbar from '$lib/components/layout/Navbar.svelte'
+  import PageHeader from '$lib/components/layout/PageHeader.svelte'
   import Spinner from '$lib/components/spinner/Spinner.svelte'
   import type { I18NextStore } from '$lib/i18n/define'
   import QueryInput from '$lib/view/recommendation/query/QueryInput.svelte'
@@ -97,15 +97,12 @@
 
 <main class="recommendation-page py-4">
   <div class="container">
-    <div class="text-center mb-4">
-      <h1>
+    <PageHeader class="mb-4">
+      {#snippet title()}
         ARMORED CORE Ⅵ<br class="d-block" />
         AI PARTS RECOMMENDATION(β)
-      </h1>
-      <div>
-        <LanguageForm />
-      </div>
-    </div>
+      {/snippet}
+    </PageHeader>
 
     <p class="text-center text-muted mb-4">
       {pageDescription}
