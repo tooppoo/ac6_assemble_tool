@@ -114,29 +114,6 @@
     {@render titleSnippet?.()}
   {/snippet}
   {#snippet body()}
-    <p class="text-muted small mb-3">
-      {$i18n.t('random:panel.effect')}
-    </p>
-    <div
-      id="random-assembly"
-      class="d-none d-md-flex justify-content-bgein align-items-center mb-3"
-    >
-      <RandomAssembleButton
-        id="random-assembly-button-offcanvas"
-        {initialCandidates}
-        {candidates}
-        {lockedParts}
-        {randomAssembly}
-        class="w-100"
-        onclick={onRandom}
-        onerror={(e) => onError?.(e)}
-      >
-        {$i18n.t('random:command.random.label')}
-      </RandomAssembleButton>
-    </div>
-
-    <hr class="w-100 my-4 d-none d-md-block" />
-
     <div id="disallow-over-load">
       <Switch
         id={`${id}-disallow-over-load`}

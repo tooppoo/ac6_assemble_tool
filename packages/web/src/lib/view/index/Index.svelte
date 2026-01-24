@@ -147,20 +147,11 @@
     aria-label={$i18n.t('random:command.random.label')}
     class="me-3"
     onclick={(event) => onRandom(event)}
-  />
-  <NavButton
-    id="reset-lock-form"
-    class="me-3"
-    title={$i18n.t('command.resetLock.description', { ns: 'page/index' })}
-    onclick={() => commit(indexController.onResetLocks(indexState))}
   >
-    {#snippet icon()}
-      <i class="bi bi-unlock"></i>
-    {/snippet}
     <span class="d-none d-md-inline">
-      {$i18n.t('command.resetLock.label', { ns: 'page/index' })}
+      {$i18n.t('random:command.random.label')}
     </span>
-  </NavButton>
+  </RandomAssembleButton>
   <NavButton
     id="random-assemble"
     class="me-3"
@@ -176,7 +167,7 @@
   </NavButton>
   <NavButton
     id="reset-lock-nav"
-    class="me-3 d-none d-md-block"
+    class="me-3"
     title={$i18n.t('command.resetLock.description', { ns: 'page/index' })}
     onclick={() => commit(indexController.onResetLocks(indexState))}
   >
