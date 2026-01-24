@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { Snippet } from 'svelte'
-
   import LanguageForm from '$lib/components/language/LanguageForm.svelte'
+
+  import type { Snippet } from 'svelte'
 
   interface Props {
     class?: string
