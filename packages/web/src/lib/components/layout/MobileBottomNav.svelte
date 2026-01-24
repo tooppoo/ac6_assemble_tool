@@ -7,6 +7,12 @@
 
   import { page } from '$app/state'
 
+  interface Props {
+    class?: string
+  }
+
+  let { class: className = '' }: Props = $props()
+
   const i18n = getContext<I18NextStore>('i18n')
   let pageQuery = $derived.by(getQuery)
 
@@ -14,7 +20,7 @@
   let currentPath = $derived(page.url.pathname)
 </script>
 
-<nav class="mobile-bottom-nav d-flex d-lg-none" aria-label="Main navigation">
+<nav class="mobile-bottom-nav d-flex d-lg-none {className}" aria-label="Main navigation">
   {#each navItems as item (item.path)}
     <a
       href={`${item.path}?${pageQuery}`}

@@ -26,6 +26,7 @@
   } from '$env/static/public'
 
   let { children } = $props()
+  let loading: boolean = $state(true)
 
   setContext('i18n', i18n)
   setLogLevel(PUBLIC_LOG_LEVEL || 'info')
@@ -40,6 +41,9 @@
   const jaText = extractChars(resources.ja)
   function onFontLoad(this: HTMLLinkElement): void {
     this.media = 'all'
+    setTimeout(() => {
+      loading = false // フォントのちらつき対策
+    }, 100)
   }
 
   const reportRequestLinkAttributes = {
@@ -128,6 +132,16 @@
   <!-- End Font -->
 </svelte:head>
 
+{#if loading}
+  <div
+    class="d-flex justify-content-center align-items-center vh-100 vw-100 z-1 position-absolute top-0 start-0 bg-body"
+    data-testid="loading-screen"
+  >
+    <div class="spinner-border" role="status" aria-label="Loading">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+{/if}
 <div
   class="font-monospace has-mobile-bottom-nav pb-lg-0"
   data-testid="layout-root"
@@ -240,7 +254,9 @@
 </div>
 
 <!-- モバイル下部ナビ -->
-<MobileBottomNav />
+<MobileBottomNav
+  class={`${loading ? 'd-none' : ''} font-monospace`}
+/>
 
 <style>
   :global(:root) {
