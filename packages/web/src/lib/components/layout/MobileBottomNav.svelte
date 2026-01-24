@@ -66,7 +66,7 @@
   }
 
   .mobile-bottom-nav__item--active {
-    color: var(--global-nav-active-color);
+    background-color: var(--global-nav-active-bg);
     font-weight: 600;
   }
 

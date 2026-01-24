@@ -60,7 +60,7 @@
   }
 
   .global-nav__item--active {
-    border-bottom-color: var(--bs-primary);
+    background-color: var(--global-nav-active-bg);
     font-weight: 500;
   }
 
