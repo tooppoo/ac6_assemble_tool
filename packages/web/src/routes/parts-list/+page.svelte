@@ -36,20 +36,24 @@
   />
 </svelte:head>
 
-<Navbar>
-  <LanguageForm />
-</Navbar>
+<Navbar />
 
 <main class="parts-list-page py-4">
   <div class="container">
-    <h1 class="py-2 text-center">
-      ARMORED CORE Ⅵ<br class="d-block d-md-none" />
-      PARTS LIST
-    </h1>
+    <div class="text-center mb-3">
+      <h1>
+        ARMORED CORE Ⅵ<br class="d-block d-md-none" />
+        PARTS LIST
+      </h1>
 
-    <h2 class="py-2 text-center">
-      Regulation for {regulation.version}
-    </h2>
+      <h2>
+        for Regulation {regulation.version}
+      </h2>
+
+      <div>
+        <LanguageForm />
+      </div>
+    </div>
 
     <PartsListView {regulation} initialSearchParams={searchParams} />
   </div>

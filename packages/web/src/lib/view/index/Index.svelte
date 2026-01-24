@@ -1,5 +1,4 @@
 <script lang="ts">
-  import TextButton from '$lib/components/button/TextButton.svelte'
   import LanguageForm from '$lib/components/language/LanguageForm.svelte'
   import CollapseText from '$lib/components/layout/CollapseText.svelte'
   import NavButton from '$lib/components/layout/navbar/NavButton.svelte'
@@ -7,7 +6,6 @@
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import ErrorModal from '$lib/components/modal/ErrorModal.svelte'
   import i18n from '$lib/i18n/define'
-  import { buildQueryFromAssembly } from '$lib/store/query/query-store.svelte'
 
   import {
     assemblyKeys,
@@ -216,7 +214,7 @@
   </NavButton>
 </Navbar>
 
-<header class="text-center mt-5">
+<div class="text-center mt-3">
   <h1>
     ARMORED CORE Ⅵ<br class="d-block d-md-none" />
     ASSEMBLY TOOL
@@ -227,7 +225,7 @@
   <div>
     <LanguageForm />
   </div>
-</header>
+</div>
 
 <article class="container text-center px-3">
   <ToolSection id="candidates-form" class="my-4 w-100">

@@ -93,16 +93,19 @@
   <meta name="description" content={pageDescription} />
 </svelte:head>
 
-<Navbar>
-  <LanguageForm />
-</Navbar>
+<Navbar />
 
 <main class="recommendation-page py-4">
   <div class="container">
-    <h1 class="py-2 text-center">
-      ARMORED CORE Ⅵ<br class="d-block" />
-      AI PARTS RECOMMENDATION(β)
-    </h1>
+    <div class="text-center mb-4">
+      <h1>
+        ARMORED CORE Ⅵ<br class="d-block" />
+        AI PARTS RECOMMENDATION(β)
+      </h1>
+      <div>
+        <LanguageForm />
+      </div>
+    </div>
 
     <p class="text-center text-muted mb-4">
       {pageDescription}
