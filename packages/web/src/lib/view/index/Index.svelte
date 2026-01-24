@@ -139,6 +139,30 @@
 <svelte:window onpopstate={onPopstate} />
 
 <Navbar>
+  <RandomAssembleButton
+    id="random-assembly-button-form"
+    initialCandidates={indexState.initialCandidates}
+    candidates={indexState.candidates}
+    lockedParts={indexState.lockedParts}
+    randomAssembly={indexState.randomAssembly}
+    tooltipText={$i18n.t('random:command.random.label')}
+    aria-label={$i18n.t('random:command.random.label')}
+    class="me-3"
+    onclick={(event) => onRandom(event)}
+  />
+  <NavButton
+    id="reset-lock-form"
+    class="me-3"
+    title={$i18n.t('command.resetLock.description', { ns: 'page/index' })}
+    onclick={() => commit(indexController.onResetLocks(indexState))}
+  >
+    {#snippet icon()}
+      <i class="bi bi-unlock"></i>
+    {/snippet}
+    <span class="d-none d-md-inline">
+      {$i18n.t('command.resetLock.label', { ns: 'page/index' })}
+    </span>
+  </NavButton>
   <NavButton
     id="random-assemble"
     class="me-3"
@@ -180,7 +204,6 @@
   </NavButton>
   <NavButton
     id="open-assembly-store"
-    class="me-3"
     title={$i18n.t('command.store.description', { ns: 'page/index' })}
     onclick={() => commit(indexController.onOpenStorePanel(indexState))}
   >
@@ -208,30 +231,6 @@
 
 <article class="container text-center px-3">
   <ToolSection id="candidates-form" class="my-4 w-100">
-    <div class="d-flex d-md-none justify-content-end">
-      <RandomAssembleButton
-        id="random-assembly-button-form"
-        initialCandidates={indexState.initialCandidates}
-        candidates={indexState.candidates}
-        lockedParts={indexState.lockedParts}
-        randomAssembly={indexState.randomAssembly}
-        tooltipText={$i18n.t('random:command.random.label')}
-        aria-label={$i18n.t('random:command.random.label')}
-        class="me-3"
-        onclick={(event) => onRandom(event)}
-      />
-      <TextButton
-        id="reset-lock-form"
-        title={$i18n.t('command.resetLock.description', { ns: 'page/index' })}
-        tooltipText={$i18n.t('command.resetLock.description', {
-          ns: 'page/index',
-        })}
-        onclick={() => commit(indexController.onResetLocks(indexState))}
-      >
-        <i class="bi bi-unlock"></i>
-      </TextButton>
-    </div>
-    <hr class="w-100 d-flex d-md-none" />
     {#each assemblyKeys() as key (key)}
       <PartsSelectForm
         id={key}
