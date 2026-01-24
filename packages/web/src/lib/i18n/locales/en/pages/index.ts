@@ -1,6 +1,11 @@
 import { problemCaptionKeys } from '$lib/view/index/report/model/report'
 
 export const enPageIndex = {
+  globalNav: {
+    assembly: 'Assembly',
+    parts: 'Parts',
+    ai: 'AI',
+  },
   command: {
     random: {
       label: 'Random Config',

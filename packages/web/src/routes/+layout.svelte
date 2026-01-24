@@ -2,6 +2,7 @@
   import './app.scss'
   import { appUrl, publicPath } from '$lib/app-url'
   import FooterSection from '$lib/components/layout/footer/FooterSection.svelte'
+  import MobileBottomNav from '$lib/components/layout/MobileBottomNav.svelte'
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import FlushList from '$lib/components/list/FlushList.svelte'
   import ListItem from '$lib/components/list/ListItem.svelte'
@@ -127,7 +128,10 @@
   <!-- End Font -->
 </svelte:head>
 
-<div class="font-monospace" data-testid="layout-root">
+<div
+  class="font-monospace has-mobile-bottom-nav pb-lg-0"
+  data-testid="layout-root"
+>
   {@render children()}
 
   <hr class="my-3" />
@@ -234,3 +238,17 @@
     </div>
   </footer>
 </div>
+
+<!-- モバイル下部ナビ -->
+<MobileBottomNav />
+
+<style>
+  :global(:root) {
+    /* モバイル下部ナビ */
+    --mobile-bottom-nav-height: 56px;
+  }
+
+  .has-mobile-bottom-nav {
+    padding-bottom: var(--mobile-bottom-nav-height);
+  }
+</style>

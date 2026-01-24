@@ -6,6 +6,7 @@
    */
 
   import LanguageForm from '$lib/components/language/LanguageForm.svelte'
+  import Navbar from '$lib/components/layout/Navbar.svelte'
   import PartsListView from '$lib/view/parts-list/PartsListView.svelte'
 
   import type { PageData } from './+page'
@@ -35,6 +36,10 @@
   />
 </svelte:head>
 
+<Navbar>
+  <LanguageForm />
+</Navbar>
+
 <main class="parts-list-page py-4">
   <div class="container">
     <h1 class="py-2 text-center">
@@ -45,10 +50,6 @@
     <h2 class="py-2 text-center">
       Regulation for {regulation.version}
     </h2>
-
-    <div class="d-flex justify-content-center mb-4">
-      <LanguageForm />
-    </div>
 
     <PartsListView {regulation} initialSearchParams={searchParams} />
   </div>
