@@ -7,7 +7,7 @@ vi.mock('$app/navigation', () => ({
   pushState: vi.fn(),
 }))
 
-vi.mock('$lib/store/query/query-store', () => ({
+vi.mock('$lib/store/query/query-store.svelte', () => ({
   storeAssemblyAsQuery: vi.fn(),
 }))
 
