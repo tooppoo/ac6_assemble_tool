@@ -67,10 +67,6 @@
   let indexState: IndexState = $state(
     indexController.init({ partsPool, tryLimit }).state,
   )
-  // アセンブリと現在のURLクエリ（言語設定など）をマージしてパーツ一覧へのリンクを生成
-  let navToPartsList = $derived(
-    `/parts-list?${buildQueryFromAssembly(indexState.assembly).toString()}`,
-  )
 
   const orderParts: OrderParts = $derived(defineOrder(orders))
 
@@ -153,19 +149,6 @@
     {/snippet}
     <span class="d-none d-md-inline">
       {$i18n.t('command.random.label', { ns: 'page/index' })}
-    </span>
-  </NavButton>
-  <NavButton
-    id="open-parts-list"
-    class="me-3"
-    href={navToPartsList}
-    title={$i18n.t('command.partsList.description', { ns: 'page/index' })}
-  >
-    {#snippet icon()}
-      <i class="bi bi-funnel"></i>
-    {/snippet}
-    <span class="d-none d-md-inline">
-      {$i18n.t('command.partsList.label', { ns: 'page/index' })}
     </span>
   </NavButton>
   <NavButton
