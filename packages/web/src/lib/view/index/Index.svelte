@@ -38,7 +38,6 @@
     ApplyRandomFilter,
     AssembleRandomly,
     ChangePartsEvent,
-    ErrorOnAssembly,
     ToggleLockEvent,
   } from './types/index-events'
   import type { PartsPoolRestrictions } from './usecase/derive-parts-pool'
@@ -114,10 +113,6 @@
   const onRandom = (event: AssembleRandomly) => {
     logger.debug('on random', { event })
     commitAndSync(indexController.onRandom(indexState, event))
-  }
-  const errorOnRandom = (event: ErrorOnAssembly) => {
-    logger.debug('error on random', { event })
-    commit(indexController.onError(indexState, event, $i18n))
   }
 
   const onLock = (event: ToggleLockEvent) => {
@@ -259,8 +254,6 @@
   assembly={indexState.assembly}
   onToggle={(e) =>
     commit(indexController.onToggleRandomPanel(indexState, e.open))}
-  {onRandom}
-  onError={errorOnRandom}
   onFilter={(event: ApplyRandomFilter) =>
     commit(indexController.onFilterRandom(indexState, event))}
   onLockLegs={onLock}

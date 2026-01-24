@@ -5,9 +5,6 @@
   } from '$lib/components/off-canvas/OffCanvas.svelte'
   import Margin from '$lib/components/spacing/Margin.svelte'
   import i18n from '$lib/i18n/define'
-  import RandomAssembleButton, {
-    type ClickEvent,
-  } from '$lib/view/index/random/button/RandomAssembleButton.svelte'
 
   import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
   import type { LockedParts } from '@ac6_assemble_tool/core/assembly/random/lock'
@@ -24,11 +21,7 @@
   import { logger } from '@ac6_assemble_tool/shared/logger'
   import type { Snippet } from 'svelte'
 
-  import type {
-    ApplyRandomFilter,
-    AssembleRandomly,
-    ErrorOnAssembly,
-  } from '../types/index-events'
+  import type { ApplyRandomFilter } from '../types/index-events'
 
   import CoamRangeSlider from './range/CoamRangeSlider.svelte'
   import LoadRangeSlider, {
@@ -43,33 +36,25 @@
     candidates: Candidates
     randomAssembly: RandomAssembly
     assembly: Assembly
-    onRandom?: (event: AssembleRandomly) => void
     onFilter?: (event: ApplyRandomFilter) => void
     onToggle?: (event: ToggleOffCanvas) => void
     onLockLegs?: (event: ToggleLock) => void
-    onError?: (event: ErrorOnAssembly) => void
     title?: Snippet
   }
   let {
     id,
     open,
     lockedParts,
-    initialCandidates,
     candidates,
     randomAssembly,
     assembly,
-    onRandom: handleRandom,
     onFilter,
     onToggle,
     onLockLegs,
-    onError,
     title: titleSnippet,
   }: Props = $props()
 
   // handler
-  const onRandom = ({ assembly }: ClickEvent) => {
-    handleRandom?.({ assembly })
-  }
   const onApply = (param: ApplyRandomFilter) => {
     onFilter?.(param)
 
