@@ -254,9 +254,7 @@
 </div>
 
 <!-- モバイル下部ナビ -->
-<MobileBottomNav
-  class={`${loading ? 'd-none' : ''} font-monospace`}
-/>
+<MobileBottomNav class={`${loading ? 'd-none' : ''} font-monospace`} />
 
 <style>
   :global(:root) {

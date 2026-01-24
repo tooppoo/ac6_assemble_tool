@@ -20,7 +20,10 @@
   let currentPath = $derived(page.url.pathname)
 </script>
 
-<nav class="mobile-bottom-nav d-flex d-lg-none {className}" aria-label="Main navigation">
+<nav
+  class="mobile-bottom-nav d-flex d-lg-none {className}"
+  aria-label="Main navigation"
+>
   {#each navItems as item (item.path)}
     <a
       href={`${item.path}?${pageQuery}`}
