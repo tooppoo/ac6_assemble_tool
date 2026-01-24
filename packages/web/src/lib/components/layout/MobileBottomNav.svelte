@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { I18NextStore } from '$lib/i18n/define'
+  import { isActiveNavItem, navItems } from '$lib/components/layout/nav-items'
 
   import { getContext } from 'svelte'
 
@@ -11,21 +12,6 @@
 
   // 現在のパスからアクティブなモードを判定
   let currentPath = $derived(page.url.pathname)
-
-  interface NavItem {
-    path: string
-    labelKey: string
-  }
-
-  const navItems: NavItem[] = [
-    { path: '/', labelKey: 'globalNav.assembly' },
-    { path: '/parts-list', labelKey: 'globalNav.parts' },
-    { path: '/recommendation', labelKey: 'globalNav.ai' },
-  ]
-
-  const isActive = (itemPath: string, currentPath: string): boolean => {
-    return itemPath === currentPath
-  }
 </script>
 
 <nav class="mobile-bottom-nav d-flex d-lg-none" aria-label="Main navigation">
@@ -33,8 +19,8 @@
     <a
       href={`${item.path}?${pageQuery}`}
       class="mobile-bottom-nav__item"
-      class:mobile-bottom-nav__item--active={isActive(item.path, currentPath)}
-      aria-current={isActive(item.path, currentPath) ? 'page' : undefined}
+      class:mobile-bottom-nav__item--active={isActiveNavItem(item.path, currentPath)}
+      aria-current={isActiveNavItem(item.path, currentPath) ? 'page' : undefined}
     >
       {$i18n.t(item.labelKey, { ns: 'page/index' })}
     </a>
