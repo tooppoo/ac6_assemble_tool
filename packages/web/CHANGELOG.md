@@ -1,9 +1,8 @@
 # @ac6_assemble_tool/web
 
 ## 4.5.1
+
 ### Patch Changes
-
-
 
 - [#1065](https://github.com/tooppoo/ac6_assemble_tool/pull/1065) [`a94296c`](https://github.com/tooppoo/ac6_assemble_tool/commit/a94296caad6d2f006b7d3fa713878e2e9e2013e2) Thanks [@tooppoo](https://github.com/tooppoo)! - fix: EN不足・重量超過・腕部重量超過時のアラート表示を修正
 

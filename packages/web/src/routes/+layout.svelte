@@ -2,6 +2,7 @@
   import './app.scss'
   import { appUrl, publicPath } from '$lib/app-url'
   import FooterSection from '$lib/components/layout/footer/FooterSection.svelte'
+  import MobileBottomNav from '$lib/components/layout/MobileBottomNav.svelte'
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import FlushList from '$lib/components/list/FlushList.svelte'
   import ListItem from '$lib/components/list/ListItem.svelte'
@@ -10,8 +11,8 @@
   import { extractChars } from '$lib/i18n/extract-chars'
   import { resources } from '$lib/i18n/resources'
   import { initializeLanguageFromQuery } from '$lib/store/language/language-store.svelte'
+  import { getQuery } from '$lib/store/query/query-store.svelte'
   import { appVersion } from '$lib/utils/app-version'
-  import { withPageQuery } from '$lib/utils/page-query'
 
   import { setLogLevel } from '@ac6_assemble_tool/shared/logger'
   import { setContext } from 'svelte'
@@ -25,6 +26,7 @@
   } from '$env/static/public'
 
   let { children } = $props()
+  let loading: boolean = $state(true)
 
   setContext('i18n', i18n)
   setLogLevel(PUBLIC_LOG_LEVEL || 'info')
@@ -39,6 +41,9 @@
   const jaText = extractChars(resources.ja)
   function onFontLoad(this: HTMLLinkElement): void {
     this.media = 'all'
+    setTimeout(() => {
+      loading = false // フォントのちらつき対策
+    }, 100)
   }
 
   const reportRequestLinkAttributes = {
@@ -53,7 +58,7 @@
     rel: 'external noopener noreferrer',
   } as const
 
-  let pageQuery = $derived.by(withPageQuery)
+  let pageQuery = $derived.by(getQuery)
 </script>
 
 <svelte:head>
@@ -127,7 +132,20 @@
   <!-- End Font -->
 </svelte:head>
 
-<div class="font-monospace" data-testid="layout-root">
+{#if loading}
+  <div
+    class="d-flex justify-content-center align-items-center vh-100 vw-100 z-1 position-absolute top-0 start-0 bg-body"
+    data-testid="loading-screen"
+  >
+    <div class="spinner-border" role="status" aria-label="Loading">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+{/if}
+<div
+  class="font-monospace has-mobile-bottom-nav pb-lg-0"
+  data-testid="layout-root"
+>
   {@render children()}
 
   <hr class="my-3" />
@@ -168,13 +186,13 @@
       <FooterSection caption="TOOLS" class="col">
         <FlushList>
           <ListItem>
-            <a href={`/${pageQuery}`}>ASSEMBLY TOOL</a>
+            <a href={`/?${pageQuery}`}>ASSEMBLY TOOL</a>
           </ListItem>
           <ListItem>
-            <a href={`/parts-list${pageQuery}`}>PARTS LIST</a>
+            <a href={`/parts-list?${pageQuery}`}>PARTS LIST</a>
           </ListItem>
           <ListItem>
-            <a href={`/recommendation${pageQuery}`}>AI RECOMMENDATION</a>
+            <a href={`/recommendation?${pageQuery}`}>AI RECOMMENDATION</a>
           </ListItem>
         </FlushList>
       </FooterSection>
@@ -234,3 +252,17 @@
     </div>
   </footer>
 </div>
+
+<!-- モバイル下部ナビ -->
+<MobileBottomNav class={`${loading ? 'd-none' : ''} font-monospace`} />
+
+<style>
+  :global(:root) {
+    /* モバイル下部ナビ */
+    --mobile-bottom-nav-height: 56px;
+  }
+
+  .has-mobile-bottom-nav {
+    padding-bottom: var(--mobile-bottom-nav-height);
+  }
+</style>

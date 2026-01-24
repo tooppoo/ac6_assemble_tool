@@ -7,13 +7,13 @@ vi.mock('$app/navigation', () => ({
   pushState: vi.fn(),
 }))
 
-vi.mock('$lib/store/query/query-store', () => ({
+vi.mock('$lib/store/query/query-store.svelte', () => ({
   storeAssemblyAsQuery: vi.fn(),
 }))
 
 // mockの関係上、mock後にimport
 // eslint-disable-next-line import/order
-import { storeAssemblyAsQuery } from '$lib/store/query/query-store'
+import { storeAssemblyAsQuery } from '$lib/store/query/query-store.svelte'
 
 import { initializeAssembly } from '../usecase/initialize-assembly'
 

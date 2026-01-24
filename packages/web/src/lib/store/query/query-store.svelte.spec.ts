@@ -19,7 +19,10 @@ vi.mock('$app/environment', () => ({
   },
 }))
 
-import { buildQueryFromAssembly, storeAssemblyAsQuery } from './query-store'
+import {
+  buildQueryFromAssembly,
+  storeAssemblyAsQuery,
+} from './query-store.svelte'
 
 import { pushState } from '$app/navigation'
 import { page } from '$app/state'

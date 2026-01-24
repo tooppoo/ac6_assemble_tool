@@ -43,7 +43,7 @@
   <div>
     <div class="row mb-3">
       {#if block.containProblemFor(assembly)}
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning w-75 mx-auto mb-2" role="alert">
           {$i18n.t(`page/index:report.block.${block.problemCaptionKey}`)}
         </div>
       {/if}

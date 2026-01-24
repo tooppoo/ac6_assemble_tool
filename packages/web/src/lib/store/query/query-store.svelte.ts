@@ -1,11 +1,17 @@
 import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
 import { assemblyToSearchV2 } from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
+import { SvelteURLSearchParams } from 'svelte/reactivity'
 
 import { mergeAssemblyParams } from './query-merge'
 
 import { browser } from '$app/environment'
 import { pushState } from '$app/navigation'
 import { page } from '$app/state'
+
+let query: string = $state('')
+export function getQuery(): string {
+  return query
+}
 
 /**
  * アセンブリから完全なクエリパラメータを生成する
@@ -19,8 +25,8 @@ export function buildQueryFromAssembly(assembly: Assembly): URLSearchParams {
   const assemblyParams = assemblyToSearchV2(assembly)
   // SSR時はpage.urlにアクセスできないため、空のパラメータを使用
   const mergedParams = browser
-    ? new URLSearchParams(page.url.searchParams)
-    : new URLSearchParams()
+    ? new SvelteURLSearchParams(page.url.searchParams)
+    : new SvelteURLSearchParams()
   mergeAssemblyParams(mergedParams, assemblyParams)
 
   return mergedParams
@@ -34,4 +40,5 @@ export function buildQueryFromAssembly(assembly: Assembly): URLSearchParams {
 export function storeAssemblyAsQuery(assembly: Assembly): void {
   const q = buildQueryFromAssembly(assembly)
   pushState(`${page.url.pathname}?${q.toString()}`, {})
+  query = q.toString()
 }

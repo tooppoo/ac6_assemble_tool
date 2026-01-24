@@ -1,13 +1,12 @@
 <script lang="ts">
-  import TextButton from '$lib/components/button/TextButton.svelte'
-  import LanguageForm from '$lib/components/language/LanguageForm.svelte'
   import CollapseText from '$lib/components/layout/CollapseText.svelte'
   import NavButton from '$lib/components/layout/navbar/NavButton.svelte'
   import Navbar from '$lib/components/layout/Navbar.svelte'
+  import PageHeader from '$lib/components/layout/PageHeader.svelte'
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import ErrorModal from '$lib/components/modal/ErrorModal.svelte'
   import i18n from '$lib/i18n/define'
-  import { buildQueryFromAssembly } from '$lib/store/query/query-store'
+  import { objectsIsSameValue } from '$lib/utils/compare'
 
   import {
     assemblyKeys,
@@ -39,7 +38,6 @@
     ApplyRandomFilter,
     AssembleRandomly,
     ChangePartsEvent,
-    ErrorOnAssembly,
     ToggleLockEvent,
   } from './types/index-events'
   import type { PartsPoolRestrictions } from './usecase/derive-parts-pool'
@@ -67,10 +65,6 @@
   let indexState: IndexState = $state(
     indexController.init({ partsPool, tryLimit }).state,
   )
-  // アセンブリと現在のURLクエリ（言語設定など）をマージしてパーツ一覧へのリンクを生成
-  let navToPartsList = $derived(
-    `/parts-list?${buildQueryFromAssembly(indexState.assembly).toString()}`,
-  )
 
   const orderParts: OrderParts = $derived(defineOrder(orders))
 
@@ -82,7 +76,7 @@
     }
   }
   const commit = (result: ControllerResult) => {
-    if (result.state !== indexState) {
+    if (!objectsIsSameValue(result.state, indexState)) {
       indexState = result.state
     }
     runEffects(result.effects)
@@ -120,10 +114,6 @@
     logger.debug('on random', { event })
     commitAndSync(indexController.onRandom(indexState, event))
   }
-  const errorOnRandom = (event: ErrorOnAssembly) => {
-    logger.debug('error on random', { event })
-    commit(indexController.onError(indexState, event, $i18n))
-  }
 
   const onLock = (event: ToggleLockEvent) => {
     logger.debug('on lock', { event })
@@ -142,6 +132,21 @@
 <svelte:window onpopstate={onPopstate} />
 
 <Navbar>
+  <RandomAssembleButton
+    id="random-assembly-button-form"
+    initialCandidates={indexState.initialCandidates}
+    candidates={indexState.candidates}
+    lockedParts={indexState.lockedParts}
+    randomAssembly={indexState.randomAssembly}
+    tooltipText={$i18n.t('random:command.random.label')}
+    aria-label={$i18n.t('random:command.random.label')}
+    class="me-3"
+    onclick={(event) => onRandom(event)}
+  >
+    <span class="d-none d-md-inline">
+      {$i18n.t('random:command.random.label')}
+    </span>
+  </RandomAssembleButton>
   <NavButton
     id="random-assemble"
     class="me-3"
@@ -156,21 +161,8 @@
     </span>
   </NavButton>
   <NavButton
-    id="open-parts-list"
-    class="me-3"
-    href={navToPartsList}
-    title={$i18n.t('command.partsList.description', { ns: 'page/index' })}
-  >
-    {#snippet icon()}
-      <i class="bi bi-funnel"></i>
-    {/snippet}
-    <span class="d-none d-md-inline">
-      {$i18n.t('command.partsList.label', { ns: 'page/index' })}
-    </span>
-  </NavButton>
-  <NavButton
     id="reset-lock-nav"
-    class="me-3 d-none d-md-block"
+    class="me-3"
     title={$i18n.t('command.resetLock.description', { ns: 'page/index' })}
     onclick={() => commit(indexController.onResetLocks(indexState))}
   >
@@ -196,7 +188,6 @@
   </NavButton>
   <NavButton
     id="open-assembly-store"
-    class="me-3"
     title={$i18n.t('command.store.description', { ns: 'page/index' })}
     onclick={() => commit(indexController.onOpenStorePanel(indexState))}
   >
@@ -209,45 +200,18 @@
   </NavButton>
 </Navbar>
 
-<header class="text-center mt-5">
-  <h1>
+<PageHeader class="mt-3">
+  {#snippet title()}
     ARMORED CORE Ⅵ<br class="d-block d-md-none" />
     ASSEMBLY TOOL
-  </h1>
-  <h2>
+  {/snippet}
+  {#snippet subtitle()}
     for Regulation {version}
-  </h2>
-  <div>
-    <LanguageForm />
-  </div>
-</header>
+  {/snippet}
+</PageHeader>
 
 <article class="container text-center px-3">
   <ToolSection id="candidates-form" class="my-4 w-100">
-    <div class="d-flex d-md-none justify-content-end">
-      <RandomAssembleButton
-        id="random-assembly-button-form"
-        initialCandidates={indexState.initialCandidates}
-        candidates={indexState.candidates}
-        lockedParts={indexState.lockedParts}
-        randomAssembly={indexState.randomAssembly}
-        tooltipText={$i18n.t('random:command.random.label')}
-        aria-label={$i18n.t('random:command.random.label')}
-        class="me-3"
-        onclick={(event) => onRandom(event)}
-      />
-      <TextButton
-        id="reset-lock-form"
-        title={$i18n.t('command.resetLock.description', { ns: 'page/index' })}
-        tooltipText={$i18n.t('command.resetLock.description', {
-          ns: 'page/index',
-        })}
-        onclick={() => commit(indexController.onResetLocks(indexState))}
-      >
-        <i class="bi bi-unlock"></i>
-      </TextButton>
-    </div>
-    <hr class="w-100 d-flex d-md-none" />
     {#each assemblyKeys() as key (key)}
       <PartsSelectForm
         id={key}
@@ -290,8 +254,6 @@
   assembly={indexState.assembly}
   onToggle={(e) =>
     commit(indexController.onToggleRandomPanel(indexState, e.open))}
-  {onRandom}
-  onError={errorOnRandom}
   onFilter={(event: ApplyRandomFilter) =>
     commit(indexController.onFilterRandom(indexState, event))}
   onLockLegs={onLock}

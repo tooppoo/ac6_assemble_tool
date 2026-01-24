@@ -1,6 +1,11 @@
 import { problemCaptionKeys } from '$lib/view/index/report/model/report'
 
 export const jaPageIndex = {
+  globalNav: {
+    assembly: 'アセンブル',
+    parts: 'パーツ一覧',
+    ai: 'AI提案',
+  },
   command: {
     random: {
       label: 'ランダム設定',
