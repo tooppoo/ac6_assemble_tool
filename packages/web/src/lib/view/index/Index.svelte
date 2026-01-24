@@ -77,7 +77,7 @@
     }
   }
   const commit = (result: ControllerResult) => {
-    if (!objectsIsSameValue(result.state, indexState)){
+    if (!objectsIsSameValue(result.state, indexState)) {
       indexState = result.state
     }
     runEffects(result.effects)
