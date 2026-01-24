@@ -7,7 +7,7 @@
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import ErrorModal from '$lib/components/modal/ErrorModal.svelte'
   import i18n from '$lib/i18n/define'
-  import { buildQueryFromAssembly } from '$lib/store/query/query-store'
+  import { buildQueryFromAssembly } from '$lib/store/query/query-store.svelte'
 
   import {
     assemblyKeys,

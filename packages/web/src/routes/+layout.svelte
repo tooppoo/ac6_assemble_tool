@@ -12,7 +12,6 @@
   import { resources } from '$lib/i18n/resources'
   import { initializeLanguageFromQuery } from '$lib/store/language/language-store.svelte'
   import { appVersion } from '$lib/utils/app-version'
-  import { withPageQuery } from '$lib/utils/page-query'
 
   import { setLogLevel } from '@ac6_assemble_tool/shared/logger'
   import { setContext } from 'svelte'
@@ -24,6 +23,7 @@
     PUBLIC_REPORT_BUG_URL,
     PUBLIC_REPORT_REQUEST_URL,
   } from '$env/static/public'
+  import { getQuery } from '$lib/store/query/query-store.svelte'
 
   let { children } = $props()
 
@@ -54,7 +54,7 @@
     rel: 'external noopener noreferrer',
   } as const
 
-  let pageQuery = $derived.by(withPageQuery)
+  let pageQuery = $derived.by(getQuery)
 </script>
 
 <svelte:head>
@@ -172,13 +172,13 @@
       <FooterSection caption="TOOLS" class="col">
         <FlushList>
           <ListItem>
-            <a href={`/${pageQuery}`}>ASSEMBLY TOOL</a>
+            <a href={`/?${pageQuery}`}>ASSEMBLY TOOL</a>
           </ListItem>
           <ListItem>
-            <a href={`/parts-list${pageQuery}`}>PARTS LIST</a>
+            <a href={`/parts-list?${pageQuery}`}>PARTS LIST</a>
           </ListItem>
           <ListItem>
-            <a href={`/recommendation${pageQuery}`}>AI RECOMMENDATION</a>
+            <a href={`/recommendation?${pageQuery}`}>AI RECOMMENDATION</a>
           </ListItem>
         </FlushList>
       </FooterSection>

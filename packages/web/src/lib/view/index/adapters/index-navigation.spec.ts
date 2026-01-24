@@ -13,7 +13,7 @@ vi.mock('$lib/store/query/query-store', () => ({
 
 // mockの関係上、mock後にimport
 // eslint-disable-next-line import/order
-import { storeAssemblyAsQuery } from '$lib/store/query/query-store'
+import { storeAssemblyAsQuery } from '$lib/store/query/query-store.svelte'
 
 import { initializeAssembly } from '../usecase/initialize-assembly'
 

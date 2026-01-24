@@ -1,13 +1,13 @@
 <script lang="ts">
   import type { I18NextStore } from '$lib/i18n/define'
-  import { withPageQuery } from '$lib/utils/page-query'
 
   import { getContext } from 'svelte'
 
   import { page } from '$app/state'
+  import { getQuery } from '$lib/store/query/query-store.svelte'
 
   const i18n = getContext<I18NextStore>('i18n')
-  let pageQuery = $derived.by(withPageQuery)
+  let pageQuery = $derived.by(getQuery)
 
   // 現在のパスからアクティブなモードを判定
   let currentPath = $derived(page.url.pathname)
@@ -31,7 +31,7 @@
 <nav class="mobile-bottom-nav d-flex d-lg-none" aria-label="Main navigation">
   {#each navItems as item (item.path)}
     <a
-      href={`${item.path}${pageQuery}`}
+      href={`${item.path}?${pageQuery}`}
       class="mobile-bottom-nav__item"
       class:mobile-bottom-nav__item--active={isActive(item.path, currentPath)}
       aria-current={isActive(item.path, currentPath) ? 'page' : undefined}

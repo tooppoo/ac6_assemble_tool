@@ -1,4 +1,4 @@
-import { storeAssemblyAsQuery } from '$lib/store/query/query-store'
+import { storeAssemblyAsQuery } from '$lib/store/query/query-store.svelte'
 
 import { logger } from '@ac6_assemble_tool/shared/logger'
 

@@ -7,6 +7,11 @@ import { browser } from '$app/environment'
 import { pushState } from '$app/navigation'
 import { page } from '$app/state'
 
+let query: string = $state('')
+export function getQuery(): string {
+  return query
+}
+
 /**
  * アセンブリから完全なクエリパラメータを生成する
  *
@@ -34,4 +39,5 @@ export function buildQueryFromAssembly(assembly: Assembly): URLSearchParams {
 export function storeAssemblyAsQuery(assembly: Assembly): void {
   const q = buildQueryFromAssembly(assembly)
   pushState(`${page.url.pathname}?${q.toString()}`, {})
+  query = q.toString()
 }
