@@ -11,6 +11,7 @@
   import { extractChars } from '$lib/i18n/extract-chars'
   import { resources } from '$lib/i18n/resources'
   import { initializeLanguageFromQuery } from '$lib/store/language/language-store.svelte'
+  import { getQuery } from '$lib/store/query/query-store.svelte'
   import { appVersion } from '$lib/utils/app-version'
 
   import { setLogLevel } from '@ac6_assemble_tool/shared/logger'
@@ -23,7 +24,6 @@
     PUBLIC_REPORT_BUG_URL,
     PUBLIC_REPORT_REQUEST_URL,
   } from '$env/static/public'
-  import { getQuery } from '$lib/store/query/query-store.svelte'
 
   let { children } = $props()
 

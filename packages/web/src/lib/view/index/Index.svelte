@@ -6,6 +6,7 @@
   import ToolSection from '$lib/components/layout/ToolSection.svelte'
   import ErrorModal from '$lib/components/modal/ErrorModal.svelte'
   import i18n from '$lib/i18n/define'
+  import { objectsIsSameValue } from '$lib/utils/compare'
 
   import {
     assemblyKeys,
@@ -44,7 +45,6 @@
 
   import { afterNavigate } from '$app/navigation'
   import { page } from '$app/state'
-  import { objectsIsSameValue } from '$lib/utils/compare'
 
   const tryLimit = 3000
 

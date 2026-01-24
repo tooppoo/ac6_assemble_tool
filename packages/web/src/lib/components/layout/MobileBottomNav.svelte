@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { I18NextStore } from '$lib/i18n/define'
   import { isActiveNavItem, navItems } from '$lib/components/layout/nav-items'
+  import type { I18NextStore } from '$lib/i18n/define'
+  import { getQuery } from '$lib/store/query/query-store.svelte'
 
   import { getContext } from 'svelte'
 
   import { page } from '$app/state'
-  import { getQuery } from '$lib/store/query/query-store.svelte'
 
   const i18n = getContext<I18NextStore>('i18n')
   let pageQuery = $derived.by(getQuery)
@@ -19,8 +19,13 @@
     <a
       href={`${item.path}?${pageQuery}`}
       class="mobile-bottom-nav__item"
-      class:mobile-bottom-nav__item--active={isActiveNavItem(item.path, currentPath)}
-      aria-current={isActiveNavItem(item.path, currentPath) ? 'page' : undefined}
+      class:mobile-bottom-nav__item--active={isActiveNavItem(
+        item.path,
+        currentPath,
+      )}
+      aria-current={isActiveNavItem(item.path, currentPath)
+        ? 'page'
+        : undefined}
     >
       {$i18n.t(item.labelKey, { ns: 'page/index' })}
     </a>

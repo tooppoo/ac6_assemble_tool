@@ -1,12 +1,12 @@
 import type { Assembly } from '@ac6_assemble_tool/core/assembly/assembly'
 import { assemblyToSearchV2 } from '@ac6_assemble_tool/core/assembly/serialize/as-query-v2'
+import { SvelteURLSearchParams } from 'svelte/reactivity'
 
 import { mergeAssemblyParams } from './query-merge'
 
 import { browser } from '$app/environment'
 import { pushState } from '$app/navigation'
 import { page } from '$app/state'
-import { SvelteURLSearchParams } from 'svelte/reactivity'
 
 let query: string = $state('')
 export function getQuery(): string {

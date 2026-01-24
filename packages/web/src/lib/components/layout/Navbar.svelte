@@ -15,7 +15,7 @@
     class="navbar navbar-expand-lg bg-body-tertiary border-bottom border-secondary"
   >
     <div class="container-fluid">
-      <a class="navbar-brand" href='/'> Ⅵ </a>
+      <a class="navbar-brand" href="/"> Ⅵ </a>
       <div class="navbar-nav ms-auto d-flex flex-row">
         {@render children?.()}
       </div>

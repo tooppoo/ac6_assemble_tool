@@ -1,5 +1,7 @@
-
-export function objectsIsSameValue<T extends Record<string, unknown>>(obj1: T, obj2: T): boolean {
+export function objectsIsSameValue<T extends Record<string, unknown>>(
+  obj1: T,
+  obj2: T,
+): boolean {
   const keys1 = Object.keys(obj1)
   const keys2 = Object.keys(obj2)
 

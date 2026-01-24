@@ -9,5 +9,7 @@ export const navItems: NavItem[] = [
   { path: '/recommendation', labelKey: 'globalNav.ai' },
 ]
 
-export const isActiveNavItem = (itemPath: string, currentPath: string): boolean =>
-  itemPath === currentPath
+export const isActiveNavItem = (
+  itemPath: string,
+  currentPath: string,
+): boolean => itemPath === currentPath
