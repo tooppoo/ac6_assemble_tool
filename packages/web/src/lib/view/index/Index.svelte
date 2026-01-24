@@ -46,6 +46,7 @@
 
   import { afterNavigate } from '$app/navigation'
   import { page } from '$app/state'
+  import { objectsIsSameValue } from '$lib/utils/compare'
 
   const tryLimit = 3000
 
@@ -78,7 +79,7 @@
     }
   }
   const commit = (result: ControllerResult) => {
-    if (result.state !== indexState) {
+    if (!objectsIsSameValue(result.state, indexState)){
       indexState = result.state
     }
     runEffects(result.effects)
