@@ -68,6 +68,9 @@ export const jaPartsListPage = {
     weight: '重量',
     enLoad: 'EN負荷',
   },
+  partsDetail: {
+    stats: 'ステータス',
+  },
   emptyState: {
     message: 'フィルタ条件に一致するパーツが見つかりませんでした',
     hintTitle: 'ヒント',

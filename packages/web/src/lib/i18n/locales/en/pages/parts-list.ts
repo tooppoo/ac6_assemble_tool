@@ -69,6 +69,9 @@ export const enPartsListPage = {
     weight: 'Weight',
     enLoad: 'EN Load',
   },
+  partsDetail: {
+    stats: 'Stats',
+  },
   emptyState: {
     message: 'No parts match your current filters.',
     hintTitle: 'Hints',

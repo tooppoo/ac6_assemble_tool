@@ -12,12 +12,13 @@
     slot: CandidatesKey
     favorites: Set<string>
     ontogglefavorite?: (partsId: string) => void
+    onselect?: (parts: ACParts) => void
   }
 
-  let { parts, slot, favorites, ontogglefavorite }: Props = $props()
+  let { parts, slot, favorites, ontogglefavorite, onselect }: Props = $props()
 
   // 実際のi18nインスタンスを提供
   setContext('i18n', i18n)
 </script>
 
-<PartsGrid {parts} {slot} {favorites} {ontogglefavorite} />
+<PartsGrid {parts} {slot} {favorites} {ontogglefavorite} {onselect} />

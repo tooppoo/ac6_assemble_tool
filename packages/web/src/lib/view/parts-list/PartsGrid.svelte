@@ -21,9 +21,16 @@
     slot: CandidatesKey
     favorites: Set<string>
     ontogglefavorite?: (partsId: string) => void
+    onselect?: (parts: ACParts) => void
   }
 
-  let { parts, slot: _slot, favorites, ontogglefavorite }: Props = $props()
+  let {
+    parts,
+    slot: _slot,
+    favorites,
+    ontogglefavorite,
+    onselect,
+  }: Props = $props()
 
   const i18n = getContext<I18NextStore>('i18n')
 
@@ -49,6 +56,7 @@
             parts={part}
             isFavorite={favorites.has(part.id)}
             ontogglefavorite={() => handleToggleFavorite(part.id)}
+            onselect={() => onselect?.(part)}
           />
         </div>
       {/each}

@@ -1,5 +1,5 @@
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
-import { render, screen } from '@testing-library/svelte'
+import { fireEvent, render, screen } from '@testing-library/svelte'
 import { describe, it, expect, vi } from 'vitest'
 
 import PartsGridTestWrapper from './PartsGrid.test-wrapper.svelte'
@@ -134,6 +134,28 @@ describe('PartsGrid', () => {
       await buttons[0].click()
 
       expect(handleToggle).toHaveBeenCalledWith('TEST-001')
+    })
+  })
+
+  describe('選択イベント', () => {
+    it('カードクリックでonselectが発火し、パーツが渡されること', async () => {
+      const handleSelect = vi.fn()
+
+      render(PartsGridTestWrapper, {
+        props: {
+          parts: mockParts,
+          slot: 'rightArmUnit',
+          favorites: new Set<string>(),
+          onselect: handleSelect,
+        },
+      })
+
+      await fireEvent.click(
+        screen.getByRole('button', { name: new RegExp(mockParts[0].name) }),
+      )
+
+      expect(handleSelect).toHaveBeenCalledOnce()
+      expect(handleSelect).toHaveBeenCalledWith(mockParts[0])
     })
   })
 })

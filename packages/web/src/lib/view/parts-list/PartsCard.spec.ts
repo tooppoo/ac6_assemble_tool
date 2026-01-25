@@ -1,5 +1,5 @@
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
-import { render, screen } from '@testing-library/svelte'
+import { fireEvent, render, screen } from '@testing-library/svelte'
 import { describe, it, expect, vi } from 'vitest'
 
 import PartsCardTestWrapper from './PartsCard.test-wrapper.svelte'
@@ -79,6 +79,45 @@ describe('PartsCard', () => {
       await button.click()
 
       expect(handleToggle).toHaveBeenCalledOnce()
+    })
+
+    it('カードクリックでonselectが発火すること', async () => {
+      const handleSelect = vi.fn()
+
+      render(PartsCardTestWrapper, {
+        props: {
+          parts: mockParts,
+          onselect: handleSelect,
+        },
+      })
+
+      await fireEvent.click(
+        screen.getByRole('button', { name: /テストパーツ/ }),
+      )
+
+      expect(handleSelect).toHaveBeenCalledOnce()
+    })
+
+    it('お気に入りボタンではonselectが発火しないこと', async () => {
+      const handleSelect = vi.fn()
+      const handleToggle = vi.fn()
+
+      render(PartsCardTestWrapper, {
+        props: {
+          parts: mockParts,
+          onselect: handleSelect,
+          ontogglefavorite: handleToggle,
+        },
+      })
+
+      const favoriteButton = screen.getByRole('button', {
+        name: /お気に入り/,
+      })
+
+      await fireEvent.click(favoriteButton)
+
+      expect(handleToggle).toHaveBeenCalledOnce()
+      expect(handleSelect).not.toHaveBeenCalled()
     })
   })
 })

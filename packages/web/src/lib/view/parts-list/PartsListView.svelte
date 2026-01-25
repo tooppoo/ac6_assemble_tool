@@ -20,6 +20,12 @@
   import { Result } from '@praha/byethrow'
   import { getContext, onDestroy } from 'svelte'
 
+  import {
+    closePartsDetailPanel,
+    openPartsDetailPanel,
+    type PartsDetailPanelStatus,
+  } from './controller/parts-detail-panel'
+  import PartsDetailPanel from './detail/PartsDetailPanel.svelte'
   import FilterPanel from './filter/FilterPanel.svelte'
   import { applyFilters } from './filter/filters-core'
   import {
@@ -93,6 +99,9 @@
   let viewMode = $state<ViewMode>(loadViewMode())
   let favorites = $state<Set<string>>(new Set())
   let showFavoritesOnly = $state<boolean>(false)
+  let partsDetailStatus = $state<PartsDetailPanelStatus>(
+    closePartsDetailPanel(),
+  )
 
   const emptyCandidateSlots = $derived.by<CandidatesKey[]>(() => {
     return CANDIDATES_KEYS.filter((slot) => {
@@ -267,6 +276,9 @@
     // 同じスロットが選択された場合は何もしない
     if (newSlot === currentSlot) return
 
+    // スロット変更時はパーツ詳細パネルを閉じる
+    partsDetailStatus = closePartsDetailPanel()
+
     // スロットごとの独立フィルタ管理（Requirement 2.5）
     // 現在のスロットのフィルタを保存（Requirement 2.5.1）
     updateFiltersForSlot(currentSlot, filters)
@@ -338,6 +350,14 @@
 
   export function handleToggleFavorites() {
     showFavoritesOnly = !showFavoritesOnly
+  }
+
+  function handleSelectParts(parts: ACParts) {
+    partsDetailStatus = openPartsDetailPanel(parts)
+  }
+
+  function handleClosePartsDetail() {
+    partsDetailStatus = closePartsDetailPanel()
   }
 
   function createFiltersSnapshot(): FiltersPerSlot {
@@ -461,6 +481,7 @@
       slot={currentSlot}
       {favorites}
       ontogglefavorite={handleToggleFavorite}
+      onselect={handleSelectParts}
     />
   </div>
 
@@ -472,4 +493,16 @@
     <p>{$i18n.t('page/parts-list:aboutSection.body.p2')}</p>
     <p>{$i18n.t('page/parts-list:aboutSection.body.p3')}</p>
   </CollapseText>
+
+  <PartsDetailPanel
+    id="parts-detail-panel"
+    open={partsDetailStatus.isOpen}
+    parts={partsDetailStatus.selectedParts}
+    slot={currentSlot}
+    onToggle={(e) => {
+      if (!e.open) {
+        handleClosePartsDetail()
+      }
+    }}
+  />
 </article>

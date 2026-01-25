@@ -10,12 +10,13 @@
     parts: ACParts
     isFavorite?: boolean
     ontogglefavorite?: () => void
+    onselect?: () => void
   }
 
-  let { parts, isFavorite, ontogglefavorite }: Props = $props()
+  let { parts, isFavorite, ontogglefavorite, onselect }: Props = $props()
 
   // 実際のi18nインスタンスを提供
   setContext('i18n', i18n)
 </script>
 
-<PartsCard {parts} {isFavorite} {ontogglefavorite} />
+<PartsCard {parts} {isFavorite} {ontogglefavorite} {onselect} />
