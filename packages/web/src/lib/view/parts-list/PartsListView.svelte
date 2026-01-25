@@ -274,6 +274,9 @@
     // 同じスロットが選択された場合は何もしない
     if (newSlot === currentSlot) return
 
+    // スロット変更時はパーツ詳細パネルを閉じる
+    partsDetailStatus = closePartsDetailPanel()
+
     // スロットごとの独立フィルタ管理（Requirement 2.5）
     // 現在のスロットのフィルタを保存（Requirement 2.5.1）
     updateFiltersForSlot(currentSlot, filters)
