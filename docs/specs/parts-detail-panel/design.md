@@ -38,7 +38,7 @@
 
 ### Component Structure
 
-```
+```text
 packages/web/src/lib/view/parts-list/
 ├── controller/
 │   └── parts-detail-panel.ts     # パネル状態管理
@@ -52,7 +52,7 @@ packages/web/src/lib/view/parts-list/
 
 ### Data Flow
 
-```
+```text
 [PartsCard] --onselect--> [PartsGrid] --onselect--> [PartsListView]
                                                           |
                                                           v
@@ -152,18 +152,18 @@ packages/web/src/lib/view/parts-list/
 
 ### New Files
 
-| File | Description |
+|File|Description|
 |------|-------------|
-| `controller/parts-detail-panel.ts` | パネル状態管理 |
-| `detail/PartsDetailPanel.svelte` | サイドパネル本体 |
-| `detail/PartsAttributeList.svelte` | 属性リスト表示 |
+|`controller/parts-detail-panel.ts`|パネル状態管理|
+|`detail/PartsDetailPanel.svelte`|サイドパネル本体|
+|`detail/PartsAttributeList.svelte`|属性リスト表示|
 
 ### Modified Files
 
-| File | Changes |
+|File|Changes|
 |------|---------|
-| `PartsCard.svelte` | `onselect` prop追加、★ボタンでstopPropagation |
-| `PartsGrid.svelte` | `onselect` prop追加、イベント伝播 |
-| `PartsListView.svelte` | 状態管理、ハンドラ、パネル統合 |
-| `ja/pages/parts-list.ts` | `partsDetail`翻訳キー追加 |
-| `en/pages/parts-list.ts` | `partsDetail`翻訳キー追加 |
+|`PartsCard.svelte`|`onselect` prop追加、★ボタンでstopPropagation|
+|`PartsGrid.svelte`|`onselect` prop追加、イベント伝播|
+|`PartsListView.svelte`|状態管理、ハンドラ、パネル統合|
+|`ja/pages/parts-list.ts`|`partsDetail`翻訳キー追加|
+|`en/pages/parts-list.ts`|`partsDetail`翻訳キー追加|
