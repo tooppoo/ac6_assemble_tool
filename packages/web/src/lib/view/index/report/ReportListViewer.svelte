@@ -41,12 +41,12 @@
     <hr />
   {/if}
   <div>
+    {#if block.containProblemFor(assembly)}
+      <div class="alert alert-warning w-75 mx-auto mb-2" role="alert">
+        {$i18n.t(`page/index:report.block.${block.problemCaptionKey}`)}
+      </div>
+    {/if}
     <div class="row mb-3">
-      {#if block.containProblemFor(assembly)}
-        <div class="alert alert-warning w-75 mx-auto mb-2" role="alert">
-          {$i18n.t(`page/index:report.block.${block.problemCaptionKey}`)}
-        </div>
-      {/if}
       {#each block.reports as report (report.key)}
         <ReportItem
           caption={$i18n.t(report.key, { ns: 'assembly' })}
