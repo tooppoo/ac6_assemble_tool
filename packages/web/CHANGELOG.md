@@ -1,9 +1,8 @@
 # @ac6_assemble_tool/web
 
 ## 5.0.0
+
 ### Major Changes
-
-
 
 - [#1067](https://github.com/tooppoo/ac6_assemble_tool/pull/1067) [`7dfb380`](https://github.com/tooppoo/ac6_assemble_tool/commit/7dfb3807d513925fa21bd0169b68949e4d1f51ee) Thanks [@tooppoo](https://github.com/tooppoo)! - レイアウト構成変更
 
