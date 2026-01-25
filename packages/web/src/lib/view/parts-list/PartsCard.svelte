@@ -77,7 +77,18 @@
   }
 </script>
 
-<Card class="parts-card h-100" onclick={handleCardClick}>
+<Card
+  class="parts-card h-100"
+  onclick={handleCardClick}
+  role="button"
+  tabindex={0}
+  onkeydown={(event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      handleCardClick()
+    }
+  }}
+>
   <CardBody class="d-flex flex-column">
     <div class="d-flex justify-content-between align-items-start mb-2">
       <CardTitle class="mb-0 flex-grow-1">
