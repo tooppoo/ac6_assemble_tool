@@ -11,13 +11,15 @@ describe('controller/parts-detail-panel', () => {
   const mockParts: ACParts = {
     id: 'test-parts-id',
     name: 'Test Parts',
-    classification: 'unit',
-    category: 'arm_unit',
+    classification: 'arm-unit',
+    category: 'burst_rifle',
     manufacture: 'balam',
     price: 100000,
     weight: 500,
     en_load: 200,
-  } as ACParts
+    ai_summary: 'summary',
+    ai_tags: ['tag'],
+  }
 
   describe('closePartsDetailPanel', () => {
     it('パネルを閉じた状態を返すこと', () => {
