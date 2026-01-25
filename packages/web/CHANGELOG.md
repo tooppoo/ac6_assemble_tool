@@ -1,9 +1,8 @@
 # @ac6_assemble_tool/web
 
 ## 5.0.1
+
 ### Patch Changes
-
-
 
 - [#1069](https://github.com/tooppoo/ac6_assemble_tool/pull/1069) [`ea49ccb`](https://github.com/tooppoo/ac6_assemble_tool/commit/ea49ccb22ea1b0e8c86356a838ee9f9cafe7fe0b) Thanks [@tooppoo](https://github.com/tooppoo)! - change alert position to avoid layout brakeing
 

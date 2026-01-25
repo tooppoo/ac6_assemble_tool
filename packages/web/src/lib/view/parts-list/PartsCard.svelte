@@ -26,7 +26,12 @@
     onselect?: () => void
   }
 
-  let { parts, isFavorite = false, ontogglefavorite, onselect }: Props = $props()
+  let {
+    parts,
+    isFavorite = false,
+    ontogglefavorite,
+    onselect,
+  }: Props = $props()
 
   // i18n
   const i18n = getContext<I18NextStore>('i18n')

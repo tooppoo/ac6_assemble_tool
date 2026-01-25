@@ -24,8 +24,13 @@
     onselect?: (parts: ACParts) => void
   }
 
-  let { parts, slot: _slot, favorites, ontogglefavorite, onselect }: Props =
-    $props()
+  let {
+    parts,
+    slot: _slot,
+    favorites,
+    ontogglefavorite,
+    onselect,
+  }: Props = $props()
 
   const i18n = getContext<I18NextStore>('i18n')
 

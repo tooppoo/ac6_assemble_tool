@@ -99,7 +99,9 @@
   let viewMode = $state<ViewMode>(loadViewMode())
   let favorites = $state<Set<string>>(new Set())
   let showFavoritesOnly = $state<boolean>(false)
-  let partsDetailStatus = $state<PartsDetailPanelStatus>(closePartsDetailPanel())
+  let partsDetailStatus = $state<PartsDetailPanelStatus>(
+    closePartsDetailPanel(),
+  )
 
   const emptyCandidateSlots = $derived.by<CandidatesKey[]>(() => {
     return CANDIDATES_KEYS.filter((slot) => {
