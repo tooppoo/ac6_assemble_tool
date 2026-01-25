@@ -23,9 +23,10 @@
     parts: ACParts
     isFavorite?: boolean
     ontogglefavorite?: () => void
+    onselect?: () => void
   }
 
-  let { parts, isFavorite = false, ontogglefavorite }: Props = $props()
+  let { parts, isFavorite = false, ontogglefavorite, onselect }: Props = $props()
 
   // i18n
   const i18n = getContext<I18NextStore>('i18n')
@@ -61,12 +62,17 @@
     $i18n.t('page/parts-list:partsCard.enLoad'),
   )
 
-  function handleToggleFavorite() {
+  function handleToggleFavorite(event: MouseEvent) {
+    event.stopPropagation()
     ontogglefavorite?.()
+  }
+
+  function handleCardClick() {
+    onselect?.()
   }
 </script>
 
-<Card class="parts-card h-100">
+<Card class="parts-card h-100" onclick={handleCardClick}>
   <CardBody class="d-flex flex-column">
     <div class="d-flex justify-content-between align-items-start mb-2">
       <CardTitle class="mb-0 flex-grow-1">

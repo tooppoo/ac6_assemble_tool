@@ -20,6 +20,12 @@
   import { Result } from '@praha/byethrow'
   import { getContext, onDestroy } from 'svelte'
 
+  import {
+    closePartsDetailPanel,
+    openPartsDetailPanel,
+    type PartsDetailPanelStatus,
+  } from './controller/parts-detail-panel'
+  import PartsDetailPanel from './detail/PartsDetailPanel.svelte'
   import FilterPanel from './filter/FilterPanel.svelte'
   import { applyFilters } from './filter/filters-core'
   import {
@@ -93,6 +99,7 @@
   let viewMode = $state<ViewMode>(loadViewMode())
   let favorites = $state<Set<string>>(new Set())
   let showFavoritesOnly = $state<boolean>(false)
+  let partsDetailStatus = $state<PartsDetailPanelStatus>(closePartsDetailPanel())
 
   const emptyCandidateSlots = $derived.by<CandidatesKey[]>(() => {
     return CANDIDATES_KEYS.filter((slot) => {
@@ -340,6 +347,14 @@
     showFavoritesOnly = !showFavoritesOnly
   }
 
+  function handleSelectParts(parts: ACParts) {
+    partsDetailStatus = openPartsDetailPanel(parts)
+  }
+
+  function handleClosePartsDetail() {
+    partsDetailStatus = closePartsDetailPanel()
+  }
+
   function createFiltersSnapshot(): FiltersPerSlot {
     return Object.entries(filtersPerSlot).reduce((acc, [slot, slotFilters]) => {
       if (slotFilters) {
@@ -461,6 +476,7 @@
       slot={currentSlot}
       {favorites}
       ontogglefavorite={handleToggleFavorite}
+      onselect={handleSelectParts}
     />
   </div>
 
@@ -472,4 +488,16 @@
     <p>{$i18n.t('page/parts-list:aboutSection.body.p2')}</p>
     <p>{$i18n.t('page/parts-list:aboutSection.body.p3')}</p>
   </CollapseText>
+
+  <PartsDetailPanel
+    id="parts-detail-panel"
+    open={partsDetailStatus.isOpen}
+    parts={partsDetailStatus.selectedParts}
+    slot={currentSlot}
+    onToggle={(e) => {
+      if (!e.open) {
+        handleClosePartsDetail()
+      }
+    }}
+  />
 </article>
