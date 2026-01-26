@@ -1,9 +1,8 @@
 # @ac6_assemble_tool/web
 
 ## 5.1.0
+
 ### Minor Changes
-
-
 
 - [#1071](https://github.com/tooppoo/ac6_assemble_tool/pull/1071) [`1cd980d`](https://github.com/tooppoo/ac6_assemble_tool/commit/1cd980db98797c3ae5ae74dd41eefd11ea928a22) Thanks [@tooppoo](https://github.com/tooppoo)! - add parts detail panel
 
