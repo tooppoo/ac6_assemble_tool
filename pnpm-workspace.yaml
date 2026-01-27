@@ -11,3 +11,6 @@ onlyBuiltDependencies:
   - sharp
   - unrs-resolver
   - workerd
+minimumReleaseAgeExclude:
+  # Renovate security update: hono@4.11.7
+  - hono@4.11.7
