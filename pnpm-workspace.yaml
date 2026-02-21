@@ -12,7 +12,7 @@ onlyBuiltDependencies:
   - unrs-resolver
   - workerd
 minimumReleaseAgeExclude:
-  # Renovate security update: hono@4.11.7
-  - hono@4.11.7
+  # Renovate security update: hono@4.11.7 || 4.11.10
+  - hono@4.11.7 || 4.11.10
   # Renovate security update: @sveltejs/kit@2.52.2
   - "@sveltejs/kit@2.52.2"
