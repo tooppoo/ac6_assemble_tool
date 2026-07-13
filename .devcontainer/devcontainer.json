@@ -3,57 +3,36 @@
   "image": "node:24.13.0-bookworm",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
-      "username": "vscode",
+      "username": "node",
       "installZsh": true,
       "configureZshAsDefaultShell": false
     },
     "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {}
+    "ghcr.io/devcontainers/features/github-cli:1": {}
   },
   "containerEnv": {
     "NODE_ENV": "development"
   },
-  "containerUser": "vscode",
-  "mounts": [
-    "type=volume,source=pnpm-store,target=/home/vscode/.pnpm-store",
-    "source=${localEnv:USERPROFILE}/.codex,target=/home/vscode/.codex,type=bind,consistency=cached",
-    "source=${localEnv:USERPROFILE}/.claude,target=/home/vscode/.claude,type=bind,consistency=cached"
-  ],
+  "remoteUser": "node",
+  "containerUser": "node",
   "forwardPorts": [
     5173,
     4004
   ],
   "postCreateCommand": "bash -l .devcontainer/scripts/post-create.sh",
-  "postStartCommand": "bash -l .devcontainer/scripts/post-start.sh",
+  "postStartCoh -l .devcontainer/scripts/post-start.sh",
   "customizations": {
     "vscode": {
       "extensions": [
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "ms-vscode.vscode-typescript-next",
-        "github.vscode-github-actions",
-        "openai.chatgpt",
-        "streetsidesoftware.code-spell-checker",
-        "eamodio.gitlens",
-        "docker.docker",
-        "tamasfe.even-better-toml",
-        "mhutchie.git-graph",
-        "oderwat.indent-rainbow",
-        "MS-CEINTL.vscode-language-pack-ja",
-        "bierner.markdown-mermaid",
-        "DavidAnson.vscode-markdownlint",
         "svelte.svelte-vscode",
         "bradlc.vscode-tailwindcss",
-        "pmneo.tsimporter",
-        "vscodevim.vim",
-        "redhat.vscode-yaml",
-        "Vue.volar",
-        "Anthropic.claude-code",
-        "jebbs.plantuml"
+        "pmneo.tsimporter"
       ],
       "settings": {
-        "typescript.tsdk": "node_modules/typescript/lib",
+        "js/ts.tsdk.path": "node_modules/typescript/lib",
         "editor.formatOnSave": true
       }
     }
