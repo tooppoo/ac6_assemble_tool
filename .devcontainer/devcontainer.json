@@ -20,7 +20,7 @@
     4004
   ],
   "postCreateCommand": "bash -l .devcontainer/scripts/post-create.sh",
-  "postStartCoh -l .devcontainer/scripts/post-start.sh",
+  "postStartCommand": "bash -l .devcontainer/scripts/post-start.sh",
   "customizations": {
     "vscode": {
       "extensions": [
