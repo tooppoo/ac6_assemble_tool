@@ -118,9 +118,9 @@
   isOpen={open}
 >
   <ModalHeader>
-    <h1 class="modal-title fs-5" id="export-dialog-label">
+    <span class="fs-5" id="export-dialog-label">
       {$i18n.t('page/parts-list:export.title')}
-    </h1>
+    </span>
     <button type="button" class="btn-close" onclick={onClose} aria-label="Close"
     ></button>
   </ModalHeader>
