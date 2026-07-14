@@ -1,3 +1,5 @@
+import Papa from 'papaparse'
+
 import type { Category } from '@ac6_assemble_tool/parts/types/base/category'
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 import {
@@ -53,4 +55,32 @@ export function toJson(
     null,
     2,
   )
+}
+
+function flattenCsvValue(value: unknown): string {
+  if (Array.isArray(value)) {
+    return value.join(';')
+  }
+  if (value !== null && typeof value === 'object') {
+    return JSON.stringify(value)
+  }
+  return String(value)
+}
+
+function flattenPartForCsv(part: ACParts): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(part).map(([key, value]) => [
+      key,
+      flattenCsvValue(value),
+    ]),
+  )
+}
+
+export function toCsv(parts: readonly ACParts[]): string {
+  if (parts.length === 0) {
+    return ''
+  }
+
+  const rows = parts.map(flattenPartForCsv)
+  return Papa.unparse(rows)
 }

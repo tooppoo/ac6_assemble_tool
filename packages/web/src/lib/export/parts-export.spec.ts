@@ -4,7 +4,7 @@ import { notEquipped } from '@ac6_assemble_tool/parts/types/base/classification'
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 import { describe, expect, it } from 'vitest'
 
-import { flattenRegulation, groupByCategory, toJson } from './parts-export'
+import { flattenRegulation, groupByCategory, toJson, toCsv } from './parts-export'
 
 function makePart(overrides: Partial<ACParts> = {}): ACParts {
   return {
@@ -82,5 +82,35 @@ describe(toJson.name, () => {
     const json = toJson(parts, { regulation: 'v1.09.1', filter: [] })
 
     expect(JSON.parse(json).filter).toEqual([])
+  })
+})
+
+describe(toCsv.name, () => {
+  it('パーツ配列をCSV文字列に変換する', () => {
+    const parts = [
+      makePart({ id: '1', name: 'Part A' }),
+      makePart({ id: '2', name: 'Part B' }),
+    ]
+
+    const csv = toCsv(parts)
+    const lines = csv.trim().split('\n')
+
+    expect(lines).toHaveLength(3) // header + 2 rows
+    expect(lines[0]).toContain('id')
+    expect(lines[0]).toContain('name')
+    expect(csv).toContain('Part A')
+    expect(csv).toContain('Part B')
+  })
+
+  it('配列フィールドをセミコロン区切り文字列にフラット化する', () => {
+    const parts = [makePart({ id: '1', ai_tags: ['tagA', 'tagB'] })]
+
+    const csv = toCsv(parts)
+
+    expect(csv).toContain('tagA;tagB')
+  })
+
+  it('空配列に対してはヘッダーのみ、あるいは空文字列を返す', () => {
+    expect(toCsv([])).toBe('')
   })
 })
