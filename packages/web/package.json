@@ -56,7 +56,7 @@
     "i18next": "25.6.1",
     "jszip": "3.10.1",
     "papaparse": "5.5.4",
-    "svelte": "5.53.5",
+    "svelte": "5.55.7",
     "svelte-i18next": "2.2.2",
     "ulid": "3.0.2"
   },
