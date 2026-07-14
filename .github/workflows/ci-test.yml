@@ -46,5 +46,4 @@ jobs:
           files: ./packages/core/coverage/coverage-final.json,./packages/web/coverage/coverage-final.json
           fail_ci_if_error: true
           slug: tooppoo/ac6_assemble_tool
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true
