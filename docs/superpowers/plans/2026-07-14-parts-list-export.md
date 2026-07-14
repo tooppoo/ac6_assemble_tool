@@ -24,7 +24,7 @@
 
 ## File Structure
 
-```
+```text
 packages/web/src/lib/export/
   parts-export.ts          # Create: コアロジック（Svelte非依存の純粋関数群）
   parts-export.spec.ts     # Create: 上記の単体テスト
@@ -47,9 +47,11 @@ packages/web/package.json  # Modify: jszip, papaparse, @types/papaparse 追加
 ### Task 1: 依存追加（jszip, papaparse）
 
 **Files:**
+
 - Modify: `packages/web/package.json`
 
 **Interfaces:**
+
 - Produces: `jszip`（default export `JSZip`）, `papaparse`（default export `Papa`、`Papa.unparse(data): string`）が以降のタスクから利用可能になる
 
 - [ ] **Step 1: tech-architectエージェントにレビューを依頼する**
@@ -62,6 +64,7 @@ Agentツールで `tech-architect` エージェントを呼び出し、以下を
 - [ ] **Step 2: 依存をインストールする**
 
 Run:
+
 ```bash
 pnpm --filter @ac6_assemble_tool/web add jszip papaparse
 pnpm --filter @ac6_assemble_tool/web add -D @types/papaparse
@@ -89,10 +92,12 @@ git commit -m "chore(web): add jszip and papaparse for parts export feature"
 ### Task 2: `flattenRegulation` / `groupByCategory`
 
 **Files:**
+
 - Create: `packages/web/src/lib/export/parts-export.ts`
 - Create: `packages/web/src/lib/export/parts-export.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `Regulation`（`@ac6_assemble_tool/parts/versions/regulation.types`）, `ACParts`（`@ac6_assemble_tool/parts/types/base/types`）, `Category`（`@ac6_assemble_tool/parts/types/base/category`）, `CANDIDATES_KEYS` / `excludeNotEquipped`（`@ac6_assemble_tool/parts/types/candidates`）, `latest as regulation`（`$lib/regulation`、テスト用フィクスチャ）
 - Produces:
   - `flattenRegulation(regulation: Regulation): ACParts[]`
@@ -233,10 +238,12 @@ git commit -m "feat(web): add flattenRegulation and groupByCategory for parts ex
 ### Task 3: `toJson`
 
 **Files:**
+
 - Modify: `packages/web/src/lib/export/parts-export.ts`
 - Modify: `packages/web/src/lib/export/parts-export.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `ACParts`（Task 2）
 - Produces:
   - `type ExportMeta = Readonly<{ regulation: string; filter: readonly string[] }>`
@@ -323,10 +330,12 @@ git commit -m "feat(web): add toJson for parts export with regulation/filter met
 ### Task 4: `toCsv`
 
 **Files:**
+
 - Modify: `packages/web/src/lib/export/parts-export.ts`
 - Modify: `packages/web/src/lib/export/parts-export.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `ACParts`, `papaparse`（`Papa.unparse`）
 - Produces: `toCsv(parts: readonly ACParts[]): string`
 
@@ -428,10 +437,12 @@ git commit -m "feat(web): add toCsv for parts export with flattened array/object
 ### Task 5: `buildZip`
 
 **Files:**
+
 - Modify: `packages/web/src/lib/export/parts-export.ts`
 - Modify: `packages/web/src/lib/export/parts-export.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `groupByCategory`（Task 2）, `toJson`（Task 3）, `toCsv`（Task 4）, `ExportMeta`（Task 3）, `jszip`
 - Produces: `type ExportFormat = 'json' | 'csv'`, `buildZip(groupedParts: Map<Category, ACParts[]>, format: ExportFormat, meta: ExportMeta): Promise<Blob>`
 
@@ -530,10 +541,12 @@ git commit -m "feat(web): add buildZip for category-split parts export"
 ### Task 6: `buildExportFilename` / `buildFileBlob` / `downloadBlob`
 
 **Files:**
+
 - Modify: `packages/web/src/lib/export/parts-export.ts`
 - Modify: `packages/web/src/lib/export/parts-export.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `ExportFormat`（Task 5）, `Category`
 - Produces:
   - `type ExportTarget = 'all' | 'category' | 'filtered'`
@@ -685,10 +698,12 @@ git commit -m "feat(web): add buildExportFilename, buildFileBlob, downloadBlob f
 ### Task 7: i18n文言の追加
 
 **Files:**
+
 - Modify: `packages/web/src/lib/i18n/locales/ja/pages/parts-list.ts`
 - Modify: `packages/web/src/lib/i18n/locales/en/pages/parts-list.ts`
 
 **Interfaces:**
+
 - Produces: `page/parts-list:export.*` 名前空間の翻訳キー（`ExportDialog.svelte` から `$i18n.t('page/parts-list:export.xxx')` の形で参照される）
 
 - [ ] **Step 1: `jaPartsListPage` に `export` キーを追加する**
@@ -766,11 +781,13 @@ git commit -m "feat(web): add i18n strings for parts export dialog"
 ### Task 8: `ExportDialog.svelte`
 
 **Files:**
+
 - Create: `packages/web/src/lib/view/parts-list/export/ExportDialog.svelte`
 - Create: `packages/web/src/lib/view/parts-list/export/ExportDialog.test-wrapper.svelte`
 - Create: `packages/web/src/lib/view/parts-list/export/ExportDialog.spec.ts`
 
 **Interfaces:**
+
 - Consumes:
   - `flattenRegulation`, `groupByCategory`, `toJson`, `toCsv`, `buildZip`, `buildFileBlob`, `buildExportFilename`, `downloadBlob`, `type ExportFormat`, `type ExportTarget`（`$lib/export/parts-export`, Task 2〜6）
   - `Filter`（`$lib/view/parts-list/filter/filters-core`、`.serialize(): string` を持つ）
@@ -780,6 +797,7 @@ git commit -m "feat(web): add i18n strings for parts export dialog"
   - `Modal` / `ModalHeader` / `ModalBody` / `ModalFooter`（`@sveltestrap/sveltestrap`。`packages/web/src/lib/components/modal/ErrorModal.svelte` と同じ使い方）
   - `i18n`（`$lib/i18n/define`、`I18NextStore` 型を `getContext('i18n')` で取得）
 - Produces: `ExportDialog.svelte` の `Props`:
+
   ```ts
   interface Props {
     open: boolean
@@ -789,6 +807,7 @@ git commit -m "feat(web): add i18n strings for parts export dialog"
     filters: readonly Filter[]
   }
   ```
+
   これはTask 9で `PartsListView.svelte` から渡される。
 
 - [ ] **Step 1: 失敗するコンポーネントテストを書く**
@@ -1187,10 +1206,12 @@ git commit -m "feat(web): add ExportDialog component for parts export"
 ### Task 9: `PartsListView.svelte` への統合
 
 **Files:**
+
 - Modify: `packages/web/src/lib/view/parts-list/PartsListView.svelte`
 - Modify: `packages/web/src/lib/view/parts-list/PartsListView.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `ExportDialog`（Task 8）、既存の `filteredParts`（`PartsListView.svelte:201`）、`filters`（`PartsListView.svelte:96`）、`regulation`（props）
 
 - [ ] **Step 1: 失敗するテストを追加する**
@@ -1274,11 +1295,13 @@ Expected: PASS（既存テスト全件 + 新規1件）
 - [ ] **Step 5: 全体のテスト・型チェック・lintを実行する**
 
 Run:
+
 ```bash
 pnpm web test
 pnpm web check-types
 pnpm web lint
 ```
+
 Expected: すべてエラーなく終了する
 
 - [ ] **Step 6: Commit**
@@ -1300,7 +1323,7 @@ Run: `pnpm web dev`
 
 - [ ] **Step 2: ブラウザで `parts-list` ページを開き、Exportボタンからダイアログを開く**
 
-http://localhost:5173/parts-list （ポート番号は起動ログで確認）にアクセスし、「エクスポート」ボタンをクリックしてダイアログが開くことを確認する。
+<http://localhost:5173/parts-list> （ポート番号は起動ログで確認）にアクセスし、「エクスポート」ボタンをクリックしてダイアログが開くことを確認する。
 
 - [ ] **Step 3: 全組み合わせをダウンロードして中身を確認する**
 
