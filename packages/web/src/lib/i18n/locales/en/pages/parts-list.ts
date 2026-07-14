@@ -80,6 +80,29 @@ export const enPartsListPage = {
       'Clear filters to start from the default list.',
     ],
   },
+  export: {
+    button: 'Export',
+    title: 'Export Parts Data',
+    target: {
+      label: 'Target',
+      all: 'All',
+      classification: 'Specific Classification',
+      filtered: 'Filtered Parts',
+    },
+    classification: {
+      label: 'Classification',
+      placeholder: 'Select a classification',
+    },
+    format: {
+      label: 'Format',
+      json: 'JSON',
+      csv: 'CSV',
+    },
+    execute: 'Download',
+    cancel: 'Cancel',
+    emptyFiltered: 'No parts are currently displayed.',
+    error: 'Export failed.',
+  },
   aboutSection: {
     summary: 'About This App',
     body: {

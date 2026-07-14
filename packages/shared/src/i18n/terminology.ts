@@ -23,6 +23,8 @@ export const slotNames = {
   expansion: 'コア拡張',
   'arm-unit': '腕武器',
   'back-unit': '背中武器',
+  'left-arm-unit': '左腕武器',
+  'left-back-unit': '左背中武器',
 } as const
 
 /**

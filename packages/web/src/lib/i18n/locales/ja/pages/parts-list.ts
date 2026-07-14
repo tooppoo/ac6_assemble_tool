@@ -79,6 +79,29 @@ export const jaPartsListPage = {
       'フィルタをクリアして最初からやり直してください',
     ],
   },
+  export: {
+    button: 'エクスポート',
+    title: 'パーツデータのエクスポート',
+    target: {
+      label: '対象',
+      all: '全体',
+      classification: '特定分類',
+      filtered: '表示中のパーツ',
+    },
+    classification: {
+      label: '分類',
+      placeholder: '分類を選択',
+    },
+    format: {
+      label: '形式',
+      json: 'JSON',
+      csv: 'CSV',
+    },
+    execute: 'ダウンロード',
+    cancel: 'キャンセル',
+    emptyFiltered: '表示中のパーツがありません',
+    error: 'エクスポートに失敗しました',
+  },
   aboutSection: {
     summary: 'このアプリについて',
     body: {

@@ -26,6 +26,7 @@
     type PartsDetailPanelStatus,
   } from './controller/parts-detail-panel'
   import PartsDetailPanel from './detail/PartsDetailPanel.svelte'
+  import ExportDialog from './export/ExportDialog.svelte'
   import FilterPanel from './filter/FilterPanel.svelte'
   import { applyFilters } from './filter/filters-core'
   import {
@@ -102,6 +103,7 @@
   let partsDetailStatus = $state<PartsDetailPanelStatus>(
     closePartsDetailPanel(),
   )
+  let isExportDialogOpen = $state<boolean>(false)
 
   const emptyCandidateSlots = $derived.by<CandidatesKey[]>(() => {
     return CANDIDATES_KEYS.filter((slot) => {
@@ -459,21 +461,39 @@
         {handoffDisabledReason}
       </p>
     {/if}
-    <button
-      class="btn btn-primary"
-      type="button"
-      title={isHandoffDisabled && handoffDisabledReason
-        ? handoffDisabledReason
-        : $i18n.t('page/parts-list:navigation.handoff.description')}
-      disabled={isHandoffDisabled}
-      aria-describedby={isHandoffDisabled && handoffDisabledReason
-        ? 'handoff-disabled-reason'
-        : undefined}
-      onclick={handleNavigateToAssembly}
-    >
-      {$i18n.t('page/parts-list:navigation.handoff.label')}
-    </button>
+    <div class="d-flex gap-2">
+      <button
+        class="btn export-button"
+        type="button"
+        onclick={() => (isExportDialogOpen = true)}
+      >
+        {$i18n.t('page/parts-list:export.button')}
+      </button>
+      <button
+        class="btn btn-primary"
+        type="button"
+        title={isHandoffDisabled && handoffDisabledReason
+          ? handoffDisabledReason
+          : $i18n.t('page/parts-list:navigation.handoff.description')}
+        disabled={isHandoffDisabled}
+        aria-describedby={isHandoffDisabled && handoffDisabledReason
+          ? 'handoff-disabled-reason'
+          : undefined}
+        onclick={handleNavigateToAssembly}
+      >
+        {$i18n.t('page/parts-list:navigation.handoff.label')}
+      </button>
+    </div>
   </div>
+
+  <ExportDialog
+    open={isExportDialogOpen}
+    onClose={() => (isExportDialogOpen = false)}
+    {regulation}
+    {filteredParts}
+    {filters}
+    {showFavoritesOnly}
+  />
 
   <div class="py-1">
     <PartsGrid
@@ -506,3 +526,15 @@
     }}
   />
 </article>
+
+<style>
+  .export-button {
+    border: 1px solid var(--bs-border-color);
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+  }
+
+  .export-button:hover {
+    background-color: var(--bs-secondary-bg);
+  }
+</style>
