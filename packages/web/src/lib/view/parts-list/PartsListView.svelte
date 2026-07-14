@@ -493,6 +493,7 @@
     {regulation}
     {filteredParts}
     {filters}
+    {showFavoritesOnly}
   />
 
   <div class="py-1">

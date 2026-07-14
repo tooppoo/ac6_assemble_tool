@@ -18,6 +18,15 @@ vi.mock('$lib/export/parts-export', async (importOriginal) => {
 
 const noFilters: readonly Filter[] = []
 
+function readBlobAsText(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = () => reject(reader.error)
+    reader.readAsText(blob)
+  })
+}
+
 describe('ExportDialog', () => {
   it('デフォルトで「表示中」が選択され、カテゴリ選択は表示されない', () => {
     render(ExportDialogTestWrapper, {
@@ -86,6 +95,26 @@ describe('ExportDialog', () => {
       expect.any(Blob),
       `ac6-parts-filtered-${regulation.version}.json`,
     )
+  })
+
+  it('お気に入りフィルタ有効時はJSON exportのfilterメタデータに反映される', async () => {
+    render(ExportDialogTestWrapper, {
+      props: {
+        open: true,
+        onClose: vi.fn(),
+        regulation,
+        filteredParts: [regulation.candidates.head[0]],
+        filters: noFilters,
+        showFavoritesOnly: true,
+      },
+    })
+
+    await fireEvent.click(screen.getByRole('button', { name: 'ダウンロード' }))
+
+    const calls = vi.mocked(partsExport.downloadBlob).mock.calls
+    const [blob] = calls[calls.length - 1]
+    const json = JSON.parse(await readBlobAsText(blob as Blob))
+    expect(json.filter).toContain('favorites-only')
   })
 
   it('エクスポートに失敗した場合はダイアログ内にエラーメッセージを表示する', async () => {

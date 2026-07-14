@@ -32,9 +32,17 @@
     regulation: Regulation
     filteredParts: readonly ACParts[]
     filters: readonly Filter[]
+    showFavoritesOnly?: boolean
   }
 
-  let { open, onClose, regulation, filteredParts, filters }: Props = $props()
+  let {
+    open,
+    onClose,
+    regulation,
+    filteredParts,
+    filters,
+    showFavoritesOnly = false,
+  }: Props = $props()
 
   const i18n = getContext<I18NextStore>('i18n')
 
@@ -49,6 +57,12 @@
   })
 
   const isFilteredEmpty = $derived(filteredParts.length === 0)
+
+  $effect(() => {
+    if (!open) {
+      exportError = false
+    }
+  })
 
   const isExecuteDisabled = $derived(
     (target === 'filtered' && isFilteredEmpty) ||
@@ -92,11 +106,15 @@
 
     if (target === 'filtered' && !isFilteredEmpty) {
       try {
+        const serializedFilters = [
+          ...filters.map((filter) => filter.serialize()),
+          ...(showFavoritesOnly ? ['favorites-only'] : []),
+        ]
         const content =
           format === 'json'
             ? toJson(filteredParts, {
                 regulation: version,
-                filter: filters.map((filter) => filter.serialize()),
+                filter: serializedFilters,
               })
             : toCsv(filteredParts)
         downloadBlob(

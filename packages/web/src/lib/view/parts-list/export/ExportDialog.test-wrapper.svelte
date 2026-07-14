@@ -15,11 +15,26 @@
     regulation: Regulation
     filteredParts: readonly ACParts[]
     filters: readonly Filter[]
+    showFavoritesOnly?: boolean
   }
 
-  let { open, onClose, regulation, filteredParts, filters }: Props = $props()
+  let {
+    open,
+    onClose,
+    regulation,
+    filteredParts,
+    filters,
+    showFavoritesOnly = false,
+  }: Props = $props()
 
   setContext('i18n', i18n)
 </script>
 
-<ExportDialog {open} {onClose} {regulation} {filteredParts} {filters} />
+<ExportDialog
+  {open}
+  {onClose}
+  {regulation}
+  {filteredParts}
+  {filters}
+  {showFavoritesOnly}
+/>
