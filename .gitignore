@@ -50,3 +50,4 @@ analyze.html
 .env
 tmp
 .devbox/
+.worktrees/
