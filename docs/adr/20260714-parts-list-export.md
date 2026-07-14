@@ -11,7 +11,7 @@
 ## 決定ドライバ
 
 - **データの網羅性**: パーツ全項目（カテゴリ固有の詳細ステータス含む）をexportできること
-- **粒度の選択肢**: 全体・特定カテゴリ・現在の表示（フィルタ適用後）のいずれかを選んでexportできること
+- **粒度の選択肢**: 全体・特定分類・現在の表示（フィルタ適用後）のいずれかを選んでexportできること
 - **形式の選択肢**: JSON / CSV を選択できること
 - **既存パターンとの整合性**: 本アプリはSvelteKit + クライアント完結型の構成であり、既存のshare機能等もクライアントサイドで完結している
 - **再現性**: JSON出力にはレギュレーションバージョンや適用フィルタ条件を含め、後から「何のデータか」を追跡できること
@@ -26,12 +26,14 @@
 
 選択したオプション: "1. クライアントサイド生成"。理由: パーツデータ（regulation）もフィルタ後のデータ（`filteredParts`）も既にブラウザ側にロード済みであり、サーバーへ送って再取得する必要がない。既存のshare機能等もクライアント完結型であり、アプリ全体の構成と整合する。パーツ総数は数百〜千件程度でzip生成のコストも小さく、Worker化によるUIブロッキング対策は現時点では不要（YAGNI）。
 
+- 2026-07-14: ファイル分割粒度をカテゴリ単位から分類（classification）単位に変更（レビュー後のフィードバックによる）
+
 ### 機能概要
 
 Export対象は以下の3種類から選択する:
 
-- **全体**: レギュレーションの全パーツをカテゴリ単位（`ACParts.category`フィールド基準）でファイル分割し、zipでダウンロード
-- **特定カテゴリ**: カテゴリを1つ選択し、単体ファイルでダウンロード
+- **全体**: レギュレーションの全パーツを分類単位（`ACParts.classification`フィールド基準）でファイル分割し、zipでダウンロード
+- **特定分類**: 分類を1つ選択し、単体ファイルでダウンロード
 - **表示中（filtered）**: 現在画面に表示されているパーツ（フィルタ・ソート適用後の`filteredParts`）を単体ファイルでダウンロード
 
 形式（JSON / CSV）はいずれの対象にも適用される。
@@ -40,8 +42,8 @@ Export対象は以下の3種類から選択する:
 
 いずれの場合もレギュレーションバージョンをファイル名に含める。
 
-- 全体: `ac6-parts-all-<version>.zip`（zip内エントリは`<category>-<version>.json|csv`）
-- 特定カテゴリ: `ac6-parts-<category>-<version>.json|csv`
+- 全体: `ac6-parts-all-<version>.zip`（zip内エントリは`<classification>-<version>.json|csv`）
+- 特定分類: `ac6-parts-<classification>-<version>.json|csv`
 - 表示中: `ac6-parts-filtered-<version>.json|csv`
 
 ### JSON出力の構造
@@ -55,10 +57,10 @@ Export対象は以下の3種類から選択する:
 ```
 
 - `regulation`: exportしたレギュレーションのバージョン
-- `filter`: 適用中のフィルタ条件（表示中exportの時のみ中身が入る。全体・特定カテゴリexportでは空配列）
+- `filter`: 適用中のフィルタ条件（表示中exportの時のみ中身が入る。全体・特定分類exportでは空配列）
 - `data`: `ACParts[]`（カテゴリ固有の詳細ステータスを含む全フィールド）
 
-zip内の各カテゴリJSONファイルも同様の構造を持つ（`filter`は空配列）。
+zip内の各分類JSONファイルも同様の構造を持つ（`filter`は空配列）。
 
 CSVにはメタデータ格納先がないため、パーツデータのみを出力する（全フィールドをフラット化した表形式）。
 
@@ -76,7 +78,7 @@ packages/web/src/lib/view/parts-list/export/
 `parts-export.ts`が提供する主な関数:
 
 - `flattenRegulation(regulation): ACParts[]`
-- `groupByCategory(parts: ACParts[]): Map<Category, ACParts[]>`
+- `groupByClassification(parts: ACParts[]): Map<Classification, ACParts[]>`
 - `toJson(parts: ACParts[], meta: { regulation: string; filter: FilterCondition[] }): string`
 - `toCsv(parts: ACParts[]): string`
 - `buildZip(groupedParts, format, meta): Promise<Blob>`
@@ -87,7 +89,7 @@ packages/web/src/lib/view/parts-list/export/
 ### エラーハンドリング
 
 - 表示中exportでフィルタ結果が空の場合は実行ボタンをdisabledにし、その旨を表示する
-- 特定カテゴリexportでカテゴリ未選択の場合は実行ボタンをdisabledにする
+- 特定分類exportで分類未選択の場合は実行ボタンをdisabledにする
 - zip/Blob生成の失敗はダイアログ内にエラーメッセージを表示するに留め、リトライ機構は設けない（YAGNI）
 
 ## 影響評価
@@ -136,7 +138,7 @@ packages/web/src/lib/view/parts-list/export/
 2. `parts-export.ts`のコアロジック実装 + 単体テスト
 3. `ExportDialog.svelte`実装
 4. `PartsListView.svelte`へExportボタン統合
-5. 動作確認（全体/特定カテゴリ/表示中 × JSON/CSV の全組み合わせ）
+5. 動作確認（全体/特定分類/表示中 × JSON/CSV の全組み合わせ）
 
 ## 参考リンク
 
