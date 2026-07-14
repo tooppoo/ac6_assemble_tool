@@ -3,8 +3,9 @@ import { latest as regulation } from '$lib/regulation'
 import { notEquipped } from '@ac6_assemble_tool/parts/types/base/classification'
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 import { describe, expect, it } from 'vitest'
+import JSZip from 'jszip'
 
-import { flattenRegulation, groupByCategory, toJson, toCsv } from './parts-export'
+import { flattenRegulation, groupByCategory, toJson, toCsv, buildZip } from './parts-export'
 
 function makePart(overrides: Partial<ACParts> = {}): ACParts {
   return {
@@ -126,5 +127,42 @@ describe(toCsv.name, () => {
 
     expect(lines[0]).toContain('arms_only_field')
     expect(csv).toContain('999')
+  })
+})
+
+describe(buildZip.name, () => {
+  it('カテゴリごとにJSONファイルへ分割したzipを生成する', async () => {
+    const grouped = groupByCategory([
+      makePart({ id: '1', category: 'head' }),
+      makePart({ id: '2', category: 'core' }),
+    ])
+
+    const blob = await buildZip(grouped, 'json', {
+      regulation: 'v1.09.1',
+      filter: [],
+    })
+    const zip = await JSZip.loadAsync(blob)
+
+    expect(Object.keys(zip.files).sort()).toEqual([
+      'core-v1.09.1.json',
+      'head-v1.09.1.json',
+    ])
+
+    const headContent = await zip.files['head-v1.09.1.json'].async('string')
+    expect(JSON.parse(headContent).data[0].id).toBe('1')
+  })
+
+  it('format=csvの場合はcsv拡張子のファイルを生成する', async () => {
+    const grouped = groupByCategory([makePart({ id: '1', category: 'head' })])
+
+    const blob = await buildZip(grouped, 'csv', {
+      regulation: 'v1.09.1',
+      filter: [],
+    })
+    const zip = await JSZip.loadAsync(blob)
+
+    expect(Object.keys(zip.files)).toEqual(['head-v1.09.1.csv'])
+    const content = await zip.files['head-v1.09.1.csv'].async('string')
+    expect(content).toContain('id')
   })
 })

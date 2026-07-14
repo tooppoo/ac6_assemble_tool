@@ -1,4 +1,5 @@
 import Papa from 'papaparse'
+import JSZip from 'jszip'
 
 import type { Category } from '@ac6_assemble_tool/parts/types/base/category'
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
@@ -84,4 +85,22 @@ export function toCsv(parts: readonly ACParts[]): string {
   const rows = parts.map(flattenPartForCsv)
   const columns = [...new Set(rows.flatMap((row) => Object.keys(row)))]
   return Papa.unparse(rows, { columns })
+}
+
+export type ExportFormat = 'json' | 'csv'
+
+export async function buildZip(
+  groupedParts: Map<Category, ACParts[]>,
+  format: ExportFormat,
+  meta: ExportMeta,
+): Promise<Blob> {
+  const zip = new JSZip()
+
+  for (const [category, parts] of groupedParts) {
+    const filename = `${category}-${meta.regulation}.${format}`
+    const content = format === 'json' ? toJson(parts, meta) : toCsv(parts)
+    zip.file(filename, content)
+  }
+
+  return zip.generateAsync({ type: 'blob' })
 }
