@@ -113,4 +113,18 @@ describe(toCsv.name, () => {
   it('空配列に対してはヘッダーのみ、あるいは空文字列を返す', () => {
     expect(toCsv([])).toBe('')
   })
+
+  it('カテゴリが混在していても全行のフィールドを列として保持する', () => {
+    const partA = makePart({ id: '1', category: 'head' })
+    const partWithExtra = {
+      ...makePart({ id: '2', category: 'arms' }),
+      arms_only_field: 999,
+    } as ACParts
+
+    const csv = toCsv([partA, partWithExtra])
+    const lines = csv.trim().split('\n')
+
+    expect(lines[0]).toContain('arms_only_field')
+    expect(csv).toContain('999')
+  })
 })

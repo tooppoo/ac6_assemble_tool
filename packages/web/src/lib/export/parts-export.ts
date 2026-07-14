@@ -82,5 +82,6 @@ export function toCsv(parts: readonly ACParts[]): string {
   }
 
   const rows = parts.map(flattenPartForCsv)
-  return Papa.unparse(rows)
+  const columns = [...new Set(rows.flatMap((row) => Object.keys(row)))]
+  return Papa.unparse(rows, { columns })
 }
