@@ -1,5 +1,12 @@
 # @ac6_assemble_tool/web
 
+## 5.2.0
+### Minor Changes
+
+
+
+- [`4392ad0`](https://github.com/tooppoo/ac6_assemble_tool/commit/4392ad02ec4e4e89a1f71ef6f4d3c39a856280b2) Thanks [@tooppoo](https://github.com/tooppoo)! - パーツ情報のexport機能を実装
+
 ## 5.1.1
 
 ### Patch Changes
