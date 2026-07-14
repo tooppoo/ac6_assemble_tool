@@ -20,5 +20,8 @@ minimumReleaseAgeExclude:
   - svelte@5.51.5 || 5.53.5 || 5.55.7
   # Renovate security update: vitest@4.1.0
   - vitest@4.1.0
+  # Renovate security update: turbo@2.9.14
+  - turbo@2.9.14
   # Renovate security update: vite@7.3.5
   - vite@7.3.5
+  
