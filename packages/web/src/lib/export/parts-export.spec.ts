@@ -4,7 +4,7 @@ import { notEquipped } from '@ac6_assemble_tool/parts/types/base/classification'
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 import { describe, expect, it } from 'vitest'
 
-import { flattenRegulation, groupByCategory } from './parts-export'
+import { flattenRegulation, groupByCategory, toJson } from './parts-export'
 
 function makePart(overrides: Partial<ACParts> = {}): ACParts {
   return {
@@ -57,5 +57,30 @@ describe(groupByCategory.name, () => {
 
   it('空配列に対しては空のMapを返す', () => {
     expect(groupByCategory([]).size).toBe(0)
+  })
+})
+
+describe(toJson.name, () => {
+  it('regulationバージョン・filter条件・パーツデータを含むJSON文字列を返す', () => {
+    const parts = [makePart({ id: '1' })]
+
+    const json = toJson(parts, {
+      regulation: 'v1.09.1',
+      filter: ['numeric:weight:lt:4000'],
+    })
+
+    expect(JSON.parse(json)).toEqual({
+      regulation: 'v1.09.1',
+      filter: ['numeric:weight:lt:4000'],
+      data: parts,
+    })
+  })
+
+  it('filterが空配列の場合も空配列のまま出力する', () => {
+    const parts = [makePart({ id: '1' })]
+
+    const json = toJson(parts, { regulation: 'v1.09.1', filter: [] })
+
+    expect(JSON.parse(json).filter).toEqual([])
   })
 })

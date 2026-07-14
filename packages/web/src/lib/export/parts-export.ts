@@ -34,3 +34,23 @@ export function groupByCategory(
 
   return grouped
 }
+
+export type ExportMeta = Readonly<{
+  regulation: string
+  filter: readonly string[]
+}>
+
+export function toJson(
+  parts: readonly ACParts[],
+  meta: ExportMeta,
+): string {
+  return JSON.stringify(
+    {
+      regulation: meta.regulation,
+      filter: meta.filter,
+      data: parts,
+    },
+    null,
+    2,
+  )
+}
