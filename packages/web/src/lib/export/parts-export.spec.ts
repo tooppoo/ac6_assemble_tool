@@ -7,7 +7,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import {
   flattenRegulation,
-  groupByCategory,
+  groupByClassification,
   toJson,
   toCsv,
   buildZip,
@@ -50,15 +50,15 @@ describe(flattenRegulation.name, () => {
   })
 })
 
-describe(groupByCategory.name, () => {
-  it('カテゴリごとにパーツをグルーピングする', () => {
+describe(groupByClassification.name, () => {
+  it('分類ごとにパーツをグルーピングする', () => {
     const parts = [
-      makePart({ id: '1', category: 'head' }),
-      makePart({ id: '2', category: 'core' }),
-      makePart({ id: '3', category: 'head' }),
+      makePart({ id: '1', classification: 'head' }),
+      makePart({ id: '2', classification: 'core' }),
+      makePart({ id: '3', classification: 'head' }),
     ]
 
-    const grouped = groupByCategory(parts)
+    const grouped = groupByClassification(parts)
 
     expect(grouped.get('head')?.map((part) => part.id)).toEqual(['1', '3'])
     expect(grouped.get('core')?.map((part) => part.id)).toEqual(['2'])
@@ -66,7 +66,7 @@ describe(groupByCategory.name, () => {
   })
 
   it('空配列に対しては空のMapを返す', () => {
-    expect(groupByCategory([]).size).toBe(0)
+    expect(groupByClassification([]).size).toBe(0)
   })
 })
 
@@ -140,10 +140,10 @@ describe(toCsv.name, () => {
 })
 
 describe(buildZip.name, () => {
-  it('カテゴリごとにJSONファイルへ分割したzipを生成する', async () => {
-    const grouped = groupByCategory([
-      makePart({ id: '1', category: 'head' }),
-      makePart({ id: '2', category: 'core' }),
+  it('分類ごとにJSONファイルへ分割したzipを生成する', async () => {
+    const grouped = groupByClassification([
+      makePart({ id: '1', classification: 'head' }),
+      makePart({ id: '2', classification: 'core' }),
     ])
 
     const blob = await buildZip(grouped, 'json', {
@@ -162,7 +162,9 @@ describe(buildZip.name, () => {
   })
 
   it('format=csvの場合はcsv拡張子のファイルを生成する', async () => {
-    const grouped = groupByCategory([makePart({ id: '1', category: 'head' })])
+    const grouped = groupByClassification([
+      makePart({ id: '1', classification: 'head' }),
+    ])
 
     const blob = await buildZip(grouped, 'csv', {
       regulation: 'v1.09.1',
@@ -186,13 +188,13 @@ describe(buildExportFilename.name, () => {
     )
   })
 
-  it('特定カテゴリexportはac6-parts-<category>-<version>.<format>になる', () => {
-    expect(buildExportFilename('category', 'json', 'v1.09.1', 'head')).toBe(
-      'ac6-parts-head-v1.09.1.json',
-    )
-    expect(buildExportFilename('category', 'csv', 'v1.09.1', 'core')).toBe(
-      'ac6-parts-core-v1.09.1.csv',
-    )
+  it('特定分類exportはac6-parts-<classification>-<version>.<format>になる', () => {
+    expect(
+      buildExportFilename('classification', 'json', 'v1.09.1', 'head'),
+    ).toBe('ac6-parts-head-v1.09.1.json')
+    expect(
+      buildExportFilename('classification', 'csv', 'v1.09.1', 'core'),
+    ).toBe('ac6-parts-core-v1.09.1.csv')
   })
 
   it('表示中exportはac6-parts-filtered-<version>.<format>になる', () => {

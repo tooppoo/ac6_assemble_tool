@@ -86,12 +86,12 @@ export const enPartsListPage = {
     target: {
       label: 'Target',
       all: 'All',
-      category: 'Specific Category',
+      classification: 'Specific Classification',
       filtered: 'Filtered Parts',
     },
-    category: {
-      label: 'Category',
-      placeholder: 'Select a category',
+    classification: {
+      label: 'Classification',
+      placeholder: 'Select a classification',
     },
     format: {
       label: 'Format',

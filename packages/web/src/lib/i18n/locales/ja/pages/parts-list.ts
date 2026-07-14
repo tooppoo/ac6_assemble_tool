@@ -85,12 +85,12 @@ export const jaPartsListPage = {
     target: {
       label: '対象',
       all: '全体',
-      category: '特定カテゴリ',
+      classification: '特定分類',
       filtered: '表示中のパーツ',
     },
-    category: {
-      label: 'カテゴリ',
-      placeholder: 'カテゴリを選択',
+    classification: {
+      label: '分類',
+      placeholder: '分類を選択',
     },
     format: {
       label: '形式',

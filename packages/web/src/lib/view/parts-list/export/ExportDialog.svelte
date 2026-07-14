@@ -5,7 +5,7 @@
     buildZip,
     downloadBlob,
     flattenRegulation,
-    groupByCategory,
+    groupByClassification,
     toCsv,
     toJson,
     type ExportFormat,
@@ -13,7 +13,7 @@
   } from '$lib/export/parts-export'
   import type { I18NextStore } from '$lib/i18n/define'
 
-  import type { Category } from '@ac6_assemble_tool/parts/types/base/category'
+  import type { Classification } from '@ac6_assemble_tool/parts/types/base/classification'
   import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
   import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
   import {
@@ -47,13 +47,13 @@
   const i18n = getContext<I18NextStore>('i18n')
 
   let target = $state<ExportTarget>('filtered')
-  let selectedCategory = $state<Category | ''>('')
+  let selectedClassification = $state<Classification | ''>('')
   let format = $state<ExportFormat>('json')
   let exportError = $state<boolean>(false)
 
-  const availableCategories = $derived.by<Category[]>(() => {
+  const availableClassifications = $derived.by<Classification[]>(() => {
     const all = flattenRegulation(regulation)
-    return [...new Set(all.map((part) => part.category))].sort()
+    return [...new Set(all.map((part) => part.classification))]
   })
 
   const isFilteredEmpty = $derived(filteredParts.length === 0)
@@ -66,7 +66,7 @@
 
   const isExecuteDisabled = $derived(
     (target === 'filtered' && isFilteredEmpty) ||
-      (target === 'category' && selectedCategory === ''),
+      (target === 'classification' && selectedClassification === ''),
   )
 
   function handleExport(): void {
@@ -74,7 +74,7 @@
     const version = regulation.version
 
     if (target === 'all') {
-      const grouped = groupByCategory(flattenRegulation(regulation))
+      const grouped = groupByClassification(flattenRegulation(regulation))
       buildZip(grouped, format, { regulation: version, filter: [] })
         .then((blob) => {
           downloadBlob(blob, buildExportFilename('all', format, version))
@@ -85,10 +85,10 @@
       return
     }
 
-    if (target === 'category' && selectedCategory !== '') {
+    if (target === 'classification' && selectedClassification !== '') {
       try {
         const parts = flattenRegulation(regulation).filter(
-          (part) => part.category === selectedCategory,
+          (part) => part.classification === selectedClassification,
         )
         const content =
           format === 'json'
@@ -96,7 +96,12 @@
             : toCsv(parts)
         downloadBlob(
           buildFileBlob(content, format),
-          buildExportFilename('category', format, version, selectedCategory),
+          buildExportFilename(
+            'classification',
+            format,
+            version,
+            selectedClassification,
+          ),
         )
       } catch {
         exportError = true
@@ -165,12 +170,12 @@
           class="form-check-input"
           type="radio"
           name="export-target"
-          id="export-target-category"
-          value="category"
+          id="export-target-classification"
+          value="classification"
           bind:group={target}
         />
-        <label class="form-check-label" for="export-target-category">
-          {$i18n.t('page/parts-list:export.target.category')}
+        <label class="form-check-label" for="export-target-classification">
+          {$i18n.t('page/parts-list:export.target.classification')}
         </label>
       </div>
       <div class="form-check">
@@ -188,21 +193,25 @@
       </div>
     </fieldset>
 
-    {#if target === 'category'}
+    {#if target === 'classification'}
       <div class="mb-3">
-        <label class="form-label" for="export-category-select">
-          {$i18n.t('page/parts-list:export.category.label')}
+        <label class="form-label" for="export-classification-select">
+          {$i18n.t('page/parts-list:export.classification.label')}
         </label>
         <select
           class="form-select"
-          id="export-category-select"
-          bind:value={selectedCategory}
+          id="export-classification-select"
+          bind:value={selectedClassification}
         >
           <option value=""
-            >{$i18n.t('page/parts-list:export.category.placeholder')}</option
+            >{$i18n.t(
+              'page/parts-list:export.classification.placeholder',
+            )}</option
           >
-          {#each availableCategories as category (category)}
-            <option value={category}>{category}</option>
+          {#each availableClassifications as classification (classification)}
+            <option value={classification}
+              >{$i18n.t(`assembly:${classification}`)}</option
+            >
           {/each}
         </select>
       </div>

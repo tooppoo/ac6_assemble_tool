@@ -11,6 +11,10 @@ export const enAssembly = {
   fcs: 'FCS',
   generator: 'GENERATOR',
   expansion: 'EXPANSION',
+  'arm-unit': 'ARM UNIT',
+  'left-arm-unit': 'LEFT ARM UNIT',
+  'back-unit': 'BACK UNIT',
+  'left-back-unit': 'LEFT BACK UNIT',
 
   // arm units
   attackType: 'ATTACK TYPE',

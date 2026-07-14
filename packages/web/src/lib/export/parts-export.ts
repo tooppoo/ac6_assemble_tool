@@ -1,4 +1,4 @@
-import type { Category } from '@ac6_assemble_tool/parts/types/base/category'
+import type { Classification } from '@ac6_assemble_tool/parts/types/base/classification'
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 import {
   CANDIDATES_KEYS,
@@ -23,15 +23,15 @@ export function flattenRegulation(regulation: Regulation): ACParts[] {
   return [...uniqueParts.values()]
 }
 
-export function groupByCategory(
+export function groupByClassification(
   parts: readonly ACParts[],
-): Map<Category, ACParts[]> {
-  const grouped = new Map<Category, ACParts[]>()
+): Map<Classification, ACParts[]> {
+  const grouped = new Map<Classification, ACParts[]>()
 
   for (const part of parts) {
-    const list = grouped.get(part.category) ?? []
+    const list = grouped.get(part.classification) ?? []
     list.push(part)
-    grouped.set(part.category, list)
+    grouped.set(part.classification, list)
   }
 
   return grouped
@@ -83,14 +83,14 @@ export function toCsv(parts: readonly ACParts[]): string {
 export type ExportFormat = 'json' | 'csv'
 
 export async function buildZip(
-  groupedParts: Map<Category, ACParts[]>,
+  groupedParts: Map<Classification, ACParts[]>,
   format: ExportFormat,
   meta: ExportMeta,
 ): Promise<Blob> {
   const zip = new JSZip()
 
-  for (const [category, parts] of groupedParts) {
-    const filename = `${category}-${meta.regulation}.${format}`
+  for (const [classification, parts] of groupedParts) {
+    const filename = `${classification}-${meta.regulation}.${format}`
     const content = format === 'json' ? toJson(parts, meta) : toCsv(parts)
     zip.file(filename, content)
   }
@@ -98,19 +98,19 @@ export async function buildZip(
   return zip.generateAsync({ type: 'blob' })
 }
 
-export type ExportTarget = 'all' | 'category' | 'filtered'
+export type ExportTarget = 'all' | 'classification' | 'filtered'
 
 export function buildExportFilename(
   target: ExportTarget,
   format: ExportFormat,
   version: string,
-  category?: Category,
+  classification?: Classification,
 ): string {
   switch (target) {
     case 'all':
       return `ac6-parts-all-${version}.zip`
-    case 'category':
-      return `ac6-parts-${category}-${version}.${format}`
+    case 'classification':
+      return `ac6-parts-${classification}-${version}.${format}`
     case 'filtered':
       return `ac6-parts-filtered-${version}.${format}`
   }

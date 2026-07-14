@@ -28,7 +28,7 @@ function readBlobAsText(blob: Blob): Promise<string> {
 }
 
 describe('ExportDialog', () => {
-  it('デフォルトで「表示中」が選択され、カテゴリ選択は表示されない', () => {
+  it('デフォルトで「表示中」が選択され、分類選択は表示されない', () => {
     render(ExportDialogTestWrapper, {
       props: {
         open: true,
@@ -43,10 +43,10 @@ describe('ExportDialog', () => {
       '表示中のパーツ',
     ) as HTMLInputElement
     expect(filteredRadio.checked).toBe(true)
-    expect(screen.queryByLabelText('カテゴリ')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('分類')).not.toBeInTheDocument()
   })
 
-  it('「特定カテゴリ」選択時はカテゴリ未選択だと実行ボタンが無効', async () => {
+  it('「特定分類」選択時は分類未選択だと実行ボタンが無効', async () => {
     render(ExportDialogTestWrapper, {
       props: {
         open: true,
@@ -57,10 +57,26 @@ describe('ExportDialog', () => {
       },
     })
 
-    await fireEvent.click(screen.getByLabelText('特定カテゴリ'))
+    await fireEvent.click(screen.getByLabelText('特定分類'))
 
-    expect(screen.getByLabelText('カテゴリ')).toBeInTheDocument()
+    expect(screen.getByLabelText('分類')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'ダウンロード' })).toBeDisabled()
+  })
+
+  it('分類の選択肢はi18nラベルで表示される', async () => {
+    render(ExportDialogTestWrapper, {
+      props: {
+        open: true,
+        onClose: vi.fn(),
+        regulation,
+        filteredParts: [regulation.candidates.head[0]],
+        filters: noFilters,
+      },
+    })
+
+    await fireEvent.click(screen.getByLabelText('特定分類'))
+
+    expect(screen.getByRole('option', { name: '頭部' })).toBeInTheDocument()
   })
 
   it('表示中のパーツが空の場合は実行ボタンが無効', () => {
