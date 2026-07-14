@@ -26,6 +26,7 @@
     type PartsDetailPanelStatus,
   } from './controller/parts-detail-panel'
   import PartsDetailPanel from './detail/PartsDetailPanel.svelte'
+  import ExportDialog from './export/ExportDialog.svelte'
   import FilterPanel from './filter/FilterPanel.svelte'
   import { applyFilters } from './filter/filters-core'
   import {
@@ -102,6 +103,7 @@
   let partsDetailStatus = $state<PartsDetailPanelStatus>(
     closePartsDetailPanel(),
   )
+  let isExportDialogOpen = $state<boolean>(false)
 
   const emptyCandidateSlots = $derived.by<CandidatesKey[]>(() => {
     return CANDIDATES_KEYS.filter((slot) => {
@@ -474,6 +476,24 @@
       {$i18n.t('page/parts-list:navigation.handoff.label')}
     </button>
   </div>
+
+  <div class="py-1 d-flex justify-content-end">
+    <button
+      class="btn btn-outline-secondary"
+      type="button"
+      onclick={() => (isExportDialogOpen = true)}
+    >
+      {$i18n.t('page/parts-list:export.button')}
+    </button>
+  </div>
+
+  <ExportDialog
+    open={isExportDialogOpen}
+    onClose={() => (isExportDialogOpen = false)}
+    {regulation}
+    {filteredParts}
+    {filters}
+  />
 
   <div class="py-1">
     <PartsGrid

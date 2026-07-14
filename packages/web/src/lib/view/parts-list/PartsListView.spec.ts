@@ -773,4 +773,28 @@ describe('PartsListView コンポーネント', () => {
       expect(gotoSpy).not.toHaveBeenCalled()
     })
   })
+
+  it('Exportボタンでダイアログが開閉できる', async () => {
+    render(PartsListViewTestWrapper, {
+      props: { regulation },
+    })
+
+    expect(
+      screen.queryByRole('heading', { name: 'パーツデータのエクスポート' }),
+    ).not.toBeInTheDocument()
+
+    await fireEvent.click(screen.getByRole('button', { name: 'エクスポート' }))
+
+    expect(
+      screen.getByRole('heading', { name: 'パーツデータのエクスポート' }),
+    ).toBeInTheDocument()
+
+    await fireEvent.click(screen.getByRole('button', { name: 'キャンセル' }))
+
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('heading', { name: 'パーツデータのエクスポート' }),
+      ).not.toBeInTheDocument(),
+    )
+  })
 })
