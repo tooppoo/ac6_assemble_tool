@@ -461,30 +461,29 @@
         {handoffDisabledReason}
       </p>
     {/if}
-    <button
-      class="btn btn-primary"
-      type="button"
-      title={isHandoffDisabled && handoffDisabledReason
-        ? handoffDisabledReason
-        : $i18n.t('page/parts-list:navigation.handoff.description')}
-      disabled={isHandoffDisabled}
-      aria-describedby={isHandoffDisabled && handoffDisabledReason
-        ? 'handoff-disabled-reason'
-        : undefined}
-      onclick={handleNavigateToAssembly}
-    >
-      {$i18n.t('page/parts-list:navigation.handoff.label')}
-    </button>
-  </div>
-
-  <div class="py-1 d-flex justify-content-end">
-    <button
-      class="btn btn-outline-secondary"
-      type="button"
-      onclick={() => (isExportDialogOpen = true)}
-    >
-      {$i18n.t('page/parts-list:export.button')}
-    </button>
+    <div class="d-flex gap-2">
+      <button
+        class="btn btn-info"
+        type="button"
+        onclick={() => (isExportDialogOpen = true)}
+      >
+        {$i18n.t('page/parts-list:export.button')}
+      </button>
+      <button
+        class="btn btn-primary"
+        type="button"
+        title={isHandoffDisabled && handoffDisabledReason
+          ? handoffDisabledReason
+          : $i18n.t('page/parts-list:navigation.handoff.description')}
+        disabled={isHandoffDisabled}
+        aria-describedby={isHandoffDisabled && handoffDisabledReason
+          ? 'handoff-disabled-reason'
+          : undefined}
+        onclick={handleNavigateToAssembly}
+      >
+        {$i18n.t('page/parts-list:navigation.handoff.label')}
+      </button>
+    </div>
   </div>
 
   <ExportDialog
