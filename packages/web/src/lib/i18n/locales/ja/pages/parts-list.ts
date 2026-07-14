@@ -100,6 +100,7 @@ export const jaPartsListPage = {
     execute: 'ダウンロード',
     cancel: 'キャンセル',
     emptyFiltered: '表示中のパーツがありません',
+    error: 'エクスポートに失敗しました',
   },
   aboutSection: {
     summary: 'このアプリについて',

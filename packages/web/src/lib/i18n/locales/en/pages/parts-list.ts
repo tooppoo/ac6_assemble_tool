@@ -101,6 +101,7 @@ export const enPartsListPage = {
     execute: 'Download',
     cancel: 'Cancel',
     emptyFiltered: 'No parts are currently displayed.',
+    error: 'Export failed.',
   },
   aboutSection: {
     summary: 'About This App',

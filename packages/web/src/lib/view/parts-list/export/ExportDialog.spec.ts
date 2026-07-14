@@ -87,4 +87,26 @@ describe('ExportDialog', () => {
       `ac6-parts-filtered-${regulation.version}.json`,
     )
   })
+
+  it('エクスポートに失敗した場合はダイアログ内にエラーメッセージを表示する', async () => {
+    vi.mocked(partsExport.downloadBlob).mockImplementationOnce(() => {
+      throw new Error('boom')
+    })
+
+    render(ExportDialogTestWrapper, {
+      props: {
+        open: true,
+        onClose: vi.fn(),
+        regulation,
+        filteredParts: [regulation.candidates.head[0]],
+        filters: noFilters,
+      },
+    })
+
+    await fireEvent.click(screen.getByRole('button', { name: 'ダウンロード' }))
+
+    expect(
+      await screen.findByText('エクスポートに失敗しました'),
+    ).toBeInTheDocument()
+  })
 })

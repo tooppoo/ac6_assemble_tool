@@ -41,6 +41,7 @@
   let target = $state<ExportTarget>('filtered')
   let selectedCategory = $state<Category | ''>('')
   let format = $state<ExportFormat>('json')
+  let exportError = $state<boolean>(false)
 
   const availableCategories = $derived.by<Category[]>(() => {
     const all = flattenRegulation(regulation)
@@ -55,45 +56,56 @@
   )
 
   function handleExport(): void {
+    exportError = false
     const version = regulation.version
 
     if (target === 'all') {
       const grouped = groupByCategory(flattenRegulation(regulation))
-      buildZip(grouped, format, { regulation: version, filter: [] }).then(
-        (blob) => {
+      buildZip(grouped, format, { regulation: version, filter: [] })
+        .then((blob) => {
           downloadBlob(blob, buildExportFilename('all', format, version))
-        },
-      )
+        })
+        .catch(() => {
+          exportError = true
+        })
       return
     }
 
     if (target === 'category' && selectedCategory !== '') {
-      const parts = flattenRegulation(regulation).filter(
-        (part) => part.category === selectedCategory,
-      )
-      const content =
-        format === 'json'
-          ? toJson(parts, { regulation: version, filter: [] })
-          : toCsv(parts)
-      downloadBlob(
-        buildFileBlob(content, format),
-        buildExportFilename('category', format, version, selectedCategory),
-      )
+      try {
+        const parts = flattenRegulation(regulation).filter(
+          (part) => part.category === selectedCategory,
+        )
+        const content =
+          format === 'json'
+            ? toJson(parts, { regulation: version, filter: [] })
+            : toCsv(parts)
+        downloadBlob(
+          buildFileBlob(content, format),
+          buildExportFilename('category', format, version, selectedCategory),
+        )
+      } catch {
+        exportError = true
+      }
       return
     }
 
     if (target === 'filtered' && !isFilteredEmpty) {
-      const content =
-        format === 'json'
-          ? toJson(filteredParts, {
-              regulation: version,
-              filter: filters.map((filter) => filter.serialize()),
-            })
-          : toCsv(filteredParts)
-      downloadBlob(
-        buildFileBlob(content, format),
-        buildExportFilename('filtered', format, version),
-      )
+      try {
+        const content =
+          format === 'json'
+            ? toJson(filteredParts, {
+                regulation: version,
+                filter: filters.map((filter) => filter.serialize()),
+              })
+            : toCsv(filteredParts)
+        downloadBlob(
+          buildFileBlob(content, format),
+          buildExportFilename('filtered', format, version),
+        )
+      } catch {
+        exportError = true
+      }
     }
   }
 </script>
@@ -181,6 +193,12 @@
     {#if target === 'filtered' && isFilteredEmpty}
       <p class="text-danger small" role="status" aria-live="polite">
         {$i18n.t('page/parts-list:export.emptyFiltered')}
+      </p>
+    {/if}
+
+    {#if exportError}
+      <p class="text-danger small" role="alert">
+        {$i18n.t('page/parts-list:export.error')}
       </p>
     {/if}
 
