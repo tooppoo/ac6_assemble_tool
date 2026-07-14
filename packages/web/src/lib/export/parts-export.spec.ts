@@ -2,8 +2,8 @@ import { latest as regulation } from '$lib/regulation'
 
 import { notEquipped } from '@ac6_assemble_tool/parts/types/base/classification'
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
-import { describe, expect, it, vi } from 'vitest'
 import JSZip from 'jszip'
+import { describe, expect, it, vi } from 'vitest'
 
 import {
   flattenRegulation,
@@ -44,9 +44,9 @@ describe(flattenRegulation.name, () => {
   it('未装備プレースホルダーを含まない', () => {
     const result = flattenRegulation(regulation)
 
-    expect(
-      result.every((part) => part.classification !== notEquipped),
-    ).toBe(true)
+    expect(result.every((part) => part.classification !== notEquipped)).toBe(
+      true,
+    )
   })
 })
 
@@ -220,9 +220,7 @@ describe(downloadBlob.name, () => {
     const createElementSpy = vi
       .spyOn(document, 'createElement')
       .mockReturnValue(anchor)
-    const createObjectURLSpy = vi
-      .fn()
-      .mockReturnValue('blob:mock-url')
+    const createObjectURLSpy = vi.fn().mockReturnValue('blob:mock-url')
     const revokeObjectURLSpy = vi.fn()
     vi.stubGlobal('URL', {
       ...URL,

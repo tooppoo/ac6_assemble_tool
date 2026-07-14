@@ -1,6 +1,3 @@
-import Papa from 'papaparse'
-import JSZip from 'jszip'
-
 import type { Category } from '@ac6_assemble_tool/parts/types/base/category'
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
 import {
@@ -8,6 +5,8 @@ import {
   excludeNotEquipped,
 } from '@ac6_assemble_tool/parts/types/candidates'
 import type { Regulation } from '@ac6_assemble_tool/parts/versions/regulation.types'
+import JSZip from 'jszip'
+import Papa from 'papaparse'
 
 export function flattenRegulation(regulation: Regulation): ACParts[] {
   const uniqueParts = new Map<string, ACParts>()
@@ -43,10 +42,7 @@ export type ExportMeta = Readonly<{
   filter: readonly string[]
 }>
 
-export function toJson(
-  parts: readonly ACParts[],
-  meta: ExportMeta,
-): string {
+export function toJson(parts: readonly ACParts[], meta: ExportMeta): string {
   return JSON.stringify(
     {
       regulation: meta.regulation,
@@ -70,10 +66,7 @@ function flattenCsvValue(value: unknown): string {
 
 function flattenPartForCsv(part: ACParts): Record<string, string> {
   return Object.fromEntries(
-    Object.entries(part).map(([key, value]) => [
-      key,
-      flattenCsvValue(value),
-    ]),
+    Object.entries(part).map(([key, value]) => [key, flattenCsvValue(value)]),
   )
 }
 
