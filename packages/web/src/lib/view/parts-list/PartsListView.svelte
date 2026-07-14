@@ -463,7 +463,7 @@
     {/if}
     <div class="d-flex gap-2">
       <button
-        class="btn btn-info"
+        class="btn export-button"
         type="button"
         onclick={() => (isExportDialogOpen = true)}
       >
@@ -526,3 +526,15 @@
     }}
   />
 </article>
+
+<style>
+  .export-button {
+    border: 1px solid var(--bs-border-color);
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+  }
+
+  .export-button:hover {
+    background-color: var(--bs-secondary-bg);
+  }
+</style>
