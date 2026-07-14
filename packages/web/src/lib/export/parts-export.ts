@@ -104,3 +104,35 @@ export async function buildZip(
 
   return zip.generateAsync({ type: 'blob' })
 }
+
+export type ExportTarget = 'all' | 'category' | 'filtered'
+
+export function buildExportFilename(
+  target: ExportTarget,
+  format: ExportFormat,
+  version: string,
+  category?: Category,
+): string {
+  switch (target) {
+    case 'all':
+      return `ac6-parts-all-${version}.zip`
+    case 'category':
+      return `ac6-parts-${category}-${version}.${format}`
+    case 'filtered':
+      return `ac6-parts-filtered-${version}.${format}`
+  }
+}
+
+export function buildFileBlob(content: string, format: ExportFormat): Blob {
+  const type = format === 'json' ? 'application/json' : 'text/csv'
+  return new Blob([content], { type })
+}
+
+export function downloadBlob(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = filename
+  anchor.click()
+  URL.revokeObjectURL(url)
+}

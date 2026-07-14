@@ -2,10 +2,19 @@ import { latest as regulation } from '$lib/regulation'
 
 import { notEquipped } from '@ac6_assemble_tool/parts/types/base/classification'
 import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import JSZip from 'jszip'
 
-import { flattenRegulation, groupByCategory, toJson, toCsv, buildZip } from './parts-export'
+import {
+  flattenRegulation,
+  groupByCategory,
+  toJson,
+  toCsv,
+  buildZip,
+  buildExportFilename,
+  buildFileBlob,
+  downloadBlob,
+} from './parts-export'
 
 function makePart(overrides: Partial<ACParts> = {}): ACParts {
   return {
@@ -164,5 +173,72 @@ describe(buildZip.name, () => {
     expect(Object.keys(zip.files)).toEqual(['head-v1.09.1.csv'])
     const content = await zip.files['head-v1.09.1.csv'].async('string')
     expect(content).toContain('id')
+  })
+})
+
+describe(buildExportFilename.name, () => {
+  it('全体exportはac6-parts-all-<version>.zipになる', () => {
+    expect(buildExportFilename('all', 'json', 'v1.09.1')).toBe(
+      'ac6-parts-all-v1.09.1.zip',
+    )
+    expect(buildExportFilename('all', 'csv', 'v1.09.1')).toBe(
+      'ac6-parts-all-v1.09.1.zip',
+    )
+  })
+
+  it('特定カテゴリexportはac6-parts-<category>-<version>.<format>になる', () => {
+    expect(buildExportFilename('category', 'json', 'v1.09.1', 'head')).toBe(
+      'ac6-parts-head-v1.09.1.json',
+    )
+    expect(buildExportFilename('category', 'csv', 'v1.09.1', 'core')).toBe(
+      'ac6-parts-core-v1.09.1.csv',
+    )
+  })
+
+  it('表示中exportはac6-parts-filtered-<version>.<format>になる', () => {
+    expect(buildExportFilename('filtered', 'json', 'v1.09.1')).toBe(
+      'ac6-parts-filtered-v1.09.1.json',
+    )
+  })
+})
+
+describe(buildFileBlob.name, () => {
+  it('formatに応じたmime typeのBlobを生成する', () => {
+    expect(buildFileBlob('{}', 'json').type).toBe('application/json')
+    expect(buildFileBlob('a,b', 'csv').type).toBe('text/csv')
+  })
+})
+
+describe(downloadBlob.name, () => {
+  it('anchor要素を生成してダウンロードをトリガーする', () => {
+    const clickSpy = vi.fn()
+    const anchor = {
+      href: '',
+      download: '',
+      click: clickSpy,
+    } as unknown as HTMLAnchorElement
+    const createElementSpy = vi
+      .spyOn(document, 'createElement')
+      .mockReturnValue(anchor)
+    const createObjectURLSpy = vi
+      .fn()
+      .mockReturnValue('blob:mock-url')
+    const revokeObjectURLSpy = vi.fn()
+    vi.stubGlobal('URL', {
+      ...URL,
+      createObjectURL: createObjectURLSpy,
+      revokeObjectURL: revokeObjectURLSpy,
+    })
+
+    downloadBlob(new Blob(['test']), 'test.json')
+
+    expect(createElementSpy).toHaveBeenCalledWith('a')
+    expect(anchor.href).toBe('blob:mock-url')
+    expect(anchor.download).toBe('test.json')
+    expect(clickSpy).toHaveBeenCalledOnce()
+    expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob:mock-url')
+
+    createElementSpy.mockRestore()
+    vi.unstubAllGlobals()
   })
 })
