@@ -21,12 +21,12 @@ jobs:
       contents: write # to commit changes
     steps:
       # setup
-      - uses: actions/checkout@master
+      - uses: actions/checkout@61b9e3751b92087fd0b06925ba6dd6314e06f089 # master
         with:
           ref: ${{ github.head_ref }} # PRのソースブランチをチェックアウト
       - name: Setup pnpm
         uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
-      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: ".node-version"
           cache: "pnpm"
