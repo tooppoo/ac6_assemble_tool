@@ -259,13 +259,10 @@ Cloudflare Pages の環境変数設定で以下を構成：
 - 各項目は空欄にせず、内容がない場合は「なし」と明記
 - **1 Issue = 1目的、1 PR = 1論点**
 
-## ライセンス
-
-MIT License
-
 ## 関連リンク
 
 - [AGENTS.md](AGENTS.md): AI エージェント向け開発指針（開発原則の詳細）
 - [CLAUDE.md](CLAUDE.md): Claude Code Spec-Driven Development
 - [docs/steering/](docs/steering/): プロジェクト全体のコンテキストと技術スタック
 - [docs/adr/](docs/adr/): アーキテクチャ決定記録
+- [NODTICE.md](NOTICE.md): ライセンスについての補足
