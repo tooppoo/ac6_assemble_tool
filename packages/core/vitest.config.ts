@@ -13,6 +13,7 @@ export default defineConfig({
     testTimeout: 10 * 1000,
     coverage: {
       reporter: ['text', 'json'],
+      include: ['src/**/*.ts'],
       exclude: [
         '*.config.*',
         '**/**/*.d',
