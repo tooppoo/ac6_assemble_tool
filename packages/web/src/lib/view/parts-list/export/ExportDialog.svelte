@@ -12,6 +12,7 @@
     type ExportTarget,
   } from '$lib/export/parts-export'
   import type { I18NextStore } from '$lib/i18n/define'
+  import { appVersionShort } from '$lib/utils/app-version'
 
   import type { Classification } from '@ac6_assemble_tool/parts/types/base/classification'
   import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
@@ -45,6 +46,7 @@
   }: Props = $props()
 
   const i18n = getContext<I18NextStore>('i18n')
+  const repositoryURLforAppVersion = `https://github.com/tooppoo/ac6_assemble_tool/tree/web/v${appVersionShort}`
 
   let target = $state<ExportTarget>('filtered')
   let selectedClassification = $state<Classification | ''>('')
@@ -229,7 +231,7 @@
       </p>
     {/if}
 
-    <fieldset>
+    <fieldset class="mb-3">
       <legend class="fs-6"
         >{$i18n.t('page/parts-list:export.format.label')}</legend
       >
@@ -260,6 +262,28 @@
         </label>
       </div>
     </fieldset>
+
+    <div>
+      <div class="fs-6">LICENSE for exported data</div>
+      <div>
+        <ul>
+          <li>
+            For FROM SOFTWARE, Inc.: <a
+              href={`${repositoryURLforAppVersion}/LICENSE_FOR_FROM_SOFTWARE`}
+              target="_blank"
+              rel="noopener noreferrer">LICENSE_FOR_FROM_SOFTWARE</a
+            >
+          </li>
+          <li>
+            For others: <a
+              href={`${repositoryURLforAppVersion}/LICENSE`}
+              target="_blank"
+              rel="noopener noreferrer">LICENSE</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
   </ModalBody>
   <ModalFooter>
     <button type="button" class="btn btn-secondary" onclick={onClose}>

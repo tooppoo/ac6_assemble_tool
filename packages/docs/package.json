@@ -8,7 +8,7 @@
     "format": "markdownlint-cli2 --fix"
   },
   "author": "philomagi <tooppoo56@gmail.com> (https://github.com/tooppoo)",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "devDependencies": {
     "markdownlint-cli2": "0.20.0",
     "markdownlint-cli2-formatter-pretty": "0.0.9"
