@@ -27,6 +27,7 @@ const shortHash = (() => {
 export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(`${pkg.version}-${shortHash}`),
+    __APP_VERSION_SHORT__: JSON.stringify(pkg.version),
   },
   server: {
     host: '0.0.0.0',

@@ -6,3 +6,6 @@
 // @ts-ignore - __APP_VERSION__ is defined by Vite
 export const appVersion: string =
   typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : 'dev'
+
+export const appVersionShort: string =
+  typeof __APP_VERSION_SHORT__ !== 'undefined' ? __APP_VERSION_SHORT__ : 'dev'
