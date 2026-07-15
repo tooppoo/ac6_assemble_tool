@@ -20,7 +20,7 @@ importers:
         version: 2.29.8(@types/node@24.13.3)
       '@codecov/vite-plugin':
         specifier: ^2.0.1
-        version: 2.0.1(vite@7.3.5(@types/node@24.10.9)(sass-embedded@1.97.3)(sass@1.97.3)(tsx@4.21.0))
+        version: 2.0.1(vite@7.3.5(@types/node@24.13.3)(sass-embedded@1.97.3)(sass@1.97.3)(tsx@4.21.0))
       '@eslint/eslintrc':
         specifier: 3.3.3
         version: 3.3.3
@@ -4098,12 +4098,12 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
+  undici-types@7.18.2:
+    resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
+
   undici@6.27.0:
     resolution: {integrity: sha512-YmfV3YnEDzXRC5lZ2jWtWWHKGUm1zIt8AhesR1tens+HTNv+YZlN/dp6G727LOvMJ8xjP9Be7Y2Sdr96LDm+pg==}
     engines: {node: '>=18.17'}
-
-  undici-types@7.18.2:
-    resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
   undici@7.14.0:
     resolution: {integrity: sha512-Vqs8HTzjpQXZeXdpsfChQTlafcMQaaIwnGwLam1wudSSjlJeQ3bw1j+TLPePgrCnCpUXx7Ba5Pdpf5OBih62NQ==}
@@ -4247,11 +4247,6 @@ packages:
 
   webpack-virtual-modules@0.6.2:
     resolution: {integrity: sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==}
-
-  whatwg-encoding@3.1.1:
-    resolution: {integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==}
-    engines: {node: '>=18'}
-    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-mimetype@4.0.0:
     resolution: {integrity: sha512-QaKxh0eNIi2mE9p2vEdzfagOKHCcj1pJ56EEHGQOVxp8r9/iszLUUV7v89x9O1p/T+NlTM5W7jW6+cz4Fq1YVg==}
@@ -4662,11 +4657,11 @@ snapshots:
       unplugin: 1.16.1
       zod: 3.25.76
 
-  '@codecov/vite-plugin@2.0.1(vite@7.3.5(@types/node@24.10.9)(sass-embedded@1.97.3)(sass@1.97.3)(tsx@4.21.0))':
+  '@codecov/vite-plugin@2.0.1(vite@7.3.5(@types/node@24.13.3)(sass-embedded@1.97.3)(sass@1.97.3)(tsx@4.21.0))':
     dependencies:
       '@codecov/bundler-plugin-core': 2.0.1
       unplugin: 1.16.1
-      vite: 7.3.5(@types/node@24.10.9)(sass-embedded@1.97.3)(sass@1.97.3)(tsx@4.21.0)
+      vite: 7.3.5(@types/node@24.13.3)(sass-embedded@1.97.3)(sass@1.97.3)(tsx@4.21.0)
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
@@ -8260,8 +8255,11 @@ snapshots:
 
   undefsafe@2.0.5: {}
 
-  undici@6.27.0: {}
+  undici-types@7.16.0: {}
+
   undici-types@7.18.2: {}
+
+  undici@6.27.0: {}
 
   undici@7.14.0: {}
 
@@ -8374,10 +8372,6 @@ snapshots:
   webidl-conversions@8.0.1: {}
 
   webpack-virtual-modules@0.6.2: {}
-
-  whatwg-encoding@3.1.1:
-    dependencies:
-      iconv-lite: 0.6.3
 
   whatwg-mimetype@4.0.0: {}
 
