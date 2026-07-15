@@ -1,5 +1,6 @@
 # AC6 ASSEMBLE TOOL
 
+[![AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Lighthouse](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci-lighthouse.yml/badge.svg)](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci-lighthouse.yml)
 [![Lint](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci-lint.yml/badge.svg)](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci-lint.yml)
 [![Test](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci-test.yml/badge.svg)](https://github.com/tooppoo/ac6_assemble_tool/actions/workflows/ci-test.yml)

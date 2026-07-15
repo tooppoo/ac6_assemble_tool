@@ -8,7 +8,7 @@
   },
   "type": "module",
   "author": "philomagi <tooppoo56@gmail.com> (https://github.com/tooppoo)",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "description": "",
   "scripts": {
     "lint": "eslint . --cache && prettier . --check --cache",
