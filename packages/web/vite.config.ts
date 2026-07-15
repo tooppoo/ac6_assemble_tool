@@ -1,7 +1,7 @@
 import { execSync } from 'child_process'
 import fs from 'fs'
 
-import { codecovVitePlugin } from "@codecov/vite-plugin";
+import { codecovVitePlugin } from '@codecov/vite-plugin'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { analyzer } from 'vite-bundle-analyzer'
 import { defineConfig } from 'vitest/config'
@@ -62,8 +62,8 @@ export default defineConfig({
     })(),
     codecovVitePlugin({
       enableBundleAnalysis: true,
-      bundleName: "@ac6_assemble_tool/web",
-      gitService: "github"
+      bundleName: '@ac6_assemble_tool/web',
+      gitService: 'github',
     }),
   ],
   resolve: {

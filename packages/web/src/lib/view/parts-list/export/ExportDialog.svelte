@@ -12,6 +12,7 @@
     type ExportTarget,
   } from '$lib/export/parts-export'
   import type { I18NextStore } from '$lib/i18n/define'
+  import { appVersionShort } from '$lib/utils/app-version'
 
   import type { Classification } from '@ac6_assemble_tool/parts/types/base/classification'
   import type { ACParts } from '@ac6_assemble_tool/parts/types/base/types'
@@ -25,7 +26,6 @@
   import { getContext } from 'svelte'
 
   import type { Filter } from '../filter/filters-core'
-  import { appVersionShort } from '$lib/utils/app-version'
 
   interface Props {
     open: boolean
@@ -264,16 +264,22 @@
     </fieldset>
 
     <div>
-      <div class="fs-6">
-        LICENSE for exported data
-      </div>
+      <div class="fs-6">LICENSE for exported data</div>
       <div>
         <ul>
           <li>
-            For FROM SOFTWARE, Inc.: <a href={`${repositoryURLforAppVersion}/LICENSE_FOR_FROM_SOFTWARE`} target="_blank" rel="noopener noreferrer">LICENSE_FOR_FROM_SOFTWARE</a>
+            For FROM SOFTWARE, Inc.: <a
+              href={`${repositoryURLforAppVersion}/LICENSE_FOR_FROM_SOFTWARE`}
+              target="_blank"
+              rel="noopener noreferrer">LICENSE_FOR_FROM_SOFTWARE</a
+            >
           </li>
           <li>
-            For others: <a href={`${repositoryURLforAppVersion}/LICENSE`} target="_blank" rel="noopener noreferrer">LICENSE</a>
+            For others: <a
+              href={`${repositoryURLforAppVersion}/LICENSE`}
+              target="_blank"
+              rel="noopener noreferrer">LICENSE</a
+            >
           </li>
         </ul>
       </div>
