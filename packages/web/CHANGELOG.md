@@ -1,5 +1,11 @@
 # @ac6_assemble_tool/web
 
+## 5.2.1
+
+### Patch Changes
+
+- [#1112](https://github.com/tooppoo/ac6_assemble_tool/pull/1112) [`5f8e42f`](https://github.com/tooppoo/ac6_assemble_tool/commit/5f8e42faf82501b3458a3987d287f18f1c234175) Thanks [@tooppoo](https://github.com/tooppoo)! - update license
+
 ## 5.2.0
 
 ### Minor Changes
