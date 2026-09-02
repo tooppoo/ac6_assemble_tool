@@ -336,7 +336,7 @@ export const arms = [
     manufacture: arquebus_add,
     price: 286000,
 
-    ap: 2860,
+    ap: 2660,
 
     anti_kinetic_defense: 262,
     anti_energy_defense: 270,
