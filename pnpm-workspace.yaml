@@ -18,8 +18,8 @@ minimumReleaseAgeExclude:
   - "@sveltejs/kit@2.52.2 || 2.53.3 || 2.57.1 || 2.60.1"
   # Renovate security update: svelte@5.51.5 || 5.53.5 || 5.55.7
   - svelte@5.51.5 || 5.53.5 || 5.55.7
-  # Renovate security update: vitest@4.1.0
-  - vitest@4.1.0
+  # Renovate security update: vitest@4.1.0 || 4.1.11
+  - vitest@4.1.0 || 4.1.11
   # Renovate security update: turbo@2.9.14
   - turbo@2.9.14
   # Renovate security update: vite@7.3.5
