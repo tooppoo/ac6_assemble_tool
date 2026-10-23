@@ -22,7 +22,7 @@ minimumReleaseAgeExclude:
   - vitest@4.1.0
   # Renovate security update: turbo@2.9.14
   - turbo@2.9.14
-  # Renovate security update: vite@7.3.5
-  - vite@7.3.5
+  # Renovate security update: vite@7.3.5 || 7.3.7
+  - vite@7.3.5 || 7.3.7
   # Renovate security update: valibot@1.4.2
   - valibot@1.4.2
