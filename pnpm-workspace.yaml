@@ -26,3 +26,5 @@ minimumReleaseAgeExclude:
   - vite@7.3.5
   # Renovate security update: valibot@1.4.2
   - valibot@1.4.2
+  # Renovate security update: @sveltejs/adapter-static@3.0.11
+  - "@sveltejs/adapter-static@3.0.11"
